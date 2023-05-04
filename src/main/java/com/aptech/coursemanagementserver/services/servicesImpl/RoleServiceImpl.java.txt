@@ -1,0 +1,18 @@
+package com.aptech.coursemanagementserver.services.servicesImpl;
+
+import org.springframework.stereotype.Service;
+
+import com.aptech.coursemanagementserver.repositories.RoleRepository;
+import com.aptech.coursemanagementserver.services.RoleService;
+
+import jakarta.transaction.Transactional;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+
+@Service
+@RequiredArgsConstructor
+@Transactional // all changes to the managed entities are saved to the database.
+@Slf4j
+public class RoleServiceImpl implements RoleService {
+
+}
