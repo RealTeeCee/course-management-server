@@ -1,4 +1,14 @@
-package com.aptech.coursemanagementserver.models;
+package com.aptech.coursemanagementserver.enums;
+
+import static com.aptech.coursemanagementserver.enums.Permission.ADMIN_CREATE;
+import static com.aptech.coursemanagementserver.enums.Permission.ADMIN_DELETE;
+import static com.aptech.coursemanagementserver.enums.Permission.ADMIN_READ;
+import static com.aptech.coursemanagementserver.enums.Permission.ADMIN_UPDATE;
+import static com.aptech.coursemanagementserver.enums.Permission.MANAGER_CREATE;
+import static com.aptech.coursemanagementserver.enums.Permission.MANAGER_DELETE;
+import static com.aptech.coursemanagementserver.enums.Permission.MANAGER_READ;
+import static com.aptech.coursemanagementserver.enums.Permission.MANAGER_UPDATE;
+import static com.aptech.coursemanagementserver.enums.Permission.EMPLOYEE_READ;
 
 import java.util.Collections;
 import java.util.List;
@@ -9,14 +19,6 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import static com.aptech.coursemanagementserver.models.Permission.ADMIN_CREATE;
-import static com.aptech.coursemanagementserver.models.Permission.ADMIN_DELETE;
-import static com.aptech.coursemanagementserver.models.Permission.ADMIN_READ;
-import static com.aptech.coursemanagementserver.models.Permission.ADMIN_UPDATE;
-import static com.aptech.coursemanagementserver.models.Permission.MANAGER_CREATE;
-import static com.aptech.coursemanagementserver.models.Permission.MANAGER_DELETE;
-import static com.aptech.coursemanagementserver.models.Permission.MANAGER_READ;
-import static com.aptech.coursemanagementserver.models.Permission.MANAGER_UPDATE;
 
 @RequiredArgsConstructor
 public enum Role {
@@ -37,7 +39,10 @@ public enum Role {
                                         MANAGER_READ,
                                         MANAGER_UPDATE,
                                         MANAGER_DELETE,
-                                        MANAGER_CREATE))
+                                        MANAGER_CREATE)),
+        EMPLOYEE(
+                        Set.of(
+                                        EMPLOYEE_READ))
 
         ;
 

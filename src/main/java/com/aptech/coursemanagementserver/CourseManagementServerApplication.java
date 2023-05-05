@@ -1,5 +1,9 @@
 package com.aptech.coursemanagementserver;
 
+import static com.aptech.coursemanagementserver.enums.Role.ADMIN;
+import static com.aptech.coursemanagementserver.enums.Role.MANAGER;
+import static com.aptech.coursemanagementserver.enums.Role.USER;
+
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -7,10 +11,8 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 
 import com.aptech.coursemanagementserver.dtos.RegisterRequestDto;
+import com.aptech.coursemanagementserver.enums.Role;
 import com.aptech.coursemanagementserver.services.authServices.AuthenticationService;
-
-import static com.aptech.coursemanagementserver.models.Role.ADMIN;
-import static com.aptech.coursemanagementserver.models.Role.MANAGER;
 
 @SpringBootApplication
 @EnableWebSecurity
@@ -45,6 +47,15 @@ public class CourseManagementServerApplication {
 					.role(MANAGER)
 					.build();
 			System.out.println("Manager token: " + service.register(manager).getAccessToken());
+
+			var userTest = RegisterRequestDto.builder()
+					.firstname("UserTest")
+					.lastname("UserTest")
+					.email("user-test@mail.com")
+					.password("password")
+					// .role(USER)
+					.build();
+			System.out.println("User token: " + service.register(userTest).getAccessToken());
 		};
 	}
 

@@ -9,34 +9,42 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import io.swagger.v3.oas.annotations.Hidden;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.tags.Tag;
 
 @RestController
 @RequestMapping("/api/v1/admin")
-@PreAuthorize("hasRole('ADMIN')")
+@PreAuthorize("hasAnyRole('ADMIN')")
+@Tag(name = "Admin Endpoints")
 public class AdminController {
+    @Operation(description = "Get endpoint for admin", summary = "[ONLY ADMIN]", responses = {
+            @ApiResponse(description = "Success", responseCode = "200"),
+            @ApiResponse(description = "Unauthorized / Invalid Token", responseCode = "403")
+    })
 
     @GetMapping
-    @PreAuthorize("hasAuthority('admin:read')")
+    @PreAuthorize("hasAuthority('ADMIN_READ')")
     public String get() {
         return "GET:: admin controller";
     }
 
     @PostMapping
-    @PreAuthorize("hasAuthority('admin:create')")
+    @PreAuthorize("hasAuthority('ADMIN_CREATE')")
     @Hidden
     public String post() {
         return "POST:: admin controller";
     }
 
     @PutMapping
-    @PreAuthorize("hasAuthority('admin:update')")
+    @PreAuthorize("hasAuthority('ADMIN_UPDATE')")
     @Hidden
     public String put() {
         return "PUT:: admin controller";
     }
 
     @DeleteMapping
-    @PreAuthorize("hasAuthority('admin:delete')")
+    @PreAuthorize("hasAuthority('ADMIN_DELETE')")
     @Hidden
     public String delete() {
         return "DELETE:: admin controller";

@@ -39,7 +39,7 @@ public class Contact {
     private Boolean isSubcribe;
 
     @CreationTimestamp
-    private Instant created_at;
+    private Instant created_at = Instant.now();
     @UpdateTimestamp
     private Instant updated_at;
 }

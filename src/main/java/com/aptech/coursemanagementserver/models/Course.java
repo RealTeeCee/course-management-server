@@ -35,8 +35,11 @@ import lombok.experimental.Accessors;
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @Entity
 @Table(indexes = {
-        @Index(name = "IDX_Course_Name", columnList = "name Desc"),
-        @Index(name = "IDX_Course_price", columnList = "price Asc") })
+        @Index(name = "IDX_Course_Name", columnList = "name DESC"),
+        @Index(name = "IDX_Course_Price", columnList = "price ASC"),
+        @Index(name = "IDX_Course_CreatedAt", columnList = "created_at DESC"),
+})
+
 public class Course {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -59,7 +62,7 @@ public class Course {
     // private long category_id;
 
     @CreationTimestamp
-    private Instant created_at;
+    private Instant created_at = Instant.now();
     @UpdateTimestamp
     private Instant updated_at;
 

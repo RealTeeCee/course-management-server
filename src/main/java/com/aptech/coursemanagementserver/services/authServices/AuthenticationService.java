@@ -18,6 +18,8 @@ import com.aptech.coursemanagementserver.repositories.TokenRepository;
 import com.aptech.coursemanagementserver.repositories.UserRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import static com.aptech.coursemanagementserver.constants.GlobalStorage.*;
+
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -34,8 +36,8 @@ public class AuthenticationService {
     // Register method create a user save it to db and generated token
     public AuthenticationResponseDto register(RegisterRequestDto request) {
         var user = User.builder()
-                .firstname(request.getFirstname())
-                .lastname(request.getLastname())
+                .first_name(request.getFirstname())
+                .last_name(request.getLastname())
                 .email(request.getEmail())
                 .password(passwordEncoder.encode(request.getPassword()))
                 .role(request.getRole())
@@ -104,7 +106,7 @@ public class AuthenticationService {
         final String authHeader = request.getHeader(HttpHeaders.AUTHORIZATION);
         final String refreshToken;
         final String userEmail;
-        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+        if (authHeader == null || !authHeader.startsWith(TOKEN_PREFIX)) {
             return;
         }
         refreshToken = authHeader.substring(7);

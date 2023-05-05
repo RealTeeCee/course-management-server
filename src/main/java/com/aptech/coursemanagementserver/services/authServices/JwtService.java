@@ -1,8 +1,10 @@
 package com.aptech.coursemanagementserver.services.authServices;
 
 import java.security.Key;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 
@@ -15,11 +17,13 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
+import lombok.extern.slf4j.Slf4j;
 
 /*
  * JWT Service manipulate Jwt Token
  */
 
+@Slf4j
 @Service
 public class JwtService {
 
@@ -43,7 +47,17 @@ public class JwtService {
 
   // Method to generate Token NOT INCLUDE EXTRA CLAIMS
   public String generateToken(UserDetails userDetails) {
-    return generateToken(new HashMap<>(), userDetails);
+    Map<String, Object> extraClaims = new HashMap<>();
+    try {
+
+      List<String> authorities = new ArrayList<String>();
+      userDetails.getAuthorities().stream().forEach(auth -> authorities.add(auth.getAuthority()));
+      extraClaims.put("roles", authorities);
+    } catch (Exception e) {
+      log.info(e.getMessage());
+    }
+
+    return generateToken(extraClaims, userDetails);
   }
 
   // Method to generate Token take a Map<String, Object> with EXTRA CLAIMS that we

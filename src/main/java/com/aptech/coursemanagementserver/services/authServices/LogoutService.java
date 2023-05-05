@@ -6,6 +6,7 @@ import org.springframework.security.web.authentication.logout.LogoutHandler;
 import org.springframework.stereotype.Service;
 
 import com.aptech.coursemanagementserver.repositories.TokenRepository;
+import static com.aptech.coursemanagementserver.constants.GlobalStorage.*;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -22,9 +23,9 @@ public class LogoutService implements LogoutHandler {
             HttpServletRequest request,
             HttpServletResponse response,
             Authentication authentication) {
-        final String authHeader = request.getHeader("Authorization");
+        final String authHeader = request.getHeader(HEADER_STRING);
         final String jwt;
-        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+        if (authHeader == null || !authHeader.startsWith(TOKEN_PREFIX)) {
             return;
         }
         jwt = authHeader.substring(7);

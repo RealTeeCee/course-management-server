@@ -7,6 +7,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
+import jakarta.persistence.ForeignKey;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
@@ -27,10 +28,11 @@ public class Token {
     @GeneratedValue
     public long id;
 
-    @Column(unique = true)
+    @Column(unique = true, columnDefinition = "varchar(2000)")
     public String token;
 
     @Enumerated(EnumType.STRING)
+    @Builder.Default
     public TokenType tokenType = TokenType.BEARER;
 
     public boolean revoked;
@@ -38,6 +40,6 @@ public class Token {
     public boolean expired;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id")
+    @JoinColumn(name = "user_id", foreignKey = @ForeignKey(name = "FK_Token_User"))
     public User user;
 }

@@ -1,5 +1,8 @@
 package com.aptech.coursemanagementserver.configs;
 
+import static com.aptech.coursemanagementserver.constants.GlobalStorage.HEADER_STRING;
+import static com.aptech.coursemanagementserver.constants.GlobalStorage.TOKEN_PREFIX;
+
 import java.io.IOException;
 
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -50,12 +53,12 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter { // OncePerRe
       filterChain.doFilter(request, response);// call next filter within chain
       return;
     }
-    final String authHeader = request.getHeader("Authorization"); // Header Authorization contains JWT Token (Bearer
-                                                                  // Token)
+    final String authHeader = request.getHeader(HEADER_STRING); // Header Authorization contains JWT Token (Bearer
+                                                                // Token)
     final String jwt;
     final String userEmail;
     // Check if Header is null or not contain "Bearer " in Token
-    if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+    if (authHeader == null || !authHeader.startsWith(TOKEN_PREFIX)) {
       filterChain.doFilter(request, response); // Continue to next filter
       return; // get out of doFilterInternal
     }
@@ -85,6 +88,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter { // OncePerRe
         SecurityContextHolder.getContext().setAuthentication(authToken);
       }
     }
+
     filterChain.doFilter(request, response);
+
   }
 }

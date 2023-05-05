@@ -13,15 +13,14 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 
 @RestController
 @RequestMapping("/api/v1/management")
-@Tag(name = "Management")
+@Tag(name = "Management Endpoints")
 public class ManagementController {
 
-    @Operation(description = "Get endpoint for manager", summary = "This is a summary for management get endpoint", responses = {
+    @Operation(description = "Get endpoint for manager", summary = "[ONLY ADMIN < MANAGER]", responses = {
             @ApiResponse(description = "Success", responseCode = "200"),
             @ApiResponse(description = "Unauthorized / Invalid Token", responseCode = "403")
-    }
+    })
 
-    )
     @GetMapping
     public String get() {
         return "GET:: management controller";

@@ -1,8 +1,6 @@
 package com.aptech.coursemanagementserver.dtos;
 
-import java.util.Set;
-
-import com.aptech.coursemanagementserver.models.Role;
+import com.aptech.coursemanagementserver.enums.Role;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -18,5 +16,6 @@ public class RegisterRequestDto {
     private String lastname;
     private String email;
     private String password;
-    private Role role;
+    @Builder.Default
+    private Role role = Role.USER;
 }

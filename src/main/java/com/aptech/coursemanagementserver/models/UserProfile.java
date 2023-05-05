@@ -37,9 +37,11 @@ public class UserProfile {
     @Past(message = "Birth date should be in the past")
     private LocalDate birth_date;
     private String image;
+    @Column(columnDefinition = "varchar(12)", unique = true)
+    private String phone;
 
     @CreationTimestamp
-    private Instant created_at;
+    private Instant created_at = Instant.now();
     @UpdateTimestamp
     private Instant updated_at;
 }
