@@ -81,9 +81,9 @@ public class AuthenticationService {
         var token = Token.builder()
                 .user(user)
                 .token(jwtToken)
-                .tokenType(TokenType.BEARER)
-                .expired(false)
-                .revoked(false)
+                .token_type(TokenType.BEARER)
+                .isExpired(false)
+                .isRevoked(false)
                 .build();
         tokenRepository.save(token);
     }

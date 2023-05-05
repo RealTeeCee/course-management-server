@@ -33,11 +33,11 @@ public class Token {
 
     @Enumerated(EnumType.STRING)
     @Builder.Default
-    public TokenType tokenType = TokenType.BEARER;
+    public TokenType token_type = TokenType.BEARER;
 
-    public boolean revoked;
+    public boolean isRevoked;
 
-    public boolean expired;
+    public boolean isExpired;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", foreignKey = @ForeignKey(name = "FK_Token_User"))
