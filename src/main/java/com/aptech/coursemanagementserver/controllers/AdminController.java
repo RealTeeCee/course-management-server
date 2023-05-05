@@ -14,7 +14,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
 @RestController
-@RequestMapping("/api/v1/admin")
+@RequestMapping("/admin")
 @PreAuthorize("hasAnyRole('ADMIN')")
 @Tag(name = "Admin Endpoints")
 public class AdminController {

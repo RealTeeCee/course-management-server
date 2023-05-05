@@ -52,7 +52,7 @@ public class SecurityConfiguration {
 
         public static final String[] ENDPOINTS_WHITELIST = {
 
-                        "/api/v1/auth/**",
+                        "/auth/**",
                         "/v2/api-docs",
                         "/v3/api-docs",
                         "/v3/api-docs/**",
@@ -86,29 +86,29 @@ public class SecurityConfiguration {
 
                                 // hasAnyRole Specifies that a user requires one of many roles
                                 // This mean the endpoint only accessible by user have the ADMIN or MANAGER role
-                                .requestMatchers("/api/v1/management/**").hasAnyRole(ADMIN.name(), MANAGER.name())
+                                .requestMatchers("/management/**").hasAnyRole(ADMIN.name(), MANAGER.name())
 
                                 // hasAnyAuthority Specifies that a user requires one of many authorities
                                 // This mean the endpoint only accessible by user have the ADMIN_READ or
                                 // MANAGER_READ privilege
                                 .requestMatchers(GET,
-                                                "/api/v1/management/**")
+                                                "/management/**")
                                 .hasAnyAuthority(ADMIN_READ.name(),
                                                 MANAGER_READ.name())
 
-                                .requestMatchers(POST, "/api/v1/management/**")
+                                .requestMatchers(POST, "/management/**")
                                 .hasAnyAuthority(ADMIN_CREATE.name(), MANAGER_CREATE.name())
-                                .requestMatchers(PUT, "/api/v1/management/**")
+                                .requestMatchers(PUT, "/management/**")
                                 .hasAnyAuthority(ADMIN_UPDATE.name(), MANAGER_UPDATE.name())
-                                .requestMatchers(DELETE, "/api/v1/management/**")
+                                .requestMatchers(DELETE, "/management/**")
                                 .hasAnyAuthority(ADMIN_DELETE.name(), MANAGER_DELETE.name())
 
-                                .requestMatchers("/api/v1/admin/**").hasRole(ADMIN.name())
-                                .requestMatchers(GET, "/api/v1/admin/**").hasAuthority(ADMIN_READ.name())
-                                .requestMatchers(POST, "/api/v1/admin/**").hasAuthority(ADMIN_CREATE.name())
-                                .requestMatchers(PUT, "/api/v1/admin/**").hasAuthority(ADMIN_UPDATE.name())
+                                .requestMatchers("/admin/**").hasRole(ADMIN.name())
+                                .requestMatchers(GET, "/admin/**").hasAuthority(ADMIN_READ.name())
+                                .requestMatchers(POST, "/admin/**").hasAuthority(ADMIN_CREATE.name())
+                                .requestMatchers(PUT, "/admin/**").hasAuthority(ADMIN_UPDATE.name())
                                 .requestMatchers(DELETE,
-                                                "/api/v1/admin/**")
+                                                "/admin/**")
                                 .hasAuthority(ADMIN_DELETE.name())
 
                                 .anyRequest() // Maps any request.
@@ -153,7 +153,7 @@ public class SecurityConfiguration {
                                 // }).and()
 
                                 .logout()
-                                .logoutUrl("/api/v1/auth/logout")
+                                .logoutUrl("/auth/logout")
                                 .addLogoutHandler(logoutHandler)
                                 .logoutSuccessHandler((request, response, authentication) -> SecurityContextHolder
                                                 .clearContext());

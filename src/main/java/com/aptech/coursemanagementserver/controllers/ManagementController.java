@@ -12,7 +12,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
 @RestController
-@RequestMapping("/api/v1/management")
+@RequestMapping("/management")
 @Tag(name = "Management Endpoints")
 public class ManagementController {
 

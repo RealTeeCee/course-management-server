@@ -2,6 +2,7 @@ package com.aptech.coursemanagementserver;
 
 import static com.aptech.coursemanagementserver.enums.Role.ADMIN;
 import static com.aptech.coursemanagementserver.enums.Role.MANAGER;
+import static com.aptech.coursemanagementserver.enums.Role.EMPLOYEE;
 import static com.aptech.coursemanagementserver.enums.Role.USER;
 
 import org.springframework.boot.CommandLineRunner;
@@ -40,13 +41,22 @@ public class CourseManagementServerApplication {
 			System.out.println("Admin token: " + service.register(admin).getAccessToken());
 
 			var manager = RegisterRequestDto.builder()
-					.firstname("Admin")
-					.lastname("Admin")
+					.firstname("manager")
+					.lastname("manager")
 					.email("manager@mail.com")
 					.password("password")
 					.role(MANAGER)
 					.build();
 			System.out.println("Manager token: " + service.register(manager).getAccessToken());
+
+			var employee = RegisterRequestDto.builder()
+					.firstname("employee")
+					.lastname("employee")
+					.email("employee@mail.com")
+					.password("password")
+					.role(EMPLOYEE)
+					.build();
+			System.out.println("Employee token: " + service.register(employee).getAccessToken());
 
 			var userTest = RegisterRequestDto.builder()
 					.firstname("UserTest")

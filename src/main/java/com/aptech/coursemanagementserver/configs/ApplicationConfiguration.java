@@ -1,5 +1,9 @@
 package com.aptech.coursemanagementserver.configs;
 
+import static org.modelmapper.config.Configuration.AccessLevel.PRIVATE;
+import static org.modelmapper.convention.NamingConventions.JAVABEANS_MUTATOR;
+
+import org.modelmapper.ModelMapper;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -19,6 +23,18 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class ApplicationConfiguration {
     private final UserRepository userRepository;
+
+    @Bean
+    // https://modelmapper.org/user-manual/configuration/
+    public ModelMapper modelMapper() {
+
+        ModelMapper modelMapper = new ModelMapper();
+        modelMapper.getConfiguration().setFieldMatchingEnabled(true)
+                .setFieldAccessLevel(PRIVATE)
+                .setSourceNamingConvention(JAVABEANS_MUTATOR); // JAVABEAN Convention:
+                                                               // https://docstore.mik.ua/orelly/java-ent/jnut/ch06_02.htm
+        return modelMapper;
+    }
 
     @Bean
     public PasswordEncoder passwordEncoder() {
