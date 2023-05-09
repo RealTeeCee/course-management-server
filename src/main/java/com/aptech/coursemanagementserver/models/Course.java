@@ -50,6 +50,7 @@ public class Course {
     private String name;
     @Column(columnDefinition = "text")
     private String description;
+    private String slug;
     private String image;
     @Column(columnDefinition = "decimal(10,2)")
     private double price;

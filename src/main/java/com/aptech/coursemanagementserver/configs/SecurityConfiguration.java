@@ -108,10 +108,11 @@ public class SecurityConfiguration {
                                                  // a fully
                                                  // populated Authentication object (including granted authorities) if
                                                  // successful.
-                                .and().exceptionHandling(handling -> handling
-                                                .authenticationEntryPoint(
-                                                                (req, rsp, e) -> rsp.sendError(
-                                                                                HttpServletResponse.SC_FORBIDDEN)))
+                                // .and().exceptionHandling(handling -> handling
+                                // .authenticationEntryPoint(
+                                // (req, rsp, e) -> rsp.sendError(
+                                // HttpServletResponse.SC_FORBIDDEN)))
+                                .and()
 
                                 .sessionManagement()
                                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS) // Spring will create new

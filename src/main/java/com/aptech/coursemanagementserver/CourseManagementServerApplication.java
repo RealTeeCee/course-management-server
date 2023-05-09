@@ -38,7 +38,9 @@ public class CourseManagementServerApplication {
 					.password("password")
 					.role(ADMIN)
 					.build();
-			System.out.println("Admin token: " + service.register(admin).getAccessToken());
+
+			System.out.println(
+					"Admin token: " + service.generateTokenWithoutVerify(service.register(admin)).getAccessToken());
 
 			var manager = RegisterRequestDto.builder()
 					.firstname("manager")
@@ -47,7 +49,8 @@ public class CourseManagementServerApplication {
 					.password("password")
 					.role(MANAGER)
 					.build();
-			System.out.println("Manager token: " + service.register(manager).getAccessToken());
+			System.out.println(
+					"Manager token: " + service.generateTokenWithoutVerify(service.register(manager)).getAccessToken());
 
 			var employee = RegisterRequestDto.builder()
 					.firstname("employee")
@@ -56,7 +59,8 @@ public class CourseManagementServerApplication {
 					.password("password")
 					.role(EMPLOYEE)
 					.build();
-			System.out.println("Employee token: " + service.register(employee).getAccessToken());
+			System.out.println("Employee token: "
+					+ service.generateTokenWithoutVerify(service.register(employee)).getAccessToken());
 
 			var userTest = RegisterRequestDto.builder()
 					.firstname("UserTest")
@@ -65,7 +69,8 @@ public class CourseManagementServerApplication {
 					.password("password")
 					// .role(USER)
 					.build();
-			System.out.println("User token: " + service.register(userTest).getAccessToken());
+			System.out.println(
+					"User token: " + service.generateTokenWithoutVerify(service.register(userTest)).getAccessToken());
 		};
 	}
 

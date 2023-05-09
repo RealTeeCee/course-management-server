@@ -11,9 +11,9 @@ import com.aptech.coursemanagementserver.models.Token;
 public interface TokenRepository extends JpaRepository<Token, Long> {
 
     @Query(value = """
-            select t from Token t inner join User u\s
-            on t.user.id = u.id\s
-            where u.id = :id and (t.expired = false or t.revoked = false)\s
+            SELECT t FROM Token t INNER JOIN User u\s
+            ON t.user.id = u.id\s
+            WHERE u.id = :id AND (t.isExpired = false OR t.isRevoked = false)\s
             """)
     List<Token> findAllValidTokenByUser(long id);
 

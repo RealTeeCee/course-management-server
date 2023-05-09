@@ -10,13 +10,17 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.security.SecurityScheme;
 import io.swagger.v3.oas.annotations.servers.Server;
 
+import static com.aptech.coursemanagementserver.constants.GlobalStorage.DEV_DOMAIN_API;
+import static com.aptech.coursemanagementserver.constants.GlobalStorage.PROD_DOMAIN_API;
+import static com.aptech.coursemanagementserver.constants.GlobalStorage.DOMAIN_EMAIL;
+
 //OpenAPI is an API description format for REST APIs use with
 // info: Show info of Swagger include: name , email, url, description, title, version, license, terms of service
 // server: url of Development Environment, Production Environment, ...
 // security: add 
-@OpenAPIDefinition(info = @Info(contact = @Contact(name = "CourseManagementProject", email = "contact@cmproj.com", url = "https://cmproj.com/course"), description = "OpenApi documentation for Spring Security", title = "OpenApi Specification - Nguyen Test CourseManagement", version = "1.0", license = @License(name = "Licences", url = "https://some-url.com"), termsOfService = "Terms of service"), servers = {
-                @Server(description = "DEV ENV", url = "http://localhost:8080"),
-                @Server(description = "PROD ENV", url = "https://cmproj.com/course")
+@OpenAPIDefinition(info = @Info(contact = @Contact(name = "CourseManagementProject", email = DOMAIN_EMAIL, url = PROD_DOMAIN_API), description = "OpenApi documentation for Spring Security", title = "OpenApi Specification - Nguyen Test CourseManagement", version = "1.0", license = @License(name = "Licences", url = "https://some-url.com"), termsOfService = "Terms of service"), servers = {
+                @Server(description = "DEV ENV", url = DEV_DOMAIN_API),
+                @Server(description = "PROD ENV", url = PROD_DOMAIN_API)
 }, security = {
                 @SecurityRequirement(name = "bearerAuth")
 })

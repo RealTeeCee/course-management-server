@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
 
 import com.aptech.coursemanagementserver.dtos.ErrorDetails;
+import com.aptech.coursemanagementserver.exceptions.InvalidTokenException;
 import com.aptech.coursemanagementserver.exceptions.ResourceNotFoundException;
 import com.aptech.coursemanagementserver.exceptions.UserNotFoundException;
 
@@ -28,6 +29,15 @@ public class GlobalExceptionHandler {
 
         // return new ResponseEntity<>(errorDetails, HttpStatus.INTERNAL_SERVER_ERROR);
         // }
+
+        // 401 Invalid Token
+        @ExceptionHandler(InvalidTokenException.class)
+        public ResponseEntity<ErrorDetails> handleInvalidTokenException(InvalidTokenException invalidTokenException,
+                        WebRequest webRequest) {
+                ErrorDetails errorDetails = new ErrorDetails(LocalDateTime.now(), invalidTokenException.getMessage(),
+                                webRequest.getDescription(false), HttpStatus.UNAUTHORIZED.toString());
+                return new ResponseEntity<>(errorDetails, HttpStatus.UNAUTHORIZED);
+        }
 
         // 403 Handle Security Authenticate
         @ExceptionHandler(Throwable.class)

@@ -1,6 +1,6 @@
 package com.aptech.coursemanagementserver.enums;
 
-public enum TokenType {
-    BEARER,
-    VERIFY
+public enum AntType {
+    success,
+    error
 }

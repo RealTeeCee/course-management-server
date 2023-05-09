@@ -41,7 +41,6 @@ import lombok.experimental.Accessors;
 @Table(name = "Users")
 // implement interface UserDetails make user become spring user
 public class User implements UserDetails {
-    @EqualsAndHashCode.Include
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(columnDefinition = "bigint")
@@ -52,7 +51,12 @@ public class User implements UserDetails {
     private String last_name;
     @Column(unique = true, columnDefinition = "varchar(100)")
     private String email;
+    @EqualsAndHashCode.Include
     private String password;
+
+    @Column(columnDefinition = "bit")
+    @Builder.Default
+    private boolean isVerified = false;
 
     @CreationTimestamp
     @Builder.Default
@@ -72,12 +76,12 @@ public class User implements UserDetails {
     @Builder.Default
     Set<Answer> answers = new HashSet<>();
 
-    @OneToMany(mappedBy = "user")
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY, mappedBy = "user")
     private List<Token> tokens;
 
     @Builder.Default
     @Enumerated(EnumType.STRING)
-    private Role role = Role.ADMIN;
+    private Role role = Role.USER;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
