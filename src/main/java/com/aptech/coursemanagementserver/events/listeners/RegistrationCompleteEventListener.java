@@ -3,7 +3,6 @@ package com.aptech.coursemanagementserver.events.listeners;
 import static com.aptech.coursemanagementserver.constants.GlobalStorage.DEV_DOMAIN_API;
 
 import java.io.UnsupportedEncodingException;
-import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationListener;
