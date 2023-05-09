@@ -8,12 +8,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
-
-import com.aptech.coursemanagementserver.repositories.TokenRepository;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
@@ -36,9 +33,6 @@ public class JwtService {
   private long jwtExpiration;
   @Value("${application.security.jwt.refresh-token.expiration}")
   private long refreshExpiration;
-
-  @Autowired
-  private TokenRepository tokenRepository;
 
   // Method receive token and extract to get email of user
   public String extractUsername(String token) {
