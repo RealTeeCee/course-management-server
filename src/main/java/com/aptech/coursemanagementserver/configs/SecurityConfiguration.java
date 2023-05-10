@@ -1,5 +1,6 @@
 package com.aptech.coursemanagementserver.configs;
 
+import static org.springframework.security.config.Customizer.withDefaults;
 import static com.aptech.coursemanagementserver.enums.Permission.ADMIN_CREATE;
 import static com.aptech.coursemanagementserver.enums.Permission.ADMIN_DELETE;
 import static com.aptech.coursemanagementserver.enums.Permission.ADMIN_READ;
@@ -15,6 +16,9 @@ import static org.springframework.http.HttpMethod.GET;
 import static org.springframework.http.HttpMethod.POST;
 import static org.springframework.http.HttpMethod.PUT;
 
+import java.util.Arrays;
+
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationProvider;
@@ -26,22 +30,35 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.authentication.logout.LogoutHandler;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
-import jakarta.servlet.http.HttpServletResponse;
+import com.aptech.coursemanagementserver.events.handler.OAuth2AuthenticationFailureHandler;
+import com.aptech.coursemanagementserver.events.handler.OAuth2AuthenticationSuccessHandler;
+import com.aptech.coursemanagementserver.repositories.HttpCookieOAuth2AuthorizationRequestRepository;
+import com.aptech.coursemanagementserver.services.authServices.CustomOAuth2UserService;
+
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 
 @Configuration
 @EnableWebSecurity
 @RequiredArgsConstructor
 @EnableMethodSecurity
-@Slf4j
+
 public class SecurityConfiguration {
+
+        private final CustomOAuth2UserService customOAuth2UserService;
+
+        private final OAuth2AuthenticationSuccessHandler oAuth2AuthenticationSuccessHandler;
+
+        private final OAuth2AuthenticationFailureHandler oAuth2AuthenticationFailureHandler;
 
         private final JwtAuthenticationFilter jwtAuthFilter;
         private final AuthenticationProvider authenticationProvider;
         private final LogoutHandler logoutHandler;
-
+        @Value("${application.security.cors.allowedOrigins}")
+        private String[] allowedOrigins;
         public static final String[] ENDPOINTS_WHITELIST = {
 
                         "/auth/**",
@@ -58,13 +75,30 @@ public class SecurityConfiguration {
 
         };
 
+        @Bean
+        public HttpCookieOAuth2AuthorizationRequestRepository cookieAuthorizationRequestRepository() {
+                return new HttpCookieOAuth2AuthorizationRequestRepository();
+        }
+
+        @Bean
+        CorsConfigurationSource corsConfigurationSource() {
+                CorsConfiguration configuration = new CorsConfiguration();
+                configuration.setAllowedOrigins(Arrays.asList(allowedOrigins));
+                configuration.setAllowedMethods(Arrays.asList("GET", "POST", "DELETE", "PUT", "PATCH"));
+                configuration.setAllowedHeaders(Arrays.asList("*"));
+                configuration.setAllowCredentials(true);
+                UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+                source.registerCorsConfiguration("/**", configuration);
+                return source;
+        }
+
         /*
          * SecurityFilterChain to use our JwtFilterChain
          */
 
         @Bean
         public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-                http
+                http.cors(withDefaults())
                                 .csrf()
                                 .disable()
 
@@ -113,7 +147,19 @@ public class SecurityConfiguration {
                                 // (req, rsp, e) -> rsp.sendError(
                                 // HttpServletResponse.SC_FORBIDDEN)))
                                 .and()
-
+                                .oauth2Login()
+                                .authorizationEndpoint()
+                                .baseUri("/oauth2/authorize")
+                                .authorizationRequestRepository(cookieAuthorizationRequestRepository())
+                                .and()
+                                .redirectionEndpoint()
+                                .baseUri("/oauth2/callback/*")
+                                .and()
+                                .userInfoEndpoint()
+                                .userService(customOAuth2UserService)
+                                .and()
+                                .successHandler(oAuth2AuthenticationSuccessHandler)
+                                .failureHandler(oAuth2AuthenticationFailureHandler).and()
                                 .sessionManagement()
                                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS) // Spring will create new
                                                                                         // Session for each

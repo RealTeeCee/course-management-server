@@ -1,23 +1,23 @@
 package com.aptech.coursemanagementserver;
 
 import static com.aptech.coursemanagementserver.enums.Role.ADMIN;
-import static com.aptech.coursemanagementserver.enums.Role.MANAGER;
 import static com.aptech.coursemanagementserver.enums.Role.EMPLOYEE;
-import static com.aptech.coursemanagementserver.enums.Role.USER;
+import static com.aptech.coursemanagementserver.enums.Role.MANAGER;
 
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 
+import com.aptech.coursemanagementserver.configs.AppProperties;
 import com.aptech.coursemanagementserver.dtos.RegisterRequestDto;
-import com.aptech.coursemanagementserver.enums.Role;
 import com.aptech.coursemanagementserver.services.authServices.AuthenticationService;
 
 @SpringBootApplication
 @EnableWebSecurity
-
+@EnableConfigurationProperties(AppProperties.class)
 public class CourseManagementServerApplication {
 
 	public static void main(String[] args) {

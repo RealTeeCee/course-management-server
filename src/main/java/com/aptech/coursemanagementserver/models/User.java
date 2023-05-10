@@ -4,13 +4,16 @@ import java.time.Instant;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.oauth2.core.user.OAuth2User;
 
+import com.aptech.coursemanagementserver.enums.AuthProvider;
 import com.aptech.coursemanagementserver.enums.Role;
 
 import jakarta.persistence.CascadeType;
@@ -40,7 +43,7 @@ import lombok.experimental.Accessors;
 @Entity
 @Table(name = "Users")
 // implement interface UserDetails make user become spring user
-public class User implements UserDetails {
+public class User implements UserDetails, OAuth2User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(columnDefinition = "bigint")
@@ -64,6 +67,8 @@ public class User implements UserDetails {
     @UpdateTimestamp
     private Instant updated_at;
 
+    private String imageUrl;
+
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY, mappedBy = "user")
     @Builder.Default
     Set<Enrollment> enrollments = new HashSet<>();
@@ -82,6 +87,13 @@ public class User implements UserDetails {
     @Builder.Default
     @Enumerated(EnumType.STRING)
     private Role role = Role.USER;
+
+    @Enumerated(EnumType.STRING)
+    private AuthProvider provider;
+
+    private String providerId;
+
+    private Map<String, Object> attributes;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -116,6 +128,17 @@ public class User implements UserDetails {
     @Override
     public boolean isEnabled() {
         return true;
+    }
+
+    @Override
+    public Map<String, Object> getAttributes() {
+        return this.attributes;
+    }
+
+    @Override
+    public String getName() {
+
+        return this.first_name;
     }
 
 }
