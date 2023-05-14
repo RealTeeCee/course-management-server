@@ -33,7 +33,7 @@ public class Token {
 
     @Enumerated(EnumType.STRING)
     @Builder.Default
-    public TokenType token_type = TokenType.BEARER;
+    public TokenType token_type = TokenType.BEARER_ACCESS_TOKEN;
 
     public boolean isRevoked;
 

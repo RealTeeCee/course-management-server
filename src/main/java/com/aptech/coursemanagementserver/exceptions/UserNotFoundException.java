@@ -5,13 +5,13 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 
 @ResponseStatus(code = HttpStatus.NOT_FOUND)
 public class UserNotFoundException extends RuntimeException {
-    private String resourceName;
+    private String username;
     private String fieldName;
-    private String fieldValue;
+    private Object fieldValue;
 
-    public UserNotFoundException(String resourceName, String fieldName, String fieldValue) {
-        super(String.format("Username not found with %s: '%s'", fieldName, fieldValue));
-        this.resourceName = resourceName;
+    public UserNotFoundException(String username, String fieldName, Object fieldValue) {
+        super(String.format("%s not found with %s : '%s'", fieldName, fieldValue));
+        this.username = username;
         this.fieldName = fieldName;
         this.fieldValue = fieldValue;
     }
@@ -20,15 +20,15 @@ public class UserNotFoundException extends RuntimeException {
         super(message);
     }
 
-    public String getResourceName() {
-        return resourceName;
+    public String getUsername() {
+        return username;
     }
 
     public String getFieldName() {
         return fieldName;
     }
 
-    public String getFieldValue() {
+    public Object getFieldValue() {
         return fieldValue;
     }
 }

@@ -22,6 +22,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 /*
  * JWTAuthenticationFilter workflow:
@@ -31,6 +32,7 @@ import lombok.RequiredArgsConstructor;
  */
 
 //Everytime user send request. JwtAuthFilter will get fired
+@Slf4j
 @Component
 @RequiredArgsConstructor // Create a constructor using all the final field declared
 public class JwtAuthenticationFilter extends OncePerRequestFilter { // OncePerRequest will get fired one every request
@@ -49,10 +51,10 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter { // OncePerRe
       @NonNull HttpServletResponse response,
       @NonNull FilterChain filterChain // contain list of other filters
   ) throws ServletException, IOException {
-    if (request.getServletPath().contains("/auth")) {
-      filterChain.doFilter(request, response);// call next filter within chain
-      return;
-    }
+    // if (request.getServletPath().contains("/auth")) {
+    // filterChain.doFilter(request, response);// call next filter within chain
+    // return;
+    // }
     final String authHeader = request.getHeader(HEADER_STRING); // Header Authorization contains JWT Token (Bearer
                                                                 // Token)
     final String jwt;
@@ -63,30 +65,35 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter { // OncePerRe
       return; // get out of doFilterInternal
     }
     jwt = authHeader.substring(7); // "Bearer " has 7 characters
-    userEmail = jwtService.extractUsername(jwt); // Extract username (Email in this case) from Jwt Token
+    try {
+      userEmail = jwtService.extractUsername(jwt); // Extract username (Email in this case) from Jwt Token
 
-    // SecurityContextHolder.getContext().getAuthenticate() == null means User is
-    // not authenticated
-    if (userEmail != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-      // To make userDetails come from User from database call loadUserByUsername() in
-      // userDetailsService that implements in AppConfiguration
-      UserDetails userDetails = this.userDetailsService.loadUserByUsername(userEmail);
-      var isTokenValid = tokenRepository.findByToken(jwt)
-          .map(t -> !t.isExpired() && !t.isRevoked())
-          .orElse(false);
-      if (jwtService.isTokenValid(jwt, userDetails) && isTokenValid) {
-        // UsernamePasswordAuthenticationToken is the class help us update the
-        // SecurityContextHolder
-        UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
-            userDetails,
-            null,
-            userDetails.getAuthorities());
-        // Set the details from our HTTP Request
-        authToken.setDetails(
-            new WebAuthenticationDetailsSource().buildDetails(request));
-        // Update SecurityContextHolder with authToken
-        SecurityContextHolder.getContext().setAuthentication(authToken);
+      // SecurityContextHolder.getContext().getAuthenticate() == null means User is
+      // not authenticated
+      if (userEmail != null && SecurityContextHolder.getContext().getAuthentication() == null) {
+        // To make userDetails come from User from database call loadUserByUsername() in
+        // userDetailsService that implements in AppConfiguration
+        UserDetails userDetails = this.userDetailsService.loadUserByUsername(userEmail);
+        var isTokenValid = tokenRepository.findByToken(jwt)
+            .map(t -> !t.isExpired() && !t.isRevoked())
+            .orElse(false);
+        if (jwtService.isTokenValid(jwt, userDetails) && isTokenValid) {
+          // UsernamePasswordAuthenticationToken is the class help us update the
+          // SecurityContextHolder
+          UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
+              userDetails,
+              null,
+              userDetails.getAuthorities());
+          // Set the details from our HTTP Request
+          authToken.setDetails(
+              new WebAuthenticationDetailsSource().buildDetails(request));
+          // Update SecurityContextHolder with authToken
+          SecurityContextHolder.getContext().setAuthentication(authToken);
+        }
       }
+    } catch (Exception e) {
+      log.error("Request from {} with error {}", request.getRequestURL(), e.getMessage());
+
     }
 
     filterChain.doFilter(request, response);

@@ -17,7 +17,6 @@ import com.aptech.coursemanagementserver.dtos.AuthenticationRequestDto;
 import com.aptech.coursemanagementserver.dtos.AuthenticationResponseDto;
 import com.aptech.coursemanagementserver.dtos.RegisterRequestDto;
 import com.aptech.coursemanagementserver.enums.AntType;
-import com.aptech.coursemanagementserver.enums.TokenType;
 import com.aptech.coursemanagementserver.exceptions.InvalidTokenException;
 import com.aptech.coursemanagementserver.models.Token;
 import com.aptech.coursemanagementserver.models.User;
@@ -47,19 +46,20 @@ public class AuthenticationService {
             if (isPwdMatch) {
                 var jwtToken = jwtService.generateToken(user);
                 var refreshToken = jwtService.generateRefreshToken(user);
-                saveUserToken(user, jwtToken);
+                revokeAllUserTokens(user);
+                jwtService.saveUserToken(user, jwtToken);
                 return AuthenticationResponseDto.builder()
                         .accessToken(jwtToken)
                         .refreshToken(refreshToken)
                         .type(AntType.success)
-                        .message("HEADER_STRING")
+                        .message("Login successfully!")
                         .build();
             }
 
         }
 
         return AuthenticationResponseDto.builder()
-                .type(AntType.error).message("HEADER_STRING")
+                .type(AntType.error).message("Login failed!")
                 .build();
     }
 
@@ -99,7 +99,7 @@ public class AuthenticationService {
     public AuthenticationResponseDto generateTokenWithoutVerify(User user) {
         var jwtToken = jwtService.generateToken(user);
         var refreshToken = jwtService.generateRefreshToken(user);
-        saveUserToken(user, jwtToken);
+        jwtService.saveUserToken(user, jwtToken);
         return AuthenticationResponseDto.builder()
                 .accessToken(jwtToken)
                 .refreshToken(refreshToken)
@@ -132,34 +132,11 @@ public class AuthenticationService {
         var jwtToken = jwtService.generateToken(user);
         var refreshToken = jwtService.generateRefreshToken(user);
         revokeAllUserTokens(user);
-        saveUserToken(user, jwtToken);
+        jwtService.saveUserToken(user, jwtToken);
         return AuthenticationResponseDto.builder()
                 .accessToken(jwtToken)
                 .refreshToken(refreshToken)
                 .build();
-    }
-
-    // Save the token to database
-    private void saveUserToken(User user, String jwtToken) {
-        var token = Token.builder()
-                .user(user)
-                .token(jwtToken)
-                .token_type(TokenType.BEARER)
-                .isExpired(false)
-                .isRevoked(false)
-                .build();
-        tokenRepository.save(token);
-    }
-
-    public void saveUserVerificationToken(User user, String jwtToken) {
-        var token = Token.builder()
-                .user(user)
-                .token(jwtToken)
-                .token_type(TokenType.VERIFY)
-                .isExpired(false)
-                .isRevoked(false)
-                .build();
-        tokenRepository.save(token);
     }
 
     // Evict (revoke) back all tokens from user
@@ -199,7 +176,7 @@ public class AuthenticationService {
                 // Remove last token from user
                 revokeAllUserTokens(user);
                 // Save new accessToken to database
-                saveUserToken(user, accessToken);
+                jwtService.saveUserToken(user, accessToken);
 
                 var authResponse = AuthenticationResponseDto.builder()
                         .accessToken(accessToken)

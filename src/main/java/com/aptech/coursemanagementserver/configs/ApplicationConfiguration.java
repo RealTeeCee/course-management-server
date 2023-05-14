@@ -45,8 +45,15 @@ public class ApplicationConfiguration {
     public UserDetailsService userDetailsService() {
         // get Email from our User (the lambda will return a UserDetails -> User
         // implement UserDetails)
-        return email -> userRepository.findByEmail(email)
-                .orElseThrow(() -> new UsernameNotFoundException("Invalid username or password"));
+        // @Override
+        // public UserDetails loadUserByUsername(String email) throws
+        // UsernameNotFoundException {
+        // return userRepository.findByEmail(email)
+        // .orElseThrow(() -> new UsernameNotFoundException("Invalid username or
+        // password"));
+        // }
+        return (email) -> userRepository.findByEmail(email)
+                .orElseThrow(() -> new UsernameNotFoundException("User not found with email : " + email));
     }
 
     @Bean
