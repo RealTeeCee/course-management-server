@@ -1,9 +1,16 @@
 package com.aptech.coursemanagementserver.utils;
 
 import org.springframework.util.SerializationUtils;
+
+import com.fasterxml.jackson.core.exc.StreamReadException;
+import com.fasterxml.jackson.databind.DatabindException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+
+import java.io.IOException;
 import java.util.Base64;
 import java.util.Optional;
 
@@ -53,6 +60,11 @@ public class CookieUtils {
     public static <T> T deserialize(Cookie cookie, Class<T> cls) {
         return cls.cast(SerializationUtils.deserialize(
                 Base64.getUrlDecoder().decode(cookie.getValue())));
+
+        // String cookieValue = cookie.getValue();
+        // byte[] decodedBytes = Base64.getUrlDecoder().decode(cookieValue);
+        // ObjectMapper mapper = new ObjectMapper();
+        // return mapper.readValue(decodedBytes, cls);
     }
 
 }

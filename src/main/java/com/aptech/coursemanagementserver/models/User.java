@@ -27,6 +27,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import jakarta.persistence.Transient;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -48,9 +49,9 @@ public class User implements UserDetails, OAuth2User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(columnDefinition = "bigint")
     private long id;
-    @Column(columnDefinition = "varchar(100)")
+    @Column(columnDefinition = "nvarchar(100)")
     private String first_name;
-    @Column(columnDefinition = "varchar(100)")
+    @Column(columnDefinition = "nvarchar(100)")
     private String last_name;
     @Column(unique = true, columnDefinition = "varchar(100)")
     private String email;
@@ -69,6 +70,19 @@ public class User implements UserDetails, OAuth2User {
 
     private String imageUrl;
 
+    @Builder.Default
+    @Enumerated(EnumType.STRING)
+    private Role role = Role.USER;
+
+    @Builder.Default
+    @Enumerated(EnumType.STRING)
+    private AuthProvider provider = AuthProvider.local;
+
+    private String providerId;
+
+    @Transient
+    private Map<String, Object> attributes;
+
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY, mappedBy = "user")
     @Builder.Default
     Set<Enrollment> enrollments = new HashSet<>();
@@ -83,17 +97,6 @@ public class User implements UserDetails, OAuth2User {
 
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY, mappedBy = "user")
     private List<Token> tokens;
-
-    @Builder.Default
-    @Enumerated(EnumType.STRING)
-    private Role role = Role.USER;
-
-    @Enumerated(EnumType.STRING)
-    private AuthProvider provider;
-
-    private String providerId;
-
-    private Map<String, Object> attributes;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

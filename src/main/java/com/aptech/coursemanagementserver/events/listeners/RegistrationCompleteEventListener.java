@@ -10,7 +10,6 @@ import org.springframework.stereotype.Component;
 
 import com.aptech.coursemanagementserver.events.RegistrationCompleteEvent;
 import com.aptech.coursemanagementserver.models.User;
-import com.aptech.coursemanagementserver.services.authServices.AuthenticationService;
 import com.aptech.coursemanagementserver.services.authServices.JwtService;
 import com.aptech.coursemanagementserver.utils.EmailSender;
 
@@ -22,7 +21,7 @@ import lombok.extern.slf4j.Slf4j;
 @Component
 @RequiredArgsConstructor
 public class RegistrationCompleteEventListener implements ApplicationListener<RegistrationCompleteEvent> {
-    private final AuthenticationService authenticationService;
+
     @Value("${spring.mail.username}")
     private String fromEmail;
     private final EmailSender emailSender;
@@ -36,7 +35,7 @@ public class RegistrationCompleteEventListener implements ApplicationListener<Re
         // 2. Create a verification token for the user
         String verificationToken = jwtService.generateToken(user);
         // 3. Save the verification token for the user
-        authenticationService.saveUserVerificationToken(user, verificationToken);
+        jwtService.saveUserVerificationToken(user, verificationToken);
         // 4 Build the verification url to be sent to the user
         String url = DEV_DOMAIN_API + "/auth/verifyEmail?token=" + verificationToken;
         // 5. Send the email.

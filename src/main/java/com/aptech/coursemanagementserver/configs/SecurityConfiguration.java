@@ -1,6 +1,5 @@
 package com.aptech.coursemanagementserver.configs;
 
-import static org.springframework.security.config.Customizer.withDefaults;
 import static com.aptech.coursemanagementserver.enums.Permission.ADMIN_CREATE;
 import static com.aptech.coursemanagementserver.enums.Permission.ADMIN_DELETE;
 import static com.aptech.coursemanagementserver.enums.Permission.ADMIN_READ;
@@ -15,6 +14,7 @@ import static org.springframework.http.HttpMethod.DELETE;
 import static org.springframework.http.HttpMethod.GET;
 import static org.springframework.http.HttpMethod.POST;
 import static org.springframework.http.HttpMethod.PUT;
+import static org.springframework.security.config.Customizer.withDefaults;
 
 import java.util.Arrays;
 
@@ -25,7 +25,6 @@ import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
@@ -62,6 +61,8 @@ public class SecurityConfiguration {
         public static final String[] ENDPOINTS_WHITELIST = {
 
                         "/auth/**",
+                        "/oauth2/**",
+                        "/admin/course/download",
                         "/v2/api-docs",
                         "/v3/api-docs",
                         "/v3/api-docs/**",
@@ -159,11 +160,13 @@ public class SecurityConfiguration {
                                 .userService(customOAuth2UserService)
                                 .and()
                                 .successHandler(oAuth2AuthenticationSuccessHandler)
-                                .failureHandler(oAuth2AuthenticationFailureHandler).and()
-                                .sessionManagement()
-                                .sessionCreationPolicy(SessionCreationPolicy.STATELESS) // Spring will create new
-                                                                                        // Session for each
-                                                                                        // Request
+                                .failureHandler(oAuth2AuthenticationFailureHandler)
+                                // .and()
+                                // .sessionManagement()
+                                // .sessionCreationPolicy(SessionCreationPolicy.STATELESS) // Spring will create
+                                // new
+                                // Session for each
+                                // Request
                                 .and()
                                 .authenticationProvider(authenticationProvider)// authenticationProvider use
                                                                                // DAOAuthenticationProvider

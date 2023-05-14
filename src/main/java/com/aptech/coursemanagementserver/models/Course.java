@@ -19,6 +19,8 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Index;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
@@ -35,46 +37,54 @@ import lombok.experimental.Accessors;
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @Entity
 @Table(indexes = {
-        @Index(name = "IDX_Course_Name", columnList = "name DESC"),
-        @Index(name = "IDX_Course_Price", columnList = "price ASC"),
-        @Index(name = "IDX_Course_CreatedAt", columnList = "created_at DESC"),
+                @Index(name = "IDX_Course_Name", columnList = "name DESC"),
+                @Index(name = "IDX_Course_Price", columnList = "price ASC"),
+                @Index(name = "IDX_Course_CreatedAt", columnList = "created_at DESC"),
 })
 
 public class Course {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(columnDefinition = "bigint")
-    private long id;
-    @Column(columnDefinition = "varchar(100)")
-    @EqualsAndHashCode.Include
-    private String name;
-    @Column(columnDefinition = "text")
-    private String description;
-    private String slug;
-    private String image;
-    @Column(columnDefinition = "decimal(10,2)")
-    private double price;
-    @Column(columnDefinition = "decimal(10,2)")
-    private double net_price;
-    @Column(columnDefinition = "datetime")
-    @NaturalId
-    private LocalTime duration;
-    // @Column(columnDefinition = "bigint")
-    // private long category_id;
+        @Id
+        @GeneratedValue(strategy = GenerationType.IDENTITY)
+        @Column(columnDefinition = "bigint")
+        private long id;
+        @Column(columnDefinition = "varchar(100)")
+        @EqualsAndHashCode.Include
+        private String name;
+        @Column(columnDefinition = "text")
+        private String description;
+        private String slug;
+        private String image;
+        @Column(columnDefinition = "decimal(10,2)")
+        private double price;
+        @Column(columnDefinition = "decimal(10,2)")
+        private double net_price;
+        private int duration;
+        // @Column(columnDefinition = "bigint")
+        // private long category_id;
 
-    @CreationTimestamp
-    private Instant created_at = Instant.now();
-    @UpdateTimestamp
-    private Instant updated_at;
+        @CreationTimestamp
+        private Instant created_at = Instant.now();
+        @UpdateTimestamp
+        private Instant updated_at;
 
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "course")
-    private Set<Section> sections = new HashSet<>();
+        @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "course")
+        private Set<Section> sections = new HashSet<>();
 
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "course")
-    private Set<Enrollment> enrollments = new HashSet<>();
+        @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "course")
+        private Set<Enrollment> enrollments = new HashSet<>();
 
-    @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "category_id", nullable = false, foreignKey = @ForeignKey(name = "FK_Course_Category"))
-    private Category category;
+        @ManyToOne(cascade = CascadeType.ALL)
+        @JoinColumn(name = "category_id", nullable = false, foreignKey = @ForeignKey(name = "FK_Course_Category"))
+        private Category category;
+
+        @ManyToMany(fetch = FetchType.LAZY)
+        @JoinTable(name = "CourseTag", joinColumns = { @JoinColumn(name = "course_id") }, inverseJoinColumns = {
+                        @JoinColumn(name = "tag_id") })
+        private Set<Tag> tags = new HashSet<>();
+
+        @ManyToMany(fetch = FetchType.LAZY)
+        @JoinTable(name = "CourseAchievement", joinColumns = { @JoinColumn(name = "course_id") }, inverseJoinColumns = {
+                        @JoinColumn(name = "achievement_id") })
+        private Set<Achievement> achievements = new HashSet<>();
 
 }

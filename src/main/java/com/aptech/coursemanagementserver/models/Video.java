@@ -13,7 +13,8 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
+import jakarta.persistence.MapsId;
+import jakarta.persistence.OneToOne;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -42,7 +43,8 @@ public class Video {
     @UpdateTimestamp
     private Instant updated_at;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @OneToOne(cascade = CascadeType.ALL)
+    @MapsId
     @JoinColumn(name = "lesson_id", nullable = false, foreignKey = @ForeignKey(name = "FK_Video_Lesson"))
     private Lesson lesson;
 }

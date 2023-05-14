@@ -8,9 +8,15 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
+
+import com.aptech.coursemanagementserver.enums.TokenType;
+import com.aptech.coursemanagementserver.models.Token;
+import com.aptech.coursemanagementserver.models.User;
+import com.aptech.coursemanagementserver.repositories.TokenRepository;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
@@ -26,12 +32,14 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @Service
 public class JwtService {
+  @Autowired
+  private TokenRepository tokenRepository;
 
-  @Value("${application.security.jwt.secret-key}")
+  @Value("${application.security.jwt.tokenSecret}")
   private String secretKey;
   @Value("${application.security.jwt.expiration}")
   private long jwtExpiration;
-  @Value("${application.security.jwt.refresh-token.expiration}")
+  @Value("${application.security.jwt.refreshToken.expiration}")
   private long refreshExpiration;
 
   // Method receive token and extract to get email of user
@@ -83,6 +91,7 @@ public class JwtService {
         .setSubject(userDetails.getUsername()) // Subject should be username (email) of user
         .setIssuedAt(new Date(System.currentTimeMillis())) // This claim to create the time instant to calculate expired
         .setExpiration(new Date(System.currentTimeMillis() + expiration)) // This is the time token expired
+
         .signWith(getSignInKey(), SignatureAlgorithm.HS256) // Get our secret key and pass the signature algorithm to
                                                             // encrypt our key
         .compact(); // Compact() will generate and return the Token
@@ -118,4 +127,55 @@ public class JwtService {
     byte[] keyBytes = Decoders.BASE64.decode(secretKey);
     return Keys.hmacShaKeyFor(keyBytes);
   }
+
+  // Save the Token of User to database
+  public void saveUserToken(User user, String jwtToken) {
+    var token = Token.builder()
+        .user(user)
+        .token(jwtToken)
+        .token_type(TokenType.BEARER_ACCESS_TOKEN)
+        .isExpired(false)
+        .isRevoked(false)
+        .build();
+    tokenRepository.save(token);
+  }
+
+  // Overload
+  public String saveUserToken(User user) {
+    String accesstoken = generateToken(user);
+    var token = Token.builder()
+        .user(user)
+        .token(accesstoken)
+        .token_type(TokenType.BEARER_ACCESS_TOKEN)
+        .isExpired(false)
+        .isRevoked(false)
+        .build();
+    tokenRepository.save(token);
+    return accesstoken;
+  }
+
+  public String saveUserRefreshToken(User user) {
+    String refresh = generateRefreshToken(user);
+    var token = Token.builder()
+        .user(user)
+        .token(refresh)
+        .token_type(TokenType.BEARER_REFRESH_TOKEN)
+        .isExpired(false)
+        .isRevoked(false)
+        .build();
+    tokenRepository.save(token);
+    return refresh;
+  }
+
+  public void saveUserVerificationToken(User user, String jwtToken) {
+    var token = Token.builder()
+        .user(user)
+        .token(jwtToken)
+        .token_type(TokenType.VERIFY)
+        .isExpired(false)
+        .isRevoked(false)
+        .build();
+    tokenRepository.save(token);
+  }
+
 }

@@ -11,13 +11,13 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 
-import com.aptech.coursemanagementserver.configs.AppProperties;
+import com.aptech.coursemanagementserver.configs.ApplicationProperties;
 import com.aptech.coursemanagementserver.dtos.RegisterRequestDto;
 import com.aptech.coursemanagementserver.services.authServices.AuthenticationService;
 
 @SpringBootApplication
 @EnableWebSecurity
-@EnableConfigurationProperties(AppProperties.class)
+@EnableConfigurationProperties(ApplicationProperties.class)
 public class CourseManagementServerApplication {
 
 	public static void main(String[] args) {
@@ -31,46 +31,50 @@ public class CourseManagementServerApplication {
 	public CommandLineRunner commandLineRunner(
 			AuthenticationService service) {
 		return args -> {
-			var admin = RegisterRequestDto.builder()
-					.firstname("Admin")
-					.lastname("Admin")
-					.email("admin@mail.com")
-					.password("password")
-					.role(ADMIN)
-					.build();
+			// var admin = RegisterRequestDto.builder()
+			// .first_name("Admin")
+			// .last_name("Admin")
+			// .email("admin@mail.com")
+			// .password("password")
+			// .role(ADMIN)
+			// .build();
 
-			System.out.println(
-					"Admin token: " + service.generateTokenWithoutVerify(service.register(admin)).getAccessToken());
+			// System.out.println(
+			// "Admin token: " +
+			// service.generateTokenWithoutVerify(service.register(admin)).getAccessToken());
 
-			var manager = RegisterRequestDto.builder()
-					.firstname("manager")
-					.lastname("manager")
-					.email("manager@mail.com")
-					.password("password")
-					.role(MANAGER)
-					.build();
-			System.out.println(
-					"Manager token: " + service.generateTokenWithoutVerify(service.register(manager)).getAccessToken());
+			// var manager = RegisterRequestDto.builder()
+			// .first_name("manager")
+			// .last_name("manager")
+			// .email("manager@mail.com")
+			// .password("password")
+			// .role(MANAGER)
+			// .build();
+			// System.out.println(
+			// "Manager token: " +
+			// service.generateTokenWithoutVerify(service.register(manager)).getAccessToken());
 
-			var employee = RegisterRequestDto.builder()
-					.firstname("employee")
-					.lastname("employee")
-					.email("employee@mail.com")
-					.password("password")
-					.role(EMPLOYEE)
-					.build();
-			System.out.println("Employee token: "
-					+ service.generateTokenWithoutVerify(service.register(employee)).getAccessToken());
+			// var employee = RegisterRequestDto.builder()
+			// .first_name("employee")
+			// .last_name("employee")
+			// .email("employee@mail.com")
+			// .password("password")
+			// .role(EMPLOYEE)
+			// .build();
+			// System.out.println("Employee token: "
+			// +
+			// service.generateTokenWithoutVerify(service.register(employee)).getAccessToken());
 
-			var userTest = RegisterRequestDto.builder()
-					.firstname("UserTest")
-					.lastname("UserTest")
-					.email("user-test@mail.com")
-					.password("password")
-					// .role(USER)
-					.build();
-			System.out.println(
-					"User token: " + service.generateTokenWithoutVerify(service.register(userTest)).getAccessToken());
+			// var userTest = RegisterRequestDto.builder()
+			// .first_name("UserTest")
+			// .last_name("UserTest")
+			// .email("user-test@mail.com")
+			// .password("password")
+			// // .role(USER)
+			// .build();
+			// System.out.println(
+			// "User token: " +
+			// service.generateTokenWithoutVerify(service.register(userTest)).getAccessToken());
 		};
 	}
 
