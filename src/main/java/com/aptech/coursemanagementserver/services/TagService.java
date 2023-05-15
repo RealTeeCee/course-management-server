@@ -2,6 +2,7 @@ package com.aptech.coursemanagementserver.services;
 
 import java.util.List;
 
+import com.aptech.coursemanagementserver.dtos.TagDto;
 import com.aptech.coursemanagementserver.models.Tag;
 
 public interface TagService {
@@ -9,7 +10,7 @@ public interface TagService {
 
     public List<Tag> findAll();
 
-    public boolean save(Tag tag);
+    public boolean save(TagDto tag);
 
-    public boolean saveAll(List<Tag> tags);
+    public boolean saveAll(List<TagDto> tags);
 }

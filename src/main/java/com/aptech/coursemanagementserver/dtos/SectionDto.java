@@ -1,7 +1,18 @@
 package com.aptech.coursemanagementserver.dtos;
 
-import com.aptech.coursemanagementserver.dtos.baseDto.BaseDto;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 
-public class SectionDto extends BaseDto {
+@Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
+@EqualsAndHashCode(callSuper = false)
+public class SectionDto {
+    private String name;
 
+    private long courseId;
 }

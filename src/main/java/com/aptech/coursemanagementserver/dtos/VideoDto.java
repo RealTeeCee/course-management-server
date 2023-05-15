@@ -11,6 +11,9 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode(callSuper = false)
-public class EnrollmentDto {
+public class VideoDto {
     private String name;
+    private String url;
+
+    private long lessonId;
 }

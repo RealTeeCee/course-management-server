@@ -1,12 +1,10 @@
 package com.aptech.coursemanagementserver.models;
 
 import java.time.Instant;
-import java.time.LocalTime;
 import java.util.HashSet;
 import java.util.Set;
 
 import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.NaturalId;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import jakarta.persistence.CascadeType;
@@ -67,13 +65,13 @@ public class Course {
         @UpdateTimestamp
         private Instant updated_at;
 
-        @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "course")
+        @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, mappedBy = "course")
         private Set<Section> sections = new HashSet<>();
 
         @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "course")
         private Set<Enrollment> enrollments = new HashSet<>();
 
-        @ManyToOne(cascade = CascadeType.ALL)
+        @ManyToOne(cascade = CascadeType.MERGE)
         @JoinColumn(name = "category_id", nullable = false, foreignKey = @ForeignKey(name = "FK_Course_Category"))
         private Category category;
 

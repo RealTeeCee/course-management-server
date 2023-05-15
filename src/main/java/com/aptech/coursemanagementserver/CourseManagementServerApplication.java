@@ -12,7 +12,12 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 
 import com.aptech.coursemanagementserver.configs.ApplicationProperties;
+import com.aptech.coursemanagementserver.dtos.CategoryDto;
+import com.aptech.coursemanagementserver.dtos.CourseDto;
 import com.aptech.coursemanagementserver.dtos.RegisterRequestDto;
+import com.aptech.coursemanagementserver.models.Category;
+import com.aptech.coursemanagementserver.services.CategoryService;
+import com.aptech.coursemanagementserver.services.CourseService;
 import com.aptech.coursemanagementserver.services.authServices.AuthenticationService;
 
 @SpringBootApplication
@@ -29,52 +34,59 @@ public class CourseManagementServerApplication {
 			// Spring Boot will call the run() method on each CommandLineRunner Bean in the
 			// order in which they were defined.
 	public CommandLineRunner commandLineRunner(
-			AuthenticationService service) {
+			AuthenticationService service, CategoryService categoryService, CourseService courseService) {
 		return args -> {
-			// var admin = RegisterRequestDto.builder()
-			// .first_name("Admin")
-			// .last_name("Admin")
-			// .email("admin@mail.com")
-			// .password("password")
-			// .role(ADMIN)
-			// .build();
+			var admin = RegisterRequestDto.builder()
+					.first_name("Admin")
+					.last_name("Admin")
+					.email("admin@mail.com")
+					.password("password")
+					.role(ADMIN)
+					.build();
 
-			// System.out.println(
-			// "Admin token: " +
-			// service.generateTokenWithoutVerify(service.register(admin)).getAccessToken());
+			System.out.println(
+					"Admin token: " +
+							service.generateTokenWithoutVerify(service.register(admin)).getAccessToken());
 
-			// var manager = RegisterRequestDto.builder()
-			// .first_name("manager")
-			// .last_name("manager")
-			// .email("manager@mail.com")
-			// .password("password")
-			// .role(MANAGER)
-			// .build();
-			// System.out.println(
-			// "Manager token: " +
-			// service.generateTokenWithoutVerify(service.register(manager)).getAccessToken());
+			var manager = RegisterRequestDto.builder()
+					.first_name("manager")
+					.last_name("manager")
+					.email("manager@mail.com")
+					.password("password")
+					.role(MANAGER)
+					.build();
+			System.out.println(
+					"Manager token: " +
+							service.generateTokenWithoutVerify(service.register(manager)).getAccessToken());
 
-			// var employee = RegisterRequestDto.builder()
-			// .first_name("employee")
-			// .last_name("employee")
-			// .email("employee@mail.com")
-			// .password("password")
-			// .role(EMPLOYEE)
-			// .build();
-			// System.out.println("Employee token: "
-			// +
-			// service.generateTokenWithoutVerify(service.register(employee)).getAccessToken());
+			var employee = RegisterRequestDto.builder()
+					.first_name("employee")
+					.last_name("employee")
+					.email("employee@mail.com")
+					.password("password")
+					.role(EMPLOYEE)
+					.build();
+			System.out.println("Employee token: "
+					+
+					service.generateTokenWithoutVerify(service.register(employee)).getAccessToken());
 
-			// var userTest = RegisterRequestDto.builder()
-			// .first_name("UserTest")
-			// .last_name("UserTest")
-			// .email("user-test@mail.com")
-			// .password("password")
-			// // .role(USER)
-			// .build();
-			// System.out.println(
-			// "User token: " +
-			// service.generateTokenWithoutVerify(service.register(userTest)).getAccessToken());
+			var userTest = RegisterRequestDto.builder()
+					.first_name("UserTest")
+					.last_name("UserTest")
+					.email("user-test@mail.com")
+					.password("password")
+					// .role(USER)
+					.build();
+			System.out.println(
+					"User token: " +
+							service.generateTokenWithoutVerify(service.register(userTest)).getAccessToken());
+
+			CategoryDto category1 = CategoryDto.builder().name("Programming").build();
+			Category savedCategory1 = categoryService.save(category1);
+
+			CourseDto course1 = CourseDto.builder().achievementName("Master Java,Master SpringBoot")
+					.tagName("Java,SpringBoot,Hibernate").name("Java SpringBoot 2023").category(1).build();
+			courseService.save(course1);
 		};
 	}
 

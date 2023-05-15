@@ -1,6 +1,5 @@
 package com.aptech.coursemanagementserver.controllers;
 
-import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.nio.file.Files;
@@ -17,6 +16,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -45,8 +45,13 @@ public class CourseController {
     private final CourseService courseService;
 
     @GetMapping(path = "/courses")
-    public ResponseEntity<List<CourseDto>> getCourses() {
+    public ResponseEntity<List<Course>> getCourses() {
         return ResponseEntity.ok(courseService.findAll());
+    }
+
+    @GetMapping(path = "/course/{id}")
+    public ResponseEntity<Course> getCourseById(@PathVariable("id") long courseId) {
+        return ResponseEntity.ok(courseService.findById(courseId));
     }
 
     @PostMapping(path = "/course/create", consumes = { MediaType.MULTIPART_FORM_DATA_VALUE })

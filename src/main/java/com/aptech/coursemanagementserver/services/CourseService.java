@@ -9,9 +9,11 @@ import com.aptech.coursemanagementserver.models.Course;
 import com.aptech.coursemanagementserver.models.Tag;
 
 public interface CourseService {
-    public CourseDto findTagByName(String courseName);
+    public List<Course> findAllByTagName(String tagName);
 
-    public List<CourseDto> findAll();
+    public Course findById(long courseId);
+
+    public List<Course> findAll();
 
     public Course save(CourseDto course);
 

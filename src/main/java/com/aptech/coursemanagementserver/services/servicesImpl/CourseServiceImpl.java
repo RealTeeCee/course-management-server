@@ -14,8 +14,10 @@ import com.aptech.coursemanagementserver.models.Tag;
 import com.aptech.coursemanagementserver.repositories.AchievementRepository;
 import com.aptech.coursemanagementserver.repositories.CategoryRepository;
 import com.aptech.coursemanagementserver.repositories.CourseRepository;
+import com.aptech.coursemanagementserver.repositories.SectionRepository;
 import com.aptech.coursemanagementserver.repositories.TagRepository;
 import com.aptech.coursemanagementserver.services.CourseService;
+import com.aptech.coursemanagementserver.services.SectionService;
 
 import lombok.RequiredArgsConstructor;
 
@@ -25,19 +27,24 @@ public class CourseServiceImpl implements CourseService {
     private final CourseRepository courseRepository;
     private final CourseMapper courseMapper;
     private final TagRepository tagRepository;
+    private final SectionRepository sectionRepository;
     private final AchievementRepository achievementRepository;
     private final CategoryRepository categoryRepository;
 
     @Override
-    public CourseDto findTagByName(String name) {
-        Course course = courseRepository.findTagByName(name);
-        return courseMapper.toDto(course);
+    public List<Course> findAllByTagName(String tagName) {
+        return courseRepository.findAllByTagName(tagName);
     }
 
     @Override
-    public List<CourseDto> findAll() {
+    public Course findById(long courseId) {
+        return courseRepository.findById(courseId).get();
+    }
+
+    @Override
+    public List<Course> findAll() {
         List<Course> courses = courseRepository.findAll();
-        return courseMapper.toDtoList(courses);
+        return courses;
     }
 
     @Override
@@ -48,6 +55,7 @@ public class CourseServiceImpl implements CourseService {
                 .setCategory(categoryRepository.findById(courseDto.getCategory()).get())
                 .setTags(splitTag(courseDto.getTagName()))
                 .setAchievements(splitAchievement(courseDto.getAchievementName()))
+                .setSections(sectionRepository.findAllByCourseName(courseDto.getName()))
                 .setImage(courseDto.getImage())
                 .setSlug(courseDto.getName().toLowerCase().replaceAll("\\s{2,}", " ").replace(" ", "-"))
                 .setDuration(courseDto.getDuration())

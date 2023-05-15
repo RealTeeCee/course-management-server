@@ -1,0 +1,30 @@
+package com.aptech.coursemanagementserver.controllers;
+
+import java.util.List;
+
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.aptech.coursemanagementserver.dtos.SectionDto;
+import com.aptech.coursemanagementserver.services.SectionService;
+
+import io.swagger.v3.oas.annotations.tags.Tag;
+import lombok.RequiredArgsConstructor;
+
+@RestController
+@RequiredArgsConstructor
+@PreAuthorize("hasAnyRole('ADMIN')")
+@Tag(name = "Course Endpoints")
+@RequestMapping("/admin/course/{id}")
+public class SectionController {
+    private SectionService sectionService;
+
+    @GetMapping
+    public ResponseEntity<List<SectionDto>> getSectionsByCourseId(@RequestParam("id") long courseId) {
+        return ResponseEntity.ok(sectionService.findAllByCourseId(courseId));
+    }
+}

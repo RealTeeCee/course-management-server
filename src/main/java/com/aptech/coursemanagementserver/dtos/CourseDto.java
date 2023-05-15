@@ -1,5 +1,7 @@
 package com.aptech.coursemanagementserver.dtos;
 
+import java.util.List;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -19,6 +21,8 @@ public class CourseDto {
     private double price;
     private double net_price;
     private int duration;
+
+    private List<String> sections;
 
     private long category;
 
