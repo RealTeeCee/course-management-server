@@ -10,6 +10,7 @@ import com.aptech.coursemanagementserver.dtos.CourseDto;
 import com.aptech.coursemanagementserver.mappers.CourseMapper;
 import com.aptech.coursemanagementserver.models.Achievement;
 import com.aptech.coursemanagementserver.models.Course;
+import com.aptech.coursemanagementserver.models.Section;
 import com.aptech.coursemanagementserver.models.Tag;
 import com.aptech.coursemanagementserver.repositories.AchievementRepository;
 import com.aptech.coursemanagementserver.repositories.CategoryRepository;
@@ -17,7 +18,6 @@ import com.aptech.coursemanagementserver.repositories.CourseRepository;
 import com.aptech.coursemanagementserver.repositories.SectionRepository;
 import com.aptech.coursemanagementserver.repositories.TagRepository;
 import com.aptech.coursemanagementserver.services.CourseService;
-import com.aptech.coursemanagementserver.services.SectionService;
 
 import lombok.RequiredArgsConstructor;
 
@@ -42,6 +42,11 @@ public class CourseServiceImpl implements CourseService {
     }
 
     @Override
+    public Course findByName(String courseName) {
+        return courseRepository.findByName(courseName);
+    }
+
+    @Override
     public List<Course> findAll() {
         List<Course> courses = courseRepository.findAll();
         return courses;
@@ -55,7 +60,6 @@ public class CourseServiceImpl implements CourseService {
                 .setCategory(categoryRepository.findById(courseDto.getCategory()).get())
                 .setTags(splitTag(courseDto.getTagName()))
                 .setAchievements(splitAchievement(courseDto.getAchievementName()))
-                .setSections(sectionRepository.findAllByCourseName(courseDto.getName()))
                 .setImage(courseDto.getImage())
                 .setSlug(courseDto.getName().toLowerCase().replaceAll("\\s{2,}", " ").replace(" ", "-"))
                 .setDuration(courseDto.getDuration())
@@ -64,6 +68,25 @@ public class CourseServiceImpl implements CourseService {
                 .setNet_price(courseDto.getNet_price());
 
         courseRepository.save(course);
+
+        List<String> sectionsString = courseDto.getSections();
+        Set<Section> sections = new HashSet<>();
+
+        if (sectionsString != null) {
+            int i = 0;
+            while (i < sectionsString.size()) {
+                Section section = new Section();
+                String sectionString = sectionsString.get(i);
+                if (sectionString != null) {
+                    section.setName(sectionString);
+                    section.setCourse(findByName(courseDto.getName()));
+                    sections.add(section);
+                }
+                i++;
+            }
+        }
+
+        sectionRepository.saveAll(sections);
         return course;
     }
 

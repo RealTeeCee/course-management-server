@@ -11,8 +11,11 @@ import com.aptech.coursemanagementserver.enums.AntType;
 import com.aptech.coursemanagementserver.models.User;
 import com.aptech.coursemanagementserver.services.authServices.CurrentUser;
 
+import io.swagger.v3.oas.annotations.tags.Tag;
+
 @RestController
 @RequestMapping("/auth")
+@Tag(name = "Current User Endpoints")
 public class UserController {
 
     @GetMapping("/user/me")

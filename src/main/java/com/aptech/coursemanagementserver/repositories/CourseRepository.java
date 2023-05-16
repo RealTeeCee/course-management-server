@@ -14,4 +14,6 @@ public interface CourseRepository extends JpaRepository<Course, Long> {
                 WHERE t.name = :tagName
             """)
     List<Course> findAllByTagName(String tagName);
+
+    Course findByName(String courseName);
 }

@@ -15,8 +15,5 @@ public class LessonDto {
     private String name;
     private String description;
     private int duration;
-
-    private long videoId;
-
     private long sectionId;
 }

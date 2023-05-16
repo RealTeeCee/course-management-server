@@ -12,6 +12,11 @@ import com.aptech.coursemanagementserver.models.Section;
 public interface SectionRepository extends JpaRepository<Section, Long> {
     Section findSectionByName(String name);
 
+    @Query(value = """
+            SELECT s FROM Section s INNER JOIN Course c\s
+            ON s.course.id = c.id\s
+            WHERE c.id = :courseId
+            """)
     List<Section> findAllByCourseId(long courseId);
 
     @Query("SELECT s FROM Section s JOIN s.course c WHERE c.name = :courseName")

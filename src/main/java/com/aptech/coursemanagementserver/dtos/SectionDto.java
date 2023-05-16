@@ -1,5 +1,7 @@
 package com.aptech.coursemanagementserver.dtos;
 
+import java.util.List;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -12,7 +14,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @EqualsAndHashCode(callSuper = false)
 public class SectionDto {
-    private String name;
+    private List<String> sections;
 
     private long courseId;
 }

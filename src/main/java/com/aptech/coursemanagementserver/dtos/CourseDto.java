@@ -2,6 +2,8 @@ package com.aptech.coursemanagementserver.dtos;
 
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -24,10 +26,13 @@ public class CourseDto {
 
     private List<String> sections;
 
+    @JsonProperty("category_id")
     private long category;
 
+    @JsonProperty("tags")
     private String tagName;
 
+    @JsonProperty("archivements")
     private String achievementName;
 
 }

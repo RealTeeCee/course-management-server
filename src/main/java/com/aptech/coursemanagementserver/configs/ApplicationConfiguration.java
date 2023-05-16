@@ -29,10 +29,10 @@ public class ApplicationConfiguration {
     public ModelMapper modelMapper() {
 
         ModelMapper modelMapper = new ModelMapper();
-        modelMapper.getConfiguration().setFieldMatchingEnabled(true)
-                .setFieldAccessLevel(PRIVATE)
-                .setSourceNamingConvention(JAVABEANS_MUTATOR); // JAVABEAN Convention:
-                                                               // https://docstore.mik.ua/orelly/java-ent/jnut/ch06_02.htm
+        // modelMapper.getConfiguration().setFieldMatchingEnabled(true)
+        // .setFieldAccessLevel(PRIVATE)
+        // .setSourceNamingConvention(JAVABEANS_MUTATOR); // JAVABEAN Convention:
+        // // https://docstore.mik.ua/orelly/java-ent/jnut/ch06_02.htm
         return modelMapper;
     }
 

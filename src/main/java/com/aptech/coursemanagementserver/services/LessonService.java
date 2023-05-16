@@ -3,6 +3,7 @@ package com.aptech.coursemanagementserver.services;
 import java.util.List;
 
 import com.aptech.coursemanagementserver.dtos.LessonDto;
+import com.aptech.coursemanagementserver.dtos.baseDto.BaseDto;
 import com.aptech.coursemanagementserver.models.Lesson;
 
 public interface LessonService {
@@ -10,7 +11,7 @@ public interface LessonService {
 
     public List<Lesson> findAll();
 
-    public Lesson save(LessonDto lesson);
+    public List<LessonDto> findAllBySectionId(long sectionId);
 
-    public List<Lesson> saveAll(List<LessonDto> lessons);
+    BaseDto saveLessonToSection(LessonDto lessonDto, long sectionId);
 }

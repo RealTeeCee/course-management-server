@@ -4,6 +4,8 @@ import static com.aptech.coursemanagementserver.enums.Role.ADMIN;
 import static com.aptech.coursemanagementserver.enums.Role.EMPLOYEE;
 import static com.aptech.coursemanagementserver.enums.Role.MANAGER;
 
+import java.util.Arrays;
+
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -85,7 +87,11 @@ public class CourseManagementServerApplication {
 			Category savedCategory1 = categoryService.save(category1);
 
 			CourseDto course1 = CourseDto.builder().achievementName("Master Java,Master SpringBoot")
-					.tagName("Java,SpringBoot,Hibernate").name("Java SpringBoot 2023").category(1).build();
+					.duration(300)
+					.description("Description").price(15).net_price(10)
+					.sections(Arrays.asList("Section 1", "Section 2", "Section 3"))
+					.tagName("Java,SpringBoot,Hibernate").name("Java SpringBoot 2023").category(savedCategory1.getId())
+					.build();
 			courseService.save(course1);
 		};
 	}

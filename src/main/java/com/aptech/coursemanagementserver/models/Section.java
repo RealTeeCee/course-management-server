@@ -28,7 +28,7 @@ import lombok.experimental.Accessors;
 @NoArgsConstructor
 @AllArgsConstructor
 @Accessors(chain = true)
-@EqualsAndHashCode(callSuper = false)
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @Entity
 public class Section {
     @Id
@@ -36,6 +36,7 @@ public class Section {
     @Column(columnDefinition = "bigint")
     private long id;
     @Column(columnDefinition = "varchar(100)")
+    @EqualsAndHashCode.Include
     private String name;
     // @Column(columnDefinition = "bigint")
     // private long course_id;
@@ -48,7 +49,7 @@ public class Section {
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "section")
     private Set<Lesson> lessons = new HashSet<>();
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne(cascade = CascadeType.MERGE)
     @JoinColumn(name = "course_id", nullable = false, foreignKey = @ForeignKey(name = "FK_Section_Course"))
     private Course course;
 }

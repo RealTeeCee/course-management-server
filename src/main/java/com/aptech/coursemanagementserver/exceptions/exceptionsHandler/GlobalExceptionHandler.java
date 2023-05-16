@@ -40,9 +40,10 @@ public class GlobalExceptionHandler {
         }
 
         // 403 Handle Security Authenticate
-        @ExceptionHandler(Throwable.class)
+        @ExceptionHandler(AccessDeniedException.class)
         public ResponseEntity<ErrorDetails> handleAllExceptions(AccessDeniedException t) {
                 return ResponseEntity.status(HttpStatus.FORBIDDEN).body(ErrorDetails.builder()
+                                .details(t.getMessage())
                                 .statusCode("403")
                                 .timestamp(LocalDateTime.now())
                                 .message("Forbidden").build());

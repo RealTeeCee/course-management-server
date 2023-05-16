@@ -1,5 +1,7 @@
 package com.aptech.coursemanagementserver.controllers;
 
+import static com.aptech.coursemanagementserver.constants.GlobalStorage.DEV_DOMAIN_CLIENT;
+
 import java.io.IOException;
 import java.net.URI;
 import java.text.ParseException;
@@ -30,9 +32,7 @@ import com.aptech.coursemanagementserver.services.authServices.JwtService;
 import com.aptech.coursemanagementserver.services.authServices.UserService;
 
 import io.jsonwebtoken.ExpiredJwtException;
-
-import static com.aptech.coursemanagementserver.constants.GlobalStorage.DEV_DOMAIN_CLIENT;
-
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -40,6 +40,7 @@ import lombok.RequiredArgsConstructor;
 @RestController
 @RequestMapping("/auth")
 @RequiredArgsConstructor
+@Tag(name = "Authentication Endpoints")
 public class AuthenticationController {
   private final TokenRepository tokenRepository;
   private final UserService userService;

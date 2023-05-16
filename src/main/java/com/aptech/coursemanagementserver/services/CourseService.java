@@ -13,6 +13,8 @@ public interface CourseService {
 
     public Course findById(long courseId);
 
+    public Course findByName(String courseName);
+
     public List<Course> findAll();
 
     public Course save(CourseDto course);

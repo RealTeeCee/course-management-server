@@ -39,6 +39,6 @@ public class Achievement {
     @UpdateTimestamp
     private Instant updated_at;
 
-    @ManyToMany(mappedBy = "achievements", fetch = FetchType.EAGER)
+    @ManyToMany(mappedBy = "achievements", fetch = FetchType.LAZY)
     private Set<Course> courses = new HashSet<>();
 }

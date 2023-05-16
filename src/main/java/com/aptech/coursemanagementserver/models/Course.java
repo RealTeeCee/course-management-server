@@ -65,7 +65,7 @@ public class Course {
         @UpdateTimestamp
         private Instant updated_at;
 
-        @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, mappedBy = "course")
+        @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "course")
         private Set<Section> sections = new HashSet<>();
 
         @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "course")
