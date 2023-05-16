@@ -60,7 +60,8 @@ public class SectionServiceImpl implements SectionService {
     public BaseDto saveSectionsToCourse(SectionDto sectionDto, long courseId) {
         Course course = courseRepository.findById(courseId).get();
         if (course == null) {
-            return BaseDto.builder().type(AntType.error).message("This course does not exist.").build();
+            return BaseDto.builder().type(AntType.error)
+                    .message("This course with id: [" + courseId + "]does not exist.").build();
         }
 
         List<String> sectionsString = sectionDto.getSections();

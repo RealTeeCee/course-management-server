@@ -38,8 +38,8 @@ public class VideoServiceImpl implements VideoService {
         Video video = new Video();
 
         if (lesson == null) {
-            return BaseDto.builder().type(AntType.error).message("This lesson does not exist.")
-                    .build();
+            return BaseDto.builder().type(AntType.error)
+                    .message("This lesson with id: [" + lessonId + "]does not exist.").build();
         }
 
         if (videoDto.getName().contains(lesson.getVideo().getName())) {

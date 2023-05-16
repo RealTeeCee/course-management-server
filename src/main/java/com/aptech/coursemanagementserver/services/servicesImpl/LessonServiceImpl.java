@@ -53,8 +53,9 @@ public class LessonServiceImpl implements LessonService {
         Section section = sectionRepository.findById(sectionId).get();
 
         if (section == null) {
-            return BaseDto.builder().type(AntType.error).message("This section does not exist.")
-                    .build();
+            return BaseDto.builder().type(AntType.error)
+                    .message("This section with id: [" + sectionId + "]does not exist.").build();
+
         }
 
         for (Lesson l : section.getLessons()) {
