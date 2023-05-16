@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Set;
 
 import com.aptech.coursemanagementserver.dtos.CourseDto;
+import com.aptech.coursemanagementserver.dtos.baseDto.BaseDto;
 import com.aptech.coursemanagementserver.models.Achievement;
 import com.aptech.coursemanagementserver.models.Course;
 import com.aptech.coursemanagementserver.models.Tag;
@@ -24,4 +25,6 @@ public interface CourseService {
     public Set<Tag> splitTag(String tag);
 
     public Set<Achievement> splitAchievement(String achievement);
+
+    public BaseDto delete(long courseId);
 }

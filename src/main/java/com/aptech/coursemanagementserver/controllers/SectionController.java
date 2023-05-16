@@ -4,6 +4,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -46,6 +47,18 @@ public class SectionController {
             return new ResponseEntity<BaseDto>(BaseDto.builder().type(AntType.error)
                     .message("Failed! Please check your infomation and try again.")
                     .build(),
+                    HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @DeleteMapping
+    public ResponseEntity<BaseDto> deleteSection(long sectionId) {
+        try {
+            return new ResponseEntity<BaseDto>(sectionService.delete(sectionId), HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<BaseDto>(
+                    BaseDto.builder().type(AntType.error)
+                            .message("Delete section Failed: " + e.getMessage()).build(),
                     HttpStatus.BAD_REQUEST);
         }
 

@@ -101,4 +101,16 @@ public class SectionServiceImpl implements SectionService {
         return BaseDto.builder().type(AntType.success).message("Create section successfully.").build();
     }
 
+    @Override
+    public BaseDto delete(long sectionId) {
+        Section section = sectionRepository.findById(sectionId).get();
+        if (section == null) {
+            return BaseDto.builder().type(AntType.error).message("This section with [" + sectionId + "] is not exist.")
+                    .build();
+        }
+        sectionRepository.delete(section);
+        return BaseDto.builder().type(AntType.success).message("Delete section successfully.")
+                .build();
+    }
+
 }

@@ -11,7 +11,12 @@ public interface VideoService {
 
     public List<Video> findAll();
 
+    public VideoDto findByLessonId(long lessonId);
+
     public BaseDto save(VideoDto video, long lessonId);
 
     public List<Video> saveAll(List<VideoDto> videos);
+
+    public BaseDto delete(long sectionId);
+
 }

@@ -1,8 +1,13 @@
 package com.aptech.coursemanagementserver.controllers;
 
+import java.util.List;
+
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -29,6 +34,12 @@ import lombok.extern.slf4j.Slf4j;
 public class VideoController {
     private final VideoService videoService;
 
+    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<VideoDto> getVideoByLessonId(
+            @PathVariable("lessonId") long lessonId) {
+        return new ResponseEntity<VideoDto>(videoService.findByLessonId(lessonId), HttpStatus.OK);
+    }
+
     @PostMapping
     public ResponseEntity<BaseDto> createLessonsBySectionId(
             @PathVariable("lessonId") long lessonId,
@@ -40,6 +51,18 @@ public class VideoController {
             return new ResponseEntity<BaseDto>(BaseDto.builder().type(AntType.error)
                     .message("Failed! Please check your infomation and try again.")
                     .build(),
+                    HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @DeleteMapping
+    public ResponseEntity<BaseDto> deleteVideo(long videoId) {
+        try {
+            return new ResponseEntity<BaseDto>(videoService.delete(videoId), HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<BaseDto>(
+                    BaseDto.builder().type(AntType.error)
+                            .message("Delete section Failed: " + e.getMessage()).build(),
                     HttpStatus.BAD_REQUEST);
         }
 

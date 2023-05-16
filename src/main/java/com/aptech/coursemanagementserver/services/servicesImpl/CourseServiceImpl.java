@@ -7,6 +7,8 @@ import java.util.Set;
 import org.springframework.stereotype.Service;
 
 import com.aptech.coursemanagementserver.dtos.CourseDto;
+import com.aptech.coursemanagementserver.dtos.baseDto.BaseDto;
+import com.aptech.coursemanagementserver.enums.AntType;
 import com.aptech.coursemanagementserver.mappers.CourseMapper;
 import com.aptech.coursemanagementserver.models.Achievement;
 import com.aptech.coursemanagementserver.models.Course;
@@ -126,6 +128,18 @@ public class CourseServiceImpl implements CourseService {
         }
         achievementRepository.saveAll(newAchievements);
         return newAchievements;
+    }
+
+    @Override
+    public BaseDto delete(long courseId) {
+        Course course = courseRepository.findById(courseId).get();
+        if (course == null) {
+            return BaseDto.builder().type(AntType.error).message("This course with [" + courseId + "] is not exist.")
+                    .build();
+        }
+        courseRepository.delete(course);
+        return BaseDto.builder().type(AntType.success).message("Delete course successfully.")
+                .build();
     }
 
 }

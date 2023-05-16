@@ -33,6 +33,16 @@ public class VideoServiceImpl implements VideoService {
     }
 
     @Override
+    public VideoDto findByLessonId(long lessonId) {
+        Lesson lesson = lessonRepository.findById(lessonId).get();
+        Video video = lesson.getVideo();
+
+        VideoDto videoDto = VideoDto.builder().name(video.getName()).url(video.getUrl()).lessonId(lessonId).build();
+
+        return videoDto;
+    }
+
+    @Override
     public BaseDto save(VideoDto videoDto, long lessonId) {
         Lesson lesson = lessonRepository.findById(lessonId).get();
         Video video = new Video();
@@ -58,5 +68,17 @@ public class VideoServiceImpl implements VideoService {
         List<Video> videos = videosDto.stream().map(videoDto -> findVideoByName(videoDto.getName()))
                 .collect(Collectors.toList());
         return videoRepository.saveAll(videos);
+    }
+
+    @Override
+    public BaseDto delete(long videoId) {
+        Video video = videoRepository.findById(videoId).get();
+        if (video == null) {
+            return BaseDto.builder().type(AntType.error).message("This video with [" + videoId + "] is not exist.")
+                    .build();
+        }
+        videoRepository.delete(video);
+        return BaseDto.builder().type(AntType.success).message("Delete video successfully.")
+                .build();
     }
 }

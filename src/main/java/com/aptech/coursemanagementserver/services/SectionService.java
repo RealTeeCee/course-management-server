@@ -16,4 +16,6 @@ public interface SectionService {
     public List<Section> findAll();
 
     public BaseDto saveSectionsToCourse(SectionDto section, long courseId);
+
+    public BaseDto delete(long sectionId);
 }

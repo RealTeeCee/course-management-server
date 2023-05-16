@@ -75,4 +75,16 @@ public class LessonServiceImpl implements LessonService {
         return BaseDto.builder().type(AntType.success).message("Create lesson successfully.").build();
     }
 
+    @Override
+    public BaseDto delete(long lessonId) {
+        Lesson lesson = lessonRepository.findById(lessonId).get();
+        if (lesson == null) {
+            return BaseDto.builder().type(AntType.error).message("This lesson with [" + lessonId + "] is not exist.")
+                    .build();
+        }
+        lessonRepository.delete(lesson);
+        return BaseDto.builder().type(AntType.success).message("Delete lesson successfully.")
+                .build();
+    }
+
 }
