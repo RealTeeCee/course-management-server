@@ -1,6 +1,7 @@
 package com.aptech.coursemanagementserver.services.servicesImpl;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
@@ -72,13 +73,19 @@ public class VideoServiceImpl implements VideoService {
 
     @Override
     public BaseDto delete(long videoId) {
-        Video video = videoRepository.findById(videoId).get();
-        if (video == null) {
-            return BaseDto.builder().type(AntType.error).message("This video with [" + videoId + "] is not exist.")
+        try {
+            Video video = videoRepository.findById(videoId).get();
+            videoRepository.delete(video);
+            return BaseDto.builder().type(AntType.success).message("Delete video successfully.")
+                    .build();
+        } catch (NoSuchElementException e) {
+            return BaseDto.builder().type(AntType.error)
+                    .message("This video with videoId: [" + videoId + "] is not exist.")
+                    .build();
+        } catch (Exception e) {
+            return BaseDto.builder().type(AntType.error)
+                    .message("Failed! Please check your infomation and try again.")
                     .build();
         }
-        videoRepository.delete(video);
-        return BaseDto.builder().type(AntType.success).message("Delete video successfully.")
-                .build();
     }
 }

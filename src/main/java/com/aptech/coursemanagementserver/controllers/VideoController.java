@@ -1,6 +1,6 @@
 package com.aptech.coursemanagementserver.controllers;
 
-import java.util.List;
+import java.util.NoSuchElementException;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -17,6 +17,8 @@ import org.springframework.web.bind.annotation.RestController;
 import com.aptech.coursemanagementserver.dtos.VideoDto;
 import com.aptech.coursemanagementserver.dtos.baseDto.BaseDto;
 import com.aptech.coursemanagementserver.enums.AntType;
+import com.aptech.coursemanagementserver.exceptions.BadRequestException;
+import com.aptech.coursemanagementserver.exceptions.ResourceNotFoundException;
 import com.aptech.coursemanagementserver.services.VideoService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
@@ -37,7 +39,14 @@ public class VideoController {
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<VideoDto> getVideoByLessonId(
             @PathVariable("lessonId") long lessonId) {
-        return new ResponseEntity<VideoDto>(videoService.findByLessonId(lessonId), HttpStatus.OK);
+        try {
+            return new ResponseEntity<VideoDto>(videoService.findByLessonId(lessonId), HttpStatus.OK);
+        } catch (NoSuchElementException e) {
+            throw new ResourceNotFoundException("Video", "videoId", Long.toString(lessonId));
+        } catch (Exception e) {
+            throw new BadRequestException("Fetch data failed!");
+
+        }
     }
 
     @PostMapping
@@ -45,13 +54,11 @@ public class VideoController {
             @PathVariable("lessonId") long lessonId,
             @RequestBody VideoDto videoDto) throws JsonMappingException, JsonProcessingException {
         try {
-            return ResponseEntity.ok(videoService.save(videoDto, lessonId));
+            return new ResponseEntity<BaseDto>(videoService.save(videoDto, lessonId), HttpStatus.OK);
         } catch (Exception e) {
             log.error("Caused: " + e.getCause() + " ,Message: " + e.getMessage(), e);
-            return new ResponseEntity<BaseDto>(BaseDto.builder().type(AntType.error)
-                    .message("Failed! Please check your infomation and try again.")
-                    .build(),
-                    HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<BaseDto>(videoService.save(videoDto, lessonId), HttpStatus.BAD_REQUEST);
+
         }
     }
 
@@ -60,9 +67,7 @@ public class VideoController {
         try {
             return new ResponseEntity<BaseDto>(videoService.delete(videoId), HttpStatus.OK);
         } catch (Exception e) {
-            return new ResponseEntity<BaseDto>(
-                    BaseDto.builder().type(AntType.error)
-                            .message("Delete section Failed: " + e.getMessage()).build(),
+            return new ResponseEntity<BaseDto>(videoService.delete(videoId),
                     HttpStatus.BAD_REQUEST);
         }
 

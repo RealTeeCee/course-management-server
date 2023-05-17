@@ -10,6 +10,8 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
 
 import com.aptech.coursemanagementserver.dtos.ErrorDetails;
+import com.aptech.coursemanagementserver.enums.AntType;
+import com.aptech.coursemanagementserver.exceptions.BadRequestException;
 import com.aptech.coursemanagementserver.exceptions.InvalidTokenException;
 import com.aptech.coursemanagementserver.exceptions.ResourceNotFoundException;
 import com.aptech.coursemanagementserver.exceptions.UserNotFoundException;
@@ -30,20 +32,32 @@ public class GlobalExceptionHandler {
         // return new ResponseEntity<>(errorDetails, HttpStatus.INTERNAL_SERVER_ERROR);
         // }
 
+        // 400 BadRequest
+        @ExceptionHandler(BadRequestException.class)
+        public ResponseEntity<ErrorDetails> handleAllException(BadRequestException invalidTokenException,
+                        WebRequest webRequest) {
+                ErrorDetails errorDetails = new ErrorDetails(LocalDateTime.now(), AntType.error,
+                                invalidTokenException.getMessage(),
+                                webRequest.getDescription(false), HttpStatus.BAD_REQUEST.toString());
+                return new ResponseEntity<>(errorDetails, HttpStatus.BAD_REQUEST);
+        }
+
         // 401 Invalid Token
         @ExceptionHandler(InvalidTokenException.class)
         public ResponseEntity<ErrorDetails> handleInvalidTokenException(InvalidTokenException invalidTokenException,
                         WebRequest webRequest) {
-                ErrorDetails errorDetails = new ErrorDetails(LocalDateTime.now(), invalidTokenException.getMessage(),
+                ErrorDetails errorDetails = new ErrorDetails(LocalDateTime.now(), AntType.error,
+                                invalidTokenException.getMessage(),
                                 webRequest.getDescription(false), HttpStatus.UNAUTHORIZED.toString());
                 return new ResponseEntity<>(errorDetails, HttpStatus.UNAUTHORIZED);
         }
 
         // 403 Handle Security Authenticate
         @ExceptionHandler(AccessDeniedException.class)
-        public ResponseEntity<ErrorDetails> handleAllExceptions(AccessDeniedException t) {
+        public ResponseEntity<ErrorDetails> handleAccessDeniedExceptions(AccessDeniedException t) {
                 return ResponseEntity.status(HttpStatus.FORBIDDEN).body(ErrorDetails.builder()
                                 .details(t.getMessage())
+                                .type(AntType.error)
                                 .statusCode("403")
                                 .timestamp(LocalDateTime.now())
                                 .message("Forbidden").build());
@@ -53,7 +67,7 @@ public class GlobalExceptionHandler {
         @ExceptionHandler(UserNotFoundException.class)
         public final ResponseEntity<ErrorDetails> handleUserNotFoundException(Exception ex, WebRequest request)
                         throws Exception {
-                ErrorDetails errorDetails = new ErrorDetails(LocalDateTime.now(),
+                ErrorDetails errorDetails = new ErrorDetails(LocalDateTime.now(), AntType.error,
                                 ex.getMessage(), request.getDescription(false), HttpStatus.NOT_FOUND.toString());
 
                 return new ResponseEntity<ErrorDetails>(errorDetails, HttpStatus.NOT_FOUND);
@@ -62,7 +76,7 @@ public class GlobalExceptionHandler {
         @ExceptionHandler(ResourceNotFoundException.class)
         public ResponseEntity<ErrorDetails> handleResourceNotFoundException(
                         ResourceNotFoundException resourceNotFoundException, WebRequest webRequest) {
-                ErrorDetails errorDetails = new ErrorDetails(LocalDateTime.now(),
+                ErrorDetails errorDetails = new ErrorDetails(LocalDateTime.now(), AntType.error,
                                 resourceNotFoundException.getMessage(),
                                 webRequest.getDescription(false), HttpStatus.NOT_FOUND.toString());
 

@@ -1,11 +1,13 @@
 package com.aptech.coursemanagementserver.controllers;
 
-import java.io.IOException;
 import java.net.MalformedURLException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.time.Instant;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -29,8 +31,13 @@ import org.springframework.web.multipart.MultipartFile;
 import com.aptech.coursemanagementserver.dtos.CourseDto;
 import com.aptech.coursemanagementserver.dtos.baseDto.BaseDto;
 import com.aptech.coursemanagementserver.enums.AntType;
+import com.aptech.coursemanagementserver.exceptions.BadRequestException;
+import com.aptech.coursemanagementserver.exceptions.InvalidTokenException;
+import com.aptech.coursemanagementserver.exceptions.ResourceNotFoundException;
+import com.aptech.coursemanagementserver.exceptions.UserNotFoundException;
 import com.aptech.coursemanagementserver.models.Course;
 import com.aptech.coursemanagementserver.services.CourseService;
+import com.aptech.coursemanagementserver.utils.FileUtils;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -48,14 +55,45 @@ public class CourseController {
 
         @GetMapping(path = "/courses")
         public ResponseEntity<List<CourseDto>> getCourses() {
-                List<Course> courses = courseService.findAll();
-                List<CourseDto> courseDtos = new ArrayList<>();
-                for (Course course : courses) {
+                try {
+                        List<Course> courses = courseService.findAll();
+                        List<CourseDto> courseDtos = new ArrayList<>();
+                        for (Course course : courses) {
+                                List<String> achievementsList = course.getAchievements().stream()
+                                                .map(achievement -> achievement.getName())
+                                                .toList();
+                                List<String> tagsList = course.getTags().stream().map(tag -> tag.getName()).toList();
+                                new CourseDto();
+                                CourseDto courseDto = CourseDto.builder().name(course.getName())
+                                                .price(course.getPrice())
+                                                .net_price(course.getNet_price()).slug(course.getSlug())
+                                                .image(course.getImage())
+                                                .sections(course.getSections().stream()
+                                                                .map(section -> section.getName())
+                                                                .toList())
+                                                .category(course.getCategory().getId())
+                                                .achievementName(String.join(",", achievementsList))
+                                                .tagName(String.join(",", tagsList))
+                                                .duration(course.getDuration()).build();
+                                courseDtos.add(courseDto);
+                        }
+
+                        return ResponseEntity.ok(courseDtos);
+                } catch (Exception e) {
+                        throw new BadRequestException("Fetch data failed!");
+                }
+
+        }
+
+        @GetMapping(path = "/course/{id}")
+        public ResponseEntity<CourseDto> getCourseById(@PathVariable("id") long id) {
+                try {
+                        Course course = courseService.findById(id);
+
                         List<String> achievementsList = course.getAchievements().stream()
                                         .map(achievement -> achievement.getName())
                                         .toList();
                         List<String> tagsList = course.getTags().stream().map(tag -> tag.getName()).toList();
-                        new CourseDto();
                         CourseDto courseDto = CourseDto.builder().name(course.getName()).price(course.getPrice())
                                         .net_price(course.getNet_price()).slug(course.getSlug())
                                         .image(course.getImage())
@@ -65,71 +103,72 @@ public class CourseController {
                                         .achievementName(String.join(",", achievementsList))
                                         .tagName(String.join(",", tagsList))
                                         .duration(course.getDuration()).build();
-                        courseDtos.add(courseDto);
+                        return ResponseEntity.ok(courseDto);
+                } catch (Exception e) {
+                        throw new ResourceNotFoundException("Course", "CourseId: ", Long.toString(id));
                 }
 
-                return ResponseEntity.ok(courseDtos);
         }
 
-        @GetMapping(path = "/course/{id}")
-        public ResponseEntity<CourseDto> getCourseById(@PathVariable("id") long id) {
-
-                Course course = courseService.findById(id);
-
-                List<String> achievementsList = course.getAchievements().stream()
-                                .map(achievement -> achievement.getName())
-                                .toList();
-                List<String> tagsList = course.getTags().stream().map(tag -> tag.getName()).toList();
-                CourseDto courseDto = CourseDto.builder().name(course.getName()).price(course.getPrice())
-                                .net_price(course.getNet_price()).slug(course.getSlug()).image(course.getImage())
-                                .sections(course.getSections().stream().map(section -> section.getName()).toList())
-                                .category(course.getCategory().getId())
-                                .achievementName(String.join(",", achievementsList))
-                                .tagName(String.join(",", tagsList))
-                                .duration(course.getDuration()).build();
-                return ResponseEntity.ok(courseDto);
-        }
-
-        @PostMapping(path = "/course/create", consumes = { MediaType.MULTIPART_FORM_DATA_VALUE })
+        @PostMapping(path = "/course/create/", consumes = { MediaType.MULTIPART_FORM_DATA_VALUE })
         public ResponseEntity<BaseDto> create(@RequestPart("courseJson") String courseJson,
                         @RequestPart("file") MultipartFile file) throws JsonMappingException, JsonProcessingException {
                 ObjectMapper objectMapper = new ObjectMapper();
-                CourseDto courseDto = objectMapper.readValue(courseJson, CourseDto.class);
 
                 try {
+                        CourseDto courseDto = objectMapper.readValue(courseJson, CourseDto.class);
                         courseDto.setImage(file.getOriginalFilename());
                         Course savedCourse = courseService.save(courseDto);
 
-                        Path root = Paths.get("assets/course/images/" + savedCourse.getId());
+                        Path root = Paths.get("assets/images/course");
                         Files.createDirectories(root);
+
+                        String extension = FileUtils.getFileExtension(file);
+
                         System.out.println(file.getOriginalFilename());
-                        Files.copy(file.getInputStream(), root.resolve(file.getOriginalFilename()),
+
+                        Files.copy(file.getInputStream(), root.resolve(Instant.now().atZone(ZoneId.systemDefault())
+                                        .format(DateTimeFormatter.ofPattern("ddMMyyyy")) + "_"
+                                        + savedCourse.getName().replace(" ", "-")
+                                        + "_" + savedCourse.getId() + "." + extension),
                                         StandardCopyOption.REPLACE_EXISTING);
 
                         return new ResponseEntity<BaseDto>(
                                         BaseDto.builder().type(AntType.success).message("Create course successfully")
                                                         .build(),
                                         HttpStatus.OK);
-                } catch (IOException e) {
-                        return new ResponseEntity<BaseDto>(
-                                        BaseDto.builder().type(AntType.error)
-                                                        .message("Create course Failed: " + e.getMessage()).build(),
-                                        HttpStatus.BAD_REQUEST);
+
+                } catch (Exception e) {
+                        return new ResponseEntity<BaseDto>(BaseDto.builder().type(AntType.error)
+                                        .message("Failed! Please check your infomation and try again.")
+                                        .build(), HttpStatus.BAD_REQUEST);
                 }
         }
 
         @GetMapping(path = "/course/download")
         @PreAuthorize("permitAll()")
-        public ResponseEntity<Resource> download(@RequestParam String fileName, @RequestParam String courseId)
+        public ResponseEntity<Resource> download(@RequestParam long courseId)
                         throws MalformedURLException {
-                // Auto add slash
-                Path root = Paths.get("assets", "course", "images", courseId, fileName);
-                Resource file = new UrlResource(root.toUri());
-                return ResponseEntity.ok()
-                                .header(HttpHeaders.CONTENT_DISPOSITION,
-                                                "attachment; filename=\"" + file.getFilename() + "\"")
-                                .contentType(MediaType.APPLICATION_OCTET_STREAM)
-                                .body(file);
+                try {
+                        Course course = courseService.findById(courseId);
+                        String fileExtension = FileUtils.getFileExtension(course.getName());
+                        // Auto add slash
+                        Path root = Paths.get("assets", "images", "course",
+                                        course.getUpdated_at().atZone(ZoneId.systemDefault())
+                                                        .format(DateTimeFormatter.ofPattern("ddMMyyyy")) + "_"
+                                                        + course.getName().replace(" ", "-")
+                                                        + "_" + course.getId() + "." + fileExtension);
+
+                        Resource file = new UrlResource(root.toUri());
+                        return ResponseEntity.ok()
+                                        .header(HttpHeaders.CONTENT_DISPOSITION,
+                                                        "attachment; filename=\"" + file.getFilename() + "\"")
+                                        .contentType(MediaType.APPLICATION_OCTET_STREAM)
+                                        .body(file);
+                } catch (Exception e) {
+                        throw new BadRequestException("Something wrong!");
+                }
+
         }
 
         // @PutMapping
@@ -137,14 +176,26 @@ public class CourseController {
         // return "PUT:: management controller";
         // }
 
-        @DeleteMapping
+        @DeleteMapping(path = "/admin/course")
         public ResponseEntity<BaseDto> deleteCourse(long courseId) {
                 try {
+                        Course course = courseService.findById(courseId);
+                        String fileExtension = FileUtils.getFileExtension(course.getImage());
+                        // Auto add slash
+                        Path root = Paths.get("assets", "images", "course",
+                                        course.getUpdated_at().atZone(ZoneId.systemDefault())
+                                                        .format(DateTimeFormatter.ofPattern("ddMMyyyy")) + "_"
+                                                        + course.getName().replace(" ", "-")
+                                                        + "_" + course.getId() + "." + fileExtension);
+                        Files.delete(root);
+
                         return new ResponseEntity<BaseDto>(courseService.delete(courseId), HttpStatus.OK);
+                } catch (InvalidTokenException e) {
+                        return new ResponseEntity<BaseDto>(BaseDto.builder().type(AntType.error)
+                                        .message("Failed! Please check your infomation and try again.")
+                                        .build(), HttpStatus.BAD_REQUEST);
                 } catch (Exception e) {
-                        return new ResponseEntity<BaseDto>(
-                                        BaseDto.builder().type(AntType.error)
-                                                        .message("Delete course Failed: " + e.getMessage()).build(),
+                        return new ResponseEntity<BaseDto>(courseService.delete(courseId),
                                         HttpStatus.BAD_REQUEST);
                 }
 

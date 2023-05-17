@@ -3,6 +3,7 @@ package com.aptech.coursemanagementserver.services.servicesImpl;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.Set;
 
@@ -58,59 +59,72 @@ public class SectionServiceImpl implements SectionService {
 
     @Override
     public BaseDto saveSectionsToCourse(SectionDto sectionDto, long courseId) {
-        Course course = courseRepository.findById(courseId).get();
-        if (course == null) {
-            return BaseDto.builder().type(AntType.error)
-                    .message("This course with id: [" + courseId + "]does not exist.").build();
-        }
+        try {
+            Course course = courseRepository.findById(courseId).get();
+            List<String> sectionsString = sectionDto.getSections();
+            Set<Section> sections = new HashSet<>();
 
-        List<String> sectionsString = sectionDto.getSections();
-        Set<Section> sections = new HashSet<>();
+            List<Section> sectionsInCourse = findAllByCourseId(courseId);
 
-        List<Section> sectionsInCourse = findAllByCourseId(courseId);
+            if (sectionsInCourse.size() > 0) {
+                for (Section s : sectionsInCourse) {
+                    if (sectionDto.getSections().contains(s.getName())) {
+                        return BaseDto.builder().type(AntType.error).message(s.getName() + " is already existed.")
+                                .build();
+                    }
 
-        if (sectionsInCourse.size() > 0) {
-            for (Section s : sectionsInCourse) {
-                if (sectionDto.getSections().contains(s.getName())) {
-                    return BaseDto.builder().type(AntType.error).message(s.getName() + " is already existed.").build();
+                    Section section = new Section();
+                    section.setName(s.getName());
+                    section.setCourse(s.getCourse());
+                    sections.add(section);
                 }
-
-                Section section = new Section();
-                section.setName(s.getName());
-                section.setCourse(s.getCourse());
-                sections.add(section);
             }
+
+            Optional<Section> sectionCourse = sections.stream().findFirst();
+
+            if (sectionsString != null) {
+                for (String sectionString : sectionsString) {
+                    Section section = new Section();
+                    section.setName(sectionString);
+                    section.setCourse(sectionCourse.isPresent() ? sectionCourse.get().getCourse()
+                            : course);
+                    sections.add(section);
+                }
+            }
+
+            sectionRepository.saveAll(sections);
+            // course.setSections(courseDto.getSections());
+            // course.setSections(sections.stream().collect(Collectors.toSet()));
+            // courseRepository.save(course);
+            return BaseDto.builder().type(AntType.success).message("Create section successfully.").build();
+
+        } catch (NoSuchElementException e) {
+            return BaseDto.builder().type(AntType.error)
+                    .message("This course with courseId: [" + courseId + "] is not exist.")
+                    .build();
+        } catch (Exception e) {
+            return BaseDto.builder().type(AntType.error)
+                    .message("Failed! Please check your infomation and try again.")
+                    .build();
         }
 
-        Optional<Section> sectionCourse = sections.stream().findFirst();
-
-        if (sectionsString != null) {
-            for (String sectionString : sectionsString) {
-                Section section = new Section();
-                section.setName(sectionString);
-                section.setCourse(sectionCourse.isPresent() ? sectionCourse.get().getCourse()
-                        : course);
-                sections.add(section);
-            }
-        }
-
-        sectionRepository.saveAll(sections);
-        // course.setSections(courseDto.getSections());
-        // course.setSections(sections.stream().collect(Collectors.toSet()));
-        // courseRepository.save(course);
-        return BaseDto.builder().type(AntType.success).message("Create section successfully.").build();
     }
 
     @Override
     public BaseDto delete(long sectionId) {
-        Section section = sectionRepository.findById(sectionId).get();
-        if (section == null) {
-            return BaseDto.builder().type(AntType.error).message("This section with [" + sectionId + "] is not exist.")
+        try {
+            Section section = sectionRepository.findById(sectionId).get();
+            sectionRepository.delete(section);
+            return BaseDto.builder().type(AntType.success).message("Delete section successfully.")
+                    .build();
+        } catch (NoSuchElementException e) {
+            return BaseDto.builder().type(AntType.error)
+                    .message("This section with sectionId: [" + sectionId + "] is not exist.")
+                    .build();
+        } catch (Exception e) {
+            return BaseDto.builder().type(AntType.error)
+                    .message("Failed! Please check your infomation and try again.")
                     .build();
         }
-        sectionRepository.delete(section);
-        return BaseDto.builder().type(AntType.success).message("Delete section successfully.")
-                .build();
     }
-
 }

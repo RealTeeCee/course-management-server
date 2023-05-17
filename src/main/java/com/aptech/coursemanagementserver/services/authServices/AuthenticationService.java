@@ -110,7 +110,7 @@ public class AuthenticationService {
     public String verifyEmailRegister(String token) throws ParseException {
         Token t = tokenRepository.findByToken(token).get();
         if (t == null)
-            throw new InvalidTokenException(HttpStatus.UNAUTHORIZED, "Invalid Token");
+            throw new InvalidTokenException("Invalid Token. Please try login again.", HttpStatus.UNAUTHORIZED);
         t.getUser().setVerified(true);
         tokenRepository.save(t);
 

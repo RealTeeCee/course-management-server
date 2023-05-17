@@ -21,6 +21,8 @@ public class CourseDto {
     private String slug;
     private String image;
     private double price;
+
+    @JsonProperty("sale_price")
     private double net_price;
     private int duration;
 

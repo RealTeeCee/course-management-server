@@ -2,6 +2,7 @@ package com.aptech.coursemanagementserver.services.servicesImpl;
 
 import java.util.HashSet;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Set;
 
 import org.springframework.stereotype.Service;
@@ -132,14 +133,19 @@ public class CourseServiceImpl implements CourseService {
 
     @Override
     public BaseDto delete(long courseId) {
-        Course course = courseRepository.findById(courseId).get();
-        if (course == null) {
-            return BaseDto.builder().type(AntType.error).message("This course with [" + courseId + "] is not exist.")
+        try {
+            Course course = courseRepository.findById(courseId).get();
+            courseRepository.delete(course);
+            return BaseDto.builder().type(AntType.success).message("Delete course successfully.")
+                    .build();
+        } catch (NoSuchElementException e) {
+            return BaseDto.builder().type(AntType.error)
+                    .message("This course with courseId: [" + courseId + "] is not exist.")
+                    .build();
+        } catch (Exception e) {
+            return BaseDto.builder().type(AntType.error)
+                    .message("Failed! Please check your infomation and try again.")
                     .build();
         }
-        courseRepository.delete(course);
-        return BaseDto.builder().type(AntType.success).message("Delete course successfully.")
-                .build();
     }
-
 }

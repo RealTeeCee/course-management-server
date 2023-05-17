@@ -9,7 +9,7 @@ public class InvalidTokenException extends RuntimeException {
     private HttpStatus status;
     private String message;
 
-    public InvalidTokenException(HttpStatus status, String message) {
+    public InvalidTokenException(String message, HttpStatus status) {
         this.status = status;
         this.message = message;
     }

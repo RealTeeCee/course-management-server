@@ -2,6 +2,7 @@ package com.aptech.coursemanagementserver.services.servicesImpl;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.NoSuchElementException;
 
 import org.springframework.stereotype.Service;
 
@@ -77,14 +78,19 @@ public class LessonServiceImpl implements LessonService {
 
     @Override
     public BaseDto delete(long lessonId) {
-        Lesson lesson = lessonRepository.findById(lessonId).get();
-        if (lesson == null) {
-            return BaseDto.builder().type(AntType.error).message("This lesson with [" + lessonId + "] is not exist.")
+        try {
+            Lesson lesson = lessonRepository.findById(lessonId).get();
+            lessonRepository.delete(lesson);
+            return BaseDto.builder().type(AntType.success).message("Delete lesson successfully.")
+                    .build();
+        } catch (NoSuchElementException e) {
+            return BaseDto.builder().type(AntType.error)
+                    .message("This lesson with lessonId: [" + lessonId + "] is not exist.")
+                    .build();
+        } catch (Exception e) {
+            return BaseDto.builder().type(AntType.error)
+                    .message("Failed! Please check your infomation and try again.")
                     .build();
         }
-        lessonRepository.delete(lesson);
-        return BaseDto.builder().type(AntType.success).message("Delete lesson successfully.")
-                .build();
     }
-
 }

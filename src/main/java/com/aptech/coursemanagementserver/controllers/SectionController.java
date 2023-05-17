@@ -1,5 +1,7 @@
 package com.aptech.coursemanagementserver.controllers;
 
+import java.util.NoSuchElementException;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -15,6 +17,8 @@ import org.springframework.web.bind.annotation.RestController;
 import com.aptech.coursemanagementserver.dtos.SectionDto;
 import com.aptech.coursemanagementserver.dtos.baseDto.BaseDto;
 import com.aptech.coursemanagementserver.enums.AntType;
+import com.aptech.coursemanagementserver.exceptions.BadRequestException;
+import com.aptech.coursemanagementserver.exceptions.ResourceNotFoundException;
 import com.aptech.coursemanagementserver.services.SectionService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
@@ -34,19 +38,24 @@ public class SectionController {
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<SectionDto> getSectionsByCourseId(@PathVariable("id") long courseId) {
-        return new ResponseEntity<SectionDto>(sectionService.findAllNameByCourseId(courseId), HttpStatus.OK);
+        try {
+            return new ResponseEntity<SectionDto>(sectionService.findAllNameByCourseId(courseId), HttpStatus.OK);
+        } catch (NoSuchElementException e) {
+            throw new ResourceNotFoundException("Sections", "courseId", Long.toString(courseId));
+        } catch (Exception e) {
+            throw new BadRequestException("Fetch data failed!");
+        }
+
     }
 
     @PostMapping
     public ResponseEntity<BaseDto> createSectionsByCourseId(@PathVariable("id") long courseId,
             @RequestBody SectionDto sectionDto) throws JsonMappingException, JsonProcessingException {
         try {
-            return ResponseEntity.ok(sectionService.saveSectionsToCourse(sectionDto, courseId));
+            return new ResponseEntity<BaseDto>(sectionService.saveSectionsToCourse(sectionDto, courseId),
+                    HttpStatus.OK);
         } catch (Exception e) {
-            log.error("Caused: " + e.getCause() + " ,Message: " + e.getMessage(), e);
-            return new ResponseEntity<BaseDto>(BaseDto.builder().type(AntType.error)
-                    .message("Failed! Please check your infomation and try again.")
-                    .build(),
+            return new ResponseEntity<BaseDto>(sectionService.saveSectionsToCourse(sectionDto, courseId),
                     HttpStatus.BAD_REQUEST);
         }
     }
@@ -56,9 +65,7 @@ public class SectionController {
         try {
             return new ResponseEntity<BaseDto>(sectionService.delete(sectionId), HttpStatus.OK);
         } catch (Exception e) {
-            return new ResponseEntity<BaseDto>(
-                    BaseDto.builder().type(AntType.error)
-                            .message("Delete section Failed: " + e.getMessage()).build(),
+            return new ResponseEntity<BaseDto>(sectionService.delete(sectionId),
                     HttpStatus.BAD_REQUEST);
         }
 
