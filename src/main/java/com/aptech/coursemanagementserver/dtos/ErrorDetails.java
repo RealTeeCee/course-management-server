@@ -2,6 +2,8 @@ package com.aptech.coursemanagementserver.dtos;
 
 import java.time.LocalDateTime;
 
+import com.aptech.coursemanagementserver.enums.AntType;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -15,6 +17,7 @@ import lombok.experimental.Accessors;
 @AllArgsConstructor
 public class ErrorDetails {
     private LocalDateTime timestamp;
+    private AntType type;
     private String message;
     private String details;
     private String statusCode;
