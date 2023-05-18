@@ -17,6 +17,7 @@ import com.aptech.coursemanagementserver.dtos.AuthenticationRequestDto;
 import com.aptech.coursemanagementserver.dtos.AuthenticationResponseDto;
 import com.aptech.coursemanagementserver.dtos.RegisterRequestDto;
 import com.aptech.coursemanagementserver.enums.AntType;
+import com.aptech.coursemanagementserver.exceptions.BadRequestException;
 import com.aptech.coursemanagementserver.exceptions.InvalidTokenException;
 import com.aptech.coursemanagementserver.models.Token;
 import com.aptech.coursemanagementserver.models.User;
@@ -38,29 +39,39 @@ public class AuthenticationService {
     private final JwtService jwtService;
     private final AuthenticationManager authenticationManager;
 
-    public AuthenticationResponseDto login(RegisterRequestDto request) {
+    public AuthenticationResponseDto login(AuthenticationRequestDto request) {
+        // try {
         var user = repository.findByEmail(request.getEmail()).get();
-        if (user != null) {
-            // Check if BCrypt of request MATCHES BCrypt of user (Compare hash)
-            Boolean isPwdMatch = passwordEncoder.matches(request.getPassword(), user.getPassword());
-            if (isPwdMatch) {
-                var jwtToken = jwtService.generateToken(user);
-                var refreshToken = jwtService.generateRefreshToken(user);
-                revokeAllUserTokens(user);
-                jwtService.saveUserToken(user, jwtToken);
-                return AuthenticationResponseDto.builder()
-                        .accessToken(jwtToken)
-                        .refreshToken(refreshToken)
-                        .type(AntType.success)
-                        .message("Login successfully!")
-                        .build();
-            }
 
+        // Check if BCrypt of request MATCHES BCrypt of user (Compare hash)
+        Boolean isPwdMatch = passwordEncoder.matches(request.getPassword(), user.getPassword());
+        Boolean isVerified = user.isVerified();
+
+        if (!isVerified) {
+            throw new BadRequestException("Email is not verifyied");
         }
 
+        if (!isPwdMatch) {
+            throw new BadRequestException("User or Password not correct!");
+        }
+
+        var jwtToken = jwtService.generateToken(user);
+        var refreshToken = jwtService.generateRefreshToken(user);
+        revokeAllUserTokens(user);
+        jwtService.saveUserToken(user, jwtToken);
         return AuthenticationResponseDto.builder()
-                .type(AntType.error).message("Login failed!")
+                .accessToken(jwtToken)
+                .refreshToken(refreshToken)
+                .type(AntType.success)
+                .message("Login successfully!")
                 .build();
+
+        // }
+        // catch (Exception e) {
+        // return AuthenticationResponseDto.builder().type(AntType.error)
+        // .message(e.getMessage())
+        // .build();
+        // }
     }
 
     // Register method create a user save it to db and generated token

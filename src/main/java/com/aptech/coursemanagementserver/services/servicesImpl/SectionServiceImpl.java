@@ -61,6 +61,7 @@ public class SectionServiceImpl implements SectionService {
     public BaseDto saveSectionsToCourse(SectionDto sectionDto, long courseId) {
         try {
             Course course = courseRepository.findById(courseId).get();
+
             List<String> sectionsString = sectionDto.getSections();
             Set<Section> sections = new HashSet<>();
 

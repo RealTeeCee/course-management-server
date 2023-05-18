@@ -59,7 +59,6 @@ public class SecurityConfiguration {
         @Value("${application.security.cors.allowedOrigins}")
         private String[] allowedOrigins;
         public static final String[] ENDPOINTS_WHITELIST = {
-
                         "/auth/**",
                         "/oauth2/**",
                         "/admin/course/download",
@@ -145,10 +144,9 @@ public class SecurityConfiguration {
                                                  // successful.
                                 // .and().exceptionHandling(handling -> handling
                                 // .authenticationEntryPoint(
-                                // (req, rsp, e) -> rsp.sendError(
-                                // HttpServletResponse.SC_FORBIDDEN)))
+                                // new AuthenticationEntryPoint()))
                                 .and()
-                                .oauth2Login()
+                                .oauth2Login().loginPage("/auth/noauth")
                                 .authorizationEndpoint()
                                 .baseUri("/oauth2/authorize")
                                 .authorizationRequestRepository(cookieAuthorizationRequestRepository())

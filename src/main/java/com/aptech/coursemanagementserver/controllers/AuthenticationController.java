@@ -5,6 +5,8 @@ import static com.aptech.coursemanagementserver.constants.GlobalStorage.DEV_DOMA
 import java.io.IOException;
 import java.net.URI;
 import java.text.ParseException;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 
 import org.springframework.context.ApplicationEventPublisher;
@@ -93,8 +95,13 @@ public class AuthenticationController {
 
   @PostMapping("/login")
   public ResponseEntity<AuthenticationResponseDto> login(
-      @RequestBody RegisterRequestDto request) {
-    return ResponseEntity.ok(authService.login(request));
+      @RequestBody AuthenticationRequestDto request) {
+    try {
+      return new ResponseEntity<AuthenticationResponseDto>(authService.login(request), HttpStatus.OK);
+    } catch (Exception e) {
+      return new ResponseEntity<AuthenticationResponseDto>(authService.login(request), HttpStatus.BAD_REQUEST);
+    }
+
   }
 
   @PostMapping("/authenticate")
@@ -125,6 +132,13 @@ public class AuthenticationController {
     }
     return ResponseEntity.badRequest().body(null);
 
+  }
+
+  @GetMapping("/noauth")
+  public ResponseEntity<?> noAuth() {
+    Map<String, String> body = new HashMap<>();
+    body.put("message", "unauthorized");
+    return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(body);
   }
 
 }
