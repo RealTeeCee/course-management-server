@@ -13,7 +13,9 @@ public interface LessonService {
 
     public List<LessonDto> findAllBySectionId(long sectionId);
 
-    BaseDto saveLessonToSection(LessonDto lessonDto, long sectionId);
+    public BaseDto saveLessonsToSection(LessonDto lessonDto, long sectionId);
+
+    public BaseDto updateLesson(LessonDto lessonDto, long lessonId);
 
     public BaseDto delete(long lessonId);
 

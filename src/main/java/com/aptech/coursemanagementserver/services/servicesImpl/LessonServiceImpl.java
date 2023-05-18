@@ -9,13 +9,14 @@ import org.springframework.stereotype.Service;
 import com.aptech.coursemanagementserver.dtos.LessonDto;
 import com.aptech.coursemanagementserver.dtos.baseDto.BaseDto;
 import com.aptech.coursemanagementserver.enums.AntType;
+import com.aptech.coursemanagementserver.exceptions.BadRequestException;
 import com.aptech.coursemanagementserver.models.Lesson;
 import com.aptech.coursemanagementserver.models.Section;
 import com.aptech.coursemanagementserver.models.Video;
 import com.aptech.coursemanagementserver.repositories.LessonRepository;
 import com.aptech.coursemanagementserver.repositories.SectionRepository;
 import com.aptech.coursemanagementserver.services.LessonService;
-
+import static com.aptech.coursemanagementserver.constants.GlobalStorage.BAD_REQUEST_EXCEPTION;
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -49,13 +50,12 @@ public class LessonServiceImpl implements LessonService {
     }
 
     @Override
-    public BaseDto saveLessonToSection(LessonDto lessonDto, long sectionId) {
+    public BaseDto saveLessonsToSection(LessonDto lessonDto, long sectionId) {
         Lesson lesson = new Lesson();
         Section section = sectionRepository.findById(sectionId).get();
 
         if (section == null) {
-            return BaseDto.builder().type(AntType.error)
-                    .message("This section with id: [" + sectionId + "]does not exist.").build();
+            throw new BadRequestException("This section with id: [" + sectionId + "]does not exist.");
 
         }
 
@@ -77,6 +77,21 @@ public class LessonServiceImpl implements LessonService {
     }
 
     @Override
+    public BaseDto updateLesson(LessonDto lessonDto, long lessonId) {
+        try {
+            Lesson lesson = lessonRepository.findById(lessonId).get();
+            lesson.setName(lessonDto.getName()).setDescription(lessonDto.getDescription())
+                    .setDuration(lessonDto.getDuration());
+
+            return BaseDto.builder().type(AntType.success).message("Update lesson successfully.").build();
+        } catch (NoSuchElementException e) {
+            throw new NoSuchElementException("This lesson with lessonId: [" + lessonId + "] is not exist.");
+        } catch (Exception e) {
+            throw new BadRequestException(BAD_REQUEST_EXCEPTION);
+        }
+    }
+
+    @Override
     public BaseDto delete(long lessonId) {
         try {
             Lesson lesson = lessonRepository.findById(lessonId).get();
@@ -84,13 +99,9 @@ public class LessonServiceImpl implements LessonService {
             return BaseDto.builder().type(AntType.success).message("Delete lesson successfully.")
                     .build();
         } catch (NoSuchElementException e) {
-            return BaseDto.builder().type(AntType.error)
-                    .message("This lesson with lessonId: [" + lessonId + "] is not exist.")
-                    .build();
+            throw new NoSuchElementException("This lesson with lessonId: [" + lessonId + "] is not exist.");
         } catch (Exception e) {
-            return BaseDto.builder().type(AntType.error)
-                    .message("Failed! Please check your infomation and try again.")
-                    .build();
+            throw new BadRequestException(BAD_REQUEST_EXCEPTION);
         }
     }
 }

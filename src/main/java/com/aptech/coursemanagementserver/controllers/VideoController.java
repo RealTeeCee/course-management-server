@@ -1,5 +1,7 @@
 package com.aptech.coursemanagementserver.controllers;
 
+import static com.aptech.coursemanagementserver.constants.GlobalStorage.FETCHING_FAILED;
+
 import java.util.NoSuchElementException;
 
 import org.springframework.http.HttpStatus;
@@ -16,7 +18,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.aptech.coursemanagementserver.dtos.VideoDto;
 import com.aptech.coursemanagementserver.dtos.baseDto.BaseDto;
-import com.aptech.coursemanagementserver.enums.AntType;
 import com.aptech.coursemanagementserver.exceptions.BadRequestException;
 import com.aptech.coursemanagementserver.exceptions.ResourceNotFoundException;
 import com.aptech.coursemanagementserver.services.VideoService;
@@ -44,8 +45,7 @@ public class VideoController {
         } catch (NoSuchElementException e) {
             throw new ResourceNotFoundException("Video", "videoId", Long.toString(lessonId));
         } catch (Exception e) {
-            throw new BadRequestException("Fetch data failed!");
-
+            throw new BadRequestException(FETCHING_FAILED);
         }
     }
 
@@ -57,7 +57,7 @@ public class VideoController {
             return new ResponseEntity<BaseDto>(videoService.save(videoDto, lessonId), HttpStatus.OK);
         } catch (Exception e) {
             log.error("Caused: " + e.getCause() + " ,Message: " + e.getMessage(), e);
-            return new ResponseEntity<BaseDto>(videoService.save(videoDto, lessonId), HttpStatus.BAD_REQUEST);
+            throw new BadRequestException(e.getMessage());
 
         }
     }
@@ -67,9 +67,7 @@ public class VideoController {
         try {
             return new ResponseEntity<BaseDto>(videoService.delete(videoId), HttpStatus.OK);
         } catch (Exception e) {
-            return new ResponseEntity<BaseDto>(videoService.delete(videoId),
-                    HttpStatus.BAD_REQUEST);
+            throw new BadRequestException(e.getMessage());
         }
-
     }
 }

@@ -26,6 +26,8 @@ import com.aptech.coursemanagementserver.dtos.RegisterRequestDto;
 import com.aptech.coursemanagementserver.dtos.baseDto.BaseDto;
 import com.aptech.coursemanagementserver.enums.AntType;
 import com.aptech.coursemanagementserver.events.RegistrationCompleteEvent;
+import com.aptech.coursemanagementserver.exceptions.BadRequestException;
+import com.aptech.coursemanagementserver.exceptions.IsExistedException;
 import com.aptech.coursemanagementserver.models.Token;
 import com.aptech.coursemanagementserver.models.User;
 import com.aptech.coursemanagementserver.repositories.TokenRepository;
@@ -62,9 +64,10 @@ public class AuthenticationController {
       return new ResponseEntity<BaseDto>(BaseDto.builder().type(AntType.success)
           .message("Success! Please, check your email for to complete your registration.").build(), HttpStatus.OK);
 
+    } catch (IsExistedException e) {
+      throw new IsExistedException(e.getMessage());
     } catch (Exception e) {
-      return new ResponseEntity<BaseDto>(BaseDto.builder().type(AntType.error)
-          .message("Failed! Please check your infomation and try again.").build(), HttpStatus.BAD_REQUEST);
+      throw new BadRequestException(e.getMessage());
     }
 
   }
@@ -99,7 +102,7 @@ public class AuthenticationController {
     try {
       return new ResponseEntity<AuthenticationResponseDto>(authService.login(request), HttpStatus.OK);
     } catch (Exception e) {
-      return new ResponseEntity<AuthenticationResponseDto>(authService.login(request), HttpStatus.BAD_REQUEST);
+      throw new BadRequestException(e.getMessage());
     }
 
   }

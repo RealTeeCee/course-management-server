@@ -1,5 +1,6 @@
 package com.aptech.coursemanagementserver.exceptions.exceptionsHandler;
 
+import java.io.FileNotFoundException;
 import java.time.LocalDateTime;
 
 import org.springframework.http.HttpStatus;
@@ -13,6 +14,7 @@ import com.aptech.coursemanagementserver.dtos.ErrorDetails;
 import com.aptech.coursemanagementserver.enums.AntType;
 import com.aptech.coursemanagementserver.exceptions.BadRequestException;
 import com.aptech.coursemanagementserver.exceptions.InvalidTokenException;
+import com.aptech.coursemanagementserver.exceptions.IsExistedException;
 import com.aptech.coursemanagementserver.exceptions.ResourceNotFoundException;
 import com.aptech.coursemanagementserver.exceptions.UserNotFoundException;
 
@@ -34,10 +36,10 @@ public class GlobalExceptionHandler {
 
         // 400 BadRequest
         @ExceptionHandler(BadRequestException.class)
-        public ResponseEntity<ErrorDetails> handleAllException(BadRequestException invalidTokenException,
+        public ResponseEntity<ErrorDetails> handleAllException(BadRequestException badRequestException,
                         WebRequest webRequest) {
                 ErrorDetails errorDetails = new ErrorDetails(LocalDateTime.now(), AntType.error,
-                                invalidTokenException.getMessage(),
+                                badRequestException.getMessage(),
                                 webRequest.getDescription(false), HttpStatus.BAD_REQUEST.toString());
                 return new ResponseEntity<>(errorDetails, HttpStatus.BAD_REQUEST);
         }
@@ -81,6 +83,26 @@ public class GlobalExceptionHandler {
                                 webRequest.getDescription(false), HttpStatus.NOT_FOUND.toString());
 
                 return new ResponseEntity<>(errorDetails, HttpStatus.NOT_FOUND);
+        }
+
+        @ExceptionHandler(FileNotFoundException.class)
+        public ResponseEntity<ErrorDetails> handleFileNotFoundException(
+                        FileNotFoundException fileNotFoundException, WebRequest webRequest) {
+                ErrorDetails errorDetails = new ErrorDetails(LocalDateTime.now(), AntType.error,
+                                "URL cannot be resolved in the file system for checking its content length",
+                                webRequest.getDescription(false), HttpStatus.NOT_FOUND.toString());
+
+                return new ResponseEntity<>(errorDetails, HttpStatus.NOT_FOUND);
+        }
+
+        // 409 IsExisted
+        @ExceptionHandler(IsExistedException.class)
+        public ResponseEntity<ErrorDetails> handleExistedException(IsExistedException isExistedException,
+                        WebRequest webRequest) {
+                ErrorDetails errorDetails = new ErrorDetails(LocalDateTime.now(), AntType.warning,
+                                isExistedException.getMessage(),
+                                webRequest.getDescription(false), HttpStatus.CONFLICT.toString());
+                return new ResponseEntity<>(errorDetails, HttpStatus.CONFLICT);
         }
 
 }

@@ -4,6 +4,7 @@ import static com.aptech.coursemanagementserver.constants.GlobalStorage.TOKEN_PR
 
 import java.io.IOException;
 import java.text.ParseException;
+import java.util.Optional;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpHeaders;
@@ -19,6 +20,7 @@ import com.aptech.coursemanagementserver.dtos.RegisterRequestDto;
 import com.aptech.coursemanagementserver.enums.AntType;
 import com.aptech.coursemanagementserver.exceptions.BadRequestException;
 import com.aptech.coursemanagementserver.exceptions.InvalidTokenException;
+import com.aptech.coursemanagementserver.exceptions.IsExistedException;
 import com.aptech.coursemanagementserver.models.Token;
 import com.aptech.coursemanagementserver.models.User;
 import com.aptech.coursemanagementserver.repositories.TokenRepository;
@@ -76,7 +78,11 @@ public class AuthenticationService {
 
     // Register method create a user save it to db and generated token
     public User register(RegisterRequestDto request) {
+        Optional<User> user = repository.findByEmail(request.getEmail());
 
+        if (user.isPresent()) {
+            throw new IsExistedException(request.getEmail());
+        }
         // var user = User.builder()
         // .first_name(request.getFirstname())
         // .last_name(request.getLastname())
@@ -151,7 +157,7 @@ public class AuthenticationService {
     }
 
     // Evict (revoke) back all tokens from user
-    private void revokeAllUserTokens(User user) {
+    public void revokeAllUserTokens(User user) {
         var validUserTokens = tokenRepository.findAllValidTokenByUser(user.getId());
         if (validUserTokens.isEmpty())
             return;

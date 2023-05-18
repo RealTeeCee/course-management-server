@@ -12,11 +12,13 @@ import org.springframework.stereotype.Service;
 import com.aptech.coursemanagementserver.dtos.SectionDto;
 import com.aptech.coursemanagementserver.dtos.baseDto.BaseDto;
 import com.aptech.coursemanagementserver.enums.AntType;
+import com.aptech.coursemanagementserver.exceptions.BadRequestException;
 import com.aptech.coursemanagementserver.models.Course;
 import com.aptech.coursemanagementserver.models.Section;
 import com.aptech.coursemanagementserver.repositories.CourseRepository;
 import com.aptech.coursemanagementserver.repositories.SectionRepository;
 import com.aptech.coursemanagementserver.services.SectionService;
+import static com.aptech.coursemanagementserver.constants.GlobalStorage.BAD_REQUEST_EXCEPTION;
 
 import lombok.RequiredArgsConstructor;
 
@@ -100,15 +102,26 @@ public class SectionServiceImpl implements SectionService {
             return BaseDto.builder().type(AntType.success).message("Create section successfully.").build();
 
         } catch (NoSuchElementException e) {
-            return BaseDto.builder().type(AntType.error)
-                    .message("This course with courseId: [" + courseId + "] is not exist.")
-                    .build();
-        } catch (Exception e) {
-            return BaseDto.builder().type(AntType.error)
-                    .message("Failed! Please check your infomation and try again.")
-                    .build();
-        }
+            throw new BadRequestException("This course with courseId: [" + courseId + "] is not exist.");
 
+        } catch (Exception e) {
+            throw new BadRequestException(BAD_REQUEST_EXCEPTION);
+        }
+    }
+
+    @Override
+    public BaseDto updateSection(SectionDto sectionDto, long sectionId) {
+        try {
+            Section section = sectionRepository.findById(sectionId).get();
+            section.setName(sectionDto.getName());
+
+            return BaseDto.builder().type(AntType.success).message("Update section successfully.").build();
+        } catch (NoSuchElementException e) {
+            throw new BadRequestException("This section with sectionId: [" + sectionId + "] is not exist.");
+
+        } catch (Exception e) {
+            throw new BadRequestException(BAD_REQUEST_EXCEPTION);
+        }
     }
 
     @Override
@@ -119,13 +132,10 @@ public class SectionServiceImpl implements SectionService {
             return BaseDto.builder().type(AntType.success).message("Delete section successfully.")
                     .build();
         } catch (NoSuchElementException e) {
-            return BaseDto.builder().type(AntType.error)
-                    .message("This section with sectionId: [" + sectionId + "] is not exist.")
-                    .build();
+            throw new BadRequestException("This section with sectionId: [" + sectionId + "] is not exist.");
+
         } catch (Exception e) {
-            return BaseDto.builder().type(AntType.error)
-                    .message("Failed! Please check your infomation and try again.")
-                    .build();
+            throw new BadRequestException(BAD_REQUEST_EXCEPTION);
         }
     }
 }

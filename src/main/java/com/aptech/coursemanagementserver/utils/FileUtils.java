@@ -11,6 +11,7 @@ public class FileUtils {
         if (dotIndex > 0 && dotIndex < originalFilename.length() - 1) {
             extension = originalFilename.substring(dotIndex + 1);
         }
+
         return extension;
     }
 
@@ -21,6 +22,7 @@ public class FileUtils {
         if (dotIndex > 0 && dotIndex < fileName.length() - 1) {
             extension = fileName.substring(dotIndex + 1);
         }
+
         return extension;
     }
 }

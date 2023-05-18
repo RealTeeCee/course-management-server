@@ -18,6 +18,10 @@ public interface CourseService {
 
     public List<Course> findAll();
 
+    public Course save(Course course);
+
+    public Course setProperties(CourseDto courseDto, Course course);
+
     public Course save(CourseDto course);
 
     public List<Course> saveAll(List<CourseDto> courses);

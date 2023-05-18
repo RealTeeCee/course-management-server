@@ -1,8 +1,5 @@
 package com.aptech.coursemanagementserver.configs;
 
-import static org.modelmapper.config.Configuration.AccessLevel.PRIVATE;
-import static org.modelmapper.convention.NamingConventions.JAVABEANS_MUTATOR;
-
 import org.modelmapper.ModelMapper;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
