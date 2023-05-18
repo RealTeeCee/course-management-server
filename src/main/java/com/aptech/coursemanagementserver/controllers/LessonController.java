@@ -11,18 +11,19 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.aptech.coursemanagementserver.dtos.LessonDto;
 import com.aptech.coursemanagementserver.dtos.baseDto.BaseDto;
-import com.aptech.coursemanagementserver.enums.AntType;
 import com.aptech.coursemanagementserver.exceptions.BadRequestException;
 import com.aptech.coursemanagementserver.exceptions.ResourceNotFoundException;
 import com.aptech.coursemanagementserver.services.LessonService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
+import static com.aptech.coursemanagementserver.constants.GlobalStorage.FETCHING_FAILED;
 
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -45,7 +46,7 @@ public class LessonController {
         } catch (NoSuchElementException e) {
             throw new ResourceNotFoundException("Lessons", "sectionId", Long.toString(sectionId));
         } catch (Exception e) {
-            throw new BadRequestException("Fetch data failed!");
+            throw new BadRequestException(FETCHING_FAILED);
         }
     }
 
@@ -54,12 +55,26 @@ public class LessonController {
             @PathVariable("sectionId") long sectionId,
             @RequestBody LessonDto lessonDto) throws JsonMappingException, JsonProcessingException {
         try {
-            return new ResponseEntity<BaseDto>(lessonService.saveLessonToSection(lessonDto, sectionId), HttpStatus.OK);
+            return new ResponseEntity<BaseDto>(lessonService.saveLessonsToSection(lessonDto, sectionId), HttpStatus.OK);
 
+        } catch (BadRequestException e) {
+            throw new BadRequestException(e.getMessage());
         } catch (Exception e) {
             log.error("Caused: " + e.getCause() + " ,Message: " + e.getMessage(), e);
-            return new ResponseEntity<BaseDto>(lessonService.saveLessonToSection(lessonDto, sectionId),
-                    HttpStatus.BAD_REQUEST);
+            throw new BadRequestException(e.getMessage());
+        }
+    }
+
+    @PutMapping
+    public ResponseEntity<BaseDto> createLessonsBySectionId(
+            @RequestBody LessonDto lessonDto, long lessonId) throws JsonMappingException, JsonProcessingException {
+        try {
+            return new ResponseEntity<BaseDto>(lessonService.updateLesson(lessonDto, lessonId), HttpStatus.OK);
+
+        } catch (NoSuchElementException e) {
+            throw new NoSuchElementException(e.getMessage());
+        } catch (Exception e) {
+            throw new BadRequestException(e.getMessage());
         }
     }
 
@@ -67,9 +82,10 @@ public class LessonController {
     public ResponseEntity<BaseDto> deleteLesson(long lessonId) {
         try {
             return new ResponseEntity<BaseDto>(lessonService.delete(lessonId), HttpStatus.OK);
+        } catch (NoSuchElementException e) {
+            throw new NoSuchElementException(e.getMessage());
         } catch (Exception e) {
-            return new ResponseEntity<BaseDto>(lessonService.delete(lessonId),
-                    HttpStatus.BAD_REQUEST);
+            throw new BadRequestException(e.getMessage());
         }
 
     }

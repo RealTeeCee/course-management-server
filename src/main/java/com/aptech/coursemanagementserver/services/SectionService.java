@@ -17,5 +17,7 @@ public interface SectionService {
 
     public BaseDto saveSectionsToCourse(SectionDto section, long courseId);
 
+    public BaseDto updateSection(SectionDto sectionDto, long sectionId);
+
     public BaseDto delete(long sectionId);
 }

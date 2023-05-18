@@ -5,6 +5,8 @@ import java.time.Instant;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
+import com.aptech.coursemanagementserver.enums.VideoType;
+
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -37,6 +39,9 @@ public class Video {
     private String url;
     // @Column(columnDefinition = "bigint")
     // private String lesson_id;
+
+    private VideoType videoType;
+    private long duration;
 
     @CreationTimestamp
     private Instant created_at = Instant.now();

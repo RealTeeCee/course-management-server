@@ -16,5 +16,7 @@ import lombok.NoArgsConstructor;
 public class SectionDto {
     private List<String> sections;
 
+    private String name;
+
     private long courseId;
 }

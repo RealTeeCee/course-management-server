@@ -9,11 +9,13 @@ import org.springframework.stereotype.Service;
 import com.aptech.coursemanagementserver.dtos.VideoDto;
 import com.aptech.coursemanagementserver.dtos.baseDto.BaseDto;
 import com.aptech.coursemanagementserver.enums.AntType;
+import com.aptech.coursemanagementserver.exceptions.BadRequestException;
 import com.aptech.coursemanagementserver.models.Lesson;
 import com.aptech.coursemanagementserver.models.Video;
 import com.aptech.coursemanagementserver.repositories.LessonRepository;
 import com.aptech.coursemanagementserver.repositories.VideoRepository;
 import com.aptech.coursemanagementserver.services.VideoService;
+import static com.aptech.coursemanagementserver.constants.GlobalStorage.BAD_REQUEST_EXCEPTION;
 
 import lombok.RequiredArgsConstructor;
 
@@ -49,13 +51,11 @@ public class VideoServiceImpl implements VideoService {
         Video video = new Video();
 
         if (lesson == null) {
-            return BaseDto.builder().type(AntType.error)
-                    .message("This lesson with id: [" + lessonId + "]does not exist.").build();
+            throw new BadRequestException("This lesson with id: [" + lessonId + "]does not exist.");
         }
 
         if (videoDto.getName().contains(lesson.getVideo().getName())) {
-            return BaseDto.builder().type(AntType.error).message(videoDto.getName() + " is already existed.")
-                    .build();
+            throw new BadRequestException(videoDto.getName() + " is already existed.");
         }
 
         video.setLesson(lesson).setName(videoDto.getName()).setUrl(videoDto.getUrl());
@@ -79,13 +79,26 @@ public class VideoServiceImpl implements VideoService {
             return BaseDto.builder().type(AntType.success).message("Delete video successfully.")
                     .build();
         } catch (NoSuchElementException e) {
-            return BaseDto.builder().type(AntType.error)
-                    .message("This video with videoId: [" + videoId + "] is not exist.")
-                    .build();
+            throw new BadRequestException("This video with videoId: [" + videoId + "] is not exist.");
+
         } catch (Exception e) {
-            return BaseDto.builder().type(AntType.error)
-                    .message("Failed! Please check your infomation and try again.")
+            throw new BadRequestException(BAD_REQUEST_EXCEPTION);
+        }
+    }
+
+    @Override
+    public BaseDto update(VideoDto videoDto, long videoId) {
+        try {
+            Video video = videoRepository.findById(videoId).get();
+            video.setUrl(videoDto.getUrl()).setName(videoDto.getName());
+
+            return BaseDto.builder().type(AntType.success).message("Update video successfully.")
                     .build();
+        } catch (NoSuchElementException e) {
+            throw new BadRequestException("This video with videoId: [" + videoId + "] is not exist.");
+
+        } catch (Exception e) {
+            throw new BadRequestException(BAD_REQUEST_EXCEPTION);
         }
     }
 }

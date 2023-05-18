@@ -18,4 +18,6 @@ public class RegisterRequestDto {
     private String password;
     @Builder.Default
     private Role role = Role.USER;
+    @Builder.Default
+    private Boolean isVerified = false;
 }

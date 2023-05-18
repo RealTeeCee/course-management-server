@@ -22,6 +22,8 @@ import com.aptech.coursemanagementserver.repositories.SectionRepository;
 import com.aptech.coursemanagementserver.repositories.TagRepository;
 import com.aptech.coursemanagementserver.services.CourseService;
 
+import static com.aptech.coursemanagementserver.constants.GlobalStorage.BAD_REQUEST_EXCEPTION;
+
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -56,9 +58,19 @@ public class CourseServiceImpl implements CourseService {
     }
 
     @Override
+    public Course save(Course course) {
+        return courseRepository.save(course);
+    }
+
+    @Override
     public Course save(CourseDto courseDto) {
         Course course = new Course();
 
+        setProperties(courseDto, course);
+        return course;
+    }
+
+    public Course setProperties(CourseDto courseDto, Course course) {
         course.setName(courseDto.getName().replaceAll("\\s{2,}", " "))
                 .setCategory(categoryRepository.findById(courseDto.getCategory()).get())
                 .setTags(splitTag(courseDto.getTagName()))
@@ -90,6 +102,7 @@ public class CourseServiceImpl implements CourseService {
         }
 
         sectionRepository.saveAll(sections);
+
         return course;
     }
 
@@ -144,7 +157,7 @@ public class CourseServiceImpl implements CourseService {
                     .build();
         } catch (Exception e) {
             return BaseDto.builder().type(AntType.error)
-                    .message("Failed! Please check your infomation and try again.")
+                    .message(BAD_REQUEST_EXCEPTION)
                     .build();
         }
     }

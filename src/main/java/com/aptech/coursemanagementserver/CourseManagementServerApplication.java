@@ -44,6 +44,7 @@ public class CourseManagementServerApplication {
 					.email("admin@mail.com")
 					.password("password")
 					.role(ADMIN)
+					.isVerified(true)
 					.build();
 
 			System.out.println(
@@ -56,6 +57,8 @@ public class CourseManagementServerApplication {
 					.email("manager@mail.com")
 					.password("password")
 					.role(MANAGER)
+					.isVerified(true)
+
 					.build();
 			System.out.println(
 					"Manager token: " +
@@ -67,6 +70,8 @@ public class CourseManagementServerApplication {
 					.email("employee@mail.com")
 					.password("password")
 					.role(EMPLOYEE)
+					.isVerified(true)
+
 					.build();
 			System.out.println("Employee token: "
 					+
@@ -78,6 +83,8 @@ public class CourseManagementServerApplication {
 					.email("user-test@mail.com")
 					.password("password")
 					// .role(USER)
+					.isVerified(true)
+
 					.build();
 			System.out.println(
 					"User token: " +
