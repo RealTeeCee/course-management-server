@@ -1,5 +1,6 @@
 package com.aptech.coursemanagementserver.services.authServices;
 
+import java.nio.file.AccessDeniedException;
 import java.security.Key;
 import java.util.ArrayList;
 import java.util.Date;
@@ -10,10 +11,12 @@ import java.util.function.Function;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
 import com.aptech.coursemanagementserver.enums.TokenType;
+import com.aptech.coursemanagementserver.exceptions.InvalidTokenException;
 import com.aptech.coursemanagementserver.models.Token;
 import com.aptech.coursemanagementserver.models.User;
 import com.aptech.coursemanagementserver.repositories.TokenRepository;
@@ -24,6 +27,7 @@ import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import lombok.extern.slf4j.Slf4j;
+import static com.aptech.coursemanagementserver.constants.GlobalStorage.INVALID_TOKEN_EXCEPTION;
 
 /*
  * JWT Service manipulate Jwt Token
@@ -44,7 +48,12 @@ public class JwtService {
 
   // Method receive token and extract to get email of user
   public String extractUsername(String token) {
-    return extractClaim(token, Claims::getSubject);// Subject should be username (email) of User
+    try {
+      return extractClaim(token, Claims::getSubject);// Subject should be username (email) of User
+
+    } catch (Exception e) {
+      throw new InvalidTokenException(INVALID_TOKEN_EXCEPTION, HttpStatus.FORBIDDEN);
+    }
   }
 
   // Method to extract Claim that we pass

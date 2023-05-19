@@ -50,8 +50,8 @@ public class GlobalExceptionHandler {
                         WebRequest webRequest) {
                 ErrorDetails errorDetails = new ErrorDetails(LocalDateTime.now(), AntType.error,
                                 invalidTokenException.getMessage(),
-                                webRequest.getDescription(false), HttpStatus.UNAUTHORIZED.toString());
-                return new ResponseEntity<>(errorDetails, HttpStatus.UNAUTHORIZED);
+                                webRequest.getDescription(false), invalidTokenException.getStatus().toString());
+                return new ResponseEntity<>(errorDetails, invalidTokenException.getStatus());
         }
 
         // 403 Handle Security Authenticate

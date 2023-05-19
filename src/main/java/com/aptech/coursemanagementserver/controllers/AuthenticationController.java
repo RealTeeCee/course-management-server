@@ -124,6 +124,7 @@ public class AuthenticationController {
   public ResponseEntity<AuthenticationResponseDto> renewToken(@PathVariable String refreshToken) {
 
     String email = jwtService.extractUsername(refreshToken);
+
     Optional<User> user = userService.findByEmail(email);
     if (user.isPresent()) {
       String newToken = jwtService.saveUserToken(user.get());

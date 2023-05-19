@@ -23,4 +23,5 @@ public interface GlobalStorage {
     String GLOBAL_EXCEPTION = "Something wrong. Please try again";
     String FETCHING_FAILED = "Fetch data failed!";
     String BAD_REQUEST_EXCEPTION = "Failed! Please check your infomation and try again.";
+    String INVALID_TOKEN_EXCEPTION = "Failed! Token is not valid.";
 }
