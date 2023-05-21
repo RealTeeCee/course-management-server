@@ -180,6 +180,7 @@ public class CourseController {
                         String extension = FilenameUtils.getExtension(file.getOriginalFilename());
 
                         CourseDto courseDto = objectMapper.readValue(courseJson, CourseDto.class);
+                        long id = courseDto.getId();
                         courseDto.setImage(
                                         Slugify.builder().build().slugify(courseDto.getName()) + "_InDB." + extension);
 
@@ -205,13 +206,6 @@ public class CourseController {
                 }
         }
 
-        private String generateFilename(Instant instant, String extension, Course savedCourse) {
-                return instant.atZone(ZoneId.systemDefault())
-                                .format(DateTimeFormatter.ofPattern("ddMMyyyy")) + "_"
-                                + Slugify.builder().build().slugify(savedCourse.getName())
-                                + "_" + savedCourse.getId() + "." + extension;
-        }
-
         @DeleteMapping(path = "/delete")
         public ResponseEntity<BaseDto> deleteCourse(long courseId) {
                 try {
@@ -233,4 +227,12 @@ public class CourseController {
                 }
 
         }
+
+        private String generateFilename(Instant instant, String extension, Course savedCourse) {
+                return instant.atZone(ZoneId.systemDefault())
+                                .format(DateTimeFormatter.ofPattern("ddMMyyyy")) + "_"
+                                + Slugify.builder().build().slugify(savedCourse.getName())
+                                + "_" + savedCourse.getId() + "." + extension;
+        }
+
 }

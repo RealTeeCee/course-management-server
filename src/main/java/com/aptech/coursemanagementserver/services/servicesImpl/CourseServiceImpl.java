@@ -5,7 +5,6 @@ import static com.aptech.coursemanagementserver.constants.GlobalStorage.BAD_REQU
 import java.util.HashSet;
 import java.util.List;
 import java.util.NoSuchElementException;
-import java.util.Optional;
 import java.util.Set;
 
 import org.springframework.stereotype.Service;
@@ -139,33 +138,69 @@ public class CourseServiceImpl implements CourseService {
         boolean isUpdatedCourse = course.getId() > 0 ? true : false;
 
         // Check achievement if not exist add new.
-        Set<Achievement> newAchievements = isUpdatedCourse ? course.getAchievements() : (new HashSet<>());
+        Set<Achievement> newAchievements;
+        Set<Achievement> updatedAchievements = new HashSet<>();
+
+        if (isUpdatedCourse) {
+            newAchievements = course.getAchievements();
+        } else {
+            newAchievements = new HashSet<>();
+        }
+
+        // Set<Achievement> newAchievements = new HashSet<>();
 
         String[] achievements = achievement.split(",");
         for (String achievementName : achievements) {
-            Achievement updatedAchievement = achievementRepository.findAchievementByNameAndCourseId(achievementName,
-                    course.getId());
+            if (isUpdatedCourse) {
+                Achievement achievementOfCourse = achievementRepository
+                        .findAchievementByNameAndCourseId(achievementName, course.getId());
+                if (achievementOfCourse != null && achievementOfCourse.getName() == achievementName) {
+                    updatedAchievements.add(achievementOfCourse);
+                    continue;
+                }
 
-            if (updatedAchievement != null) {
+                Achievement updatedAchievement = new Achievement();
                 updatedAchievement.setName(achievementName);
-                newAchievements.add(updatedAchievement);
+                updatedAchievements.add(updatedAchievement);
                 continue;
             }
 
             if (achievementRepository.findAchievementByName(achievementName) == null) {
-
                 Achievement newAchievement = new Achievement();
                 newAchievement.setName(achievementName);
                 newAchievements.add(newAchievement);
             }
-
         }
+
+        if (isUpdatedCourse) {
+            achievementRepository.deleteAll(newAchievements);
+            newAchievements.removeAll(newAchievements);
+
+            newAchievements.addAll(updatedAchievements);
+        }
+
         achievementRepository.saveAll(newAchievements);
         // Asign achievement of course by set achievement generated from string
         // achievement.
-
+        /*
+         * Set<Achievement> achievementsOfCourse = course.getAchievements();
+         * achievementsOfCourse.removeAll(achievementsOfCourse);
+         * for (String achievementName : achievements) {
+         * 
+         * Achievement newAchievement = new Achievement();
+         * newAchievement.setName(achievementName);
+         * newAchievements.add(newAchievement);
+         * 
+         * // If not contain -> add
+         * if (!achievementsOfCourse.contains(newAchievement)) {
+         * achievementsOfCourse.add(newAchievement);
+         * }
+         * }
+         * achievementRepository.saveAll(newAchievements);
+         * 
+         * return isUpdatedCourse ? achievementsOfCourse : newAchievements;
+         */
         return newAchievements;
-
     }
 
     @Override
