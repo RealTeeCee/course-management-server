@@ -34,9 +34,9 @@ public class Lesson {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(columnDefinition = "bigint")
     private long id;
-    @Column(columnDefinition = "varchar(100)")
+    @Column(columnDefinition = "nvarchar(100)")
     private String name;
-    @Column(columnDefinition = "text")
+    @Column(columnDefinition = "ntext")
     private String description;
     // @Column(columnDefinition = "bigint")
     // private long section_id;

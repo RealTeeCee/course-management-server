@@ -1,8 +1,11 @@
 package com.aptech.coursemanagementserver.services.servicesImpl;
 
+import static com.aptech.coursemanagementserver.constants.GlobalStorage.BAD_REQUEST_EXCEPTION;
+
 import java.util.HashSet;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.Optional;
 import java.util.Set;
 
 import org.springframework.stereotype.Service;
@@ -21,8 +24,7 @@ import com.aptech.coursemanagementserver.repositories.CourseRepository;
 import com.aptech.coursemanagementserver.repositories.SectionRepository;
 import com.aptech.coursemanagementserver.repositories.TagRepository;
 import com.aptech.coursemanagementserver.services.CourseService;
-
-import static com.aptech.coursemanagementserver.constants.GlobalStorage.BAD_REQUEST_EXCEPTION;
+import com.github.slugify.Slugify;
 
 import lombok.RequiredArgsConstructor;
 
@@ -71,12 +73,14 @@ public class CourseServiceImpl implements CourseService {
     }
 
     public Course setProperties(CourseDto courseDto, Course course) {
+
         course.setName(courseDto.getName().replaceAll("\\s{2,}", " "))
                 .setCategory(categoryRepository.findById(courseDto.getCategory()).get())
                 .setTags(splitTag(courseDto.getTagName()))
-                .setAchievements(splitAchievement(courseDto.getAchievementName()))
+                .setAchievements(
+                        splitAchievement(courseDto.getAchievementName(), course))
                 .setImage(courseDto.getImage())
-                .setSlug(courseDto.getName().toLowerCase().replaceAll("\\s{2,}", " ").replace(" ", "-"))
+                .setSlug(Slugify.builder().build().slugify(courseDto.getName()))
                 .setDuration(courseDto.getDuration())
                 .setDescription(courseDto.getDescription())
                 .setPrice(courseDto.getPrice())
@@ -85,7 +89,7 @@ public class CourseServiceImpl implements CourseService {
         courseRepository.save(course);
 
         List<String> sectionsString = courseDto.getSections();
-        Set<Section> sections = new HashSet<>();
+        Set<Section> sections = course.getSections();
 
         if (sectionsString != null) {
             int i = 0;
@@ -94,7 +98,7 @@ public class CourseServiceImpl implements CourseService {
                 String sectionString = sectionsString.get(i);
                 if (sectionString != null) {
                     section.setName(sectionString);
-                    section.setCourse(findByName(courseDto.getName()));
+                    section.setCourse(course);
                     sections.add(section);
                 }
                 i++;
@@ -130,18 +134,38 @@ public class CourseServiceImpl implements CourseService {
     }
 
     @Override
-    public Set<Achievement> splitAchievement(String achievement) {
-        Set<Achievement> newAchievements = new HashSet<>();
+    public Set<Achievement> splitAchievement(String achievement, Course course) {
+
+        boolean isUpdatedCourse = course.getId() > 0 ? true : false;
+
+        // Check achievement if not exist add new.
+        Set<Achievement> newAchievements = isUpdatedCourse ? course.getAchievements() : (new HashSet<>());
+
         String[] achievements = achievement.split(",");
         for (String achievementName : achievements) {
+            Achievement updatedAchievement = achievementRepository.findAchievementByNameAndCourseId(achievementName,
+                    course.getId());
+
+            if (updatedAchievement != null) {
+                updatedAchievement.setName(achievementName);
+                newAchievements.add(updatedAchievement);
+                continue;
+            }
+
             if (achievementRepository.findAchievementByName(achievementName) == null) {
+
                 Achievement newAchievement = new Achievement();
                 newAchievement.setName(achievementName);
                 newAchievements.add(newAchievement);
             }
+
         }
         achievementRepository.saveAll(newAchievements);
+        // Asign achievement of course by set achievement generated from string
+        // achievement.
+
         return newAchievements;
+
     }
 
     @Override

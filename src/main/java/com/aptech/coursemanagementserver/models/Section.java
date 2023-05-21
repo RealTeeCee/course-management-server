@@ -35,7 +35,7 @@ public class Section {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(columnDefinition = "bigint")
     private long id;
-    @Column(columnDefinition = "varchar(100)")
+    @Column(columnDefinition = "nvarchar(100)")
     @EqualsAndHashCode.Include
     private String name;
     // @Column(columnDefinition = "bigint")

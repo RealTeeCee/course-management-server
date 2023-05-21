@@ -16,6 +16,8 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @EqualsAndHashCode(callSuper = false)
 public class CourseDto {
+
+    private long id;
     private String name;
     private String description;
     private String slug;

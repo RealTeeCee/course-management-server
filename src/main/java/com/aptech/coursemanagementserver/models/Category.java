@@ -34,7 +34,7 @@ public class Category {
     @Column(columnDefinition = "bigint")
     private long id;
     @EqualsAndHashCode.Include
-    @Column(columnDefinition = "varchar(100)")
+    @Column(columnDefinition = "nvarchar(100)")
     private String name;
 
     @CreationTimestamp

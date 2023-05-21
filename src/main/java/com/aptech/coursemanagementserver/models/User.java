@@ -53,7 +53,7 @@ public class User implements UserDetails, OAuth2User {
     private String first_name;
     @Column(columnDefinition = "nvarchar(100)")
     private String last_name;
-    @Column(unique = true, columnDefinition = "varchar(100)")
+    @Column(unique = true, columnDefinition = "nvarchar(100)")
     private String email;
     @EqualsAndHashCode.Include
     private String password;

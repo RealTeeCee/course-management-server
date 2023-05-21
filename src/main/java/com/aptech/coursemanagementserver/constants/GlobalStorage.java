@@ -1,10 +1,15 @@
 package com.aptech.coursemanagementserver.constants;
 
+import java.nio.file.Path;
+import java.nio.file.Paths;
+
 public interface GlobalStorage {
     // import static com.aptech.coursemanagementserver.constants.GlobalStorage.*;
-
     String TOKEN_PREFIX = "Bearer ";
     String HEADER_STRING = "Authorization";
+
+    // PATH ROOT
+    Path COURSE_PATH = Paths.get("assets", "images", "course");
 
     // DOMAIN EMAIL
     String DOMAIN_EMAIL = "contact@cmproj.com";

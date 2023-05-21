@@ -31,7 +31,7 @@ public class Answer {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(columnDefinition = "bigint")
     private long id;
-    @Column(columnDefinition = "text")
+    @Column(columnDefinition = "ntext")
     private String content;
     // @Column(columnDefinition = "bigint")
     // private long user_id;

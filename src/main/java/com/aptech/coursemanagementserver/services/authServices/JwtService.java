@@ -1,6 +1,7 @@
 package com.aptech.coursemanagementserver.services.authServices;
 
-import java.nio.file.AccessDeniedException;
+import static com.aptech.coursemanagementserver.constants.GlobalStorage.INVALID_TOKEN_EXCEPTION;
+
 import java.security.Key;
 import java.util.ArrayList;
 import java.util.Date;
@@ -27,7 +28,6 @@ import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import lombok.extern.slf4j.Slf4j;
-import static com.aptech.coursemanagementserver.constants.GlobalStorage.INVALID_TOKEN_EXCEPTION;
 
 /*
  * JWT Service manipulate Jwt Token

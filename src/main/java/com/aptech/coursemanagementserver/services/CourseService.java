@@ -28,7 +28,7 @@ public interface CourseService {
 
     public Set<Tag> splitTag(String tag);
 
-    public Set<Achievement> splitAchievement(String achievement);
+    public Set<Achievement> splitAchievement(String achievement, Course course);
 
     public BaseDto delete(long courseId);
 }

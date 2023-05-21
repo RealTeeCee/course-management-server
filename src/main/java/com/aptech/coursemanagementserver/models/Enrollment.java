@@ -36,7 +36,7 @@ public class Enrollment {
     private long progress;
     @Column(columnDefinition = "datetime")
     private LocalTime resume_point;
-    @Column(columnDefinition = "text")
+    @Column(columnDefinition = "ntext")
     private String comment;
     @Column(columnDefinition = "decimal(3,2)")
     private double rating;

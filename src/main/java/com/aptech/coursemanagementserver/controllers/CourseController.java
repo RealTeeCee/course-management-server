@@ -1,12 +1,12 @@
 package com.aptech.coursemanagementserver.controllers;
 
 import static com.aptech.coursemanagementserver.constants.GlobalStorage.BAD_REQUEST_EXCEPTION;
+import static com.aptech.coursemanagementserver.constants.GlobalStorage.COURSE_PATH;
 import static com.aptech.coursemanagementserver.constants.GlobalStorage.GLOBAL_EXCEPTION;
 
 import java.net.MalformedURLException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.time.Instant;
 import java.time.ZoneId;
@@ -41,23 +41,24 @@ import com.aptech.coursemanagementserver.exceptions.InvalidTokenException;
 import com.aptech.coursemanagementserver.exceptions.ResourceNotFoundException;
 import com.aptech.coursemanagementserver.models.Course;
 import com.aptech.coursemanagementserver.services.CourseService;
-import com.aptech.coursemanagementserver.utils.FileUtils;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.github.slugify.Slugify;
 
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/admin")
-@PreAuthorize("hasAnyRole('ADMIN')")
+@RequestMapping("/course")
+@PreAuthorize("hasAnyRole('ADMIN', 'MANAGER', 'EMPLOYEE')")
 @Tag(name = "Course Endpoints")
 public class CourseController {
         private final CourseService courseService;
 
-        @GetMapping(path = "/courses")
+        @GetMapping
+        @PreAuthorize("hasAnyRole('USER', 'ADMIN', 'MANAGER', 'EMPLOYEE')")
         public ResponseEntity<List<CourseDto>> getCourses() {
                 try {
                         List<Course> courses = courseService.findAll();
@@ -89,7 +90,9 @@ public class CourseController {
 
         }
 
-        @GetMapping(path = "/course/{id}")
+        @GetMapping(path = "/{id}")
+        @PreAuthorize("hasAnyRole('USER', 'ADMIN', 'MANAGER', 'EMPLOYEE')")
+
         public ResponseEntity<CourseDto> getCourseById(@PathVariable("id") long id) {
                 try {
                         Course course = courseService.findById(id);
@@ -114,25 +117,23 @@ public class CourseController {
 
         }
 
-        @PostMapping(path = "/course/create", consumes = { MediaType.MULTIPART_FORM_DATA_VALUE })
+        @PostMapping(path = "/create", consumes = { MediaType.MULTIPART_FORM_DATA_VALUE })
         public ResponseEntity<BaseDto> create(@RequestPart("courseJson") String courseJson,
                         @RequestPart("file") MultipartFile file) throws JsonMappingException, JsonProcessingException {
                 ObjectMapper objectMapper = new ObjectMapper();
 
                 try {
-                        String extension = FileUtils.getFileExtension(file);
+                        String extension = FilenameUtils.getExtension(file.getOriginalFilename());
 
                         CourseDto courseDto = objectMapper.readValue(courseJson, CourseDto.class);
-                        courseDto.setImage(courseDto.getName() + "_InDB." + extension);
+                        courseDto.setImage(
+                                        Slugify.builder().build().slugify(courseDto.getName()) + "_InDB." + extension);
                         Course savedCourse = courseService.save(courseDto);
 
-                        Path root = Paths.get("assets/images/course");
-                        Files.createDirectories(root);
+                        Files.createDirectories(COURSE_PATH);
 
-                        Files.copy(file.getInputStream(), root.resolve(Instant.now().atZone(ZoneId.systemDefault())
-                                        .format(DateTimeFormatter.ofPattern("ddMMyyyy")) + "_"
-                                        + savedCourse.getName().replace(" ", "-")
-                                        + "_" + savedCourse.getId() + "." + extension),
+                        Files.copy(file.getInputStream(),
+                                        COURSE_PATH.resolve(generateFilename(Instant.now(), extension, savedCourse)),
                                         StandardCopyOption.REPLACE_EXISTING);
 
                         return new ResponseEntity<BaseDto>(
@@ -146,19 +147,16 @@ public class CourseController {
                 }
         }
 
-        @GetMapping(path = "/course/download")
+        @GetMapping(path = "/download")
         @PreAuthorize("permitAll()")
         public ResponseEntity<Resource> download(@RequestParam long courseId)
                         throws MalformedURLException {
                 try {
                         Course course = courseService.findById(courseId);
-                        String fileExtension = FileUtils.getFileExtension(course.getImage());
+                        String fileExtension = FilenameUtils.getExtension(course.getImage());
                         // Auto add slash
-                        Path root = Paths.get("assets", "images", "course",
-                                        course.getUpdated_at().atZone(ZoneId.systemDefault())
-                                                        .format(DateTimeFormatter.ofPattern("ddMMyyyy")) + "_"
-                                                        + course.getName().replace(" ", "-")
-                                                        + "_" + course.getId() + "." + fileExtension);
+                        Path root = COURSE_PATH.resolve(
+                                        generateFilename(course.getUpdated_at(), fileExtension, course));
 
                         Resource file = new UrlResource(root.toUri());
 
@@ -173,29 +171,28 @@ public class CourseController {
 
         }
 
-        @PutMapping(path = "/course", consumes = { MediaType.MULTIPART_FORM_DATA_VALUE })
+        @PutMapping(path = "/update", consumes = { MediaType.MULTIPART_FORM_DATA_VALUE })
         public ResponseEntity<BaseDto> updateCourse(@RequestPart("courseJson") String courseJson,
-                        @RequestPart("file") MultipartFile file, long courseId) {
+                        @RequestPart("file") MultipartFile file) {
                 ObjectMapper objectMapper = new ObjectMapper();
 
                 try {
                         String extension = FilenameUtils.getExtension(file.getOriginalFilename());
 
                         CourseDto courseDto = objectMapper.readValue(courseJson, CourseDto.class);
-                        courseDto.setImage(courseDto.getName() + "_InDB." + extension);
+                        courseDto.setImage(
+                                        Slugify.builder().build().slugify(courseDto.getName()) + "_InDB." + extension);
 
-                        Course course = courseService.findById(courseId);
+                        Course course = courseService.findById(courseDto.getId());
                         Course savedCourse = courseService.setProperties(courseDto, course);
 
-                        Path root = Paths.get("assets/images/course");
-                        Files.createDirectories(root);
+                        Files.createDirectories(COURSE_PATH);
 
                         System.out.println(file.getOriginalFilename());
 
-                        Files.copy(file.getInputStream(), root.resolve(Instant.now().atZone(ZoneId.systemDefault())
-                                        .format(DateTimeFormatter.ofPattern("ddMMyyyy")) + "_"
-                                        + savedCourse.getName().replace(" ", "-")
-                                        + "_" + savedCourse.getId() + "." + extension),
+                        Files.copy(file.getInputStream(),
+                                        COURSE_PATH.resolve(generateFilename(course.getUpdated_at(), extension,
+                                                        savedCourse)),
                                         StandardCopyOption.REPLACE_EXISTING);
 
                         return new ResponseEntity<BaseDto>(
@@ -208,17 +205,21 @@ public class CourseController {
                 }
         }
 
-        @DeleteMapping(path = "/course")
+        private String generateFilename(Instant instant, String extension, Course savedCourse) {
+                return instant.atZone(ZoneId.systemDefault())
+                                .format(DateTimeFormatter.ofPattern("ddMMyyyy")) + "_"
+                                + Slugify.builder().build().slugify(savedCourse.getName())
+                                + "_" + savedCourse.getId() + "." + extension;
+        }
+
+        @DeleteMapping(path = "/delete")
         public ResponseEntity<BaseDto> deleteCourse(long courseId) {
                 try {
                         Course course = courseService.findById(courseId);
                         String fileExtension = FilenameUtils.getExtension(course.getImage());
                         // Auto add slash
-                        Path root = Paths.get("assets", "images", "course",
-                                        course.getUpdated_at().atZone(ZoneId.systemDefault())
-                                                        .format(DateTimeFormatter.ofPattern("ddMMyyyy")) + "_"
-                                                        + course.getName().replace(" ", "-")
-                                                        + "_" + course.getId() + "." + fileExtension);
+                        Path root = COURSE_PATH.resolve(
+                                        generateFilename(course.getUpdated_at(), fileExtension, course));
                         Files.delete(root);
 
                         return new ResponseEntity<BaseDto>(courseService.delete(courseId), HttpStatus.OK);
