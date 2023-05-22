@@ -31,7 +31,7 @@ import lombok.extern.slf4j.Slf4j;
 @RestController
 @RequiredArgsConstructor
 @PreAuthorize("hasAnyRole('ADMIN')")
-@RequestMapping("/admin/lesson/{lessonId}/video")
+@RequestMapping("lesson/{lessonId}/video")
 @Tag(name = "Video Endpoints")
 @Slf4j
 public class VideoController {

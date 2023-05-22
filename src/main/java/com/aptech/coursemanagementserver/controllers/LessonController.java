@@ -1,5 +1,7 @@
 package com.aptech.coursemanagementserver.controllers;
 
+import static com.aptech.coursemanagementserver.constants.GlobalStorage.FETCHING_FAILED;
+
 import java.util.List;
 import java.util.NoSuchElementException;
 
@@ -23,42 +25,57 @@ import com.aptech.coursemanagementserver.exceptions.ResourceNotFoundException;
 import com.aptech.coursemanagementserver.services.LessonService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
-import static com.aptech.coursemanagementserver.constants.GlobalStorage.FETCHING_FAILED;
 
+import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 @RestController
 @RequiredArgsConstructor
-@PreAuthorize("hasAnyRole('ADMIN')")
+@PreAuthorize("hasAnyRole('ADMIN', 'MANAGER', 'EMPLOYEE')")
 @Tag(name = "Lesson Endpoints")
-@RequestMapping("/admin/section/{sectionId}/lesson")
+@RequestMapping("section/{sectionId}/lesson")
 @Slf4j
 public class LessonController {
     private final LessonService lessonService;
 
+    @PreAuthorize("hasAnyRole('USER', 'ADMIN', 'MANAGER', 'EMPLOYEE')")
+    @Operation(summary = "[ADMIN, MANAGER, EMPLOYEE] - Get All Lessons By Section Id")
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<List<LessonDto>> getLessonsBySectionId(
             @PathVariable("sectionId") long sectionId) {
         try {
             return new ResponseEntity<List<LessonDto>>(lessonService.findAllBySectionId(sectionId), HttpStatus.OK);
         } catch (NoSuchElementException e) {
-            throw new ResourceNotFoundException("Lessons", "sectionId", Long.toString(sectionId));
+            throw new ResourceNotFoundException(e.getMessage());
+        } catch (Exception e) {
+            throw new BadRequestException(FETCHING_FAILED);
+        }
+    }
+
+    @PreAuthorize("hasAnyRole('USER', 'ADMIN', 'MANAGER', 'EMPLOYEE')")
+    @Operation(summary = "[ADMIN, MANAGER, EMPLOYEE] - Get Lesson By Id")
+    @GetMapping(path = "/{lessonId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<LessonDto> getLessonById(
+            @PathVariable("lessonId") long lessonId) {
+        try {
+            return new ResponseEntity<LessonDto>(lessonService.findById(lessonId), HttpStatus.OK);
+        } catch (NoSuchElementException e) {
+            throw new ResourceNotFoundException(e.getMessage());
         } catch (Exception e) {
             throw new BadRequestException(FETCHING_FAILED);
         }
     }
 
     @PostMapping
-    public ResponseEntity<BaseDto> createLessonsBySectionId(
-            @PathVariable("sectionId") long sectionId,
-            @RequestBody LessonDto lessonDto) throws JsonMappingException, JsonProcessingException {
+    @Operation(summary = "[ADMIN, MANAGER, EMPLOYEE] - Create Lesson")
+    public ResponseEntity<BaseDto> create(@RequestBody LessonDto lessonDto)
+            throws JsonMappingException, JsonProcessingException {
         try {
-            return new ResponseEntity<BaseDto>(lessonService.saveLessonsToSection(lessonDto, sectionId), HttpStatus.OK);
-
-        } catch (BadRequestException e) {
-            throw new BadRequestException(e.getMessage());
+            return new ResponseEntity<BaseDto>(lessonService.save(lessonDto), HttpStatus.OK);
+        } catch (NoSuchElementException e) {
+            throw new ResourceNotFoundException(e.getMessage());
         } catch (Exception e) {
             log.error("Caused: " + e.getCause() + " ,Message: " + e.getMessage(), e);
             throw new BadRequestException(e.getMessage());
@@ -66,24 +83,26 @@ public class LessonController {
     }
 
     @PutMapping
-    public ResponseEntity<BaseDto> createLessonsBySectionId(
-            @RequestBody LessonDto lessonDto, long lessonId) throws JsonMappingException, JsonProcessingException {
+    @Operation(summary = "[ADMIN, MANAGER, EMPLOYEE] - Update Lesson")
+    public ResponseEntity<BaseDto> update(
+            @RequestBody LessonDto lessonDto) throws JsonMappingException, JsonProcessingException {
         try {
-            return new ResponseEntity<BaseDto>(lessonService.updateLesson(lessonDto, lessonId), HttpStatus.OK);
+            return new ResponseEntity<BaseDto>(lessonService.updateLesson(lessonDto), HttpStatus.OK);
 
         } catch (NoSuchElementException e) {
-            throw new NoSuchElementException(e.getMessage());
+            throw new ResourceNotFoundException(e.getMessage());
         } catch (Exception e) {
             throw new BadRequestException(e.getMessage());
         }
     }
 
     @DeleteMapping
-    public ResponseEntity<BaseDto> deleteLesson(long lessonId) {
+    @Operation(summary = "[ADMIN, MANAGER, EMPLOYEE] - Delete Lesson")
+    public ResponseEntity<BaseDto> delete(long lessonId) {
         try {
             return new ResponseEntity<BaseDto>(lessonService.delete(lessonId), HttpStatus.OK);
         } catch (NoSuchElementException e) {
-            throw new NoSuchElementException(e.getMessage());
+            throw new ResourceNotFoundException(e.getMessage());
         } catch (Exception e) {
             throw new BadRequestException(e.getMessage());
         }

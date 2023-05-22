@@ -1,6 +1,7 @@
 package com.aptech.coursemanagementserver.exceptions.exceptionsHandler;
 
 import java.io.FileNotFoundException;
+import java.nio.file.NoSuchFileException;
 import java.time.LocalDateTime;
 
 import org.springframework.http.HttpStatus;
@@ -85,6 +86,17 @@ public class GlobalExceptionHandler {
                 return new ResponseEntity<>(errorDetails, HttpStatus.NOT_FOUND);
         }
 
+        // 409 IsExisted
+        @ExceptionHandler(IsExistedException.class)
+        public ResponseEntity<ErrorDetails> handleExistedException(IsExistedException isExistedException,
+                        WebRequest webRequest) {
+                ErrorDetails errorDetails = new ErrorDetails(LocalDateTime.now(), AntType.warning,
+                                isExistedException.getMessage(),
+                                webRequest.getDescription(false), HttpStatus.CONFLICT.toString());
+                return new ResponseEntity<>(errorDetails, HttpStatus.CONFLICT);
+        }
+
+        // IO Exception
         @ExceptionHandler(FileNotFoundException.class)
         public ResponseEntity<ErrorDetails> handleFileNotFoundException(
                         FileNotFoundException fileNotFoundException, WebRequest webRequest) {
@@ -95,14 +107,14 @@ public class GlobalExceptionHandler {
                 return new ResponseEntity<>(errorDetails, HttpStatus.NOT_FOUND);
         }
 
-        // 409 IsExisted
-        @ExceptionHandler(IsExistedException.class)
-        public ResponseEntity<ErrorDetails> handleExistedException(IsExistedException isExistedException,
-                        WebRequest webRequest) {
-                ErrorDetails errorDetails = new ErrorDetails(LocalDateTime.now(), AntType.warning,
-                                isExistedException.getMessage(),
-                                webRequest.getDescription(false), HttpStatus.CONFLICT.toString());
-                return new ResponseEntity<>(errorDetails, HttpStatus.CONFLICT);
+        @ExceptionHandler(NoSuchFileException.class)
+        public ResponseEntity<ErrorDetails> handleNoSuchFileException(
+                        FileNotFoundException noSuchFileException, WebRequest webRequest) {
+                ErrorDetails errorDetails = new ErrorDetails(LocalDateTime.now(), AntType.error,
+                                noSuchFileException.getMessage(),
+                                webRequest.getDescription(false), HttpStatus.NOT_FOUND.toString());
+
+                return new ResponseEntity<>(errorDetails, HttpStatus.NOT_FOUND);
         }
 
 }

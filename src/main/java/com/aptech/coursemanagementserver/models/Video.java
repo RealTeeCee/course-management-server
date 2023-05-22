@@ -7,9 +7,9 @@ import org.hibernate.annotations.UpdateTimestamp;
 
 import com.aptech.coursemanagementserver.enums.VideoType;
 
-import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.ForeignKey;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -27,7 +27,7 @@ import lombok.experimental.Accessors;
 @NoArgsConstructor
 @AllArgsConstructor
 @Accessors(chain = true)
-@EqualsAndHashCode(callSuper = false)
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @Entity
 public class Video {
     @Id
@@ -48,7 +48,7 @@ public class Video {
     @UpdateTimestamp
     private Instant updated_at;
 
-    @OneToOne(cascade = CascadeType.ALL)
+    @OneToOne(fetch = FetchType.LAZY)
     @MapsId
     @JoinColumn(name = "lesson_id", nullable = false, foreignKey = @ForeignKey(name = "FK_Video_Lesson"))
     private Lesson lesson;

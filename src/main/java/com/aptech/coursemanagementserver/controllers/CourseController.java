@@ -6,6 +6,7 @@ import static com.aptech.coursemanagementserver.constants.GlobalStorage.GLOBAL_E
 
 import java.net.MalformedURLException;
 import java.nio.file.Files;
+import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 import java.time.Instant;
@@ -13,6 +14,7 @@ import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.NoSuchElementException;
 
 import org.apache.commons.io.FilenameUtils;
 import org.springframework.core.io.Resource;
@@ -46,6 +48,7 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.slugify.Slugify;
 
+import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 
@@ -58,6 +61,7 @@ public class CourseController {
         private final CourseService courseService;
 
         @GetMapping
+        @Operation(summary = "[ANY ROLE] - GET All Courses")
         @PreAuthorize("hasAnyRole('USER', 'ADMIN', 'MANAGER', 'EMPLOYEE')")
         public ResponseEntity<List<CourseDto>> getCourses() {
                 try {
@@ -69,7 +73,8 @@ public class CourseController {
                                                 .toList();
                                 List<String> tagsList = course.getTags().stream().map(tag -> tag.getName()).toList();
                                 new CourseDto();
-                                CourseDto courseDto = CourseDto.builder().name(course.getName())
+                                CourseDto courseDto = CourseDto.builder().id(course.getId())
+                                                .name(course.getName())
                                                 .price(course.getPrice())
                                                 .net_price(course.getNet_price()).slug(course.getSlug())
                                                 .image(course.getImage())
@@ -91,6 +96,7 @@ public class CourseController {
         }
 
         @GetMapping(path = "/{id}")
+        @Operation(summary = "[ANY ROLE] - GET Course By Id")
         @PreAuthorize("hasAnyRole('USER', 'ADMIN', 'MANAGER', 'EMPLOYEE')")
 
         public ResponseEntity<CourseDto> getCourseById(@PathVariable("id") long id) {
@@ -101,7 +107,8 @@ public class CourseController {
                                         .map(achievement -> achievement.getName())
                                         .toList();
                         List<String> tagsList = course.getTags().stream().map(tag -> tag.getName()).toList();
-                        CourseDto courseDto = CourseDto.builder().name(course.getName()).price(course.getPrice())
+                        CourseDto courseDto = CourseDto.builder().id(course.getId()).name(course.getName())
+                                        .price(course.getPrice())
                                         .net_price(course.getNet_price()).slug(course.getSlug())
                                         .image(course.getImage())
                                         .sections(course.getSections().stream().map(section -> section.getName())
@@ -117,7 +124,8 @@ public class CourseController {
 
         }
 
-        @PostMapping(path = "/create", consumes = { MediaType.MULTIPART_FORM_DATA_VALUE })
+        @PostMapping(consumes = { MediaType.MULTIPART_FORM_DATA_VALUE })
+        @Operation(summary = "[ADMIN, MANAGER, EMPLOYEE] - Create Course")
         public ResponseEntity<BaseDto> create(@RequestPart("courseJson") String courseJson,
                         @RequestPart("file") MultipartFile file) throws JsonMappingException, JsonProcessingException {
                 ObjectMapper objectMapper = new ObjectMapper();
@@ -148,6 +156,7 @@ public class CourseController {
         }
 
         @GetMapping(path = "/download")
+        @Operation(summary = "[ANORNYMOUS] - Load Course Image")
         @PreAuthorize("permitAll()")
         public ResponseEntity<Resource> download(@RequestParam long courseId)
                         throws MalformedURLException {
@@ -171,7 +180,8 @@ public class CourseController {
 
         }
 
-        @PutMapping(path = "/update", consumes = { MediaType.MULTIPART_FORM_DATA_VALUE })
+        @PutMapping(consumes = { MediaType.MULTIPART_FORM_DATA_VALUE })
+        @Operation(summary = "[ADMIN, MANAGER, EMPLOYEE] - Update Course")
         public ResponseEntity<BaseDto> updateCourse(@RequestPart("courseJson") String courseJson,
                         @RequestPart("file") MultipartFile file) {
                 ObjectMapper objectMapper = new ObjectMapper();
@@ -180,7 +190,7 @@ public class CourseController {
                         String extension = FilenameUtils.getExtension(file.getOriginalFilename());
 
                         CourseDto courseDto = objectMapper.readValue(courseJson, CourseDto.class);
-                        long id = courseDto.getId();
+
                         courseDto.setImage(
                                         Slugify.builder().build().slugify(courseDto.getName()) + "_InDB." + extension);
 
@@ -206,9 +216,12 @@ public class CourseController {
                 }
         }
 
-        @DeleteMapping(path = "/delete")
+        @DeleteMapping
+        @Operation(summary = "[ADMIN, MANAGER, EMPLOYEE] - Delete Course")
         public ResponseEntity<BaseDto> deleteCourse(long courseId) {
                 try {
+                        if (courseId == 1)
+                                throw new NoSuchFileException("Cannot delete course created by SuperAdmin");
                         Course course = courseService.findById(courseId);
                         String fileExtension = FilenameUtils.getExtension(course.getImage());
                         // Auto add slash
@@ -221,9 +234,10 @@ public class CourseController {
                         return new ResponseEntity<BaseDto>(BaseDto.builder().type(AntType.error)
                                         .message(BAD_REQUEST_EXCEPTION)
                                         .build(), HttpStatus.BAD_REQUEST);
+                } catch (NoSuchElementException e) {
+                        throw new ResourceNotFoundException(e.getMessage());
                 } catch (Exception e) {
-                        return new ResponseEntity<BaseDto>(courseService.delete(courseId),
-                                        HttpStatus.BAD_REQUEST);
+                        throw new BadRequestException(e.getMessage());
                 }
 
         }

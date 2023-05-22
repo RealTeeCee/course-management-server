@@ -1,11 +1,13 @@
 package com.aptech.coursemanagementserver.services.servicesImpl;
 
+import static com.aptech.coursemanagementserver.constants.GlobalStorage.BAD_REQUEST_EXCEPTION;
+
 import java.util.ArrayList;
-import java.util.HashSet;
+import java.util.Arrays;
 import java.util.List;
 import java.util.NoSuchElementException;
-import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 
@@ -13,12 +15,12 @@ import com.aptech.coursemanagementserver.dtos.SectionDto;
 import com.aptech.coursemanagementserver.dtos.baseDto.BaseDto;
 import com.aptech.coursemanagementserver.enums.AntType;
 import com.aptech.coursemanagementserver.exceptions.BadRequestException;
+import com.aptech.coursemanagementserver.exceptions.IsExistedException;
 import com.aptech.coursemanagementserver.models.Course;
 import com.aptech.coursemanagementserver.models.Section;
 import com.aptech.coursemanagementserver.repositories.CourseRepository;
 import com.aptech.coursemanagementserver.repositories.SectionRepository;
 import com.aptech.coursemanagementserver.services.SectionService;
-import static com.aptech.coursemanagementserver.constants.GlobalStorage.BAD_REQUEST_EXCEPTION;
 
 import lombok.RequiredArgsConstructor;
 
@@ -29,29 +31,46 @@ public class SectionServiceImpl implements SectionService {
     private final SectionRepository sectionRepository;
 
     @Override
+    public SectionDto findById(long sectionId) {
+        try {
+            Section section = sectionRepository.findById(sectionId).get();
+            SectionDto sectionDto = new SectionDto();
+            sectionDto.setId(sectionId);
+            sectionDto.setName(section.getName());
+            sectionDto.setCourseId(section.getCourse().getId());
+            return sectionDto;
+        } catch (NoSuchElementException e) {
+            throw new NoSuchElementException("The section with sectionId: [" + sectionId + "] is not exist.");
+        } catch (Exception e) {
+            throw new BadRequestException(BAD_REQUEST_EXCEPTION);
+        }
+
+    }
+
+    @Override
     public Section findSectionByName(String sectionName) {
         return sectionRepository.findSectionByName(sectionName);
     }
 
-    @Override
-    public List<Section> findAllByCourseId(long courseId) {
+    private List<Section> findAllSectionByCourseId(long courseId) {
         return sectionRepository.findAllByCourseId(courseId);
     }
 
     @Override
-    public SectionDto findAllNameByCourseId(long courseId) {
+    public List<SectionDto> findAllByCourseId(long courseId) {
         Course course = courseRepository.findById(courseId).get();
-        SectionDto sectionDto = new SectionDto();
-        List<String> list = new ArrayList<>();
+        List<Section> sectionsOfCourse = course.getSections().stream().collect(Collectors.toList());
+        List<SectionDto> sectionsDto = new ArrayList<>();
 
-        for (Section section : course.getSections()) {
-            list.add(section.getName());
+        for (Section section : sectionsOfCourse) {
+            SectionDto sectionDto = new SectionDto();
+            sectionDto.setCourseId(courseId);
+            sectionDto.setName(section.getName());
+            sectionDto.setId(section.getId());
+            sectionsDto.add(sectionDto);
         }
 
-        sectionDto.setCourseId(courseId);
-        sectionDto.setSections(list);
-
-        return sectionDto;
+        return sectionsDto;
     }
 
     @Override
@@ -60,49 +79,39 @@ public class SectionServiceImpl implements SectionService {
     }
 
     @Override
-    public BaseDto saveSectionsToCourse(SectionDto sectionDto, long courseId) {
+    public BaseDto saveSectionsToCourseByStringSplit(SectionDto sectionDto, long courseId) {
         try {
+            List<String> list = Arrays.asList(sectionDto.getName().split(","));
             Course course = courseRepository.findById(courseId).get();
 
-            List<String> sectionsString = sectionDto.getSections();
-            Set<Section> sections = new HashSet<>();
-
-            List<Section> sectionsInCourse = findAllByCourseId(courseId);
+            List<Section> sectionsInCourse = findAllSectionByCourseId(courseId);
+            List<String> sectionNamesInCourse = sectionsInCourse.stream().map(s -> s.getName())
+                    .collect(Collectors.toList());
+            List<Section> temp = new ArrayList<>();
 
             if (sectionsInCourse.size() > 0) {
-                for (Section s : sectionsInCourse) {
-                    if (sectionDto.getSections().contains(s.getName())) {
-                        return BaseDto.builder().type(AntType.error).message(s.getName() + " is already existed.")
-                                .build();
+                for (String str : list) {
+                    if (sectionNamesInCourse.contains(str)) {
+                        throw new IsExistedException(str);
                     }
 
                     Section section = new Section();
-                    section.setName(s.getName());
-                    section.setCourse(s.getCourse());
-                    sections.add(section);
+                    section.setName(str);
+                    section.setCourse(course);
+                    temp.add(section);
                 }
             }
 
-            Optional<Section> sectionCourse = sections.stream().findFirst();
+            sectionsInCourse.addAll(temp);
 
-            if (sectionsString != null) {
-                for (String sectionString : sectionsString) {
-                    Section section = new Section();
-                    section.setName(sectionString);
-                    section.setCourse(sectionCourse.isPresent() ? sectionCourse.get().getCourse()
-                            : course);
-                    sections.add(section);
-                }
-            }
+            sectionRepository.saveAll(sectionsInCourse);
 
-            sectionRepository.saveAll(sections);
-            // course.setSections(courseDto.getSections());
-            // course.setSections(sections.stream().collect(Collectors.toSet()));
-            // courseRepository.save(course);
             return BaseDto.builder().type(AntType.success).message("Create section successfully.").build();
 
+        } catch (IsExistedException e) {
+            throw new BadRequestException(e.getMessage());
         } catch (NoSuchElementException e) {
-            throw new BadRequestException("This course with courseId: [" + courseId + "] is not exist.");
+            throw new NoSuchElementException("The course with courseId: [" + courseId + "] is not exist.");
 
         } catch (Exception e) {
             throw new BadRequestException(BAD_REQUEST_EXCEPTION);
@@ -110,14 +119,50 @@ public class SectionServiceImpl implements SectionService {
     }
 
     @Override
-    public BaseDto updateSection(SectionDto sectionDto, long sectionId) {
+    public BaseDto saveSection(SectionDto sectionDto) {
         try {
-            Section section = sectionRepository.findById(sectionId).get();
-            section.setName(sectionDto.getName());
+            Course course = courseRepository.findById(sectionDto.getCourseId())
+                    .orElseThrow(() -> new NoSuchElementException(
+                            "The course with courseId: [" + sectionDto.getCourseId() + "] is not exist."));
+
+            Set<Section> sections = course.getSections();
+
+            Section section = new Section();
+            section.setName(sectionDto.getName()).setCourse(course);
+
+            if (sections.contains(section))
+                throw new IsExistedException(section.getName());
+
+            sectionRepository.save(section);
+
+            return BaseDto.builder().type(AntType.success).message("Create section successfully.").build();
+        } catch (IsExistedException e) {
+            throw new BadRequestException(e.getMessage());
+        } catch (NoSuchElementException e) {
+            throw new NoSuchElementException(e.getMessage());
+        } catch (Exception e) {
+            throw new BadRequestException(BAD_REQUEST_EXCEPTION);
+        }
+
+    }
+
+    @Override
+    public BaseDto updateSection(SectionDto sectionDto) {
+        try {
+            Section section = sectionRepository.findById(sectionDto.getId())
+                    .orElseThrow(() -> new NoSuchElementException(
+                            "The section with sectionId: [" + sectionDto.getId() + "] is not exist."));
+
+            Course course = courseRepository.findById(sectionDto.getCourseId())
+                    .orElseThrow(() -> new NoSuchElementException(
+                            "The course with courseId: [" + sectionDto.getCourseId() + "] is not exist."));
+
+            section.setName(sectionDto.getName()).setCourse(course);
+            sectionRepository.save(section);
 
             return BaseDto.builder().type(AntType.success).message("Update section successfully.").build();
         } catch (NoSuchElementException e) {
-            throw new BadRequestException("This section with sectionId: [" + sectionId + "] is not exist.");
+            throw new NoSuchElementException(e.getMessage());
 
         } catch (Exception e) {
             throw new BadRequestException(BAD_REQUEST_EXCEPTION);
@@ -132,7 +177,7 @@ public class SectionServiceImpl implements SectionService {
             return BaseDto.builder().type(AntType.success).message("Delete section successfully.")
                     .build();
         } catch (NoSuchElementException e) {
-            throw new BadRequestException("This section with sectionId: [" + sectionId + "] is not exist.");
+            throw new NoSuchElementException("The section with sectionId: [" + sectionId + "] is not exist.");
 
         } catch (Exception e) {
             throw new BadRequestException(BAD_REQUEST_EXCEPTION);

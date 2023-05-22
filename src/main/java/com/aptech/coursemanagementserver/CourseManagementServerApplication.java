@@ -94,6 +94,7 @@ public class CourseManagementServerApplication {
 			Category savedCategory1 = categoryService.save(category1);
 
 			CourseDto course1 = CourseDto.builder().achievementName("Master Java,Master SpringBoot")
+					.image("default.jpg")
 					.duration(300)
 					.description("Description").price(15).net_price(10)
 					.sections(Arrays.asList("Section 1", "Section 2", "Section 3"))

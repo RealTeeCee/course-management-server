@@ -9,13 +9,15 @@ import com.aptech.coursemanagementserver.models.Lesson;
 public interface LessonService {
     public Lesson findLessonByName(String lessonName);
 
+    public LessonDto findById(long lessonId);
+
     public List<Lesson> findAll();
 
     public List<LessonDto> findAllBySectionId(long sectionId);
 
-    public BaseDto saveLessonsToSection(LessonDto lessonDto, long sectionId);
+    public BaseDto save(LessonDto lessonDto);
 
-    public BaseDto updateLesson(LessonDto lessonDto, long lessonId);
+    public BaseDto updateLesson(LessonDto lessonDto);
 
     public BaseDto delete(long lessonId);
 

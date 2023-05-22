@@ -7,17 +7,21 @@ import com.aptech.coursemanagementserver.dtos.baseDto.BaseDto;
 import com.aptech.coursemanagementserver.models.Section;
 
 public interface SectionService {
+    public SectionDto findById(long sectionId);
+
     public Section findSectionByName(String sectionName);
 
-    public SectionDto findAllNameByCourseId(long courseId);
+    public List<SectionDto> findAllByCourseId(long courseId);
 
-    public List<Section> findAllByCourseId(long courseId);
+    // public List<Section> findAllByCourseId(long courseId);
 
     public List<Section> findAll();
 
-    public BaseDto saveSectionsToCourse(SectionDto section, long courseId);
+    public BaseDto saveSectionsToCourseByStringSplit(SectionDto sectionDto, long courseId);
 
-    public BaseDto updateSection(SectionDto sectionDto, long sectionId);
+    public BaseDto saveSection(SectionDto sectionDto);
+
+    public BaseDto updateSection(SectionDto sectionDto);
 
     public BaseDto delete(long sectionId);
 }

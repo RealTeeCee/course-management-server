@@ -26,7 +26,7 @@ public interface CourseService {
 
     public List<Course> saveAll(List<CourseDto> courses);
 
-    public Set<Tag> splitTag(String tag);
+    public Set<Tag> splitTag(String tag, Course course);
 
     public Set<Achievement> splitAchievement(String achievement, Course course);
 

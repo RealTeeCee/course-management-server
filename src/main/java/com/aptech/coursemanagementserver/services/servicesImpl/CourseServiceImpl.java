@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import com.aptech.coursemanagementserver.dtos.CourseDto;
 import com.aptech.coursemanagementserver.dtos.baseDto.BaseDto;
 import com.aptech.coursemanagementserver.enums.AntType;
+import com.aptech.coursemanagementserver.exceptions.BadRequestException;
 import com.aptech.coursemanagementserver.mappers.CourseMapper;
 import com.aptech.coursemanagementserver.models.Achievement;
 import com.aptech.coursemanagementserver.models.Course;
@@ -76,7 +77,7 @@ public class CourseServiceImpl implements CourseService {
 
         course.setName(courseDto.getName().replaceAll("\\s{2,}", " "))
                 .setCategory(categoryRepository.findById(courseDto.getCategory()).get())
-                // .setTags(splitTag(courseDto.getTagName()))
+                .setTags(splitTag(courseDto.getTagName(), course))
                 .setAchievements(
                         splitAchievement(courseDto.getAchievementName(), course))
                 .setImage(courseDto.getImage())
@@ -86,27 +87,36 @@ public class CourseServiceImpl implements CourseService {
                 .setPrice(courseDto.getPrice())
                 .setNet_price(courseDto.getNet_price());
 
-        courseRepository.save(course);
+        // courseRepository.save(course);
 
-        if (course.getId() == 0) {
-            List<String> sectionsString = courseDto.getSections();
-            Set<Section> sections = course.getSections();
+        // Proccessing Section
 
-            if (sectionsString != null) {
-                int i = 0;
-                while (i < sectionsString.size()) {
-                    Section section = new Section();
-                    String sectionString = sectionsString.get(i);
-                    if (sectionString != null) {
-                        section.setName(sectionString);
-                        section.setCourse(course);
-                        sections.add(section);
-                    }
-                    i++;
-                }
-            }
-            sectionRepository.saveAll(sections);
+        List<String> sectionsStrings = courseDto.getSections();
+        Set<Section> sections = course.getSections();
+        Set<Section> sectionFromString = new HashSet<>();
+        // Create new set Section from List<String> sectionsStrings
+        for (String sectionStr : sectionsStrings) {
+            Section section = new Section();
+            section.setName(sectionStr);
+            section.setCourse(course);
+            sectionFromString.add(section);
         }
+        // Merge current set and set from list<String>
+        sections.addAll(sectionFromString); // Will ignore Section existed.
+
+        // Remove Section has been delete (Section not in List<String> sectionsStrings)
+        Set<Section> tempSections = new HashSet<>();
+        tempSections.addAll(sections);
+        for (Section section : sections) {
+
+            if (!sectionsStrings.contains(section.getName())) {
+                sectionRepository.deleteSectionsById(section.getId());
+                tempSections.remove(section);
+            }
+        }
+        sections = tempSections;
+        course.setSections(sections);
+        courseRepository.save(course);
 
         return course;
     }
@@ -119,9 +129,11 @@ public class CourseServiceImpl implements CourseService {
     }
 
     @Override
-    public Set<Tag> splitTag(String tag) {
+    public Set<Tag> splitTag(String tag, Course course) {
+        boolean isUpdatedCourse = course.getId() > 0 ? true : false;
 
         Set<Tag> newTags = new HashSet<>();
+
         String[] tags = tag.split(",");
         for (String tagName : tags) {
             if (tagRepository.findTagByName(tagName) == null) {
@@ -130,7 +142,32 @@ public class CourseServiceImpl implements CourseService {
                 newTags.add(newTag);
             }
         }
-        tagRepository.saveAll(newTags);
+
+        if (newTags.size() > 0) {
+            tagRepository.saveAll(newTags);
+        }
+
+        if (isUpdatedCourse) {
+            var tagsOfCourse = course.getTags();
+            List<String> list = Arrays.asList(tags);
+            Set<Tag> tempTag = new HashSet<>();
+            tempTag.addAll(tagsOfCourse);
+
+            for (Tag curreTag : tagsOfCourse) {
+                if (!list.contains(curreTag.getName())) {
+                    tempTag.remove(curreTag);
+                }
+            }
+
+            tagsOfCourse = tempTag;
+            if (newTags.size() > 0) {
+                for (Tag newTag : newTags) {
+                    tagsOfCourse.add(newTag);
+                }
+            }
+            return tagsOfCourse;
+        }
+
         return newTags;
     }
 
@@ -141,8 +178,6 @@ public class CourseServiceImpl implements CourseService {
 
         // Check achievement if not exist add new.
         Set<Achievement> newAchievements = new HashSet<>();
-
-        // Set<Achievement> newAchievements = new HashSet<>();
 
         String[] achievements = achievement.split(",");
         for (String achievementName : achievements) {
@@ -166,22 +201,15 @@ public class CourseServiceImpl implements CourseService {
 
             for (Achievement curreAchievement : achievementOfCoure) {
                 if (!list.contains(curreAchievement.getName())) {
-
                     tempAchievement.remove(curreAchievement);
-
                 }
             }
 
             achievementOfCoure = tempAchievement;
             if (newAchievements.size() > 0) {
-
-                // var setCourse =
-                // course.getAchievements().stream().findFirst().get().getCourses();
                 for (Achievement newAchievement : newAchievements) {
-                    // newAchievement.setCourses(setCourse);
                     achievementOfCoure.add(newAchievement);
                 }
-
             }
             return achievementOfCoure;
         }
@@ -197,13 +225,9 @@ public class CourseServiceImpl implements CourseService {
             return BaseDto.builder().type(AntType.success).message("Delete course successfully.")
                     .build();
         } catch (NoSuchElementException e) {
-            return BaseDto.builder().type(AntType.error)
-                    .message("This course with courseId: [" + courseId + "] is not exist.")
-                    .build();
+            throw new NoSuchElementException("This course with courseId: [" + courseId + "] is not exist.");
         } catch (Exception e) {
-            return BaseDto.builder().type(AntType.error)
-                    .message(BAD_REQUEST_EXCEPTION)
-                    .build();
+            throw new BadRequestException(BAD_REQUEST_EXCEPTION);
         }
     }
 }

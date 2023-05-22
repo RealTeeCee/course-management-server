@@ -1,8 +1,11 @@
 package com.aptech.coursemanagementserver.services.servicesImpl;
 
+import static com.aptech.coursemanagementserver.constants.GlobalStorage.BAD_REQUEST_EXCEPTION;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.Set;
 
 import org.springframework.stereotype.Service;
 
@@ -16,7 +19,7 @@ import com.aptech.coursemanagementserver.models.Video;
 import com.aptech.coursemanagementserver.repositories.LessonRepository;
 import com.aptech.coursemanagementserver.repositories.SectionRepository;
 import com.aptech.coursemanagementserver.services.LessonService;
-import static com.aptech.coursemanagementserver.constants.GlobalStorage.BAD_REQUEST_EXCEPTION;
+
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -24,6 +27,27 @@ import lombok.RequiredArgsConstructor;
 public class LessonServiceImpl implements LessonService {
     private final LessonRepository lessonRepository;
     private final SectionRepository sectionRepository;
+
+    @Override
+    public LessonDto findById(long lessonId) {
+        try {
+            Lesson lesson = lessonRepository.findById(lessonId).get();
+            LessonDto lessonDto = new LessonDto();
+            lessonDto.setId(lessonId);
+            lessonDto.setName(lesson.getName());
+            lessonDto.setDescription(lesson.getDescription());
+            lessonDto.setDuration(lesson.getDuration());
+            lessonDto.setSectionId(lesson.getSection().getId());
+
+            return lessonDto;
+        } catch (NoSuchElementException e) {
+            throw new NoSuchElementException("This lesson with lessonId: [" + lessonId + "] is not exist.");
+
+        } catch (Exception e) {
+            throw new BadRequestException(BAD_REQUEST_EXCEPTION);
+        }
+
+    }
 
     @Override
     public Lesson findLessonByName(String lessonName) {
@@ -37,55 +61,68 @@ public class LessonServiceImpl implements LessonService {
 
     @Override
     public List<LessonDto> findAllBySectionId(long sectionId) {
-        Section section = sectionRepository.findById(sectionId).get();
-        List<LessonDto> lessonDtos = new ArrayList<>();
-
-        for (Lesson lesson : section.getLessons()) {
-            LessonDto lessonDto = LessonDto.builder().name(lesson.getName()).description(lesson.getDescription())
-                    .duration(lesson.getDuration()).sectionId(sectionId).build();
-            lessonDtos.add(lessonDto);
-        }
-
-        return lessonDtos;
-    }
-
-    @Override
-    public BaseDto saveLessonsToSection(LessonDto lessonDto, long sectionId) {
-        Lesson lesson = new Lesson();
-        Section section = sectionRepository.findById(sectionId).get();
-
-        if (section == null) {
-            throw new BadRequestException("This section with id: [" + sectionId + "]does not exist.");
-
-        }
-
-        for (Lesson l : section.getLessons()) {
-            if (lessonDto.getName().contains(l.getName())) {
-                return BaseDto.builder().type(AntType.error).message(lessonDto.getName() + " is already existed.")
-                        .build();
-            }
-        }
-
-        Video video = new Video();
-        lesson.setName(lessonDto.getName()).setDescription(lessonDto.getDescription())
-                .setDuration(lessonDto.getDuration()).setSection(section).setVideo(video);
-
-        video.setLesson(lesson);
-
-        lessonRepository.save(lesson);
-        return BaseDto.builder().type(AntType.success).message("Create lesson successfully.").build();
-    }
-
-    @Override
-    public BaseDto updateLesson(LessonDto lessonDto, long lessonId) {
         try {
-            Lesson lesson = lessonRepository.findById(lessonId).get();
+            Section section = sectionRepository.findById(sectionId).orElseThrow(() -> new NoSuchElementException(
+                    "This section with sectionId: [" + sectionId + "] is not exist."));
+
+            List<LessonDto> lessonDtos = new ArrayList<>();
+            Set<Lesson> lessons = section.getLessons();
+
+            for (Lesson lesson : lessons) {
+                LessonDto lessonDto = LessonDto.builder().id(lesson.getId()).name(lesson.getName())
+                        .description(lesson.getDescription())
+                        .duration(lesson.getDuration()).sectionId(sectionId).build();
+                lessonDtos.add(lessonDto);
+            }
+            return lessonDtos;
+
+        } catch (NoSuchElementException e) {
+            throw new NoSuchElementException(e.getMessage());
+        } catch (Exception e) {
+            throw new BadRequestException(BAD_REQUEST_EXCEPTION);
+        }
+
+    }
+
+    @Override
+    public BaseDto save(LessonDto lessonDto) {
+        try {
+            Lesson lesson = new Lesson();
+            Video video = new Video();
+            lesson.setDescription(lessonDto.getDescription()).setDuration(lessonDto.getDuration())
+                    .setName(lessonDto.getName()).setSection(sectionRepository.findById(lessonDto.getSectionId()).get())
+                    .setVideo(video);
+            video.setLesson(lesson);
+            lessonRepository.save(lesson);
+            return BaseDto.builder().type(AntType.success).message("Create lesson successfully.").build();
+        } catch (NoSuchElementException e) {
+            throw new NoSuchElementException(
+                    "This section with sectionId: [" + lessonDto.getSectionId() + "] is not exist.");
+        } catch (Exception e) {
+            throw new BadRequestException(BAD_REQUEST_EXCEPTION);
+        }
+
+    }
+
+    @Override
+    public BaseDto updateLesson(LessonDto lessonDto) {
+        try {
+            Section section = sectionRepository.findById(lessonDto.getSectionId())
+                    .orElseThrow(() -> new NoSuchElementException(
+                            "This section with sectionId: [" + lessonDto.getSectionId() + "] is not exist."));
+
+            Lesson lesson = lessonRepository.findById(lessonDto.getId()).orElseThrow(() -> new NoSuchElementException(
+                    "This lesson with lessonId: [" + lessonDto.getId() + "] is not exist."));
+
             lesson.setName(lessonDto.getName()).setDescription(lessonDto.getDescription())
-                    .setDuration(lessonDto.getDuration());
+                    .setDuration(lessonDto.getDuration())
+                    .setSection(section);
+
+            lessonRepository.save(lesson);
 
             return BaseDto.builder().type(AntType.success).message("Update lesson successfully.").build();
         } catch (NoSuchElementException e) {
-            throw new NoSuchElementException("This lesson with lessonId: [" + lessonId + "] is not exist.");
+            throw new NoSuchElementException(e.getMessage());
         } catch (Exception e) {
             throw new BadRequestException(BAD_REQUEST_EXCEPTION);
         }

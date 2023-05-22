@@ -27,7 +27,7 @@ import lombok.experimental.Accessors;
 @NoArgsConstructor
 @AllArgsConstructor
 @Accessors(chain = true)
-@EqualsAndHashCode(callSuper = false)
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @Entity
 public class Lesson {
     @Id
@@ -51,7 +51,7 @@ public class Lesson {
     @PrimaryKeyJoinColumn
     private Video video;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "section_id", nullable = false, foreignKey = @ForeignKey(name = "FK_Lesson_Section"))
     private Section section;
 }

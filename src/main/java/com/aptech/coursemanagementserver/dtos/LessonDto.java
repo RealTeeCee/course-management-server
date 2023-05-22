@@ -12,6 +12,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @EqualsAndHashCode(callSuper = false)
 public class LessonDto {
+    private long id;
     private String name;
     private String description;
     private int duration;

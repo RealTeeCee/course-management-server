@@ -2,6 +2,7 @@ package com.aptech.coursemanagementserver.controllers;
 
 import static com.aptech.coursemanagementserver.constants.GlobalStorage.FETCHING_FAILED;
 
+import java.util.List;
 import java.util.NoSuchElementException;
 
 import org.springframework.http.HttpStatus;
@@ -25,56 +26,94 @@ import com.aptech.coursemanagementserver.services.SectionService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 
+import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequiredArgsConstructor
-@PreAuthorize("hasAnyRole('ADMIN')")
+@PreAuthorize("hasAnyRole('ADMIN', 'MANAGER', 'EMPLOYEE')")
 @Tag(name = "Section Endpoints")
-@RequestMapping("/admin/course/{id}/section")
+@RequestMapping("course/{id}/section")
 
 public class SectionController {
     private final SectionService sectionService;
 
+    @PreAuthorize("hasAnyRole('USER', 'ADMIN', 'MANAGER', 'EMPLOYEE')")
+    @Operation(summary = "[ANY ROLE] - Get All Sections By Course Id")
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<SectionDto> getSectionsByCourseId(@PathVariable("id") long courseId) {
+    public ResponseEntity<List<SectionDto>> getSectionsByCourseId(@PathVariable("id") long courseId) {
         try {
-            return new ResponseEntity<SectionDto>(sectionService.findAllNameByCourseId(courseId), HttpStatus.OK);
+            return new ResponseEntity<List<SectionDto>>(sectionService.findAllByCourseId(courseId), HttpStatus.OK);
         } catch (NoSuchElementException e) {
-            throw new ResourceNotFoundException("Sections", "courseId", Long.toString(courseId));
+            throw new ResourceNotFoundException("Course", "courseId", Long.toString(courseId));
         } catch (Exception e) {
             throw new BadRequestException(FETCHING_FAILED);
         }
+    }
 
+    @PreAuthorize("hasAnyRole('USER', 'ADMIN', 'MANAGER', 'EMPLOYEE')")
+    @Operation(summary = "[ANY ROLE] - Get Section By Id")
+    @GetMapping(path = "/{sectionId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<SectionDto> getSectionById(@PathVariable("sectionId") long sectionId) {
+        try {
+            return new ResponseEntity<SectionDto>(sectionService.findById(sectionId), HttpStatus.OK);
+        } catch (NoSuchElementException e) {
+            throw new ResourceNotFoundException(e.getMessage());
+        } catch (Exception e) {
+            throw new BadRequestException(FETCHING_FAILED);
+        }
     }
 
     @PostMapping
+    @Operation(summary = "[ADMIN, MANAGER, EMPLOYEE] - Create Section")
+    public ResponseEntity<BaseDto> create(
+            @RequestBody SectionDto sectionDto) throws JsonMappingException, JsonProcessingException {
+        try {
+            return new ResponseEntity<BaseDto>(sectionService.saveSection(sectionDto),
+                    HttpStatus.OK);
+        } catch (NoSuchElementException e) {
+            throw new ResourceNotFoundException(e.getMessage());
+        } catch (Exception e) {
+            throw new BadRequestException(e.getMessage());
+        }
+    }
+
+    @PostMapping(path = "/createByCourseId")
+    @Operation(summary = "[ADMIN, MANAGER, EMPLOYEE] - Create Multiple Sections By Course Id")
     public ResponseEntity<BaseDto> createSectionsByCourseId(@PathVariable("id") long courseId,
             @RequestBody SectionDto sectionDto) throws JsonMappingException, JsonProcessingException {
         try {
-            return new ResponseEntity<BaseDto>(sectionService.saveSectionsToCourse(sectionDto, courseId),
+            return new ResponseEntity<BaseDto>(sectionService.saveSectionsToCourseByStringSplit(sectionDto, courseId),
                     HttpStatus.OK);
+        } catch (NoSuchElementException e) {
+            throw new ResourceNotFoundException("Course", "courseId", Long.toString(courseId));
         } catch (Exception e) {
             throw new BadRequestException(e.getMessage());
         }
     }
 
     @PutMapping
-    public ResponseEntity<BaseDto> updateSection(@RequestBody SectionDto sectionDto, long sectionId)
+    @Operation(summary = "[ADMIN, MANAGER, EMPLOYEE] - Update Section")
+    public ResponseEntity<BaseDto> update(@RequestBody SectionDto sectionDto)
             throws JsonMappingException, JsonProcessingException {
         try {
-            return new ResponseEntity<BaseDto>(sectionService.saveSectionsToCourse(sectionDto, sectionId),
+            return new ResponseEntity<BaseDto>(sectionService.updateSection(sectionDto),
                     HttpStatus.OK);
+        } catch (NoSuchElementException e) {
+            throw new ResourceNotFoundException(e.getMessage());
         } catch (Exception e) {
             throw new BadRequestException(e.getMessage());
         }
     }
 
     @DeleteMapping
-    public ResponseEntity<BaseDto> deleteSection(long sectionId) {
+    @Operation(summary = "[ADMIN, MANAGER, EMPLOYEE] - Delete Section")
+    public ResponseEntity<BaseDto> delete(long sectionId) {
         try {
             return new ResponseEntity<BaseDto>(sectionService.delete(sectionId), HttpStatus.OK);
+        } catch (NoSuchElementException e) {
+            throw new ResourceNotFoundException(e.getMessage());
         } catch (Exception e) {
             throw new BadRequestException(e.getMessage());
         }
