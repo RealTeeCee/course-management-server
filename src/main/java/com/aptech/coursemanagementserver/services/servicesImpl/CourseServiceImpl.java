@@ -92,30 +92,33 @@ public class CourseServiceImpl implements CourseService {
         // Proccessing Section
 
         List<String> sectionsStrings = courseDto.getSections();
-        Set<Section> sections = course.getSections();
-        Set<Section> sectionFromString = new HashSet<>();
-        // Create new set Section from List<String> sectionsStrings
-        for (String sectionStr : sectionsStrings) {
-            Section section = new Section();
-            section.setName(sectionStr);
-            section.setCourse(course);
-            sectionFromString.add(section);
-        }
-        // Merge current set and set from list<String>
-        sections.addAll(sectionFromString); // Will ignore Section existed.
-
-        // Remove Section has been delete (Section not in List<String> sectionsStrings)
-        Set<Section> tempSections = new HashSet<>();
-        tempSections.addAll(sections);
-        for (Section section : sections) {
-
-            if (!sectionsStrings.contains(section.getName())) {
-                sectionRepository.deleteSectionsById(section.getId());
-                tempSections.remove(section);
+        if (sectionsStrings != null) {
+            Set<Section> sections = course.getSections();
+            Set<Section> sectionFromString = new HashSet<>();
+            // Create new set Section from List<String> sectionsStrings
+            for (String sectionStr : sectionsStrings) {
+                Section section = new Section();
+                section.setName(sectionStr);
+                section.setCourse(course);
+                sectionFromString.add(section);
             }
+            // Merge current set and set from list<String>
+            sections.addAll(sectionFromString); // Will ignore Section existed.
+
+            // Remove Section has been delete (Section not in List<String> sectionsStrings)
+            Set<Section> tempSections = new HashSet<>();
+            tempSections.addAll(sections);
+            for (Section section : sections) {
+
+                if (!sectionsStrings.contains(section.getName())) {
+                    sectionRepository.deleteSectionsById(section.getId());
+                    tempSections.remove(section);
+                }
+            }
+            sections = tempSections;
+            course.setSections(sections);
         }
-        sections = tempSections;
-        course.setSections(sections);
+
         courseRepository.save(course);
 
         return course;
