@@ -168,6 +168,7 @@ public class CourseController {
                                         generateFilename(course.getUpdated_at(), fileExtension, course));
 
                         Resource file = new UrlResource(root.toUri());
+                        String test = "";
 
                         return ResponseEntity.ok()
                                         .header(HttpHeaders.CONTENT_DISPOSITION,
@@ -177,7 +178,6 @@ public class CourseController {
                 } catch (Exception e) {
                         throw new BadRequestException(GLOBAL_EXCEPTION);
                 }
-
         }
 
         @PutMapping(consumes = { MediaType.MULTIPART_FORM_DATA_VALUE })

@@ -5,11 +5,17 @@ import java.nio.file.Paths;
 
 public interface GlobalStorage {
     // import static com.aptech.coursemanagementserver.constants.GlobalStorage.*;
+
+    // JWT
     String TOKEN_PREFIX = "Bearer ";
     String HEADER_STRING = "Authorization";
 
-    // PATH ROOT
+    // PATHS
     Path COURSE_PATH = Paths.get("assets", "images", "course");
+    Path VIDEO_PATH = Paths.get("assets", "videos");
+    Path CAPTION_PATH = Paths.get("assets", "captions");
+    String VIDEO = "assets/videos";
+    String CAPTION = "assets/captions";
 
     // DOMAIN EMAIL
     String DOMAIN_EMAIL = "contact@cmproj.com";
@@ -22,11 +28,28 @@ public interface GlobalStorage {
     String DEV_DOMAIN_CLIENT = "http://localhost:3000";
     String PROD_DOMAIN_CLIENT = "http://cmclient.com";
 
+    // API
+    String STREAM_API = "http://localhost:8080/video/stream/";
+    String CAPTION_API = "http://localhost:8080/video/caption/";
+
+    // OAUTH2
     String OAUTH2_AUTHORIZATION_REQUEST_COOKIE_NAME = "oauth2_auth_request";
     String REDIRECT_URI_PARAM_COOKIE_NAME = "redirect_uri";
 
+    // EXCEPTION
     String GLOBAL_EXCEPTION = "Something wrong. Please try again";
     String FETCHING_FAILED = "Fetch data failed!";
     String BAD_REQUEST_EXCEPTION = "Failed! Please check your infomation and try again.";
     String INVALID_TOKEN_EXCEPTION = "Failed! Token is not valid.";
+
+    // FILE & VIDEO
+    String CONTENT_TYPE = "Content-Type";
+    String CONTENT_LENGTH = "Content-Length";
+    String VIDEO_CONTENT = "video/";
+    String VTT_CONTENT = "text/vtt";
+    String CONTENT_RANGE = "Content-Range";
+    String ACCEPT_RANGES = "Accept-Ranges";
+    String BYTES = "bytes";
+    int CHUNK_SIZE = 314700;
+    int BYTE_RANGE = 1024;
 }

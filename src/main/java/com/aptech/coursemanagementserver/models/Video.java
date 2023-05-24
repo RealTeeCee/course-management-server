@@ -1,12 +1,14 @@
 package com.aptech.coursemanagementserver.models;
 
 import java.time.Instant;
+import java.util.List;
 
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import com.aptech.coursemanagementserver.enums.VideoType;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -37,8 +39,8 @@ public class Video {
     @Column(columnDefinition = "nvarchar(100)")
     private String name;
     private String url;
-    // @Column(columnDefinition = "bigint")
-    // private String lesson_id;
+
+    private String captionUrls;
 
     private VideoType videoType;
     private long duration;
@@ -48,7 +50,7 @@ public class Video {
     @UpdateTimestamp
     private Instant updated_at;
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.MERGE)
     @MapsId
     @JoinColumn(name = "lesson_id", nullable = false, foreignKey = @ForeignKey(name = "FK_Video_Lesson"))
     private Lesson lesson;

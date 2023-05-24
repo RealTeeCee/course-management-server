@@ -44,7 +44,6 @@ import lombok.RequiredArgsConstructor;
 @EnableWebSecurity
 @RequiredArgsConstructor
 @EnableMethodSecurity
-
 public class SecurityConfiguration {
 
         private final CustomOAuth2UserService customOAuth2UserService;
@@ -59,9 +58,10 @@ public class SecurityConfiguration {
         @Value("${application.security.cors.allowedOrigins}")
         private String[] allowedOrigins;
         public static final String[] ENDPOINTS_WHITELIST = {
+                        "/video/**",
                         "/auth/**",
                         "/oauth2/**",
-                        "/admin/course/download",
+                        "/course/download",
                         "/v2/api-docs",
                         "/v3/api-docs",
                         "/v3/api-docs/**",

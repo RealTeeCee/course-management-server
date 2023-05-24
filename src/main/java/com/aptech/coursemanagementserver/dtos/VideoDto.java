@@ -1,5 +1,7 @@
 package com.aptech.coursemanagementserver.dtos;
 
+import java.util.List;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -14,6 +16,7 @@ import lombok.NoArgsConstructor;
 public class VideoDto {
     private String name;
     private String url;
+    private List<String> captionUrls;
 
     private long lessonId;
 }
