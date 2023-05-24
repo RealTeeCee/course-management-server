@@ -86,27 +86,36 @@ public class CourseServiceImpl implements CourseService {
                 .setPrice(courseDto.getPrice())
                 .setNet_price(courseDto.getNet_price());
 
-        courseRepository.save(course);
+        // courseRepository.save(course);
 
-        if (course.getId() == 0) {
-            List<String> sectionsString = courseDto.getSections();
-            Set<Section> sections = course.getSections();
+        // Proccessing Section
 
-            if (sectionsString != null) {
-                int i = 0;
-                while (i < sectionsString.size()) {
-                    Section section = new Section();
-                    String sectionString = sectionsString.get(i);
-                    if (sectionString != null) {
-                        section.setName(sectionString);
-                        section.setCourse(course);
-                        sections.add(section);
-                    }
-                    i++;
-                }
-            }
-            sectionRepository.saveAll(sections);
+        List<String> sectionsStrings = courseDto.getSections();
+        Set<Section> sections = course.getSections();
+        Set<Section> sectionFromString = new HashSet<>();
+        // Create new set Section from List<String> sectionsStrings
+        for (String sectionStr : sectionsStrings) {
+            Section section = new Section();
+            section.setName(sectionStr);
+            section.setCourse(course);
+            sectionFromString.add(section);
         }
+        // Merge current set and set from list<String>
+        sections.addAll(sectionFromString); // Will ignore Section existed.
+
+        // Remove Section has been delete (Section not in List<String> sectionsStrings)
+        Set<Section> tempSections = new HashSet<>();
+        tempSections.addAll(sections);
+        for (Section section : sections) {
+
+            if (!sectionsStrings.contains(section.getName())) {
+                sectionRepository.deleteSectionsById(section.getId()); 
+                tempSections.remove(section);
+            }
+        }
+        sections = tempSections;
+        course.setSections(sections);
+        courseRepository.save(course);
 
         return course;
     }
