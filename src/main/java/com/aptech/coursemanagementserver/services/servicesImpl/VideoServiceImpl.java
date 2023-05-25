@@ -11,6 +11,7 @@ import static com.aptech.coursemanagementserver.constants.GlobalStorage.CONTENT_
 import static com.aptech.coursemanagementserver.constants.GlobalStorage.CONTENT_TYPE;
 import static com.aptech.coursemanagementserver.constants.GlobalStorage.VIDEO;
 import static com.aptech.coursemanagementserver.constants.GlobalStorage.VIDEO_CONTENT;
+import static com.aptech.coursemanagementserver.constants.GlobalStorage.VTT_CONTENT;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -20,10 +21,10 @@ import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.NoSuchElementException;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.springframework.http.HttpStatus;
@@ -68,8 +69,21 @@ public class VideoServiceImpl implements VideoService {
             Lesson lesson = lessonRepository.findById(lessonId).orElseThrow(
                     () -> new NoSuchElementException("The lesson with lessonId: [" + lessonId + "] is not exist."));
             Video video = lesson.getVideo();
+
+            String[] parts = video.getCaptionUrls().split(",");
+            Map<String, String> map = new HashMap<>();
+            for (String part : parts) {
+                int lastDotIndex = part.lastIndexOf(".");
+                if (lastDotIndex > 0) {
+                    String langCode = part.substring(lastDotIndex - 2, lastDotIndex);
+                    map.put(langCode, part);
+                }
+            }
+            // ObjectMapper objectMapper = new ObjectMapper();
+            // String captionData = objectMapper.writeValueAsString(map);
+
             VideoDto videoDto = VideoDto.builder().name(video.getName()).url(video.getUrl())
-                    .captionUrls(Arrays.asList(video.getCaptionUrls().split(","))).lessonId(lessonId).build();
+                    .captionData(map).lessonId(lessonId).build();
 
             return videoDto;
         } catch (NoSuchElementException e) {
@@ -197,11 +211,11 @@ public class VideoServiceImpl implements VideoService {
     @Override
     public ResponseEntity<byte[]> prepareCaptionContent(final String fileName) {
         try {
-            Path path = Paths.get(getCaptionPath(), fileName);
+            Path path = Paths.get(CAPTION, fileName);
             byte[] data = Files.readAllBytes(path);
 
             return ResponseEntity.status(HttpStatus.OK)
-                    .contentType(MediaType.parseMediaType("text/vtt"))
+                    .contentType(MediaType.parseMediaType(VTT_CONTENT))
                     .body(data);
         } catch (IOException e) {
             log.error("Exception while reading the file {}", e.getMessage());
@@ -211,7 +225,7 @@ public class VideoServiceImpl implements VideoService {
     }
 
     public byte[] readByteRangeNew(String filename, long start, long end) throws IOException {
-        Path path = Paths.get(getVideoPath(), filename);
+        Path path = Paths.get(VIDEO, filename);
         byte[] data = Files.readAllBytes(path);
         byte[] result = new byte[(int) (end - start) + 1];
         System.arraycopy(data, (int) start, result, 0, (int) (end - start) + 1);
@@ -219,7 +233,7 @@ public class VideoServiceImpl implements VideoService {
     }
 
     public byte[] readByteRange(String filename, long start, long end) throws IOException {
-        Path path = Paths.get(getVideoPath(), filename);
+        Path path = Paths.get(VIDEO, filename);
         try (InputStream inputStream = (Files.newInputStream(path));
                 ByteArrayOutputStream bufferedOutputStream = new ByteArrayOutputStream()) {
             byte[] data = new byte[BYTE_RANGE];
@@ -246,11 +260,21 @@ public class VideoServiceImpl implements VideoService {
         return new File(url.getFile()).getAbsolutePath();
     }
 
-    public Long getVideoSize(String fileName) {
-        return Optional.ofNullable(fileName)
-                .map(file -> Paths.get(getVideoPath(), file))
-                .map(this::sizeFromFile)
-                .orElse(0L);
+    /*
+     * public Long getVideoSize(String fileName) {
+     * return Optional.ofNullable(fileName)
+     * .map(file -> Paths.get(getVideoPath(), file))
+     * .map(this::sizeFromFile)
+     * .orElse(0L);
+     * }
+     */
+    public Long getVideoSize(String fileName) throws IOException {
+
+        return Files.size((Paths.get(VIDEO, fileName)));
+        // return Optional.ofNullable(fileName)
+        // .map(file -> Paths.get(VIDEO, file))
+        // .map(this::sizeFromFile)
+        // .orElse(0L);
     }
 
     private Long sizeFromFile(Path path) {

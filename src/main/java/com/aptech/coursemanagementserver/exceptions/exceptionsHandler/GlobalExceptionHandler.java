@@ -14,6 +14,7 @@ import org.springframework.web.context.request.WebRequest;
 import com.aptech.coursemanagementserver.dtos.ErrorDetails;
 import com.aptech.coursemanagementserver.enums.AntType;
 import com.aptech.coursemanagementserver.exceptions.BadRequestException;
+import com.aptech.coursemanagementserver.exceptions.InvalidFileExtensionException;
 import com.aptech.coursemanagementserver.exceptions.InvalidTokenException;
 import com.aptech.coursemanagementserver.exceptions.IsExistedException;
 import com.aptech.coursemanagementserver.exceptions.ResourceNotFoundException;
@@ -45,7 +46,7 @@ public class GlobalExceptionHandler {
                 return new ResponseEntity<>(errorDetails, HttpStatus.BAD_REQUEST);
         }
 
-        // 401 Invalid Token
+        // 401 Unauthorized - Invalid Token
         @ExceptionHandler(InvalidTokenException.class)
         public ResponseEntity<ErrorDetails> handleInvalidTokenException(InvalidTokenException invalidTokenException,
                         WebRequest webRequest) {
@@ -55,7 +56,7 @@ public class GlobalExceptionHandler {
                 return new ResponseEntity<>(errorDetails, invalidTokenException.getStatus());
         }
 
-        // 403 Handle Security Authenticate
+        // 403 Forbidden - Handle Security Authenticate
         @ExceptionHandler(AccessDeniedException.class)
         public ResponseEntity<ErrorDetails> handleAccessDeniedExceptions(AccessDeniedException t) {
                 return ResponseEntity.status(HttpStatus.FORBIDDEN).body(ErrorDetails.builder()
@@ -66,7 +67,7 @@ public class GlobalExceptionHandler {
                                 .message("Forbidden").build());
         }
 
-        // 404
+        // 404 Not Found
         @ExceptionHandler(UserNotFoundException.class)
         public final ResponseEntity<ErrorDetails> handleUserNotFoundException(Exception ex, WebRequest request)
                         throws Exception {
@@ -86,7 +87,7 @@ public class GlobalExceptionHandler {
                 return new ResponseEntity<>(errorDetails, HttpStatus.NOT_FOUND);
         }
 
-        // 409 IsExisted
+        // 409 Conflict - Is existed
         @ExceptionHandler(IsExistedException.class)
         public ResponseEntity<ErrorDetails> handleExistedException(IsExistedException isExistedException,
                         WebRequest webRequest) {
@@ -94,6 +95,17 @@ public class GlobalExceptionHandler {
                                 isExistedException.getMessage(),
                                 webRequest.getDescription(false), HttpStatus.CONFLICT.toString());
                 return new ResponseEntity<>(errorDetails, HttpStatus.CONFLICT);
+        }
+
+        // 415 Unsupported MediaType - Is existed
+        @ExceptionHandler(InvalidFileExtensionException.class)
+        public ResponseEntity<ErrorDetails> handleInvalidFileExtensionException(
+                        InvalidFileExtensionException invalidFileExtensionException,
+                        WebRequest webRequest) {
+                ErrorDetails errorDetails = new ErrorDetails(LocalDateTime.now(), AntType.warning,
+                                invalidFileExtensionException.getMessage(),
+                                webRequest.getDescription(false), HttpStatus.UNSUPPORTED_MEDIA_TYPE.toString());
+                return new ResponseEntity<>(errorDetails, HttpStatus.UNSUPPORTED_MEDIA_TYPE);
         }
 
         // IO Exception

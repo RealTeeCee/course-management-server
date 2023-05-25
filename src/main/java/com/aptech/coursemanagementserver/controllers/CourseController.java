@@ -2,6 +2,7 @@ package com.aptech.coursemanagementserver.controllers;
 
 import static com.aptech.coursemanagementserver.constants.GlobalStorage.BAD_REQUEST_EXCEPTION;
 import static com.aptech.coursemanagementserver.constants.GlobalStorage.COURSE_PATH;
+import static com.aptech.coursemanagementserver.constants.GlobalStorage.FETCHING_FAILED;
 import static com.aptech.coursemanagementserver.constants.GlobalStorage.GLOBAL_EXCEPTION;
 
 import java.net.MalformedURLException;
@@ -12,7 +13,6 @@ import java.nio.file.StandardCopyOption;
 import java.time.Instant;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
 
@@ -39,6 +39,7 @@ import com.aptech.coursemanagementserver.dtos.CourseDto;
 import com.aptech.coursemanagementserver.dtos.baseDto.BaseDto;
 import com.aptech.coursemanagementserver.enums.AntType;
 import com.aptech.coursemanagementserver.exceptions.BadRequestException;
+import com.aptech.coursemanagementserver.exceptions.InvalidFileExtensionException;
 import com.aptech.coursemanagementserver.exceptions.InvalidTokenException;
 import com.aptech.coursemanagementserver.exceptions.ResourceNotFoundException;
 import com.aptech.coursemanagementserver.models.Course;
@@ -61,38 +62,42 @@ public class CourseController {
         private final CourseService courseService;
 
         @GetMapping
-        @Operation(summary = "[ANY ROLE] - GET All Courses")
-        @PreAuthorize("hasAnyRole('USER', 'ADMIN', 'MANAGER', 'EMPLOYEE')")
+        @Operation(summary = "[ANORNYMOUS] - GET All Courses")
+        @PreAuthorize("permitAll()")
         public ResponseEntity<List<CourseDto>> getCourses() {
                 try {
-                        List<Course> courses = courseService.findAll();
-                        List<CourseDto> courseDtos = new ArrayList<>();
-                        for (Course course : courses) {
-                                List<String> achievementsList = course.getAchievements().stream()
-                                                .map(achievement -> achievement.getName())
-                                                .toList();
-                                List<String> tagsList = course.getTags().stream().map(tag -> tag.getName()).toList();
-                                new CourseDto();
-                                CourseDto courseDto = CourseDto.builder().id(course.getId())
-                                                .name(course.getName())
-                                                .price(course.getPrice())
-                                                .net_price(course.getNet_price()).slug(course.getSlug())
-                                                .image(course.getImage())
-                                                .sections(course.getSections().stream()
-                                                                .map(section -> section.getName())
-                                                                .toList())
-                                                .category(course.getCategory().getId())
-                                                .achievementName(String.join(",", achievementsList))
-                                                .tagName(String.join(",", tagsList))
-                                                .duration(course.getDuration()).build();
-                                courseDtos.add(courseDto);
-                        }
+                        List<CourseDto> courseDtos = courseService.findAll();
+                        return ResponseEntity.ok(courseDtos);
 
+                } catch (Exception e) {
+                        throw new BadRequestException(FETCHING_FAILED);
+                }
+        }
+
+        @GetMapping(path = "/free-course")
+        @Operation(summary = "[ANORNYMOUS] - GET Free Courses")
+        @PreAuthorize("permitAll()")
+        public ResponseEntity<List<CourseDto>> getFreeCourses() {
+                try {
+                        List<CourseDto> courseDtos = courseService.findFreeCourses();
                         return ResponseEntity.ok(courseDtos);
                 } catch (Exception e) {
-                        throw new BadRequestException("Fetch data failed!");
+                        throw new BadRequestException(FETCHING_FAILED);
                 }
+        }
 
+        @GetMapping(path = "/related-course")
+        @Operation(summary = "[ANORNYMOUS] - GET Related Courses")
+        @PreAuthorize("permitAll()")
+        public ResponseEntity<List<CourseDto>> getRelatedCourses(long categoryId, long tagId) {
+                try {
+                        List<CourseDto> courseDtos = courseService.findRelatedCourses(categoryId, tagId);
+                        return ResponseEntity.ok(courseDtos);
+                } catch (NoSuchElementException e) {
+                        throw new ResourceNotFoundException(e.getMessage());
+                } catch (Exception e) {
+                        throw new BadRequestException(FETCHING_FAILED);
+                }
         }
 
         @GetMapping(path = "/{id}")
@@ -101,25 +106,12 @@ public class CourseController {
 
         public ResponseEntity<CourseDto> getCourseById(@PathVariable("id") long id) {
                 try {
-                        Course course = courseService.findById(id);
-
-                        List<String> achievementsList = course.getAchievements().stream()
-                                        .map(achievement -> achievement.getName())
-                                        .toList();
-                        List<String> tagsList = course.getTags().stream().map(tag -> tag.getName()).toList();
-                        CourseDto courseDto = CourseDto.builder().id(course.getId()).name(course.getName())
-                                        .price(course.getPrice())
-                                        .net_price(course.getNet_price()).slug(course.getSlug())
-                                        .image(course.getImage())
-                                        .sections(course.getSections().stream().map(section -> section.getName())
-                                                        .toList())
-                                        .category(course.getCategory().getId())
-                                        .achievementName(String.join(",", achievementsList))
-                                        .tagName(String.join(",", tagsList))
-                                        .duration(course.getDuration()).build();
+                        CourseDto courseDto = courseService.findById(id);
                         return ResponseEntity.ok(courseDto);
+                } catch (NoSuchElementException e) {
+                        throw new ResourceNotFoundException(e.getMessage());
                 } catch (Exception e) {
-                        throw new ResourceNotFoundException("Course", "CourseId: ", Long.toString(id));
+                        throw new BadRequestException(FETCHING_FAILED);
                 }
 
         }
@@ -132,6 +124,9 @@ public class CourseController {
 
                 try {
                         String extension = FilenameUtils.getExtension(file.getOriginalFilename());
+
+                        if (!isImageFile(extension))
+                                throw new InvalidFileExtensionException(extension);
 
                         CourseDto courseDto = objectMapper.readValue(courseJson, CourseDto.class);
                         courseDto.setImage(
@@ -149,9 +144,10 @@ public class CourseController {
                                                         .build(),
                                         HttpStatus.OK);
 
+                } catch (InvalidFileExtensionException e) {
+                        throw new InvalidFileExtensionException(e.getMessage());
                 } catch (Exception e) {
                         throw new BadRequestException(BAD_REQUEST_EXCEPTION);
-
                 }
         }
 
@@ -161,20 +157,21 @@ public class CourseController {
         public ResponseEntity<Resource> download(@RequestParam long courseId)
                         throws MalformedURLException {
                 try {
-                        Course course = courseService.findById(courseId);
+                        Course course = courseService.findCourseById(courseId);
                         String fileExtension = FilenameUtils.getExtension(course.getImage());
                         // Auto add slash
                         Path root = COURSE_PATH.resolve(
                                         generateFilename(course.getUpdated_at(), fileExtension, course));
 
                         Resource file = new UrlResource(root.toUri());
-                        String test = "";
 
                         return ResponseEntity.ok()
                                         .header(HttpHeaders.CONTENT_DISPOSITION,
                                                         "attachment; filename=\"" + file.getFilename() + "\"")
                                         .contentType(MediaType.APPLICATION_OCTET_STREAM)
                                         .body(file);
+                } catch (NoSuchElementException e) {
+                        throw new ResourceNotFoundException(e.getMessage());
                 } catch (Exception e) {
                         throw new BadRequestException(GLOBAL_EXCEPTION);
                 }
@@ -188,13 +185,15 @@ public class CourseController {
 
                 try {
                         String extension = FilenameUtils.getExtension(file.getOriginalFilename());
+                        if (!isImageFile(extension))
+                                throw new InvalidFileExtensionException(extension);
 
                         CourseDto courseDto = objectMapper.readValue(courseJson, CourseDto.class);
 
                         courseDto.setImage(
                                         Slugify.builder().build().slugify(courseDto.getName()) + "_InDB." + extension);
 
-                        Course course = courseService.findById(courseDto.getId());
+                        Course course = courseService.findCourseById(courseDto.getId());
                         Course savedCourse = courseService.setProperties(courseDto, course);
 
                         Files.createDirectories(COURSE_PATH);
@@ -211,6 +210,10 @@ public class CourseController {
                                                         .build(),
                                         HttpStatus.OK);
 
+                } catch (InvalidFileExtensionException e) {
+                        throw new InvalidFileExtensionException(e.getMessage());
+                } catch (NoSuchElementException e) {
+                        throw new ResourceNotFoundException(e.getMessage());
                 } catch (Exception e) {
                         throw new BadRequestException(BAD_REQUEST_EXCEPTION);
                 }
@@ -222,7 +225,7 @@ public class CourseController {
                 try {
                         if (courseId == 1)
                                 throw new NoSuchFileException("Cannot delete course created by SuperAdmin");
-                        Course course = courseService.findById(courseId);
+                        Course course = courseService.findCourseById(courseId);
                         String fileExtension = FilenameUtils.getExtension(course.getImage());
                         // Auto add slash
                         Path root = COURSE_PATH.resolve(
@@ -247,6 +250,13 @@ public class CourseController {
                                 .format(DateTimeFormatter.ofPattern("ddMMyyyy")) + "_"
                                 + Slugify.builder().build().slugify(savedCourse.getName())
                                 + "_" + savedCourse.getId() + "." + extension;
+        }
+
+        private boolean isImageFile(String extension) {
+                return extension.equals("jpeg") || extension.equals("jpg") || extension.equals("png")
+                                || extension.equals("gif") || extension.equals("bmp")
+                                || extension.equals("tiff") || extension.equals("tif")
+                                || extension.equals("webp") || extension.equals("svg");
         }
 
 }

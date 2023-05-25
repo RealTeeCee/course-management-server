@@ -33,6 +33,8 @@ public class CourseDto {
     @JsonProperty("category_id")
     private long category;
 
+    private String category_name;
+
     @JsonProperty("tags")
     private String tagName;
 

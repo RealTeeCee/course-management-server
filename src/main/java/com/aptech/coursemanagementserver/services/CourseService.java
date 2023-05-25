@@ -12,11 +12,17 @@ import com.aptech.coursemanagementserver.models.Tag;
 public interface CourseService {
     public List<Course> findAllByTagName(String tagName);
 
-    public Course findById(long courseId);
+    public Course findCourseById(long CourseId);
+
+    public CourseDto findById(long courseId);
 
     public Course findByName(String courseName);
 
-    public List<Course> findAll();
+    public List<CourseDto> findAll();
+
+    public List<CourseDto> findFreeCourses();
+
+    public List<CourseDto> findRelatedCourses(long categoryId, long tagId);
 
     public Course save(Course course);
 

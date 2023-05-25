@@ -30,6 +30,7 @@ import com.aptech.coursemanagementserver.dtos.VideoDto;
 import com.aptech.coursemanagementserver.dtos.baseDto.BaseDto;
 import com.aptech.coursemanagementserver.enums.AntType;
 import com.aptech.coursemanagementserver.exceptions.BadRequestException;
+import com.aptech.coursemanagementserver.exceptions.InvalidFileExtensionException;
 import com.aptech.coursemanagementserver.exceptions.ResourceNotFoundException;
 import com.aptech.coursemanagementserver.services.VideoService;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -70,6 +71,10 @@ public class VideoController {
             throws JsonMappingException, JsonProcessingException {
         try {
             String videoExtension = FilenameUtils.getExtension(videoFile.getOriginalFilename());
+
+            if (!isVideoFile(videoExtension))
+                throw new InvalidFileExtensionException(videoExtension);
+
             List<String> captionUrls = new ArrayList<>();
 
             Files.createDirectories(VIDEO_PATH);
@@ -100,6 +105,8 @@ public class VideoController {
                             .build(),
                     HttpStatus.OK);
 
+        } catch (InvalidFileExtensionException e) {
+            throw new InvalidFileExtensionException(e.getMessage());
         } catch (NoSuchElementException e) {
             throw new ResourceNotFoundException(e.getMessage());
         } catch (Exception e) {
@@ -120,4 +127,9 @@ public class VideoController {
         }
     }
 
+    private boolean isVideoFile(String videoExtension) {
+        return videoExtension.equals("mp4") || videoExtension.equals("avi") || videoExtension.equals("mov")
+                || videoExtension.equals("wmv") || videoExtension.equals("flv") || videoExtension.equals("mkv")
+                || videoExtension.equals("webm") || videoExtension.equals("mpeg") || videoExtension.equals("mpg");
+    }
 }
