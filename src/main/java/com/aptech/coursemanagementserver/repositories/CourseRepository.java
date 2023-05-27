@@ -15,5 +15,14 @@ public interface CourseRepository extends JpaRepository<Course, Long> {
             """)
     List<Course> findAllByTagName(String tagName);
 
+    @Query(value = """
+            SELECT c.id FROM course c
+            JOIN enrollment e
+            ON e.course_id = c.id
+            GROUP BY c.id
+            ORDER BY COUNT(e.course_id) DESC
+                    """, nativeQuery = true)
+    List<Long> findBestSellerCourseIds();
+
     Course findByName(String courseName);
 }

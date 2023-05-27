@@ -74,6 +74,18 @@ public class CourseController {
                 }
         }
 
+        @GetMapping(path = "/best-course")
+        @Operation(summary = "[ANORNYMOUS] - GET Best Saler Courses")
+        @PreAuthorize("permitAll()")
+        public ResponseEntity<List<CourseDto>> getBestCourses() {
+                try {
+                        List<CourseDto> courseDtos = courseService.findBestSellerCourses();
+                        return ResponseEntity.ok(courseDtos);
+                } catch (Exception e) {
+                        throw new BadRequestException(FETCHING_FAILED);
+                }
+        }
+
         @GetMapping(path = "/free-course")
         @Operation(summary = "[ANORNYMOUS] - GET Free Courses")
         @PreAuthorize("permitAll()")

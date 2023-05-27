@@ -20,6 +20,8 @@ public interface CourseService {
 
     public List<CourseDto> findAll();
 
+    public List<CourseDto> findBestSellerCourses();
+
     public List<CourseDto> findFreeCourses();
 
     public List<CourseDto> findRelatedCourses(long categoryId, long tagId);

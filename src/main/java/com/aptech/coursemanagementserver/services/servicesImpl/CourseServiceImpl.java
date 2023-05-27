@@ -68,6 +68,22 @@ public class CourseServiceImpl implements CourseService {
     }
 
     @Override
+    public List<CourseDto> findBestSellerCourses() {
+        // Free Course: Query theo enrolled, count thằng nào enrolled nhiều nhất là lên
+        // top đầu
+        List<Long> courseIds = courseRepository.findBestSellerCourseIds();
+
+        List<CourseDto> courseDtos = new ArrayList<>();
+        for (Long courseId : courseIds) {
+            Course course = courseRepository.findById(courseId).get();
+            CourseDto courseDto = toCourseDto(course);
+            courseDtos.add(courseDto);
+        }
+
+        return courseDtos;
+    }
+
+    @Override
     public List<CourseDto> findFreeCourses() {
         // Free Course: Query theo price, nếu Price == 0 thì lấy ra
         List<Course> courses = courseRepository.findAll();

@@ -1,7 +1,6 @@
 package com.aptech.coursemanagementserver.models;
 
 import java.time.Instant;
-import java.time.LocalTime;
 
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
@@ -34,8 +33,6 @@ public class Enrollment {
     private long id;
     @Column(columnDefinition = "bigint")
     private long progress;
-    @Column(columnDefinition = "datetime")
-    private LocalTime resume_point;
     @Column(columnDefinition = "ntext")
     private String comment;
     @Column(columnDefinition = "decimal(3,2)")
