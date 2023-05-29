@@ -12,5 +12,12 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @EqualsAndHashCode(callSuper = false)
 public class EnrollmentDto {
-    private String name;
+    private long id;
+    private long progress;
+    private String comment;
+    private double rating;
+    private boolean isNotify;
+    private long user_id;
+    private long course_id;
+
 }

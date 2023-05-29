@@ -2,11 +2,13 @@ package com.aptech.coursemanagementserver.services.servicesImpl;
 
 import static com.aptech.coursemanagementserver.constants.GlobalStorage.BAD_REQUEST_EXCEPTION;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 
@@ -45,8 +47,19 @@ public class CourseServiceImpl implements CourseService {
     }
 
     @Override
-    public Course findById(long courseId) {
-        return courseRepository.findById(courseId).get();
+    public Course findCourseById(long courseId) {
+        return courseRepository.findById(courseId).orElseThrow(
+                () -> new NoSuchElementException("This course with courseId: [" + courseId + "] is not exist."));
+    }
+
+    @Override
+    public CourseDto findById(long courseId) {
+        Course course = courseRepository.findById(courseId).orElseThrow(
+                () -> new NoSuchElementException("This course with courseId: [" + courseId + "] is not exist."));
+
+        CourseDto courseDto = toCourseDto(course);
+
+        return courseDto;
     }
 
     @Override
@@ -55,9 +68,75 @@ public class CourseServiceImpl implements CourseService {
     }
 
     @Override
-    public List<Course> findAll() {
+    public List<CourseDto> findBestSellerCourses() {
+        // Free Course: Query theo enrolled, count thằng nào enrolled nhiều nhất là lên
+        // top đầu
+        List<Long> courseIds = courseRepository.findBestSellerCourseIds();
+
+        List<CourseDto> courseDtos = new ArrayList<>();
+        for (Long courseId : courseIds) {
+            Course course = courseRepository.findById(courseId).get();
+            CourseDto courseDto = toCourseDto(course);
+            courseDtos.add(courseDto);
+        }
+
+        return courseDtos;
+    }
+
+    @Override
+    public List<CourseDto> findFreeCourses() {
+        // Free Course: Query theo price, nếu Price == 0 thì lấy ra
         List<Course> courses = courseRepository.findAll();
-        return courses;
+        List<CourseDto> courseDtos = new ArrayList<>();
+
+        for (Course course : courses) {
+            if (course.getPrice() == 0) {
+                CourseDto courseDto = toCourseDto(course);
+                courseDtos.add(courseDto);
+            }
+        }
+
+        return courseDtos;
+    }
+
+    @Override
+    public List<CourseDto> findRelatedCourses(long categoryId, long tagId) {
+        // Related Course: Query theo category_id, hoặc nếu có tag thì query theo tag
+        // nữa, này phải check condition nếu có thì lấy ra theo tag nữa kèm category_id
+        boolean isExistTagId = tagId > 0;
+        List<Course> courses = courseRepository.findAll();
+        List<CourseDto> courseDtos = new ArrayList<>();
+
+        Tag tag = isExistTagId ? tagRepository.findById(tagId).orElseThrow(
+                () -> new NoSuchElementException("This tag with tagId: [" + tagId + "] is not exist.")) : new Tag();
+
+        for (Course course : courses) {
+            if (course.getCategory().getId() == categoryId) {
+                if (course.getTags().contains(tag)) {
+                    CourseDto courseDto = toCourseDto(course);
+                    courseDtos.add(courseDto);
+                    continue;
+                }
+                if (isExistTagId)
+                    continue;
+
+                CourseDto courseDto = toCourseDto(course);
+                courseDtos.add(courseDto);
+            }
+        }
+
+        return courseDtos;
+    }
+
+    @Override
+    public List<CourseDto> findAll() {
+        List<Course> courses = courseRepository.findAll();
+        List<CourseDto> courseDtos = new ArrayList<>();
+        for (Course course : courses) {
+            CourseDto courseDto = toCourseDto(course);
+            courseDtos.add(courseDto);
+        }
+        return courseDtos;
     }
 
     @Override
@@ -136,23 +215,43 @@ public class CourseServiceImpl implements CourseService {
         boolean isUpdatedCourse = course.getId() > 0 ? true : false;
 
         Set<Tag> newTags = new HashSet<>();
+        List<Tag> allTags = tagRepository.findAll();
+        List<Tag> tempAllTags = new ArrayList<>();
+        tempAllTags.addAll(allTags);
 
         String[] tags = tag.split(",");
+        List<String> list = Arrays.asList(tags);
+
         for (String tagName : tags) {
-            if (tagRepository.findTagByName(tagName) == null) {
+            // Error case 1: Add new tag and old tag in same String -> return only new Tag
+            // Error case 2: No new tag -> return nothing
+            Tag foundedTag = tagRepository.findTagByName(tagName);
+            if (foundedTag == null) {
                 Tag newTag = new Tag();
                 newTag.setName(tagName);
                 newTags.add(newTag);
+                // Add new tag to temp
+                tempAllTags.add(newTag);
             }
         }
 
+        if (allTags.size() > 0) {
+            for (Tag t : allTags) {
+                if (!list.contains(t.getName())) {
+                    tempAllTags.remove(t);
+                }
+            }
+        }
+        // To return with for create tag
+        Set<Tag> returnTags = tempAllTags.stream().collect(Collectors.toSet());
+
         if (newTags.size() > 0) {
+            // Only create new tag
             tagRepository.saveAll(newTags);
         }
 
         if (isUpdatedCourse) {
             var tagsOfCourse = course.getTags();
-            List<String> list = Arrays.asList(tags);
             Set<Tag> tempTag = new HashSet<>();
             tempTag.addAll(tagsOfCourse);
 
@@ -171,7 +270,7 @@ public class CourseServiceImpl implements CourseService {
             return tagsOfCourse;
         }
 
-        return newTags;
+        return returnTags;
     }
 
     @Override
@@ -181,24 +280,42 @@ public class CourseServiceImpl implements CourseService {
 
         // Check achievement if not exist add new.
         Set<Achievement> newAchievements = new HashSet<>();
+        List<Achievement> allAchievements = achievementRepository.findAll();
+        List<Achievement> tempAllAchievements = new ArrayList<>();
+        tempAllAchievements.addAll(allAchievements);
 
         String[] achievements = achievement.split(",");
+        List<String> list = Arrays.asList(achievements);
         for (String achievementName : achievements) {
-
-            if (achievementRepository.findAchievementByName(achievementName) == null) {
+            // Chỗ này nếu tạo course mới cùng tag sẽ mặc định tìm đc achievement -> null
+            Achievement foundedAchievement = achievementRepository.findAchievementByName(achievementName);
+            if (foundedAchievement == null) {
                 Achievement newAchievement = new Achievement();
                 newAchievement.setName(achievementName);
                 newAchievements.add(newAchievement);
+                // Add new achievement to temp
+                tempAllAchievements.add(newAchievement);
             }
         }
 
+        if (allAchievements.size() > 0) {
+            for (Achievement a : allAchievements) {
+                if (!list.contains(a.getName())) {
+                    tempAllAchievements.remove(a);
+                }
+            }
+        }
+        // To return with for create tag
+        Set<Achievement> returnAchievements = tempAllAchievements.stream().collect(Collectors.toSet());
+
         if (newAchievements.size() > 0) {
+            // Only create new achievement
             achievementRepository.saveAll(newAchievements);
         }
 
         if (isUpdatedCourse) {
             var achievementOfCoure = course.getAchievements();
-            List<String> list = Arrays.asList(achievements);
+
             Set<Achievement> tempAchievement = new HashSet<>();
             tempAchievement.addAll(achievementOfCoure);
 
@@ -217,7 +334,7 @@ public class CourseServiceImpl implements CourseService {
             return achievementOfCoure;
         }
 
-        return newAchievements;
+        return returnAchievements;
     }
 
     @Override
@@ -232,5 +349,29 @@ public class CourseServiceImpl implements CourseService {
         } catch (Exception e) {
             throw new BadRequestException(BAD_REQUEST_EXCEPTION);
         }
+    }
+
+    private CourseDto toCourseDto(Course course) {
+        List<String> achievementsList = course.getAchievements().stream()
+                .map(achievement -> achievement.getName())
+                .toList();
+        List<String> tagsList = course.getTags().stream().map(tag -> tag.getName()).toList();
+        new CourseDto();
+
+        CourseDto courseDto = CourseDto.builder().id(course.getId())
+                .name(course.getName())
+                .price(course.getPrice())
+                .net_price(course.getNet_price()).slug(course.getSlug())
+                .image(course.getImage())
+                .sections(course.getSections().stream()
+                        .map(section -> section.getName())
+                        .toList())
+                .category(course.getCategory().getId())
+                .category_name(course.getCategory().getName())
+                .achievementName(String.join(",", achievementsList))
+                .tagName(String.join(",", tagsList))
+                .duration(course.getDuration()).build();
+
+        return courseDto;
     }
 }

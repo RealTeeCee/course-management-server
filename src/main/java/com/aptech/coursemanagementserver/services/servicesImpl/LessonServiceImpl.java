@@ -31,7 +31,8 @@ public class LessonServiceImpl implements LessonService {
     @Override
     public LessonDto findById(long lessonId) {
         try {
-            Lesson lesson = lessonRepository.findById(lessonId).get();
+            Lesson lesson = lessonRepository.findById(lessonId).orElseThrow(
+                    () -> new NoSuchElementException("The lesson with lessonId: [" + lessonId + "] is not exist."));
             LessonDto lessonDto = new LessonDto();
             lessonDto.setId(lessonId);
             lessonDto.setName(lesson.getName());
@@ -41,7 +42,7 @@ public class LessonServiceImpl implements LessonService {
 
             return lessonDto;
         } catch (NoSuchElementException e) {
-            throw new NoSuchElementException("This lesson with lessonId: [" + lessonId + "] is not exist.");
+            throw new NoSuchElementException(e.getMessage());
 
         } catch (Exception e) {
             throw new BadRequestException(BAD_REQUEST_EXCEPTION);
@@ -63,7 +64,7 @@ public class LessonServiceImpl implements LessonService {
     public List<LessonDto> findAllBySectionId(long sectionId) {
         try {
             Section section = sectionRepository.findById(sectionId).orElseThrow(() -> new NoSuchElementException(
-                    "This section with sectionId: [" + sectionId + "] is not exist."));
+                    "The section with sectionId: [" + sectionId + "] is not exist."));
 
             List<LessonDto> lessonDtos = new ArrayList<>();
             Set<Lesson> lessons = section.getLessons();
@@ -97,7 +98,7 @@ public class LessonServiceImpl implements LessonService {
             return BaseDto.builder().type(AntType.success).message("Create lesson successfully.").build();
         } catch (NoSuchElementException e) {
             throw new NoSuchElementException(
-                    "This section with sectionId: [" + lessonDto.getSectionId() + "] is not exist.");
+                    "The section with sectionId: [" + lessonDto.getSectionId() + "] is not exist.");
         } catch (Exception e) {
             throw new BadRequestException(BAD_REQUEST_EXCEPTION);
         }
@@ -109,10 +110,10 @@ public class LessonServiceImpl implements LessonService {
         try {
             Section section = sectionRepository.findById(lessonDto.getSectionId())
                     .orElseThrow(() -> new NoSuchElementException(
-                            "This section with sectionId: [" + lessonDto.getSectionId() + "] is not exist."));
+                            "The section with sectionId: [" + lessonDto.getSectionId() + "] is not exist."));
 
             Lesson lesson = lessonRepository.findById(lessonDto.getId()).orElseThrow(() -> new NoSuchElementException(
-                    "This lesson with lessonId: [" + lessonDto.getId() + "] is not exist."));
+                    "The lesson with lessonId: [" + lessonDto.getId() + "] is not exist."));
 
             lesson.setName(lessonDto.getName()).setDescription(lessonDto.getDescription())
                     .setDuration(lessonDto.getDuration())
@@ -131,12 +132,13 @@ public class LessonServiceImpl implements LessonService {
     @Override
     public BaseDto delete(long lessonId) {
         try {
-            Lesson lesson = lessonRepository.findById(lessonId).get();
+            Lesson lesson = lessonRepository.findById(lessonId).orElseThrow(
+                    () -> new NoSuchElementException("The lesson with lessonId: [" + lessonId + "] is not exist."));
             lessonRepository.delete(lesson);
             return BaseDto.builder().type(AntType.success).message("Delete lesson successfully.")
                     .build();
         } catch (NoSuchElementException e) {
-            throw new NoSuchElementException("This lesson with lessonId: [" + lessonId + "] is not exist.");
+            throw new NoSuchElementException(e.getMessage());
         } catch (Exception e) {
             throw new BadRequestException(BAD_REQUEST_EXCEPTION);
         }
