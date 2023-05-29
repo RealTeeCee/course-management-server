@@ -4,8 +4,6 @@ import java.time.LocalDateTime;
 
 import com.aptech.coursemanagementserver.enums.BlogStatus;
 
-import jakarta.persistence.Column;
-import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
