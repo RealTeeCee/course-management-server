@@ -4,7 +4,9 @@ import static com.aptech.coursemanagementserver.enums.Role.ADMIN;
 import static com.aptech.coursemanagementserver.enums.Role.EMPLOYEE;
 import static com.aptech.coursemanagementserver.enums.Role.MANAGER;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
@@ -98,8 +100,20 @@ public class CourseManagementServerApplication {
 						"User token: " +
 								service.generateTokenWithoutVerify(service.register(userTest)).getAccessToken());
 
+				List<CategoryDto> categoryDtos = new ArrayList<>();
 				CategoryDto category1 = CategoryDto.builder().name("Programming").build();
-				Category savedCategory1 = categoryService.save(category1);
+				CategoryDto category2 = CategoryDto.builder().name("Graphic Design").build();
+				CategoryDto category3 = CategoryDto.builder().name("Data Science").build();
+				CategoryDto category4 = CategoryDto.builder().name("Artificial Intelligence").build();
+
+				categoryDtos.add(category1);
+				categoryDtos.add(category2);
+				categoryDtos.add(category3);
+				categoryDtos.add(category4);
+
+				categoryService.saveAll(categoryDtos);
+
+				Category savedCategory1 = categoryService.findById(1);
 
 				CourseDto course1 = CourseDto.builder().achievementName("Master Java,Master SpringBoot")
 						.image("default.jpg")
