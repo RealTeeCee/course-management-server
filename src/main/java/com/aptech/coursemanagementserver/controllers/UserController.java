@@ -22,7 +22,7 @@ public class UserController {
     @PreAuthorize("hasAnyRole('USER', 'ADMIN', 'MANAGER', 'EMPLOYEE')")
     public ResponseEntity<UserProfileDto> getCurrentUser(@CurrentUser User user) {
 
-        var userProfileDto = UserProfileDto.builder().email(user.getEmail())
+        var userProfileDto = UserProfileDto.builder().id(user.getId()).email(user.getEmail())
                 .imageUrl(user.getImageUrl())
                 .name(user.getName())
                 .type(AntType.success)

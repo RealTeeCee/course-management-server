@@ -16,4 +16,14 @@ public interface LessonRepository extends JpaRepository<Lesson, Long> {
             WHERE s.id = :sectionId
             """)
     List<Lesson> findAllBySectionId(long sectionId);
+
+    @Query(value = """
+            SELECT l.* FROM lesson l
+            JOIN section s
+            ON l.section_id = s.id
+            JOIN course c
+            ON s.course_id = c.id
+            WHERE c.id = :courseId
+                """, nativeQuery = true)
+    List<Lesson> findAllByCourseId(long courseId);
 }

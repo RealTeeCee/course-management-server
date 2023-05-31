@@ -5,55 +5,58 @@ import java.time.Instant;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
+import com.aptech.coursemanagementserver.enums.payment.PaymentType;
+
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
 import jakarta.persistence.ForeignKey;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToOne;
-import jakarta.persistence.PrimaryKeyJoinColumn;
 import lombok.AllArgsConstructor;
-import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import lombok.experimental.Accessors;
 
-@Data
-@NoArgsConstructor
+@Getter
+@Setter
 @AllArgsConstructor
+@NoArgsConstructor
 @Accessors(chain = true)
-@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @Entity
-public class Lesson {
+public class Orders {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(columnDefinition = "bigint")
     private long id;
     @Column(columnDefinition = "nvarchar(100)")
+    @EqualsAndHashCode.Include
     private String name;
     @Column(columnDefinition = "ntext")
     private String description;
-    @Column(columnDefinition = "tinyint")
-    private int status = 1;
-    // @Column(columnDefinition = "bigint")
-    // private long section_id;
+    @Column(columnDefinition = "decimal(10,2)")
+    private double price;
+    @Column(columnDefinition = "decimal(10,2)")
+    private double net_price;
+    private PaymentType payment = PaymentType.PAYPAL;
     private int duration;
-
+    // @Column(columnDefinition = "bigint")
+    // private long category_id;
     @CreationTimestamp
     private Instant created_at = Instant.now();
     @UpdateTimestamp
     private Instant updated_at;
 
-    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY, mappedBy = "lesson")
-    @PrimaryKeyJoinColumn
-    private Video video;
+    @ManyToOne(cascade = CascadeType.MERGE)
+    @JoinColumn(name = "course_id", nullable = false, foreignKey = @ForeignKey(name = "FK_Order_Course"))
+    private Course course;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "section_id", nullable = false, foreignKey = @ForeignKey(name = "FK_Lesson_Section"))
-    private Section section;
+    @ManyToOne(cascade = CascadeType.MERGE)
+    @JoinColumn(name = "user_id", nullable = false, foreignKey = @ForeignKey(name = "FK_Order_User"))
+    private User user;
 }

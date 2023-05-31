@@ -15,4 +15,6 @@ public class SectionDto {
     private long id;
     private String name;
     private long courseId;
+    @Builder.Default
+    private int status = 1;
 }

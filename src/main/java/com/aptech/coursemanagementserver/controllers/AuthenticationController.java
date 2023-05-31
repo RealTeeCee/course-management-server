@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.net.URI;
 import java.text.ParseException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -62,7 +63,7 @@ public class AuthenticationController {
       publisher.publishEvent(new RegistrationCompleteEvent(user));
 
       return new ResponseEntity<BaseDto>(BaseDto.builder().type(AntType.success)
-          .message("Success! Please, check your email for to complete your registration.").build(), HttpStatus.OK);
+          .message("Success! Please, check your email to complete your registration.").build(), HttpStatus.OK);
 
     } catch (IsExistedException e) {
       throw new IsExistedException(e.getMessage());
@@ -127,6 +128,8 @@ public class AuthenticationController {
 
     Optional<User> user = userService.findByEmail(email);
     if (user.isPresent()) {
+      List<Token> previousTokenByUser = tokenRepository.findAllValidTokenByUser(user.get().getId());
+      tokenRepository.deleteAll(previousTokenByUser);
       String newToken = jwtService.saveUserToken(user.get());
       String newRefreshToken = jwtService.saveUserRefreshToken(user.get());
       AuthenticationResponseDto responseDto = AuthenticationResponseDto.builder()

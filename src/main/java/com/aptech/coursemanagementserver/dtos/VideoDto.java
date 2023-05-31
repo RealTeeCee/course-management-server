@@ -19,6 +19,8 @@ public class VideoDto {
     private String url;
     private List<String> captionUrls;
     private Map<String, String> captionData;
+    @Builder.Default
+    private int status = 1;
 
     private long lessonId;
 }

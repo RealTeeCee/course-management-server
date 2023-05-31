@@ -56,6 +56,10 @@ public class Course {
         private double price;
         @Column(columnDefinition = "decimal(10,2)")
         private double net_price;
+        @Column(columnDefinition = "tinyint")
+        private int level = 0;
+        @Column(columnDefinition = "tinyint")
+        private int status = 1;
         private int duration;
         // @Column(columnDefinition = "bigint")
         // private long category_id;
@@ -70,6 +74,9 @@ public class Course {
 
         @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "course")
         private Set<Enrollment> enrollments = new HashSet<>();
+
+        @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "course")
+        private Set<Orders> orders = new HashSet<>();
 
         @ManyToOne(cascade = CascadeType.MERGE)
         @JoinColumn(name = "category_id", nullable = false, foreignKey = @ForeignKey(name = "FK_Course_Category"))

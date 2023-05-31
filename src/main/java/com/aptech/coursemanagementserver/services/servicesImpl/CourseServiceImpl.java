@@ -63,6 +63,16 @@ public class CourseServiceImpl implements CourseService {
     }
 
     @Override
+    public CourseDto findBySlug(String slug) {
+        Course course = courseRepository.findBySlug(slug).orElseThrow(
+                () -> new NoSuchElementException("This course with slug: [" + slug + "] is not exist."));
+
+        CourseDto courseDto = toCourseDto(course);
+
+        return courseDto;
+    }
+
+    @Override
     public Course findByName(String courseName) {
         return courseRepository.findByName(courseName);
     }
@@ -76,8 +86,10 @@ public class CourseServiceImpl implements CourseService {
         List<CourseDto> courseDtos = new ArrayList<>();
         for (Long courseId : courseIds) {
             Course course = courseRepository.findById(courseId).get();
-            CourseDto courseDto = toCourseDto(course);
-            courseDtos.add(courseDto);
+            if (course.getStatus() == 1) {
+                CourseDto courseDto = toCourseDto(course);
+                courseDtos.add(courseDto);
+            }
         }
 
         return courseDtos;
@@ -90,7 +102,7 @@ public class CourseServiceImpl implements CourseService {
         List<CourseDto> courseDtos = new ArrayList<>();
 
         for (Course course : courses) {
-            if (course.getPrice() == 0) {
+            if (course.getStatus() == 1 && course.getPrice() == 0) {
                 CourseDto courseDto = toCourseDto(course);
                 courseDtos.add(courseDto);
             }
@@ -111,7 +123,7 @@ public class CourseServiceImpl implements CourseService {
                 () -> new NoSuchElementException("This tag with tagId: [" + tagId + "] is not exist.")) : new Tag();
 
         for (Course course : courses) {
-            if (course.getCategory().getId() == categoryId) {
+            if (course.getStatus() == 1 && course.getCategory().getId() == categoryId) {
                 if (course.getTags().contains(tag)) {
                     CourseDto courseDto = toCourseDto(course);
                     courseDtos.add(courseDto);
@@ -133,8 +145,10 @@ public class CourseServiceImpl implements CourseService {
         List<Course> courses = courseRepository.findAll();
         List<CourseDto> courseDtos = new ArrayList<>();
         for (Course course : courses) {
-            CourseDto courseDto = toCourseDto(course);
-            courseDtos.add(courseDto);
+            if (course.getStatus() == 1) {
+                CourseDto courseDto = toCourseDto(course);
+                courseDtos.add(courseDto);
+            }
         }
         return courseDtos;
     }
@@ -159,6 +173,8 @@ public class CourseServiceImpl implements CourseService {
                 .setTags(splitTag(courseDto.getTagName(), course))
                 .setAchievements(
                         splitAchievement(courseDto.getAchievementName(), course))
+                .setLevel(courseDto.getLevel())
+                .setStatus(courseDto.getStatus())
                 .setImage(courseDto.getImage())
                 .setSlug(Slugify.builder().build().slugify(courseDto.getName()))
                 .setDuration(courseDto.getDuration())
@@ -363,6 +379,8 @@ public class CourseServiceImpl implements CourseService {
                 .price(course.getPrice())
                 .net_price(course.getNet_price()).slug(course.getSlug())
                 .image(course.getImage())
+                .level(course.getLevel())
+                .status(course.getStatus())
                 .sections(course.getSections().stream()
                         .map(section -> section.getName())
                         .toList())

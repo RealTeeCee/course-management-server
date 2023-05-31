@@ -1,9 +1,12 @@
 package com.aptech.coursemanagementserver.controllers;
 
+import java.util.List;
 import java.util.NoSuchElementException;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -24,6 +27,18 @@ import lombok.RequiredArgsConstructor;
 @Tag(name = "Enrollment Endpoints")
 public class EnrollmentController {
     private final EnrollmentService enrollmentService;
+
+    @GetMapping(path = "/{userId}")
+    @PreAuthorize("hasAnyRole('USER', 'ADMIN', 'MANAGER', 'EMPLOYEE')")
+    public ResponseEntity<List<EnrollmentDto>> getAllUserCourses(@PathVariable("userId") long userId) {
+        try {
+            return ResponseEntity.ok(enrollmentService.findCoursesByUserId(userId));
+        } catch (NoSuchElementException e) {
+            throw new ResourceNotFoundException(e.getMessage());
+        } catch (Exception e) {
+            throw new BadRequestException(e.getMessage());
+        }
+    }
 
     @PostMapping
     @PreAuthorize("hasAnyRole('USER', 'ADMIN', 'MANAGER', 'EMPLOYEE')")

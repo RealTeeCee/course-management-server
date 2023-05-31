@@ -98,6 +98,10 @@ public class User implements UserDetails, OAuth2User {
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY, mappedBy = "user")
     private List<Token> tokens;
 
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "user")
+    @Builder.Default
+    private Set<Orders> orders = new HashSet<>();
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return role.getAuthorities(); // Spring will use the list of authorities of each user

@@ -70,10 +70,12 @@ public class LessonServiceImpl implements LessonService {
             Set<Lesson> lessons = section.getLessons();
 
             for (Lesson lesson : lessons) {
-                LessonDto lessonDto = LessonDto.builder().id(lesson.getId()).name(lesson.getName())
-                        .description(lesson.getDescription())
-                        .duration(lesson.getDuration()).sectionId(sectionId).build();
-                lessonDtos.add(lessonDto);
+                if (lesson.getStatus() == 1) {
+                    LessonDto lessonDto = LessonDto.builder().id(lesson.getId()).name(lesson.getName())
+                            .description(lesson.getDescription())
+                            .duration(lesson.getDuration()).sectionId(sectionId).build();
+                    lessonDtos.add(lessonDto);
+                }
             }
             return lessonDtos;
 

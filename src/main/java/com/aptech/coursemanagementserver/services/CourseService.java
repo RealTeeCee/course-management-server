@@ -18,6 +18,8 @@ public interface CourseService {
 
     public Course findByName(String courseName);
 
+    public CourseDto findBySlug(String slug);
+
     public List<CourseDto> findAll();
 
     public List<CourseDto> findBestSellerCourses();

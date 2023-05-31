@@ -17,10 +17,10 @@ import lombok.experimental.SuperBuilder;
 @AllArgsConstructor
 @EqualsAndHashCode(callSuper = false)
 public class UserProfileDto extends BaseDto {
-
-    String name;
-    String email;
-    String imageUrl;
-    Role role;
+    private long id;
+    private String name;
+    private String email;
+    private String imageUrl;
+    private Role role;
 
 }

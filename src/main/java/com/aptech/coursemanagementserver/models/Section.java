@@ -40,6 +40,8 @@ public class Section {
     @Column(columnDefinition = "nvarchar(100)")
     @EqualsAndHashCode.Include
     private String name;
+    @Column(columnDefinition = "tinyint")
+    private int status = 1;
     // @Column(columnDefinition = "bigint")
     // private long course_id;
 

@@ -41,7 +41,8 @@ public class Video {
 
     private String captionUrls;
 
-    private VideoType videoType;
+    @Column(columnDefinition = "tinyint")
+    private int status = 1;
     private long duration;
 
     @CreationTimestamp

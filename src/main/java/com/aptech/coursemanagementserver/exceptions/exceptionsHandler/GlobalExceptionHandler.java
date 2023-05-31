@@ -64,7 +64,7 @@ public class GlobalExceptionHandler {
                                 .type(AntType.error)
                                 .statusCode("403")
                                 .timestamp(LocalDateTime.now())
-                                .message("Forbidden").build());
+                                .message(t.getMessage()).build());
         }
 
         // 404 Not Found

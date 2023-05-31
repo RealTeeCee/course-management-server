@@ -15,12 +15,17 @@ public class LessonTrackingDto {
     // exist -> update
     // Return tracking lesson
 
-    private long old_sectionId;
-    private long old_lessonId;
+    // private long oldSectionId;
+    // private long oldLessonId;
+    // private long oldVideoId;
+    private long enrollmentId;
     private long courseId;
     private long sectionId;
     private long lessonId;
-    private long enrollmentId;
+    private long videoId;
+    private boolean isCompleted;
+    private boolean isTracked;
+    private int resumePoint;
 
     // Update LessonTracking set sectionId ='new SectionID', lessonId ='new
     // SectionID' where

@@ -1,5 +1,7 @@
 package com.aptech.coursemanagementserver.services.servicesImpl;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.NoSuchElementException;
 
 import org.springframework.stereotype.Service;
@@ -8,12 +10,13 @@ import com.aptech.coursemanagementserver.dtos.EnrollmentDto;
 import com.aptech.coursemanagementserver.dtos.baseDto.BaseDto;
 import com.aptech.coursemanagementserver.enums.AntType;
 import com.aptech.coursemanagementserver.exceptions.BadRequestException;
+import com.aptech.coursemanagementserver.models.Course;
 import com.aptech.coursemanagementserver.models.Enrollment;
 import com.aptech.coursemanagementserver.repositories.CourseRepository;
 import com.aptech.coursemanagementserver.repositories.EnrollmentRepository;
 import com.aptech.coursemanagementserver.repositories.UserRepository;
 import com.aptech.coursemanagementserver.services.EnrollmentService;
-import static com.aptech.coursemanagementserver.constants.GlobalStorage.*;
+
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -26,27 +29,59 @@ public class EnrollmentServiceImpl implements EnrollmentService {
     @Override
     public BaseDto enroll(EnrollmentDto enrollmentDto) {
         try {
-            // Create
+            // Enroll Free courses
+            Course course = courseRepository.findById(enrollmentDto.getCourse_id())
+                    .orElseThrow(() -> new NoSuchElementException(
+                            "The course with courseId: [" + enrollmentDto.getCourse_id() + "] is not exist."));
+
+            boolean isFreeCourse = course.getPrice() == 0;
+
+            if (isFreeCourse) {
+                Enrollment enrollment = new Enrollment();
+                enrollment.setComment(enrollment.getComment()).setCourse(course)
+                        .setIsNotify(enrollmentDto.isNotify()).setProgress(0)
+                        .setRating(enrollmentDto.getRating())
+                        .setUser(userRepository.findById(enrollmentDto.getUser_id())
+                                .orElseThrow(() -> new NoSuchElementException(
+                                        "The user with userId: [" + enrollmentDto.getUser_id() + "] is not exist.")));
+
+                enrollmentRepository.save(enrollment);
+            }
+
             Enrollment enrollment = new Enrollment();
-            enrollment.setComment(enrollment.getComment()).setCourse(
-                    courseRepository.findById(enrollmentDto.getCourse_id())
-                            .orElseThrow(() -> new NoSuchElementException(
-                                    "The course with courseId: [" + enrollmentDto.getCourse_id() + "] is not exist.")))
+            enrollment.setComment(enrollment.getComment()).setCourse(course)
                     .setIsNotify(enrollmentDto.isNotify()).setProgress(enrollmentDto.getProgress())
                     .setRating(enrollmentDto.getRating())
                     .setUser(userRepository.findById(enrollmentDto.getUser_id())
                             .orElseThrow(() -> new NoSuchElementException(
-                                    "The user with userId: [" + enrollmentDto.getCourse_id() + "] is not exist.")));
+                                    "The user with userId: [" + enrollmentDto.getUser_id() + "] is not exist.")));
 
             enrollmentRepository.save(enrollment);
+
+            // Tạm thời save trước để test api tracking
 
             return BaseDto.builder().type(AntType.success).message("Enroll successfully.").build();
         } catch (NoSuchElementException e) {
             throw new NoSuchElementException(e.getMessage());
         } catch (Exception e) {
-            throw new BadRequestException(BAD_REQUEST_EXCEPTION);
+            throw new BadRequestException(e.getMessage());
         }
 
+    }
+
+    @Override
+    public List<EnrollmentDto> findCoursesByUserId(long userId) {
+        List<Enrollment> enrollments = enrollmentRepository.findAllCoursesByUserId(userId);
+
+        List<EnrollmentDto> enrollmentDtos = new ArrayList<>();
+
+        for (Enrollment enrollment : enrollments) {
+            EnrollmentDto enrollmentDto = EnrollmentDto.builder().comment(enrollment.getComment())
+                    .course_id(enrollment.getCourse().getId()).id(enrollment.getId()).isNotify(enrollment.getIsNotify())
+                    .progress(enrollment.getProgress()).rating(enrollment.getRating()).build();
+            enrollmentDtos.add(enrollmentDto);
+        }
+        return enrollmentDtos;
     }
 
 }

@@ -63,11 +63,13 @@ public class SectionServiceImpl implements SectionService {
         List<SectionDto> sectionsDto = new ArrayList<>();
 
         for (Section section : sectionsOfCourse) {
-            SectionDto sectionDto = new SectionDto();
-            sectionDto.setCourseId(courseId);
-            sectionDto.setName(section.getName());
-            sectionDto.setId(section.getId());
-            sectionsDto.add(sectionDto);
+            if (section.getStatus() == 1) {
+                SectionDto sectionDto = new SectionDto();
+                sectionDto.setCourseId(courseId);
+                sectionDto.setName(section.getName());
+                sectionDto.setId(section.getId());
+                sectionsDto.add(sectionDto);
+            }
         }
 
         return sectionsDto;

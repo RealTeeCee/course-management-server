@@ -1,6 +1,9 @@
 package com.aptech.coursemanagementserver.configs;
 
+import static com.aptech.coursemanagementserver.constants.GlobalStorage.PAYPAL_SANDBOX_MODE;
+
 import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -13,6 +16,9 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import com.aptech.coursemanagementserver.repositories.UserRepository;
+import com.paypal.base.rest.APIContext;
+import com.paypal.base.rest.OAuthTokenCredential;
+import com.paypal.base.rest.PayPalRESTException;
 
 import lombok.RequiredArgsConstructor;
 
@@ -20,6 +26,12 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class ApplicationConfiguration {
     private final UserRepository userRepository;
+    @Value("${paypal.client.id}")
+    private String clientId;
+    @Value("${paypal.client.secret}")
+    private String clientSecret;
+    @Value("${paypal.mode}")
+    private String mode;
 
     @Bean
     // https://modelmapper.org/user-manual/configuration/
@@ -70,5 +82,18 @@ public class ApplicationConfiguration {
     // AuthenticationConfiguration exports the authentication Configuration
     public AuthenticationManager authenticationManager(AuthenticationConfiguration configuration) throws Exception {
         return configuration.getAuthenticationManager();
+    }
+
+    @Bean
+    public OAuthTokenCredential oAuthTokenCredential() {
+        return new OAuthTokenCredential(clientId, clientSecret, PAYPAL_SANDBOX_MODE);
+    }
+
+    @Bean
+    public APIContext apiContext() throws PayPalRESTException {
+        String accessToken = oAuthTokenCredential().getAccessToken();
+        APIContext context = new APIContext(accessToken);
+        context.setConfigurationMap(PAYPAL_SANDBOX_MODE);
+        return context;
     }
 }

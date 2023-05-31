@@ -24,6 +24,11 @@ public class CourseDto {
     private String image;
     private double price;
 
+    @Builder.Default
+    private int level = 0;
+    @Builder.Default
+    private int status = 1;
+
     @JsonProperty("sale_price")
     private double net_price;
     private int duration;

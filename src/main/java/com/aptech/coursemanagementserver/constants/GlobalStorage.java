@@ -2,6 +2,7 @@ package com.aptech.coursemanagementserver.constants;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Map;
 
 public interface GlobalStorage {
     // import static com.aptech.coursemanagementserver.constants.GlobalStorage.*;
@@ -29,6 +30,7 @@ public interface GlobalStorage {
     String PROD_DOMAIN_CLIENT = "http://cmclient.com";
 
     // API
+    String COURSE_DOWNLOAD_API = "http://localhost:8080/course/download/";
     String STREAM_API = "http://localhost:8080/video/stream/";
     String CAPTION_API = "http://localhost:8080/video/caption/";
 
@@ -52,4 +54,15 @@ public interface GlobalStorage {
     String BYTES = "bytes";
     int CHUNK_SIZE = 314700;
     int BYTE_RANGE = 1024;
+
+    // PAYPAL
+    Map<String, String> PAYPAL_SANDBOX_MODE = Map.ofEntries(
+            Map.entry("mode", "sandbox")
+    // Map.entry("language","en_US"),
+    // Map.entry("currency", "USD"),
+    );
+    String PAYPAL_SUCCESS_URL = "/pay/success";
+    String PAYPAL_SUCCESS_API = DEV_DOMAIN_API + "/paypal/pay/success";
+    String PAYPAL_CANCEL_URL = "/pay/cancel";
+    String PAYPAL_CANCEL_API = DEV_DOMAIN_API + "/paypal/pay/cancel";
 }

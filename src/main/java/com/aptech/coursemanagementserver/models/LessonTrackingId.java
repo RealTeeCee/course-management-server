@@ -18,4 +18,12 @@ public class LessonTrackingId {
     private long course_id;
     private long section_id;
     private long lession_id;
+    private long video_id;
+
+    @Override
+    public String toString() {
+        return "LessonTrackingId [enrollment_id=" + enrollment_id + ", course_id=" + course_id + ", section_id="
+                + section_id + ", lession_id=" + lession_id + ", video_id=" + video_id + "]";
+    }
+
 }

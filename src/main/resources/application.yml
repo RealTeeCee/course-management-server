@@ -62,3 +62,8 @@ spring:
             authorizationUri: https://www.facebook.com/v3.0/dialog/oauth
             tokenUri: https://graph.facebook.com/v3.0/oauth/access_token
             userInfoUri: https://graph.facebook.com/v3.0/me?fields=id,first_name,middle_name,last_name,name,email,verified,picture.width(250).height(250)
+paypal:
+  mode: sandbox
+  client:
+    id: AXrpqeGYmDXlAStxvECloluO-x5l3mbrtRI-8IgHvyuThZFUkef8nGiJB0swOrC6UwXLlToifus9BqeE
+    secret: EA9byDizrPlqqfSSQrA0gvbRdqC3m1cAE_0-rwJYw4kwe4aJtWwGDOFn3YZs9dL-TdBD8eYSuM5gMkhn

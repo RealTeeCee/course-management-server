@@ -128,28 +128,30 @@ public class CourseController {
 
         }
 
+        @GetMapping(path = "/slug/{slug}")
+        @Operation(summary = "[ANY ROLE] - GET Course By Slug")
+        @PreAuthorize("hasAnyRole('USER', 'ADMIN', 'MANAGER', 'EMPLOYEE')")
+
+        public ResponseEntity<CourseDto> getCourseBySlug(@PathVariable("slug") String slug) {
+                try {
+                        CourseDto courseDto = courseService.findBySlug(slug);
+                        return ResponseEntity.ok(courseDto);
+                } catch (NoSuchElementException e) {
+                        throw new ResourceNotFoundException(e.getMessage());
+                } catch (Exception e) {
+                        throw new BadRequestException(FETCHING_FAILED);
+                }
+        }
+
         @PostMapping(consumes = { MediaType.MULTIPART_FORM_DATA_VALUE })
         @Operation(summary = "[ADMIN, MANAGER, EMPLOYEE] - Create Course")
-        public ResponseEntity<BaseDto> create(@RequestPart("courseJson") String courseJson,
-                        @RequestPart("file") MultipartFile file) throws JsonMappingException, JsonProcessingException {
+        public ResponseEntity<BaseDto> create(@RequestPart("courseJson") String courseJson)
+                        throws JsonMappingException, JsonProcessingException {
                 ObjectMapper objectMapper = new ObjectMapper();
 
                 try {
-                        String extension = FilenameUtils.getExtension(file.getOriginalFilename());
-
-                        if (!isImageFile(extension))
-                                throw new InvalidFileExtensionException(extension);
-
                         CourseDto courseDto = objectMapper.readValue(courseJson, CourseDto.class);
-                        courseDto.setImage(
-                                        Slugify.builder().build().slugify(courseDto.getName()) + "_InDB." + extension);
                         Course savedCourse = courseService.save(courseDto);
-
-                        Files.createDirectories(COURSE_PATH);
-
-                        Files.copy(file.getInputStream(),
-                                        COURSE_PATH.resolve(generateFilename(Instant.now(), extension, savedCourse)),
-                                        StandardCopyOption.REPLACE_EXISTING);
 
                         return new ResponseEntity<BaseDto>(
                                         BaseDto.builder().type(AntType.success).message("Create course successfully")

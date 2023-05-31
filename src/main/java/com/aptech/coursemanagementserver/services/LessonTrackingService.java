@@ -3,6 +3,11 @@ package com.aptech.coursemanagementserver.services;
 import com.aptech.coursemanagementserver.dtos.LessonTrackingDto;
 
 public interface LessonTrackingService {
-    boolean trackLesson(LessonTrackingDto lessonTrackingDto);
+    LessonTrackingDto loadTrack(LessonTrackingDto lessonTrackingDto);
 
+    boolean saveTrack(LessonTrackingDto lessonTrackingDto);
+
+    boolean complete(LessonTrackingDto lessonTrackingDto);
+
+    boolean updateProgress(long enrollmentId, long courseId);
 }
