@@ -35,11 +35,12 @@ public class CourseManagementServerApplication {
 		SpringApplication.run(CourseManagementServerApplication.class, args);
 	}
 
-	@Bean // Define @Bean to tell SpringBoot it should create an instance of the class and
-			// register it with the application context. When the application starts up,
-			// Spring Boot will call the run() method on each CommandLineRunner Bean in the
-			// order in which they were defined.
-	public CommandLineRunner commandLineRunner(
+	// Define @Bean to tell SpringBoot it should create an instance of the class and
+	// register it with the application context. When the application starts up,
+	// Spring Boot will call the run() method on each CommandLineRunner Bean in the
+	// order in which they were defined.
+	@Bean
+	CommandLineRunner commandLineRunner(
 			AuthenticationService service, CategoryService categoryService, CourseService courseService) {
 		return args -> {
 
