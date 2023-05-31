@@ -193,31 +193,13 @@ public class CourseController {
 
         @PutMapping(consumes = { MediaType.MULTIPART_FORM_DATA_VALUE })
         @Operation(summary = "[ADMIN, MANAGER, EMPLOYEE] - Update Course")
-        public ResponseEntity<BaseDto> updateCourse(@RequestPart("courseJson") String courseJson,
-                        @RequestPart("file") MultipartFile file) {
+        public ResponseEntity<BaseDto> updateCourse(@RequestPart("courseJson") String courseJson) {
                 ObjectMapper objectMapper = new ObjectMapper();
 
                 try {
-                        String extension = FilenameUtils.getExtension(file.getOriginalFilename());
-                        if (!isImageFile(extension))
-                                throw new InvalidFileExtensionException(extension);
-
                         CourseDto courseDto = objectMapper.readValue(courseJson, CourseDto.class);
-
-                        courseDto.setImage(
-                                        Slugify.builder().build().slugify(courseDto.getName()) + "_InDB." + extension);
-
                         Course course = courseService.findCourseById(courseDto.getId());
                         Course savedCourse = courseService.setProperties(courseDto, course);
-
-                        Files.createDirectories(COURSE_PATH);
-
-                        System.out.println(file.getOriginalFilename());
-
-                        Files.copy(file.getInputStream(),
-                                        COURSE_PATH.resolve(generateFilename(course.getUpdated_at(), extension,
-                                                        savedCourse)),
-                                        StandardCopyOption.REPLACE_EXISTING);
 
                         return new ResponseEntity<BaseDto>(
                                         BaseDto.builder().type(AntType.success).message("Create course successfully")
@@ -237,15 +219,6 @@ public class CourseController {
         @Operation(summary = "[ADMIN, MANAGER, EMPLOYEE] - Delete Course")
         public ResponseEntity<BaseDto> deleteCourse(long courseId) {
                 try {
-                        if (courseId == 1)
-                                throw new NoSuchFileException("Cannot delete course created by SuperAdmin");
-                        Course course = courseService.findCourseById(courseId);
-                        String fileExtension = FilenameUtils.getExtension(course.getImage());
-                        // Auto add slash
-                        Path root = COURSE_PATH.resolve(
-                                        generateFilename(course.getUpdated_at(), fileExtension, course));
-                        Files.delete(root);
-
                         return new ResponseEntity<BaseDto>(courseService.delete(courseId), HttpStatus.OK);
                 } catch (InvalidTokenException e) {
                         return new ResponseEntity<BaseDto>(BaseDto.builder().type(AntType.error)
