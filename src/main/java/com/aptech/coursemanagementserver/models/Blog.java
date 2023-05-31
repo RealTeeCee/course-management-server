@@ -1,6 +1,6 @@
 package com.aptech.coursemanagementserver.models;
 
-import java.time.LocalDateTime;
+import java.util.Date;
 
 import com.aptech.coursemanagementserver.enums.BlogStatus;
 
@@ -39,7 +39,7 @@ public class Blog {
     @Column(columnDefinition = "bigint")
     private long user_id;
     @Column(columnDefinition = "datetime")
-    private LocalDateTime created_at;
+    private Date created_at;
     @Column(columnDefinition = "datetime")
-    private LocalDateTime updated_at;
+    private Date updated_at;
 }
