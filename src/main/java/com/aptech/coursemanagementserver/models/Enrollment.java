@@ -39,7 +39,7 @@ public class Enrollment {
     private long id;
     @Column(columnDefinition = "bigint")
     private long progress;
-    @Column(columnDefinition = "ntext")
+    @Column(columnDefinition = "nvarchar(MAX)")
     private String comment;
     @Column(columnDefinition = "decimal(3,2)")
     private double rating;
