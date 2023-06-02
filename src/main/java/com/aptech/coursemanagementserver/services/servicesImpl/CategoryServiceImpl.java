@@ -1,5 +1,6 @@
 package com.aptech.coursemanagementserver.services.servicesImpl;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
@@ -25,9 +26,16 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
-    public List<Category> saveAll(List<CategoryDto> categories) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'saveAll'");
+    public boolean saveAll(List<CategoryDto> categoryDtos) {
+        List<Category> categories = new ArrayList<>();
+
+        for (CategoryDto categoryDto : categoryDtos) {
+            Category category = new Category();
+            category.setName(categoryDto.getName());
+            categories.add(category);
+        }
+        categoryRepository.saveAll(categories);
+        return true;
     }
 
     @Override

@@ -32,7 +32,7 @@ public class Question {
     @Column(columnDefinition = "bigint")
     private long id;
 
-    @Column(columnDefinition = "ntext")
+    @Column(columnDefinition = "nvarchar(MAX)")
     private String content;
     // @Column(columnDefinition = "bigint")
     // private long user_id;

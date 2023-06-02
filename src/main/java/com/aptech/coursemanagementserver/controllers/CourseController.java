@@ -6,10 +6,7 @@ import static com.aptech.coursemanagementserver.constants.GlobalStorage.FETCHING
 import static com.aptech.coursemanagementserver.constants.GlobalStorage.GLOBAL_EXCEPTION;
 
 import java.net.MalformedURLException;
-import java.nio.file.Files;
-import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
-import java.nio.file.StandardCopyOption;
 import java.time.Instant;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
@@ -33,9 +30,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.multipart.MultipartFile;
 
 import com.aptech.coursemanagementserver.dtos.CourseDto;
+import com.aptech.coursemanagementserver.dtos.CourseInterface;
 import com.aptech.coursemanagementserver.dtos.baseDto.BaseDto;
 import com.aptech.coursemanagementserver.enums.AntType;
 import com.aptech.coursemanagementserver.exceptions.BadRequestException;
@@ -56,21 +53,44 @@ import lombok.RequiredArgsConstructor;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/course")
-@PreAuthorize("hasAnyRole('ADMIN', 'MANAGER', 'EMPLOYEE')")
 @Tag(name = "Course Endpoints")
 public class CourseController {
         private final CourseService courseService;
 
+        // @GetMapping
+        // @Operation(summary = "[ANORNYMOUS] - GET All Courses")
+        // @PreAuthorize("permitAll()")
+        // public ResponseEntity<List<CourseDto>> getCourses() {
+        // try {
+        // List<CourseDto> courseDtos = courseService.findAll();
+        // return ResponseEntity.ok(courseDtos);
+
+        // } catch (Exception e) {
+        // throw new BadRequestException(FETCHING_FAILED);
+        // }
+        // }
+
         @GetMapping
         @Operation(summary = "[ANORNYMOUS] - GET All Courses")
         @PreAuthorize("permitAll()")
-        public ResponseEntity<List<CourseDto>> getCourses() {
+        public ResponseEntity<List<CourseInterface>> getCourses() {
                 try {
-                        List<CourseDto> courseDtos = courseService.findAll();
-                        return ResponseEntity.ok(courseDtos);
-
+                        return ResponseEntity.ok(courseService.findAllCourses());
                 } catch (Exception e) {
                         throw new BadRequestException(FETCHING_FAILED);
+                }
+        }
+
+        @GetMapping(path = "my-course/{userId}")
+        @Operation(summary = "[ANY ROLE] - GET All Courses By UserId")
+        @PreAuthorize("hasAnyRole('USER', 'ADMIN', 'MANAGER', 'EMPLOYEE')")
+        public ResponseEntity<List<CourseInterface>> getAllUserCourses(@PathVariable("userId") long userId) {
+                try {
+                        return ResponseEntity.ok(courseService.findAllCoursesByUserId(userId));
+                } catch (NoSuchElementException e) {
+                        throw new ResourceNotFoundException(e.getMessage());
+                } catch (Exception e) {
+                        throw new BadRequestException(e.getMessage());
                 }
         }
 
@@ -145,6 +165,7 @@ public class CourseController {
 
         @PostMapping(consumes = { MediaType.MULTIPART_FORM_DATA_VALUE })
         @Operation(summary = "[ADMIN, MANAGER, EMPLOYEE] - Create Course")
+        @PreAuthorize("hasAnyRole('ADMIN', 'MANAGER', 'EMPLOYEE')")
         public ResponseEntity<BaseDto> create(@RequestPart("courseJson") String courseJson)
                         throws JsonMappingException, JsonProcessingException {
                 ObjectMapper objectMapper = new ObjectMapper();
@@ -172,10 +193,13 @@ public class CourseController {
                         throws MalformedURLException {
                 try {
                         Course course = courseService.findCourseById(courseId);
+
                         String fileExtension = FilenameUtils.getExtension(course.getImage());
                         // Auto add slash
-                        Path root = COURSE_PATH.resolve(
-                                        generateFilename(course.getUpdated_at(), fileExtension, course));
+                        Path root = courseId == 1 ? COURSE_PATH.resolve("default.jpg")
+                                        : COURSE_PATH.resolve(
+                                                        generateFilename(course.getUpdated_at(), fileExtension,
+                                                                        course));
 
                         Resource file = new UrlResource(root.toUri());
 
@@ -193,31 +217,14 @@ public class CourseController {
 
         @PutMapping(consumes = { MediaType.MULTIPART_FORM_DATA_VALUE })
         @Operation(summary = "[ADMIN, MANAGER, EMPLOYEE] - Update Course")
-        public ResponseEntity<BaseDto> updateCourse(@RequestPart("courseJson") String courseJson,
-                        @RequestPart("file") MultipartFile file) {
+        @PreAuthorize("hasAnyRole('ADMIN', 'MANAGER', 'EMPLOYEE')")
+        public ResponseEntity<BaseDto> updateCourse(@RequestPart("courseJson") String courseJson) {
                 ObjectMapper objectMapper = new ObjectMapper();
 
                 try {
-                        String extension = FilenameUtils.getExtension(file.getOriginalFilename());
-                        if (!isImageFile(extension))
-                                throw new InvalidFileExtensionException(extension);
-
                         CourseDto courseDto = objectMapper.readValue(courseJson, CourseDto.class);
-
-                        courseDto.setImage(
-                                        Slugify.builder().build().slugify(courseDto.getName()) + "_InDB." + extension);
-
                         Course course = courseService.findCourseById(courseDto.getId());
                         Course savedCourse = courseService.setProperties(courseDto, course);
-
-                        Files.createDirectories(COURSE_PATH);
-
-                        System.out.println(file.getOriginalFilename());
-
-                        Files.copy(file.getInputStream(),
-                                        COURSE_PATH.resolve(generateFilename(course.getUpdated_at(), extension,
-                                                        savedCourse)),
-                                        StandardCopyOption.REPLACE_EXISTING);
 
                         return new ResponseEntity<BaseDto>(
                                         BaseDto.builder().type(AntType.success).message("Create course successfully")
@@ -235,17 +242,9 @@ public class CourseController {
 
         @DeleteMapping
         @Operation(summary = "[ADMIN, MANAGER, EMPLOYEE] - Delete Course")
+        @PreAuthorize("hasAnyRole('ADMIN', 'MANAGER', 'EMPLOYEE')")
         public ResponseEntity<BaseDto> deleteCourse(long courseId) {
                 try {
-                        if (courseId == 1)
-                                throw new NoSuchFileException("Cannot delete course created by SuperAdmin");
-                        Course course = courseService.findCourseById(courseId);
-                        String fileExtension = FilenameUtils.getExtension(course.getImage());
-                        // Auto add slash
-                        Path root = COURSE_PATH.resolve(
-                                        generateFilename(course.getUpdated_at(), fileExtension, course));
-                        Files.delete(root);
-
                         return new ResponseEntity<BaseDto>(courseService.delete(courseId), HttpStatus.OK);
                 } catch (InvalidTokenException e) {
                         return new ResponseEntity<BaseDto>(BaseDto.builder().type(AntType.error)

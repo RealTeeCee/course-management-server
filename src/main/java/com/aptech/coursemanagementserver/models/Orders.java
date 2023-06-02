@@ -37,7 +37,8 @@ public class Orders {
     @Column(columnDefinition = "nvarchar(100)")
     @EqualsAndHashCode.Include
     private String name;
-    @Column(columnDefinition = "ntext")
+    @Column(columnDefinition = "nvarchar(MAX)")
+    private String image;
     private String description;
     @Column(columnDefinition = "decimal(10,2)")
     private double price;

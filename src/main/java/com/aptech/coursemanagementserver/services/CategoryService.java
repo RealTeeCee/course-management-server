@@ -10,5 +10,5 @@ public interface CategoryService {
 
     public Category save(CategoryDto category);
 
-    public List<Category> saveAll(List<CategoryDto> categories);
+    public boolean saveAll(List<CategoryDto> categories);
 }

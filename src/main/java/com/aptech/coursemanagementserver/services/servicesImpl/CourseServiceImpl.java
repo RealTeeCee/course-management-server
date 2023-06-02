@@ -13,6 +13,7 @@ import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 
 import com.aptech.coursemanagementserver.dtos.CourseDto;
+import com.aptech.coursemanagementserver.dtos.CourseInterface;
 import com.aptech.coursemanagementserver.dtos.baseDto.BaseDto;
 import com.aptech.coursemanagementserver.enums.AntType;
 import com.aptech.coursemanagementserver.exceptions.BadRequestException;
@@ -75,6 +76,20 @@ public class CourseServiceImpl implements CourseService {
     @Override
     public Course findByName(String courseName) {
         return courseRepository.findByName(courseName);
+    }
+
+    @Override
+    public List<CourseInterface> findAllCoursesByUserId(long userId) {
+        List<CourseInterface> courseDtos = courseRepository.findAllCoursesByUserId(userId);
+
+        return courseDtos;
+    }
+
+    @Override
+    public List<CourseInterface> findAllCourses() {
+        List<CourseInterface> courseDtos = courseRepository.findAllCourses();
+
+        return courseDtos;
     }
 
     @Override
@@ -372,7 +387,6 @@ public class CourseServiceImpl implements CourseService {
                 .map(achievement -> achievement.getName())
                 .toList();
         List<String> tagsList = course.getTags().stream().map(tag -> tag.getName()).toList();
-        new CourseDto();
 
         CourseDto courseDto = CourseDto.builder().id(course.getId())
                 .name(course.getName())
