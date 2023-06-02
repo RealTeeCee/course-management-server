@@ -28,11 +28,11 @@ import lombok.RequiredArgsConstructor;
 public class EnrollmentController {
     private final EnrollmentService enrollmentService;
 
-    @GetMapping(path = "/{userId}")
+    @PostMapping
     @PreAuthorize("hasAnyRole('USER', 'ADMIN', 'MANAGER', 'EMPLOYEE')")
-    public ResponseEntity<List<EnrollmentDto>> getAllUserCourses(@PathVariable("userId") long userId) {
+    public ResponseEntity<BaseDto> enroll(@RequestBody EnrollmentDto enrollmentDto) {
         try {
-            return ResponseEntity.ok(enrollmentService.findCoursesByUserId(userId));
+            return ResponseEntity.ok(enrollmentService.enroll(enrollmentDto));
         } catch (NoSuchElementException e) {
             throw new ResourceNotFoundException(e.getMessage());
         } catch (Exception e) {
@@ -40,11 +40,11 @@ public class EnrollmentController {
         }
     }
 
-    @PostMapping
+    @PostMapping("/getEnrollId")
     @PreAuthorize("hasAnyRole('USER', 'ADMIN', 'MANAGER', 'EMPLOYEE')")
-    public ResponseEntity<BaseDto> enroll(@RequestBody EnrollmentDto enrollmentDto) {
+    public ResponseEntity<Long> getEnroll(@RequestBody EnrollmentDto enrollmentDto) {
         try {
-            return ResponseEntity.ok(enrollmentService.enroll(enrollmentDto));
+            return ResponseEntity.ok(enrollmentService.getEnrollId(enrollmentDto));
         } catch (NoSuchElementException e) {
             throw new ResourceNotFoundException(e.getMessage());
         } catch (Exception e) {

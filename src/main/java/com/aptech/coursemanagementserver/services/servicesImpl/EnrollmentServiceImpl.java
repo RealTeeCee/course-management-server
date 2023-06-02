@@ -1,7 +1,5 @@
 package com.aptech.coursemanagementserver.services.servicesImpl;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.NoSuchElementException;
 
 import org.springframework.stereotype.Service;
@@ -38,7 +36,7 @@ public class EnrollmentServiceImpl implements EnrollmentService {
 
             if (isFreeCourse) {
                 Enrollment enrollment = new Enrollment();
-                enrollment.setComment(enrollment.getComment()).setCourse(course)
+                enrollment.setComment(enrollmentDto.getComment()).setCourse(course)
                         .setIsNotify(enrollmentDto.isNotify()).setProgress(0)
                         .setRating(enrollmentDto.getRating())
                         .setUser(userRepository.findById(enrollmentDto.getUser_id())
@@ -70,18 +68,14 @@ public class EnrollmentServiceImpl implements EnrollmentService {
     }
 
     @Override
-    public List<EnrollmentDto> findCoursesByUserId(long userId) {
-        List<Enrollment> enrollments = enrollmentRepository.findAllCoursesByUserId(userId);
+    public Long getEnrollId(EnrollmentDto enrollmentDto) {
 
-        List<EnrollmentDto> enrollmentDtos = new ArrayList<>();
-
-        for (Enrollment enrollment : enrollments) {
-            EnrollmentDto enrollmentDto = EnrollmentDto.builder().comment(enrollment.getComment())
-                    .course_id(enrollment.getCourse().getId()).id(enrollment.getId()).isNotify(enrollment.getIsNotify())
-                    .progress(enrollment.getProgress()).rating(enrollment.getRating()).build();
-            enrollmentDtos.add(enrollmentDto);
+        Enrollment enroll = enrollmentRepository.getEnrollByCourseIdAndUserId(enrollmentDto.getCourse_id(),
+                enrollmentDto.getUser_id());
+        if (enroll != null) {
+            return enroll.getId();
         }
-        return enrollmentDtos;
+        return 0L;
     }
 
 }

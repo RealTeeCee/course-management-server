@@ -14,8 +14,10 @@ import lombok.NoArgsConstructor;
 @EqualsAndHashCode(callSuper = false)
 public class PaypalRequestDto {
     private double price;
-    private String currency;
+    private String currency = "USD";
     private PaypalMethod method = PaypalMethod.paypal;
     private PaypalIntent intent = PaypalIntent.sale;
     private String description;
+    private long userId;
+    private long courseId;
 }

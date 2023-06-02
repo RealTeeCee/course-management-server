@@ -15,6 +15,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @EqualsAndHashCode(callSuper = false)
 public class VideoDto {
+    private long id;
     private String name;
     private String url;
     private List<String> captionUrls;

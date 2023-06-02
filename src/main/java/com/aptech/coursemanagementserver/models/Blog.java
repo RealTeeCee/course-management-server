@@ -32,7 +32,7 @@ public class Blog {
     private String slug;
     @Column(columnDefinition = "tinyint default 2")
     private BlogStatus status;
-    @Column(columnDefinition = "text")
+    @Column(columnDefinition = "varchar(MAX)")
     private String description;
     @Column(columnDefinition = "int")
     private int view_count;

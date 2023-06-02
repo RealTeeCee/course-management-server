@@ -31,7 +31,7 @@ public class UserProfile {
     private long id;
     @Column(columnDefinition = "bigint")
     private long user_id;
-    @Column(columnDefinition = "ntext")
+    @Column(columnDefinition = "nvarchar(MAX)")
     private String bio;
     @Column(columnDefinition = "date")
     @Past(message = "Birth date should be in the past")

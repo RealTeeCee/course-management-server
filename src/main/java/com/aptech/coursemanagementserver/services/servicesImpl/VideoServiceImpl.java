@@ -82,7 +82,7 @@ public class VideoServiceImpl implements VideoService {
             // ObjectMapper objectMapper = new ObjectMapper();
             // String captionData = objectMapper.writeValueAsString(map);
 
-            VideoDto videoDto = VideoDto.builder().name(video.getName()).url(video.getUrl())
+            VideoDto videoDto = VideoDto.builder().id(video.getId()).name(video.getName()).url(video.getUrl())
                     .captionData(map).lessonId(lessonId).build();
 
             return videoDto;
@@ -103,6 +103,7 @@ public class VideoServiceImpl implements VideoService {
             if (findVideoByName(videoDto.getName()) != null) {
                 throw new IsExistedException(videoDto.getName());
             }
+
             Video videoOfLesson = lesson.getVideo();
             Video video = videoOfLesson == null ? new Video() : videoOfLesson;
             video.setName(videoDto.getName()).setUrl(videoDto.getUrl())
@@ -149,15 +150,15 @@ public class VideoServiceImpl implements VideoService {
     }
 
     @Override
-    public BaseDto update(VideoDto videoDto, long videoId) {
+    public BaseDto update(VideoDto videoDto) {
         try {
-            Video video = videoRepository.findById(videoId).get();
+            Video video = videoRepository.findById(videoDto.getId()).get();
             video.setUrl(videoDto.getUrl()).setName(videoDto.getName());
 
             return BaseDto.builder().type(AntType.success).message("Update video successfully.")
                     .build();
         } catch (NoSuchElementException e) {
-            throw new BadRequestException("The video with videoId: [" + videoId + "] is not exist.");
+            throw new BadRequestException("The video with videoId: [" + videoDto.getId() + "] is not exist.");
 
         } catch (Exception e) {
             throw new BadRequestException(BAD_REQUEST_EXCEPTION);

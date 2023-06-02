@@ -67,3 +67,7 @@ paypal:
   client:
     id: AXrpqeGYmDXlAStxvECloluO-x5l3mbrtRI-8IgHvyuThZFUkef8nGiJB0swOrC6UwXLlToifus9BqeE
     secret: EA9byDizrPlqqfSSQrA0gvbRdqC3m1cAE_0-rwJYw4kwe4aJtWwGDOFn3YZs9dL-TdBD8eYSuM5gMkhn
+  account:
+    personal:
+      email: sb-c9mcj26117776@personal.example.com
+      password: e@LbdH4n
