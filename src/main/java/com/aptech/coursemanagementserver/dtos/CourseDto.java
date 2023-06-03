@@ -46,7 +46,7 @@ public class CourseDto {
     @JsonProperty("tags")
     private String tagName;
 
-    @JsonProperty("archivements")
+    @JsonProperty("achievements")
     private String achievementName;
 
 }
