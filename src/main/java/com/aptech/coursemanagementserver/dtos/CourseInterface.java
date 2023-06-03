@@ -1,14 +1,13 @@
 package com.aptech.coursemanagementserver.dtos;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonInclude.Include;
-
 public interface CourseInterface {
     public long getId();
 
     public int getEnrollmentCount();
 
     public String getName();
+
+    public String getDuration();
 
     public String getCategoryName();
 
