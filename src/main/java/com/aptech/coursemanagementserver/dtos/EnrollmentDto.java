@@ -13,7 +13,7 @@ import lombok.NoArgsConstructor;
 @EqualsAndHashCode(callSuper = false)
 public class EnrollmentDto {
     private long id;
-    private long progress;
+    private double progress;
     private String comment;
     private double rating;
     private boolean isNotify;
