@@ -35,8 +35,7 @@ public class Enrollment {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(columnDefinition = "bigint")
     private long id;
-    @Column(columnDefinition = "bigint")
-    private long progress;
+    private double progress;
     @Column(columnDefinition = "nvarchar(MAX)")
     private String comment;
     @Column(columnDefinition = "decimal(3,2)")
