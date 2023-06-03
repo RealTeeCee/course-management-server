@@ -42,13 +42,16 @@ public interface CourseRepository extends JpaRepository<Course, Long> {
         List<CourseInterface> findAllCoursesByUserId(long userId);
 
         @Query(value = """
-                        SELECT count(c.id) AS enrollmentCount , c.* , cat.name [categoryName], e.progress, e.rating, e.comment
+                        SELECT COUNT(c.id) AS enrollmentCount , c.* , cat.name [categoryName],
+                        ISNULL(e.progress, 0) [progress],
+                        ISNULL(e.rating,0) [rating],
+                        ISNULL(e.comment,'No comment') [comment]
                         FROM course c
-                        INNER JOIN enrollment e ON c.id = e.course_id
+                        LEFT JOIN enrollment e ON c.id = e.course_id
                         INNER JOIN category cat ON c.category_id = cat.id
                         GROUP BY e.comment, e.rating, e.progress, cat.name, c.[id], c.[created_at], [description], [duration],
                         [image], [level], c.[name], [net_price], [price], [slug], [status], c.[updated_at], [category_id]
-                                """, nativeQuery = true)
+                                        """, nativeQuery = true)
         List<CourseInterface> findAllCourses();
 
         Course findByName(String courseName);
