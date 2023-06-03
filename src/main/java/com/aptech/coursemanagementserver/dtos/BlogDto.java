@@ -16,6 +16,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @EqualsAndHashCode(callSuper = false)
 public class BlogDto {
+    private long id;
     private String name;
     private String slug;
     private BlogStatus status;

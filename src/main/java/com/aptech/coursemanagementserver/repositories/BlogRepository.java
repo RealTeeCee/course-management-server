@@ -5,5 +5,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import com.aptech.coursemanagementserver.models.Blog;
 
 public interface BlogRepository extends JpaRepository<Blog, Long> {
-
+    Blog findBlogByName(String name);
 }
