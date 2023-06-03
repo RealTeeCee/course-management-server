@@ -43,6 +43,9 @@ public class LessonTrackingImpl implements LessonTrackingService {
         try {
             LessonTracking lessonTracking = lessonTrackingRepository.findTrackedByEnrollmentIdAndCourseId(
                     lessonTrackingDto.getEnrollmentId(), lessonTrackingDto.getCourseId());
+            if (lessonTracking == null) {
+                return new LessonTrackingDto();
+            }
             LessonTrackingDto returnTrackingDto = LessonTrackingDto.builder()
                     .enrollmentId(lessonTracking.getTrackId().getEnrollment_id())
                     .courseId(lessonTracking.getTrackId().getCourse_id())
