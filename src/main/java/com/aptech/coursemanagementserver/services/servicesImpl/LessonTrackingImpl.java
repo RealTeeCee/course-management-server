@@ -99,21 +99,12 @@ public class LessonTrackingImpl implements LessonTrackingService {
     }
 
     @Override
-    public double updateProgress(long enrollmentId, long courseId) {
+    public double loadProgress(long enrollmentId, long courseId) {
         try {
             Enrollment enrollment = enrollmentRepository.findById(enrollmentId)
                     .orElseThrow(() -> new NoSuchElementException(
                             "The enrollment with enrollmentId:[" + enrollmentId + "] is not exist."));
-
-            List<LessonTracking> completeTracks = lessonTrackingRepository
-                    .findAllCompletedByEnrollmentIdAndCourseId(enrollmentId, courseId);
-            List<Lesson> lessonsInCourse = lessonRepository.findAllByCourseId(courseId);
-
-            double progress = (Double.valueOf(completeTracks.size()) / lessonsInCourse.size()) * 100;
-            enrollment.setProgress(progress);
-            enrollmentRepository.save(enrollment);
-
-            return progress;
+            return enrollment.getProgress();
         } catch (NoSuchElementException e) {
             throw new NoSuchElementException(e.getMessage());
         } catch (Exception e) {
@@ -200,6 +191,28 @@ public class LessonTrackingImpl implements LessonTrackingService {
                 .setLession_id(lessonTrackingDto.getLessonId())
                 .setVideo_id(lessonTrackingDto.getVideoId());
         return trackId;
+    }
+
+    private double updateProgress(long enrollmentId, long courseId) {
+        try {
+            Enrollment enrollment = enrollmentRepository.findById(enrollmentId)
+                    .orElseThrow(() -> new NoSuchElementException(
+                            "The enrollment with enrollmentId:[" + enrollmentId + "] is not exist."));
+
+            List<LessonTracking> completeTracks = lessonTrackingRepository
+                    .findAllCompletedByEnrollmentIdAndCourseId(enrollmentId, courseId);
+            List<Lesson> lessonsInCourse = lessonRepository.findAllByCourseId(courseId);
+
+            double progress = (Double.valueOf(completeTracks.size()) / lessonsInCourse.size()) * 100;
+            enrollment.setProgress(progress);
+            enrollmentRepository.save(enrollment);
+
+            return progress;
+        } catch (NoSuchElementException e) {
+            throw new NoSuchElementException(e.getMessage());
+        } catch (Exception e) {
+            throw new BadRequestException(BAD_REQUEST_EXCEPTION);
+        }
     }
 
 }

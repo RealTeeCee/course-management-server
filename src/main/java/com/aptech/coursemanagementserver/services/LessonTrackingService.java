@@ -10,7 +10,7 @@ public interface LessonTrackingService {
 
     double complete(LessonTrackingDto lessonTrackingDto);
 
-    double updateProgress(long enrollmentId, long courseId);
+    double loadProgress(long enrollmentId, long courseId);
 
     LearningDto getLearnDetails(long courseId);
 }
