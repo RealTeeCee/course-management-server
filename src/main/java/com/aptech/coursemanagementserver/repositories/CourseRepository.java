@@ -29,7 +29,7 @@ public interface CourseRepository extends JpaRepository<Course, Long> {
         @Query(value = """
                         SELECT COUNT(e.id)
                         OVER(PARTITION BY e.user_id) AS enrollmentCount,
-                        c.*, c.net_price AS sale_price,
+                        c.*, c.net_price AS net_price,
                         cat.name AS categoryName, e.progress, e.rating, e.comment,
                         e.id AS enrollId
                         FROM course c
