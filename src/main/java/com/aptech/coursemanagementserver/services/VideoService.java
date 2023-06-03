@@ -17,7 +17,7 @@ public interface VideoService {
 
     public BaseDto save(VideoDto video, long lessonId);
 
-    public BaseDto update(VideoDto video, long videoId);
+    public BaseDto update(VideoDto video);
 
     public List<Video> saveAll(List<VideoDto> videos);
 

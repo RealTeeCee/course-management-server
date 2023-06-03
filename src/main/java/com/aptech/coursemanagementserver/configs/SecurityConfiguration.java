@@ -62,7 +62,7 @@ public class SecurityConfiguration {
                         "/video/**",
                         "/auth/**",
                         "/oauth2/**",
-                        "/course/download",
+                        "/course/**",
                         "/v2/api-docs",
                         "/v3/api-docs",
                         "/v3/api-docs/**",

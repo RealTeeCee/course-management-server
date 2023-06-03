@@ -6,13 +6,13 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Data;
 import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
+import lombok.Getter;
+import lombok.Setter;
 
-@Data
+@Getter
+@Setter
 @Builder
-@NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode(callSuper = false)
 public class CourseDto {
@@ -22,6 +22,9 @@ public class CourseDto {
     private String description;
     private String slug;
     private String image;
+    private long progress;
+    private String comment;
+    private double rating;
     private double price;
 
     @Builder.Default
@@ -29,7 +32,6 @@ public class CourseDto {
     @Builder.Default
     private int status = 1;
 
-    @JsonProperty("sale_price")
     private double net_price;
     private int duration;
 
@@ -43,7 +45,7 @@ public class CourseDto {
     @JsonProperty("tags")
     private String tagName;
 
-    @JsonProperty("archivements")
+    @JsonProperty("achievements")
     private String achievementName;
 
 }

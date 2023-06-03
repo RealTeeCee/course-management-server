@@ -120,7 +120,7 @@ public class CourseManagementServerApplication {
 						.duration(300)
 						.description("Description").price(15).net_price(10)
 						.sections(Arrays.asList("Section 1", "Section 2", "Section 3"))
-						.tagName("Java,SpringBoot,Hibernate").name("Java SpringBoot 2023")
+						.tagName("java,spring boot,hibernate").name("Java SpringBoot 2023")
 						.category(savedCategory1.getId())
 						.build();
 				courseService.save(course1);

@@ -48,7 +48,7 @@ public class Course {
         @Column(columnDefinition = "nvarchar(100)")
         @EqualsAndHashCode.Include
         private String name;
-        @Column(columnDefinition = "ntext")
+        @Column(columnDefinition = "nvarchar(MAX)")
         private String description;
         private String slug;
         private String image;

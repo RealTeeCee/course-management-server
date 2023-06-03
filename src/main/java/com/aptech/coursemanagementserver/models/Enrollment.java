@@ -18,7 +18,6 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
 
@@ -26,7 +25,6 @@ import lombok.experimental.Accessors;
 @NoArgsConstructor
 @AllArgsConstructor
 @Accessors(chain = true)
-@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @Table(indexes = {
         @Index(name = "IDX_Enrollment_CourseId_UserId", columnList = "course_id, user_id", unique = true),
 })
@@ -39,7 +37,7 @@ public class Enrollment {
     private long id;
     @Column(columnDefinition = "bigint")
     private long progress;
-    @Column(columnDefinition = "ntext")
+    @Column(columnDefinition = "nvarchar(MAX)")
     private String comment;
     @Column(columnDefinition = "decimal(3,2)")
     private double rating;

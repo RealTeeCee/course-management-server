@@ -11,7 +11,6 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
 
@@ -19,7 +18,6 @@ import lombok.experimental.Accessors;
 @NoArgsConstructor
 @AllArgsConstructor
 @Accessors(chain = true)
-@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @Entity
 public class Blog {
     @Id
@@ -32,7 +30,7 @@ public class Blog {
     private String slug;
     @Column(columnDefinition = "tinyint default 2")
     private BlogStatus status;
-    @Column(columnDefinition = "text")
+    @Column(columnDefinition = "varchar(MAX)")
     private String description;
     @Column(columnDefinition = "int")
     private int view_count;

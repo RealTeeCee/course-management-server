@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Set;
 
 import com.aptech.coursemanagementserver.dtos.CourseDto;
+import com.aptech.coursemanagementserver.dtos.CourseInterface;
 import com.aptech.coursemanagementserver.dtos.baseDto.BaseDto;
 import com.aptech.coursemanagementserver.models.Achievement;
 import com.aptech.coursemanagementserver.models.Course;
@@ -21,6 +22,10 @@ public interface CourseService {
     public CourseDto findBySlug(String slug);
 
     public List<CourseDto> findAll();
+
+    public List<CourseInterface> findAllCourses();
+
+    public List<CourseInterface> findAllCoursesByUserId(long userId);
 
     public List<CourseDto> findBestSellerCourses();
 

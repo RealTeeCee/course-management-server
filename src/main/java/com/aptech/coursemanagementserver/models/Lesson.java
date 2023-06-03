@@ -33,10 +33,11 @@ public class Lesson {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(columnDefinition = "bigint")
+    @EqualsAndHashCode.Include
     private long id;
     @Column(columnDefinition = "nvarchar(100)")
     private String name;
-    @Column(columnDefinition = "ntext")
+    @Column(columnDefinition = "nvarchar(MAX)")
     private String description;
     @Column(columnDefinition = "tinyint")
     private int status = 1;
