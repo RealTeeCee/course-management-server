@@ -33,6 +33,7 @@ public class Lesson {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(columnDefinition = "bigint")
+    @EqualsAndHashCode.Include
     private long id;
     @Column(columnDefinition = "nvarchar(100)")
     private String name;
