@@ -32,7 +32,6 @@ public class CourseDto {
     @Builder.Default
     private int status = 1;
 
-    @JsonProperty("sale_price")
     private double net_price;
     private int duration;
 
