@@ -59,7 +59,7 @@ public class TrackingController {
 
     @PostMapping(path = "/complete")
     @PreAuthorize("hasAnyRole('USER', 'ADMIN', 'MANAGER', 'EMPLOYEE')")
-    public ResponseEntity<Boolean> complete(@RequestBody LessonTrackingDto lessonTrackingDto)
+    public ResponseEntity<Double> complete(@RequestBody LessonTrackingDto lessonTrackingDto)
             throws JsonMappingException, JsonProcessingException {
         try {
             return ResponseEntity.ok(lessonTrackingService.complete(lessonTrackingDto));
@@ -72,7 +72,7 @@ public class TrackingController {
 
     @PostMapping(path = "/update-progress")
     @PreAuthorize("hasAnyRole('USER', 'ADMIN', 'MANAGER', 'EMPLOYEE')")
-    public ResponseEntity<Boolean> updateProgress(@RequestBody LessonTrackingDto lessonTrackingDto)
+    public ResponseEntity<Double> updateProgress(@RequestBody LessonTrackingDto lessonTrackingDto)
             throws JsonMappingException, JsonProcessingException {
         try {
             return ResponseEntity.ok(lessonTrackingService.updateProgress(lessonTrackingDto.getEnrollmentId(),
