@@ -38,6 +38,7 @@ public class SectionServiceImpl implements SectionService {
             sectionDto.setId(sectionId);
             sectionDto.setName(section.getName());
             sectionDto.setCourseId(section.getCourse().getId());
+            sectionDto.setStatus(section.getStatus());
             return sectionDto;
         } catch (NoSuchElementException e) {
             throw new NoSuchElementException("The section with sectionId: [" + sectionId + "] is not exist.");
@@ -68,6 +69,7 @@ public class SectionServiceImpl implements SectionService {
                 sectionDto.setCourseId(courseId);
                 sectionDto.setName(section.getName());
                 sectionDto.setId(section.getId());
+                sectionDto.setStatus(section.getStatus());
                 sectionsDto.add(sectionDto);
             }
         }

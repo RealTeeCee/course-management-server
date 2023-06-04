@@ -122,6 +122,7 @@ public class LessonServiceImpl implements LessonService {
 
             lesson.setName(lessonDto.getName()).setDescription(lessonDto.getDescription())
                     .setDuration(lessonDto.getDuration())
+                    .setStatus(lessonDto.getStatus())
                     .setSection(section);
 
             lessonRepository.save(lesson);

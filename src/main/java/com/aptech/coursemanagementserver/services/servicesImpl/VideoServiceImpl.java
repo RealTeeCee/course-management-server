@@ -107,7 +107,7 @@ public class VideoServiceImpl implements VideoService {
 
             Video videoOfLesson = lesson.getVideo();
             Video video = videoOfLesson == null ? new Video() : videoOfLesson;
-            video.setName(videoDto.getName()).setUrl(videoDto.getUrl())
+            video.setName(videoDto.getName()).setUrl(videoDto.getUrl()).setStatus(videoDto.getStatus())
                     .setCaptionUrls(String.join(",", videoDto.getCaptionUrls()));
             if (videoOfLesson == null) {
                 video.setLesson(lesson);
@@ -154,7 +154,10 @@ public class VideoServiceImpl implements VideoService {
     public BaseDto update(VideoDto videoDto) {
         try {
             Video video = videoRepository.findById(videoDto.getId()).get();
-            video.setUrl(videoDto.getUrl()).setName(videoDto.getName());
+            video.setUrl(videoDto.getUrl()).setName(videoDto.getName()).setStatus(videoDto.getStatus())
+                    .setCaptionUrls(String.join(",", videoDto.getCaptionUrls()));
+
+            videoRepository.save(video);
 
             return BaseDto.builder().type(AntType.success).message("Update video successfully.")
                     .build();
