@@ -8,9 +8,9 @@ public interface LessonTrackingService {
 
     boolean saveTrack(LessonTrackingDto lessonTrackingDto);
 
-    boolean complete(LessonTrackingDto lessonTrackingDto);
+    double complete(LessonTrackingDto lessonTrackingDto);
 
-    boolean updateProgress(long enrollmentId, long courseId);
+    double updateProgress(long enrollmentId, long courseId);
 
     LearningDto getLearnDetails(long courseId);
 }

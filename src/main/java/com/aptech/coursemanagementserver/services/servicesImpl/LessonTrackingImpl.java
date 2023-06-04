@@ -81,7 +81,7 @@ public class LessonTrackingImpl implements LessonTrackingService {
     }
 
     @Override
-    public boolean complete(LessonTrackingDto lessonTrackingDto) {
+    public double complete(LessonTrackingDto lessonTrackingDto) {
         try {
             LessonTrackingId trackId = setTrackId(lessonTrackingDto);
             LessonTracking lessonTracking = lessonTrackingRepository.findByTrackId(trackId).orElseThrow(
@@ -89,7 +89,8 @@ public class LessonTrackingImpl implements LessonTrackingService {
                             "The track with trackId:[" + trackId.toString() + "] is not exist."));
             lessonTracking.setCompleted(true);
             lessonTrackingRepository.save(lessonTracking);
-            return true;
+            double progress = updateProgress(lessonTrackingDto.getEnrollmentId(), lessonTrackingDto.getCourseId());
+            return progress;
         } catch (NoSuchElementException e) {
             throw new NoSuchElementException(e.getMessage());
         } catch (Exception e) {
@@ -98,7 +99,7 @@ public class LessonTrackingImpl implements LessonTrackingService {
     }
 
     @Override
-    public boolean updateProgress(long enrollmentId, long courseId) {
+    public double updateProgress(long enrollmentId, long courseId) {
         try {
             Enrollment enrollment = enrollmentRepository.findById(enrollmentId)
                     .orElseThrow(() -> new NoSuchElementException(
@@ -108,11 +109,11 @@ public class LessonTrackingImpl implements LessonTrackingService {
                     .findAllCompletedByEnrollmentIdAndCourseId(enrollmentId, courseId);
             List<Lesson> lessonsInCourse = lessonRepository.findAllByCourseId(courseId);
 
-            long progress = (completeTracks.size() / lessonsInCourse.size()) * 100;
+            double progress = (Double.valueOf(completeTracks.size()) / lessonsInCourse.size()) * 100;
             enrollment.setProgress(progress);
             enrollmentRepository.save(enrollment);
 
-            return true;
+            return progress;
         } catch (NoSuchElementException e) {
             throw new NoSuchElementException(e.getMessage());
         } catch (Exception e) {

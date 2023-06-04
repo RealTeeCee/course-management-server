@@ -172,13 +172,16 @@ public class CourseController {
 
                 try {
                         CourseDto courseDto = objectMapper.readValue(courseJson, CourseDto.class);
-                        Course savedCourse = courseService.save(courseDto);
+                        courseService.save(courseDto);
 
                         return new ResponseEntity<BaseDto>(
                                         BaseDto.builder().type(AntType.success).message("Create course successfully")
                                                         .build(),
                                         HttpStatus.OK);
-
+                        // "Cannot construct instance of
+                        // `com.aptech.coursemanagementserver.dtos.CourseDto` (no Creators, like default
+                        // constructor, exist): cannot deserialize from Object value (no delegate- or
+                        // property-based Creator)"
                 } catch (InvalidFileExtensionException e) {
                         throw new InvalidFileExtensionException(e.getMessage());
                 } catch (Exception e) {
