@@ -21,14 +21,17 @@ import com.aptech.coursemanagementserver.models.Video;
 import com.aptech.coursemanagementserver.repositories.LessonRepository;
 import com.aptech.coursemanagementserver.repositories.SectionRepository;
 import com.aptech.coursemanagementserver.services.LessonService;
+import com.aptech.coursemanagementserver.services.authServices.UserService;
 
 import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
 public class LessonServiceImpl implements LessonService {
+
     private final LessonRepository lessonRepository;
     private final SectionRepository sectionRepository;
+    private final UserService userService;
 
     @Override
     public LessonDto findById(long lessonId) {
@@ -75,20 +78,22 @@ public class LessonServiceImpl implements LessonService {
                     .sorted(Comparator.comparing(Lesson::getOrdered)
                             .thenComparing(Comparator.comparing(Lesson::getCreated_at).reversed()))
                     .collect(Collectors.toList());
-
+            if (userService.checkIsUser()) {
+                lessons = lessons.stream().filter(sec -> sec.getStatus() == 1).toList();
+            }
             for (Lesson lesson : lessons) {
-                if (lesson.getStatus() == 1) {
-                    LessonDto lessonDto = LessonDto.builder()
-                            .id(lesson.getId())
-                            .name(lesson.getName())
-                            .description(lesson.getDescription())
-                            .duration(lesson.getDuration())
-                            .status(lesson.getStatus())
-                            .ordered(lesson.getOrdered())
-                            .sectionId(sectionId).build();
 
-                    lessonDtos.add(lessonDto);
-                }
+                LessonDto lessonDto = LessonDto.builder()
+                        .id(lesson.getId())
+                        .name(lesson.getName())
+                        .description(lesson.getDescription())
+                        .duration(lesson.getDuration())
+                        .status(lesson.getStatus())
+                        .ordered(lesson.getOrdered())
+                        .sectionId(sectionId).build();
+
+                lessonDtos.add(lessonDto);
+
             }
             return lessonDtos;
 
@@ -109,7 +114,8 @@ public class LessonServiceImpl implements LessonService {
                     .setStatus(lessonDto.getStatus())
                     .setName(lessonDto.getName())
                     .setSection(sectionRepository.findById(lessonDto.getSectionId()).get())
-                    .setVideo(video);
+                    .setVideo(video)
+                    .setOrdered(lessonDto.getOrdered());
             video.setLesson(lesson);
             lessonRepository.save(lesson);
             return BaseDto.builder().type(AntType.success).message("Create lesson successfully.").build();

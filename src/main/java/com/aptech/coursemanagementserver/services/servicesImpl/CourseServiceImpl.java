@@ -28,6 +28,7 @@ import com.aptech.coursemanagementserver.repositories.CourseRepository;
 import com.aptech.coursemanagementserver.repositories.SectionRepository;
 import com.aptech.coursemanagementserver.repositories.TagRepository;
 import com.aptech.coursemanagementserver.services.CourseService;
+import com.aptech.coursemanagementserver.services.authServices.UserService;
 import com.github.slugify.Slugify;
 
 import lombok.RequiredArgsConstructor;
@@ -41,6 +42,7 @@ public class CourseServiceImpl implements CourseService {
     private final SectionRepository sectionRepository;
     private final AchievementRepository achievementRepository;
     private final CategoryRepository categoryRepository;
+    private final UserService userService;
 
     @Override
     public List<Course> findAllByTagName(String tagName) {
@@ -99,14 +101,15 @@ public class CourseServiceImpl implements CourseService {
         List<Long> courseIds = courseRepository.findBestSellerCourseIds();
 
         List<CourseDto> courseDtos = new ArrayList<>();
+
         for (Long courseId : courseIds) {
             Course course = courseRepository.findById(courseId).get();
-            if (course.getStatus() == 1) {
-                CourseDto courseDto = toCourseDto(course);
-                courseDtos.add(courseDto);
-            }
+            CourseDto courseDto = toCourseDto(course);
+            courseDtos.add(courseDto);
         }
-
+        if (userService.checkIsUser()) {
+            courseDtos = courseDtos.stream().filter(c -> c.getStatus() == 1).toList();
+        }
         return courseDtos;
     }
 
@@ -116,13 +119,14 @@ public class CourseServiceImpl implements CourseService {
         List<Course> courses = courseRepository.findAll();
         List<CourseDto> courseDtos = new ArrayList<>();
 
-        for (Course course : courses) {
-            if (course.getStatus() == 1 && course.getPrice() == 0) {
-                CourseDto courseDto = toCourseDto(course);
-                courseDtos.add(courseDto);
-            }
-        }
+        courses = courses.stream().filter(c -> c.getStatus() == 1 && c.getPrice() == 0).toList();
 
+        for (Course course : courses) {
+
+            CourseDto courseDto = toCourseDto(course);
+            courseDtos.add(courseDto);
+
+        }
         return courseDtos;
     }
 
@@ -159,11 +163,14 @@ public class CourseServiceImpl implements CourseService {
     public List<CourseDto> findAll() {
         List<Course> courses = courseRepository.findAll();
         List<CourseDto> courseDtos = new ArrayList<>();
+        if (userService.checkIsUser()) {
+            courses = courses.stream().filter(c -> c.getStatus() == 1).toList();
+        }
         for (Course course : courses) {
-            if (course.getStatus() == 1) {
-                CourseDto courseDto = toCourseDto(course);
-                courseDtos.add(courseDto);
-            }
+
+            CourseDto courseDto = toCourseDto(course);
+            courseDtos.add(courseDto);
+
         }
         return courseDtos;
     }

@@ -8,4 +8,6 @@ public interface UserService {
     public void deleteById(long userId);
 
     Optional<User> findByEmail(String email);
+
+    public boolean checkIsUser();
 }
