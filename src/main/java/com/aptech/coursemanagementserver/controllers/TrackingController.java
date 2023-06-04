@@ -70,12 +70,12 @@ public class TrackingController {
         }
     }
 
-    @PostMapping(path = "/update-progress")
+    @PostMapping(path = "/load-progress")
     @PreAuthorize("hasAnyRole('USER', 'ADMIN', 'MANAGER', 'EMPLOYEE')")
-    public ResponseEntity<Double> updateProgress(@RequestBody LessonTrackingDto lessonTrackingDto)
+    public ResponseEntity<Double> loadProgress(@RequestBody LessonTrackingDto lessonTrackingDto)
             throws JsonMappingException, JsonProcessingException {
         try {
-            return ResponseEntity.ok(lessonTrackingService.updateProgress(lessonTrackingDto.getEnrollmentId(),
+            return ResponseEntity.ok(lessonTrackingService.loadProgress(lessonTrackingDto.getEnrollmentId(),
                     lessonTrackingDto.getCourseId()));
         } catch (NoSuchElementException e) {
             throw new ResourceNotFoundException(e.getMessage());

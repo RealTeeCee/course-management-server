@@ -387,7 +387,7 @@ public class CourseServiceImpl implements CourseService {
                 .map(achievement -> achievement.getName())
                 .toList();
         List<String> tagsList = course.getTags().stream().map(tag -> tag.getName()).toList();
-
+        int enrollmentCount = courseRepository.findEnrollemntCountByCourseId(course.getId());
         CourseDto courseDto = CourseDto.builder().id(course.getId())
                 .name(course.getName())
                 .price(course.getPrice())
@@ -398,6 +398,7 @@ public class CourseServiceImpl implements CourseService {
                 .sections(course.getSections().stream()
                         .map(section -> section.getName())
                         .toList())
+                .enrollmentCount(enrollmentCount)
                 .category(course.getCategory().getId())
                 .category_name(course.getCategory().getName())
                 .achievementName(String.join(",", achievementsList))
