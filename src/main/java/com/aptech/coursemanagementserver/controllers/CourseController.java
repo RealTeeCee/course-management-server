@@ -57,18 +57,18 @@ import lombok.RequiredArgsConstructor;
 public class CourseController {
         private final CourseService courseService;
 
-        // @GetMapping
-        // @Operation(summary = "[ANORNYMOUS] - GET All Courses")
-        // @PreAuthorize("permitAll()")
-        // public ResponseEntity<List<CourseDto>> getCourses() {
-        // try {
-        // List<CourseDto> courseDtos = courseService.findAll();
-        // return ResponseEntity.ok(courseDtos);
+        @GetMapping(path = "/oldway")
+        @Operation(summary = "[ANORNYMOUS] - GET All Courses Old Way")
+        @PreAuthorize("permitAll()")
+        public ResponseEntity<List<CourseDto>> getCourses_OldWay() {
+                try {
+                        List<CourseDto> courseDtos = courseService.findAll();
+                        return ResponseEntity.ok(courseDtos);
 
-        // } catch (Exception e) {
-        // throw new BadRequestException(FETCHING_FAILED);
-        // }
-        // }
+                } catch (Exception e) {
+                        throw new BadRequestException(FETCHING_FAILED);
+                }
+        }
 
         @GetMapping
         @Operation(summary = "[ANORNYMOUS] - GET All Courses")
@@ -227,7 +227,7 @@ public class CourseController {
                 try {
                         CourseDto courseDto = objectMapper.readValue(courseJson, CourseDto.class);
                         Course course = courseService.findCourseById(courseDto.getId());
-                        Course savedCourse = courseService.setProperties(courseDto, course);
+                        courseService.setProperties(courseDto, course);
 
                         return new ResponseEntity<BaseDto>(
                                         BaseDto.builder().type(AntType.success).message("Create course successfully")
