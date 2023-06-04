@@ -130,7 +130,7 @@ public class SectionServiceImpl implements SectionService {
             Set<Section> sections = course.getSections();
 
             Section section = new Section();
-            section.setName(sectionDto.getName()).setCourse(course);
+            section.setName(sectionDto.getName()).setCourse(course).setStatus(sectionDto.getStatus());
 
             if (sections.contains(section))
                 throw new IsExistedException(section.getName());
@@ -159,7 +159,7 @@ public class SectionServiceImpl implements SectionService {
                     .orElseThrow(() -> new NoSuchElementException(
                             "The course with courseId: [" + sectionDto.getCourseId() + "] is not exist."));
 
-            section.setName(sectionDto.getName()).setCourse(course);
+            section.setName(sectionDto.getName()).setCourse(course).setStatus(sectionDto.getStatus());
             sectionRepository.save(section);
 
             return BaseDto.builder().type(AntType.success).message("Update section successfully.").build();

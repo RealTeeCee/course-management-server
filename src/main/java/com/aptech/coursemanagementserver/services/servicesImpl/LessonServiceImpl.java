@@ -38,6 +38,7 @@ public class LessonServiceImpl implements LessonService {
             lessonDto.setName(lesson.getName());
             lessonDto.setDescription(lesson.getDescription());
             lessonDto.setDuration(lesson.getDuration());
+            lessonDto.setStatus(lesson.getStatus());
             lessonDto.setSectionId(lesson.getSection().getId());
 
             return lessonDto;
@@ -73,7 +74,8 @@ public class LessonServiceImpl implements LessonService {
                 if (lesson.getStatus() == 1) {
                     LessonDto lessonDto = LessonDto.builder().id(lesson.getId()).name(lesson.getName())
                             .description(lesson.getDescription())
-                            .duration(lesson.getDuration()).sectionId(sectionId).build();
+                            .duration(lesson.getDuration()).status(lesson.getStatus()).sectionId(sectionId).build();
+
                     lessonDtos.add(lessonDto);
                 }
             }
@@ -93,6 +95,7 @@ public class LessonServiceImpl implements LessonService {
             Lesson lesson = new Lesson();
             Video video = new Video();
             lesson.setDescription(lessonDto.getDescription()).setDuration(lessonDto.getDuration())
+                    .setStatus(lessonDto.getStatus())
                     .setName(lessonDto.getName()).setSection(sectionRepository.findById(lessonDto.getSectionId()).get())
                     .setVideo(video);
             video.setLesson(lesson);

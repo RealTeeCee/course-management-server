@@ -83,6 +83,7 @@ public class VideoServiceImpl implements VideoService {
             // String captionData = objectMapper.writeValueAsString(map);
 
             VideoDto videoDto = VideoDto.builder().id(video.getId()).name(video.getName()).url(video.getUrl())
+                    .status(video.getStatus())
                     .captionData(map).lessonId(lessonId).build();
 
             return videoDto;
