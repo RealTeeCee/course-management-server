@@ -43,13 +43,13 @@ public interface CourseRepository extends JpaRepository<Course, Long> {
 
         @Query(value = """
                         SELECT COUNT(c.id) AS enrollmentCount , c.* , cat.name [category_name],
-                                stuff((SELECT distinct ', ' + a.name
+                                STUFF((SELECT distinct ', ' + a.name
                                 FROM  course_achievement ca
                                 LEFT JOIN achievement a ON ca.achievement_id = a.id
-                                where ca.course_id = c.id
+                                WHERE ca.course_id = c.id
                                 FOR XML PATH('')),1,1,'') [achievements] ,
 
-                                stuff((SELECT distinct ', ' + t.name
+                                STUFF((SELECT distinct ', ' + t.name
                                 FROM  course_tag ct
                                 LEFT JOIN tag t ON ct.tag_id = t.id
                                 where ct.course_id = c.id
@@ -64,7 +64,9 @@ public interface CourseRepository extends JpaRepository<Course, Long> {
                         GROUP BY
                         e.comment, e.rating, e.progress, cat.name, c.[id], c.[created_at], [description], [duration],
                         [image], [level], c.[name], [net_price], [price], [slug], [status], c.[updated_at], [category_id]
-                        ORDER BY c.id
+                        ORDER BY
+                        --c.ordered DESC
+                        c.created_at DESC
                                         """, nativeQuery = true)
         List<CourseInterface> findAllCourses();
 

@@ -44,6 +44,7 @@ public class Lesson {
     // @Column(columnDefinition = "bigint")
     // private long section_id;
     private int duration;
+    private int ordered = 0;
 
     @CreationTimestamp
     private Instant created_at = Instant.now();

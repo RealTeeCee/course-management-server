@@ -44,7 +44,7 @@ public class Section {
     private int status = 1;
     // @Column(columnDefinition = "bigint")
     // private long course_id;
-
+    private int ordered = 0;
     @CreationTimestamp
     private Instant created_at = Instant.now();
     @UpdateTimestamp

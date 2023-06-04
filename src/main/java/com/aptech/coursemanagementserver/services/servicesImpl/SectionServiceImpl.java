@@ -4,6 +4,7 @@ import static com.aptech.coursemanagementserver.constants.GlobalStorage.BAD_REQU
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Set;
@@ -39,6 +40,7 @@ public class SectionServiceImpl implements SectionService {
             sectionDto.setName(section.getName());
             sectionDto.setCourseId(section.getCourse().getId());
             sectionDto.setStatus(section.getStatus());
+            sectionDto.setOrdered(section.getOrdered());
             return sectionDto;
         } catch (NoSuchElementException e) {
             throw new NoSuchElementException("The section with sectionId: [" + sectionId + "] is not exist.");
@@ -60,7 +62,11 @@ public class SectionServiceImpl implements SectionService {
     @Override
     public List<SectionDto> findAllByCourseId(long courseId) {
         Course course = courseRepository.findById(courseId).get();
-        List<Section> sectionsOfCourse = course.getSections().stream().collect(Collectors.toList());
+        List<Section> sectionsOfCourse = course.getSections().stream()
+                // Sort by Ordered then Created_at
+                .sorted(Comparator.comparing(Section::getOrdered)
+                        .thenComparing(Comparator.comparing(Section::getCreated_at).reversed()))
+                .collect(Collectors.toList());
         List<SectionDto> sectionsDto = new ArrayList<>();
 
         for (Section section : sectionsOfCourse) {
@@ -70,6 +76,7 @@ public class SectionServiceImpl implements SectionService {
                 sectionDto.setName(section.getName());
                 sectionDto.setId(section.getId());
                 sectionDto.setStatus(section.getStatus());
+                sectionDto.setOrdered(section.getOrdered());
                 sectionsDto.add(sectionDto);
             }
         }
@@ -102,6 +109,8 @@ public class SectionServiceImpl implements SectionService {
                     Section section = new Section();
                     section.setName(str);
                     section.setCourse(course);
+                    section.setStatus(sectionDto.getStatus());
+                    section.setOrdered(sectionDto.getOrdered());
                     temp.add(section);
                 }
             }
@@ -132,7 +141,9 @@ public class SectionServiceImpl implements SectionService {
             Set<Section> sections = course.getSections();
 
             Section section = new Section();
-            section.setName(sectionDto.getName()).setCourse(course).setStatus(sectionDto.getStatus());
+            section.setName(sectionDto.getName())
+                    .setCourse(course)
+                    .setStatus(sectionDto.getStatus());
 
             if (sections.contains(section))
                 throw new IsExistedException(section.getName());
@@ -161,7 +172,10 @@ public class SectionServiceImpl implements SectionService {
                     .orElseThrow(() -> new NoSuchElementException(
                             "The course with courseId: [" + sectionDto.getCourseId() + "] is not exist."));
 
-            section.setName(sectionDto.getName()).setCourse(course).setStatus(sectionDto.getStatus());
+            section.setName(sectionDto.getName())
+                    .setCourse(course)
+                    .setStatus(sectionDto.getStatus())
+                    .setOrdered(sectionDto.getOrdered());
             sectionRepository.save(section);
 
             return BaseDto.builder().type(AntType.success).message("Update section successfully.").build();

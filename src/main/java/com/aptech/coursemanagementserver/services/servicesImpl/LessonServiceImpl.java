@@ -3,9 +3,11 @@ package com.aptech.coursemanagementserver.services.servicesImpl;
 import static com.aptech.coursemanagementserver.constants.GlobalStorage.BAD_REQUEST_EXCEPTION;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 
@@ -39,6 +41,7 @@ public class LessonServiceImpl implements LessonService {
             lessonDto.setDescription(lesson.getDescription());
             lessonDto.setDuration(lesson.getDuration());
             lessonDto.setStatus(lesson.getStatus());
+            lessonDto.setOrdered(lesson.getOrdered());
             lessonDto.setSectionId(lesson.getSection().getId());
 
             return lessonDto;
@@ -68,13 +71,21 @@ public class LessonServiceImpl implements LessonService {
                     "The section with sectionId: [" + sectionId + "] is not exist."));
 
             List<LessonDto> lessonDtos = new ArrayList<>();
-            Set<Lesson> lessons = section.getLessons();
+            List<Lesson> lessons = section.getLessons().stream()
+                    .sorted(Comparator.comparing(Lesson::getOrdered)
+                            .thenComparing(Comparator.comparing(Lesson::getCreated_at).reversed()))
+                    .collect(Collectors.toList());
 
             for (Lesson lesson : lessons) {
                 if (lesson.getStatus() == 1) {
-                    LessonDto lessonDto = LessonDto.builder().id(lesson.getId()).name(lesson.getName())
+                    LessonDto lessonDto = LessonDto.builder()
+                            .id(lesson.getId())
+                            .name(lesson.getName())
                             .description(lesson.getDescription())
-                            .duration(lesson.getDuration()).status(lesson.getStatus()).sectionId(sectionId).build();
+                            .duration(lesson.getDuration())
+                            .status(lesson.getStatus())
+                            .ordered(lesson.getOrdered())
+                            .sectionId(sectionId).build();
 
                     lessonDtos.add(lessonDto);
                 }
@@ -96,7 +107,8 @@ public class LessonServiceImpl implements LessonService {
             Video video = new Video();
             lesson.setDescription(lessonDto.getDescription()).setDuration(lessonDto.getDuration())
                     .setStatus(lessonDto.getStatus())
-                    .setName(lessonDto.getName()).setSection(sectionRepository.findById(lessonDto.getSectionId()).get())
+                    .setName(lessonDto.getName())
+                    .setSection(sectionRepository.findById(lessonDto.getSectionId()).get())
                     .setVideo(video);
             video.setLesson(lesson);
             lessonRepository.save(lesson);
@@ -123,6 +135,7 @@ public class LessonServiceImpl implements LessonService {
             lesson.setName(lessonDto.getName()).setDescription(lessonDto.getDescription())
                     .setDuration(lessonDto.getDuration())
                     .setStatus(lessonDto.getStatus())
+                    .setOrdered(lessonDto.getOrdered())
                     .setSection(section);
 
             lessonRepository.save(lesson);
