@@ -7,11 +7,19 @@ public interface CourseInterface {
 
     public String getName();
 
+    public String getTags();
+
+    public String getAchievements();
+
     public String getDuration();
 
     public int getStatus();
 
-    public String getCategoryName();
+    public int getLevel();
+
+    public long getCategory_id();
+
+    public String getCategory_name();
 
     public String getDescription();
 

@@ -42,17 +42,41 @@ public interface CourseRepository extends JpaRepository<Course, Long> {
         List<CourseInterface> findAllCoursesByUserId(long userId);
 
         @Query(value = """
-                        SELECT COUNT(c.id) AS enrollmentCount , c.* , cat.name [categoryName],
+                        SELECT COUNT(c.id) AS enrollmentCount , c.* , cat.name [category_name],
+                                stuff((SELECT distinct ', ' + a.name
+                                FROM  course_achievement ca
+                                LEFT JOIN achievement a ON ca.achievement_id = a.id
+                                where ca.course_id = c.id
+                                FOR XML PATH('')),1,1,'') [achievements] ,
+
+                                stuff((SELECT distinct ', ' + t.name
+                                FROM  course_tag ct
+                                LEFT JOIN tag t ON ct.tag_id = t.id
+                                where ct.course_id = c.id
+                                FOR XML PATH('')),1,1,'') [tags],
+
                         ISNULL(e.progress, 0) [progress],
                         ISNULL(e.rating,0) [rating],
                         ISNULL(e.comment,'No comment') [comment]
                         FROM course c
                         LEFT JOIN enrollment e ON c.id = e.course_id
                         INNER JOIN category cat ON c.category_id = cat.id
-                        GROUP BY e.comment, e.rating, e.progress, cat.name, c.[id], c.[created_at], [description], [duration],
+                        GROUP BY
+                        e.comment, e.rating, e.progress, cat.name, c.[id], c.[created_at], [description], [duration],
                         [image], [level], c.[name], [net_price], [price], [slug], [status], c.[updated_at], [category_id]
+                        ORDER BY c.id
                                         """, nativeQuery = true)
         List<CourseInterface> findAllCourses();
+
+        @Query(value = """
+                        SELECT top 1 COUNT(c.id) AS enrollmentCount, c.id
+                        FROM course c
+                        LEFT JOIN enrollment e ON c.id = e.course_id
+                        INNER JOIN category cat ON c.category_id = cat.id
+                        WHERE c.id = :courseId
+                        GROUP BY  c.id
+                                                """, nativeQuery = true)
+        int findEnrollemntCountByCourseId(long courseId);
 
         Course findByName(String courseName);
 

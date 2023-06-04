@@ -42,7 +42,7 @@ public class CourseDto {
     private String comment;
     private double rating;
     private double price;
-
+    private int enrollmentCount;
     @Builder.Default
     private int level = 0;
     @Builder.Default
