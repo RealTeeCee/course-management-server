@@ -22,6 +22,7 @@ import com.aptech.coursemanagementserver.models.Section;
 import com.aptech.coursemanagementserver.repositories.CourseRepository;
 import com.aptech.coursemanagementserver.repositories.SectionRepository;
 import com.aptech.coursemanagementserver.services.SectionService;
+import com.aptech.coursemanagementserver.services.authServices.UserService;
 
 import lombok.RequiredArgsConstructor;
 
@@ -30,6 +31,7 @@ import lombok.RequiredArgsConstructor;
 public class SectionServiceImpl implements SectionService {
     private final CourseRepository courseRepository;
     private final SectionRepository sectionRepository;
+    private final UserService userService;
 
     @Override
     public SectionDto findById(long sectionId) {
@@ -69,16 +71,19 @@ public class SectionServiceImpl implements SectionService {
                 .collect(Collectors.toList());
         List<SectionDto> sectionsDto = new ArrayList<>();
 
+        if (userService.checkIsUser()) {
+            sectionsOfCourse = sectionsOfCourse.stream().filter(sec -> sec.getStatus() == 1).toList();
+        }
         for (Section section : sectionsOfCourse) {
-            if (section.getStatus() == 1) {
-                SectionDto sectionDto = new SectionDto();
-                sectionDto.setCourseId(courseId);
-                sectionDto.setName(section.getName());
-                sectionDto.setId(section.getId());
-                sectionDto.setStatus(section.getStatus());
-                sectionDto.setOrdered(section.getOrdered());
-                sectionsDto.add(sectionDto);
-            }
+
+            SectionDto sectionDto = new SectionDto();
+            sectionDto.setCourseId(courseId);
+            sectionDto.setName(section.getName());
+            sectionDto.setId(section.getId());
+            sectionDto.setStatus(section.getStatus());
+            sectionDto.setOrdered(section.getOrdered());
+            sectionsDto.add(sectionDto);
+
         }
 
         return sectionsDto;
@@ -143,7 +148,8 @@ public class SectionServiceImpl implements SectionService {
             Section section = new Section();
             section.setName(sectionDto.getName())
                     .setCourse(course)
-                    .setStatus(sectionDto.getStatus());
+                    .setStatus(sectionDto.getStatus())
+                    .setOrdered(sectionDto.getOrdered());
 
             if (sections.contains(section))
                 throw new IsExistedException(section.getName());
