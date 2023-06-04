@@ -17,11 +17,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.aptech.coursemanagementserver.dtos.BlogDto;
+import com.aptech.coursemanagementserver.dtos.AchievementDto;
 import com.aptech.coursemanagementserver.dtos.baseDto.BaseDto;
 import com.aptech.coursemanagementserver.exceptions.BadRequestException;
 import com.aptech.coursemanagementserver.exceptions.ResourceNotFoundException;
-import com.aptech.coursemanagementserver.services.BlogService;
+import com.aptech.coursemanagementserver.services.AchievementService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 
@@ -33,31 +33,31 @@ import lombok.extern.slf4j.Slf4j;
 @RestController
 @RequiredArgsConstructor
 @PreAuthorize("hasAnyRole('ADMIN', 'MANAGER', 'EMPLOYEE')")
-@Tag(name = "Blog Endpoints")
-@RequestMapping("/blog")
+@Tag(name = "Achievement Endpoints")
+@RequestMapping("/achievement")
 @Slf4j
-public class BlogController {
-    private final BlogService blogService;
+public class AchievementController {
+    private final AchievementService achievementService;
 
     @GetMapping
-    @Operation(summary = "[ANORNYMOUS] - GET All Blogs")
+    @Operation(summary = "[ANORNYMOUS] - GET All Achievements")
     @PreAuthorize("permitAll()")
-    public ResponseEntity<List<BlogDto>> getBlogs() {
+    public ResponseEntity<List<AchievementDto>> getAchievements() {
         try {
-            List<BlogDto> blogDtos = blogService.findAll();
-            return ResponseEntity.ok(blogDtos);
+            List<AchievementDto> achievementDtos = achievementService.findAll();
+            return ResponseEntity.ok(achievementDtos);
         } catch (Exception e) {
             throw new BadRequestException(FETCHING_FAILED);
         }
     }
 
     @GetMapping(path = "/{id}")
-    @Operation(summary = "[ANY ROLE] - GET Blog By Id")
+    @Operation(summary = "[ANY ROLE] - GET Achievement By Id")
     @PreAuthorize("hasAnyRole('USER', 'ADMIN', 'MANAGER', 'EMPLOYEE')")
-    public ResponseEntity<BlogDto> getBlogById(@PathVariable("id") long id) {
+    public ResponseEntity<AchievementDto> getAchievementById(@PathVariable("id") long id) {
         try {
-            BlogDto blogDto = blogService.findById(id);
-            return ResponseEntity.ok(blogDto);
+            AchievementDto achievementDto = achievementService.findById(id);
+            return ResponseEntity.ok(achievementDto);
         } catch (NoSuchElementException e) {
             throw new ResourceNotFoundException(e.getMessage());
         } catch (Exception e) {
@@ -66,12 +66,12 @@ public class BlogController {
     }
 
     @PostMapping
-    @Operation(summary = "[ADMIN, MANAGER, EMPLOYEE] - Create Blog")
+    @Operation(summary = "[ADMIN, MANAGER, EMPLOYEE] - Create Achievement")
     @PreAuthorize("hasAnyRole('USER', 'ADMIN', 'MANAGER', 'EMPLOYEE')")
-    public ResponseEntity<BaseDto> create(@RequestBody BlogDto blogDto)
+    public ResponseEntity<BaseDto> create(@RequestBody AchievementDto achievementDto)
             throws JsonMappingException, JsonProcessingException {
         try {
-            return new ResponseEntity<BaseDto>(blogService.create(blogDto), HttpStatus.OK);
+            return new ResponseEntity<BaseDto>(achievementService.create(achievementDto), HttpStatus.OK);
         } catch (NoSuchElementException e) {
             throw new ResourceNotFoundException(e.getMessage());
         } catch (Exception e) {
@@ -81,12 +81,12 @@ public class BlogController {
     }
 
     @PutMapping
-    @Operation(summary = "[ADMIN, MANAGER, EMPLOYEE] - Update Blog")
+    @Operation(summary = "[ADMIN, MANAGER, EMPLOYEE] - Update Achievement")
     @PreAuthorize("hasAnyRole('USER', 'ADMIN', 'MANAGER', 'EMPLOYEE')")
     public ResponseEntity<BaseDto> update(
-            @RequestBody BlogDto blogDto) throws JsonMappingException, JsonProcessingException {
+            @RequestBody AchievementDto achievementDto) throws JsonMappingException, JsonProcessingException {
         try {
-            return new ResponseEntity<BaseDto>(blogService.update(blogDto), HttpStatus.OK);
+            return new ResponseEntity<BaseDto>(achievementService.update(achievementDto), HttpStatus.OK);
 
         } catch (NoSuchElementException e) {
             throw new ResourceNotFoundException(e.getMessage());
@@ -96,11 +96,11 @@ public class BlogController {
     }
 
     @DeleteMapping
-    @Operation(summary = "[ADMIN, MANAGER, EMPLOYEE] - Delete Blog")
+    @Operation(summary = "[ADMIN, MANAGER, EMPLOYEE] - Delete Achievement")
     @PreAuthorize("hasAnyRole('USER', 'ADMIN', 'MANAGER', 'EMPLOYEE')")
-    public ResponseEntity<BaseDto> delete(long blogId) {
+    public ResponseEntity<BaseDto> delete(long achievementId) {
         try {
-            return new ResponseEntity<BaseDto>(blogService.delete(blogId), HttpStatus.OK);
+            return new ResponseEntity<BaseDto>(achievementService.delete(achievementId), HttpStatus.OK);
         } catch (NoSuchElementException e) {
             throw new ResourceNotFoundException(e.getMessage());
         } catch (Exception e) {
