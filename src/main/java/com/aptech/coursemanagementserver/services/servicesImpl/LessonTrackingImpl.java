@@ -172,8 +172,11 @@ public class LessonTrackingImpl implements LessonTrackingService {
         }
 
         if (isUpdated) {
-            lessonTracking.setTrackId(trackId).setTracked(true)
-                    .setResumePoint(lessonTrackingDto.getResumePoint());
+            if (lessonTrackingDto.getResumePoint() > 0) {
+                lessonTracking.setResumePoint(lessonTrackingDto.getResumePoint());
+            }
+
+            lessonTracking.setTrackId(trackId).setTracked(true);
         } else {
             lessonTracking.setTrackId(trackId).setCompleted(false).setTracked(true)
                     .setResumePoint(lessonTrackingDto.getResumePoint());

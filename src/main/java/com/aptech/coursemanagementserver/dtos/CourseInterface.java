@@ -9,6 +9,8 @@ public interface CourseInterface {
 
     public String getDuration();
 
+    public int getStatus();
+
     public String getCategoryName();
 
     public String getDescription();
