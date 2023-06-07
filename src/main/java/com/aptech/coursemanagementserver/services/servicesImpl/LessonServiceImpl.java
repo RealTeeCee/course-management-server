@@ -109,14 +109,14 @@ public class LessonServiceImpl implements LessonService {
     public BaseDto save(LessonDto lessonDto) {
         try {
             Lesson lesson = new Lesson();
-            Video video = new Video();
+            // Video video = new Video();
             lesson.setDescription(lessonDto.getDescription()).setDuration(lessonDto.getDuration())
                     .setStatus(lessonDto.getStatus())
                     .setName(lessonDto.getName())
                     .setSection(sectionRepository.findById(lessonDto.getSectionId()).get())
-                    .setVideo(video)
+                    // .setVideo(video)
                     .setOrdered(lessonDto.getOrdered());
-            video.setLesson(lesson);
+            // video.setLesson(lesson);
             lessonRepository.save(lesson);
             return BaseDto.builder().type(AntType.success).message("Create lesson successfully.").build();
         } catch (NoSuchElementException e) {

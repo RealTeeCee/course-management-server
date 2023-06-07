@@ -32,7 +32,7 @@ import lombok.experimental.Accessors;
 // columnList = "track_id", unique = true),
 // })
 @Table(uniqueConstraints = {
-                @UniqueConstraint(columnNames = { "enrollment_id", "course_id", "section_id", "lession_id",
+                @UniqueConstraint(columnNames = { "enrollment_id", "course_id", "section_id", "lesson_id",
                                 "video_id" })
 })
 public class LessonTracking {
@@ -46,7 +46,7 @@ public class LessonTracking {
                         @AttributeOverride(name = "enrollment_id", column = @Column(name = "enrollment_id")),
                         @AttributeOverride(name = "course_id", column = @Column(name = "course_id")),
                         @AttributeOverride(name = "section_id", column = @Column(name = "section_id")),
-                        @AttributeOverride(name = "lession_id", column = @Column(name = "lession_id")),
+                        @AttributeOverride(name = "lession_id", column = @Column(name = "lesson_id")),
                         @AttributeOverride(name = "video_id", column = @Column(name = "video_id"))
         })
         LessonTrackingId trackId;
