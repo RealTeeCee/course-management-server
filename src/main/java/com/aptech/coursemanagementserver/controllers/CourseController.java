@@ -26,6 +26,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestPart;
@@ -33,6 +34,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.aptech.coursemanagementserver.dtos.CourseDto;
 import com.aptech.coursemanagementserver.dtos.CourseInterface;
+import com.aptech.coursemanagementserver.dtos.CourseRelatedDto;
 import com.aptech.coursemanagementserver.dtos.baseDto.BaseDto;
 import com.aptech.coursemanagementserver.enums.AntType;
 import com.aptech.coursemanagementserver.exceptions.BadRequestException;
@@ -118,12 +120,12 @@ public class CourseController {
                 }
         }
 
-        @GetMapping(path = "/related-course")
+        @PostMapping(path = "/related-course")
         @Operation(summary = "[ANORNYMOUS] - GET Related Courses")
         @PreAuthorize("permitAll()")
-        public ResponseEntity<List<CourseDto>> getRelatedCourses(long categoryId, long tagId) {
+        public ResponseEntity<List<CourseDto>> getRelatedCourses(@RequestBody CourseRelatedDto relatedDto) {
                 try {
-                        List<CourseDto> courseDtos = courseService.findRelatedCourses(categoryId, tagId);
+                        List<CourseDto> courseDtos = courseService.findRelatedCourses(relatedDto);
                         return ResponseEntity.ok(courseDtos);
                 } catch (NoSuchElementException e) {
                         throw new ResourceNotFoundException(e.getMessage());
@@ -238,6 +240,8 @@ public class CourseController {
                         throw new InvalidFileExtensionException(e.getMessage());
                 } catch (NoSuchElementException e) {
                         throw new ResourceNotFoundException(e.getMessage());
+                } catch (BadRequestException e) {
+                        throw new BadRequestException(e.getMessage());
                 } catch (Exception e) {
                         throw new BadRequestException(BAD_REQUEST_EXCEPTION);
                 }

@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 
 import com.aptech.coursemanagementserver.dtos.CourseDto;
 import com.aptech.coursemanagementserver.dtos.CourseInterface;
+import com.aptech.coursemanagementserver.dtos.CourseRelatedDto;
 import com.aptech.coursemanagementserver.dtos.baseDto.BaseDto;
 import com.aptech.coursemanagementserver.enums.AntType;
 import com.aptech.coursemanagementserver.exceptions.BadRequestException;
@@ -131,18 +132,19 @@ public class CourseServiceImpl implements CourseService {
     }
 
     @Override
-    public List<CourseDto> findRelatedCourses(long categoryId, long tagId) {
+    public List<CourseDto> findRelatedCourses(CourseRelatedDto relatedDto) {
         // Related Course: Query theo category_id, hoặc nếu có tag thì query theo tag
         // nữa, này phải check condition nếu có thì lấy ra theo tag nữa kèm category_id
-        boolean isExistTagId = tagId > 0;
+        boolean isExistTagId = relatedDto.getTagId() > 0;
         List<Course> courses = courseRepository.findAll();
         List<CourseDto> courseDtos = new ArrayList<>();
 
-        Tag tag = isExistTagId ? tagRepository.findById(tagId).orElseThrow(
-                () -> new NoSuchElementException("This tag with tagId: [" + tagId + "] is not exist.")) : new Tag();
+        Tag tag = isExistTagId ? tagRepository.findById(relatedDto.getTagId()).orElseThrow(
+                () -> new NoSuchElementException("This tag with tagId: [" + relatedDto.getTagId() + "] is not exist."))
+                : new Tag();
 
         for (Course course : courses) {
-            if (course.getStatus() == 1 && course.getCategory().getId() == categoryId) {
+            if (course.getStatus() == 1 && course.getCategory().getId() == relatedDto.getCategoryId()) {
                 if (course.getTags().contains(tag)) {
                     CourseDto courseDto = toCourseDto(course);
                     courseDtos.add(courseDto);
@@ -189,6 +191,10 @@ public class CourseServiceImpl implements CourseService {
     }
 
     public Course setProperties(CourseDto courseDto, Course course) {
+
+        if (courseDto.getStatus() == 0 && courseDto.getEnrollmentCount() > 0) {
+            throw new BadRequestException("Cannot deactivate course that 've already had user's enrollment");
+        }
 
         course.setName(courseDto.getName().replaceAll("\\s{2,}", " "))
                 .setCategory(categoryRepository.findById(courseDto.getCategory()).get())

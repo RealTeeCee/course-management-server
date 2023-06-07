@@ -75,7 +75,7 @@ public class PaypalController {
     }
 
     @GetMapping(path = PAYPAL_SUCCESS_URL)
-    public String successPay(@RequestParam("paymentId") String paymentId, @RequestParam("PayerID") String payerId) {
+    public String successPay(@RequestParam("paymentId") String paymentId, @RequestParam("PayerId") String payerId) {
         try {
             Payment payment = service.executePayment(paymentId, payerId);
             System.out.println(payment.toJSON());

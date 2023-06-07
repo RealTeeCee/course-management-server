@@ -5,6 +5,7 @@ import java.util.Set;
 
 import com.aptech.coursemanagementserver.dtos.CourseDto;
 import com.aptech.coursemanagementserver.dtos.CourseInterface;
+import com.aptech.coursemanagementserver.dtos.CourseRelatedDto;
 import com.aptech.coursemanagementserver.dtos.baseDto.BaseDto;
 import com.aptech.coursemanagementserver.models.Achievement;
 import com.aptech.coursemanagementserver.models.Course;
@@ -31,7 +32,7 @@ public interface CourseService {
 
     public List<CourseDto> findFreeCourses();
 
-    public List<CourseDto> findRelatedCourses(long categoryId, long tagId);
+    public List<CourseDto> findRelatedCourses(CourseRelatedDto relatedDto);
 
     public Course save(Course course);
 
