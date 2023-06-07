@@ -41,8 +41,9 @@ public class LessonTrackingImpl implements LessonTrackingService {
     @Override
     public LessonTrackingDto loadTrack(LessonTrackingDto lessonTrackingDto) {
         try {
-            LessonTracking lessonTracking = lessonTrackingRepository.findTrackedByEnrollmentIdAndCourseId(
-                    lessonTrackingDto.getEnrollmentId(), lessonTrackingDto.getCourseId());
+            LessonTracking lessonTracking = lessonTrackingRepository.findTrackedByEnrollmentIdAndCourseIdAndLessonId(
+                    lessonTrackingDto.getEnrollmentId(), lessonTrackingDto.getCourseId(),
+                    lessonTrackingDto.getLessonId());
             if (lessonTracking == null) {
                 return new LessonTrackingDto();
             }
@@ -50,7 +51,6 @@ public class LessonTrackingImpl implements LessonTrackingService {
                     .enrollmentId(lessonTracking.getTrackId().getEnrollment_id())
                     .courseId(lessonTracking.getTrackId().getCourse_id())
                     .sectionId(lessonTracking.getTrackId().getSection_id())
-                    .lessonId(lessonTracking.getTrackId().getSection_id())
                     .lessonId(lessonTracking.getTrackId().getLession_id())
                     .videoId(lessonTracking.getTrackId().getVideo_id())
                     .isCompleted(lessonTracking.isCompleted())
@@ -146,6 +146,9 @@ public class LessonTrackingImpl implements LessonTrackingService {
 
                 learningDto.getVideoDto().add(videoDto);
             }
+
+            // "Cannot invoke "String.split(String)" because the return value of
+            // "com.aptech.coursemanagementserver.models.Video.getCaptionUrls()" is null"
             return learningDto;
         } catch (NoSuchElementException e) {
             throw new NoSuchElementException(e.getMessage());
