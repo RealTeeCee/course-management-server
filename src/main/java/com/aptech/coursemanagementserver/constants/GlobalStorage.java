@@ -34,6 +34,10 @@ public interface GlobalStorage {
     String STREAM_API = "http://localhost:8080/video/stream/";
     String CAPTION_API = "http://localhost:8080/video/caption/";
 
+    // CLIENT
+    String PAYPAL_SUCCESS_CLIENT = DEV_DOMAIN_CLIENT + "/payment/success";
+    String PAYPAL_CANCEL_CLIENT = DEV_DOMAIN_CLIENT + "/payment/cancel";
+
     // OAUTH2
     String OAUTH2_AUTHORIZATION_REQUEST_COOKIE_NAME = "oauth2_auth_request";
     String REDIRECT_URI_PARAM_COOKIE_NAME = "redirect_uri";

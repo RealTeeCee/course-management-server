@@ -203,6 +203,7 @@ public class CourseServiceImpl implements CourseService {
                         splitAchievement(courseDto.getAchievementName(), course))
                 .setLevel(courseDto.getLevel())
                 .setStatus(courseDto.getStatus())
+                .setRating(courseDto.getRating())
                 .setImage(courseDto.getImage())
                 .setSlug(Slugify.builder().build().slugify(courseDto.getName()))
                 .setDuration(courseDto.getDuration())
@@ -408,6 +409,7 @@ public class CourseServiceImpl implements CourseService {
                 .image(course.getImage())
                 .level(course.getLevel())
                 .status(course.getStatus())
+                .rating(course.getRating())
                 .sections(course.getSections().stream()
                         .map(section -> section.getName())
                         .toList())
@@ -416,7 +418,8 @@ public class CourseServiceImpl implements CourseService {
                 .category_name(course.getCategory().getName())
                 .achievementName(String.join(",", achievementsList))
                 .tagName(String.join(",", tagsList))
-                .duration(course.getDuration()).build();
+                .duration(course.getDuration())
+                .build();
 
         return courseDto;
     }

@@ -5,6 +5,7 @@ import java.time.Instant;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
+import com.aptech.coursemanagementserver.enums.OrderStatus;
 import com.aptech.coursemanagementserver.enums.payment.PaymentType;
 
 import jakarta.persistence.CascadeType;
@@ -45,6 +46,7 @@ public class Orders {
     @Column(columnDefinition = "decimal(10,2)")
     private double net_price;
     private PaymentType payment = PaymentType.PAYPAL;
+    private OrderStatus status = OrderStatus.PENDING;
     private int duration;
     // @Column(columnDefinition = "bigint")
     // private long category_id;

@@ -8,4 +8,5 @@ public interface EnrollmentService {
 
     Long getEnrollId(EnrollmentDto enrollmentDto);
 
+    BaseDto updateRating(EnrollmentDto enrollmentDto);
 }

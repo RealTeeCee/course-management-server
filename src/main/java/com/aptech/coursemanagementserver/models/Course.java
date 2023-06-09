@@ -1,6 +1,7 @@
 package com.aptech.coursemanagementserver.models;
 
 import java.time.Instant;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -59,8 +60,12 @@ public class Course {
         @Column(columnDefinition = "tinyint")
         private int level = 0;
         @Column(columnDefinition = "tinyint")
-        private int status = 1;
+        private int status = 0;
         private int duration;
+        @Column(columnDefinition = "decimal(3,2)")
+        private double rating = 0;
+        @Column(columnDefinition = "datetime")
+        private Date published_at;
         // @Column(columnDefinition = "bigint")
         // private long category_id;
 

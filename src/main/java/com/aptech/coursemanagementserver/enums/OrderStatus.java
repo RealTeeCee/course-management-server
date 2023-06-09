@@ -1,8 +1,8 @@
 package com.aptech.coursemanagementserver.enums;
 
 public enum OrderStatus {
-    PENDING,
-    PROCESSING,
+    CANCELED,
     COMPLETED,
-    CANCELED
+    PENDING,
+    PROCESSING
 }

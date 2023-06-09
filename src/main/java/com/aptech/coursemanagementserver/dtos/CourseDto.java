@@ -1,10 +1,9 @@
 package com.aptech.coursemanagementserver.dtos;
 
+import java.util.Date;
 import java.util.List;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonInclude.Include;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -40,13 +39,15 @@ public class CourseDto {
     private String image;
     private long progress;
     private String comment;
-    private double rating;
+    @Builder.Default
+    private double rating = 0;
     private double price;
     private int enrollmentCount;
     @Builder.Default
     private int level = 0;
     @Builder.Default
-    private int status = 1;
+    private int status = 0;
+    private Date published_at;
 
     private double net_price;
     private int duration;

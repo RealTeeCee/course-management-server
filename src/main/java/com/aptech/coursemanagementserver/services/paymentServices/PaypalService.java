@@ -9,7 +9,10 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import com.aptech.coursemanagementserver.dtos.payment.PaypalRequestDto;
+import com.aptech.coursemanagementserver.enums.OrderStatus;
+import com.aptech.coursemanagementserver.enums.payment.PaymentType;
 import com.aptech.coursemanagementserver.models.Course;
+import com.aptech.coursemanagementserver.models.Enrollment;
 import com.aptech.coursemanagementserver.models.Orders;
 import com.aptech.coursemanagementserver.models.User;
 import com.aptech.coursemanagementserver.repositories.CourseRepository;
@@ -104,7 +107,6 @@ public class PaypalService {
         Payment payment = Payment.get(apiContext, paymentId);
         // Do something with the payment object, e.g. print its state
         System.out.println("Payment state: " + payment.getState());
-
         PaymentExecution paymentExecute = new PaymentExecution();
         paymentExecute.setPayerId(payerId);
         return payment.execute(apiContext, paymentExecute);
@@ -127,15 +129,25 @@ public class PaypalService {
             } else if (parts[0].equals("userId")) {
                 userId = Long.parseLong(parts[1]);
             }
-
-            Course course = courseRepository.findById(courseId).get();
-            User user = userRepository.findById(userId).get();
-            Orders order = new Orders();
-            order.setUser(user).setCourse(course).setName(course.getName()).setDescription(course.getDescription())
-                    .setDuration(course.getDuration()).setPrice(course.getPrice()).setNet_price(course.getNet_price())
-                    .setImage(course.getImage());
-            ordersRepository.save(order);
-
         }
+
+        Course course = courseRepository.findById(courseId).get();
+        User user = userRepository.findById(userId).get();
+        Orders order = new Orders();
+        order.setUser(user).setCourse(course).setName(course.getName()).setDescription(course.getDescription())
+                .setDuration(course.getDuration()).setPrice(course.getPrice()).setNet_price(course.getNet_price())
+                .setImage(course.getImage()).setPayment(PaymentType.PAYPAL).setStatus(OrderStatus.COMPLETED);
+        ordersRepository.save(order);
+
+        Enrollment enrollment = new Enrollment();
+        enrollment.setComment("")
+                .setIsNotify(true)
+                .setProgress(0)
+                .setRating(0)
+                .setCourse(course)
+                .setUser(user);
+
+        enrollmentRepository.save(enrollment);
+
     }
 }

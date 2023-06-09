@@ -131,7 +131,8 @@ public class CourseController {
                         throw new ResourceNotFoundException(e.getMessage());
                 } catch (Exception e) {
                         throw new BadRequestException(FETCHING_FAILED);
-                }
+                } // "org.springframework.orm.jpa.JpaSystemException: Null value was assigned to a
+                  // property [rating] of primitive type : `Course.rating` (setter)"
         }
 
         @GetMapping(path = "/{id}")
@@ -272,11 +273,40 @@ public class CourseController {
                                 + "_" + savedCourse.getId() + "." + extension;
         }
 
-        private boolean isImageFile(String extension) {
-                return extension.equals("jpeg") || extension.equals("jpg") || extension.equals("png")
-                                || extension.equals("gif") || extension.equals("bmp")
-                                || extension.equals("tiff") || extension.equals("tif")
-                                || extension.equals("webp") || extension.equals("svg");
-        }
+        // @PutMapping(consumes = { MediaType.MULTIPART_FORM_DATA_VALUE })
+        // @Operation(summary = "[ADMIN, MANAGER, EMPLOYEE] - Update Course")
+        // @PreAuthorize("hasAnyRole('ADMIN', 'MANAGER', 'EMPLOYEE')")
+        // public ResponseEntity<BaseDto> publishCourse(@RequestPart("courseJson")
+        // String courseJson) {
+        // ObjectMapper objectMapper = new ObjectMapper();
+
+        // try {
+        // CourseDto courseDto = objectMapper.readValue(courseJson, CourseDto.class);
+        // Course course = courseService.findCourseById(courseDto.getId());
+        // courseService.setProperties(courseDto, course);
+
+        // return new ResponseEntity<BaseDto>(
+        // BaseDto.builder().type(AntType.success).message("Create course successfully")
+        // .build(),
+        // HttpStatus.OK);
+
+        // } catch (InvalidFileExtensionException e) {
+        // throw new InvalidFileExtensionException(e.getMessage());
+        // } catch (NoSuchElementException e) {
+        // throw new ResourceNotFoundException(e.getMessage());
+        // } catch (BadRequestException e) {
+        // throw new BadRequestException(e.getMessage());
+        // } catch (Exception e) {
+        // throw new BadRequestException(BAD_REQUEST_EXCEPTION);
+        // }
+        // }
+
+        // private boolean isImageFile(String extension) {
+        // return extension.equals("jpeg") || extension.equals("jpg") ||
+        // extension.equals("png")
+        // || extension.equals("gif") || extension.equals("bmp")
+        // || extension.equals("tiff") || extension.equals("tif")
+        // || extension.equals("webp") || extension.equals("svg");
+        // }
 
 }

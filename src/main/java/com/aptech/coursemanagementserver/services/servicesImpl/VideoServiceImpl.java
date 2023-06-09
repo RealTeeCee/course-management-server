@@ -14,10 +14,8 @@ import static com.aptech.coursemanagementserver.constants.GlobalStorage.VIDEO_CO
 import static com.aptech.coursemanagementserver.constants.GlobalStorage.VTT_CONTENT;
 
 import java.io.ByteArrayOutputStream;
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -253,17 +251,17 @@ public class VideoServiceImpl implements VideoService {
         }
     }
 
-    private String getVideoPath() {
-        URL url = this.getClass().getClassLoader().getResource(VIDEO);
-        assert url != null;
-        return new File(url.getFile()).getAbsolutePath();
-    }
+    // private String getVideoPath() {
+    // URL url = this.getClass().getClassLoader().getResource(VIDEO);
+    // assert url != null;
+    // return new File(url.getFile()).getAbsolutePath();
+    // }
 
-    private String getCaptionPath() {
-        URL url = this.getClass().getClassLoader().getResource(CAPTION);
-        assert url != null;
-        return new File(url.getFile()).getAbsolutePath();
-    }
+    // private String getCaptionPath() {
+    // URL url = this.getClass().getClassLoader().getResource(CAPTION);
+    // assert url != null;
+    // return new File(url.getFile()).getAbsolutePath();
+    // }
 
     /*
      * public Long getVideoSize(String fileName) {
@@ -282,12 +280,12 @@ public class VideoServiceImpl implements VideoService {
         // .orElse(0L);
     }
 
-    private Long sizeFromFile(Path path) {
-        try {
-            return Files.size(path);
-        } catch (IOException e) {
-            log.error("Error while getting the file size: {}", e.getMessage());
-        }
-        return 0L;
-    }
+    // private Long sizeFromFile(Path path) {
+    // try {
+    // return Files.size(path);
+    // } catch (IOException e) {
+    // log.error("Error while getting the file size: {}", e.getMessage());
+    // }
+    // return 0L;
+    // }
 }
