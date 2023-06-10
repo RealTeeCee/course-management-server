@@ -206,7 +206,7 @@ public class CourseServiceImpl implements CourseService {
                 .setRating(courseDto.getRating())
                 .setImage(courseDto.getImage())
                 .setSlug(Slugify.builder().build().slugify(courseDto.getName()))
-                .setDuration(courseDto.getDuration())
+                // .setDuration(courseDto.getDuration())
                 .setDescription(courseDto.getDescription())
                 .setPrice(courseDto.getPrice())
                 .setNet_price(courseDto.getNet_price());
@@ -386,6 +386,11 @@ public class CourseServiceImpl implements CourseService {
     public BaseDto delete(long courseId) {
         try {
             Course course = courseRepository.findById(courseId).get();
+
+            if (courseRepository.findEnrollemntCountByCourseId(courseId) > 0) {
+                throw new BadRequestException("Cannot delete course that 've already had user's enrollment");
+            }
+
             courseRepository.delete(course);
             return BaseDto.builder().type(AntType.success).message("Delete course successfully.")
                     .build();
@@ -407,6 +412,7 @@ public class CourseServiceImpl implements CourseService {
                 .price(course.getPrice())
                 .net_price(course.getNet_price()).slug(course.getSlug())
                 .image(course.getImage())
+                .description(course.getDescription())
                 .level(course.getLevel())
                 .status(course.getStatus())
                 .rating(course.getRating())

@@ -39,10 +39,12 @@ public class EnrollmentController {
                     () -> new NoSuchElementException(
                             "The course with courseId: [" + enrollmentDto.getCourse_id() + "] is not exist."));
             if (baseDto.getType() == AntType.success) {
-                return ResponseEntity.ok(enrollmentService.enroll(enrollmentDto));
-            } else {
                 return ResponseEntity.status(HttpStatus.FOUND)
                         .header("Location", DEV_DOMAIN_CLIENT + "/learn/" + course.getSlug())
+                        .build();
+            } else {
+                return ResponseEntity.status(HttpStatus.FOUND)
+                        .header("Location", DEV_DOMAIN_CLIENT + "/checkout/" + course.getSlug())
                         .build();
             }
         } catch (NoSuchElementException e) {

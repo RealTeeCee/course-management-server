@@ -48,15 +48,23 @@ public class PaypalService {
             PaypalRequestDto dto,
             String cancelUrl,
             String successUrl) throws PayPalRESTException {
+        Course course = courseRepository.findById(dto.getCourseId()).get();
+        User user = userRepository.findById(dto.getUserId()).get();
+        Orders order = new Orders();
+        order.setUser(user).setCourse(course).setName(course.getName()).setDescription(course.getDescription())
+                .setDuration(course.getDuration()).setPrice(course.getPrice()).setNet_price(course.getNet_price())
+                .setImage(course.getImage()).setPayment(PaymentType.PAYPAL).setStatus(OrderStatus.PROCESSING);
+        ordersRepository.save(order);
+
         Amount amount = new Amount();
         amount.setCurrency(dto.getCurrency());
-        var total = new BigDecimal(dto.getPrice()).setScale(2, RoundingMode.HALF_UP).doubleValue();
+        var total = new BigDecimal(course.getNet_price()).setScale(2, RoundingMode.HALF_UP).doubleValue();
         amount.setTotal(String.format("%.2f", total));
 
         Transaction transaction = new Transaction();
         transaction.setDescription(dto.getDescription());
         transaction.setAmount(amount);
-        transaction.setCustom("courseId:" + dto.getCourseId() + "|userId:" + dto.getUserId());
+        transaction.setCustom(String.valueOf(order.getId()));
 
         List<Transaction> transactions = new ArrayList<>();
         transactions.add(transaction);
@@ -105,49 +113,31 @@ public class PaypalService {
     public Payment executePayment(String paymentId, String payerId) throws PayPalRESTException {
         // Use the PaymentGetRequest to retrieve the payment
         Payment payment = Payment.get(apiContext, paymentId);
-        // Do something with the payment object, e.g. print its state
-        System.out.println("Payment state: " + payment.getState());
+
         PaymentExecution paymentExecute = new PaymentExecution();
         paymentExecute.setPayerId(payerId);
         return payment.execute(apiContext, paymentExecute);
 
     }
 
-    public void createOrderAndEnroll(Payment payment) {
-        String[] substrings = payment.getTransactions().get(0).getCustom().split("\\|");
+    public void updateOrderAndCreateEnroll(Payment payment, boolean isApproved) {
 
-        long courseId = 0;
-        long userId = 0;
+        Orders order = ordersRepository.findById(Long.valueOf(payment.getTransactions().get(0).getCustom())).get();
+        if (isApproved) {
+            order.setStatus(OrderStatus.COMPLETED);
+            Enrollment enrollment = new Enrollment();
+            enrollment.setComment("")
+                    .setIsNotify(true)
+                    .setProgress(0)
+                    .setRating(0)
+                    .setCourse(order.getCourse())
+                    .setUser(order.getUser());
 
-        // Loop through each substring and split it using the ":" character as the
-        // delimiter
-        for (String substring : substrings) {
-            String[] parts = substring.split(":");
-            // Check whether the substring contains the course ID or the user ID
-            if (parts[0].equals("courseId")) {
-                courseId = Long.parseLong(parts[1]);
-            } else if (parts[0].equals("userId")) {
-                userId = Long.parseLong(parts[1]);
-            }
+            enrollmentRepository.save(enrollment);
+        } else {
+            order.setStatus(OrderStatus.CANCELED);
         }
-
-        Course course = courseRepository.findById(courseId).get();
-        User user = userRepository.findById(userId).get();
-        Orders order = new Orders();
-        order.setUser(user).setCourse(course).setName(course.getName()).setDescription(course.getDescription())
-                .setDuration(course.getDuration()).setPrice(course.getPrice()).setNet_price(course.getNet_price())
-                .setImage(course.getImage()).setPayment(PaymentType.PAYPAL).setStatus(OrderStatus.COMPLETED);
         ordersRepository.save(order);
-
-        Enrollment enrollment = new Enrollment();
-        enrollment.setComment("")
-                .setIsNotify(true)
-                .setProgress(0)
-                .setRating(0)
-                .setCourse(course)
-                .setUser(user);
-
-        enrollmentRepository.save(enrollment);
 
     }
 }

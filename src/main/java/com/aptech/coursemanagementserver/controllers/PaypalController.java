@@ -8,6 +8,7 @@ import static com.aptech.coursemanagementserver.constants.GlobalStorage.PAYPAL_S
 import static com.aptech.coursemanagementserver.constants.GlobalStorage.PAYPAL_SUCCESS_CLIENT;
 import static com.aptech.coursemanagementserver.constants.GlobalStorage.PAYPAL_SUCCESS_URL;
 
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -17,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.view.RedirectView;
 
 import com.aptech.coursemanagementserver.dtos.payment.PaypalRequestDto;
+import com.aptech.coursemanagementserver.dtos.payment.PaypalResponseDto;
 import com.aptech.coursemanagementserver.exceptions.BadRequestException;
 import com.aptech.coursemanagementserver.services.paymentServices.PaypalService;
 import com.paypal.api.payments.Links;
@@ -41,18 +43,21 @@ public class PaypalController {
     }
 
     @PostMapping(path = "/pay")
-    public RedirectView payment(@RequestBody PaypalRequestDto dto) {
+    public ResponseEntity<PaypalResponseDto> payment(@RequestBody PaypalRequestDto dto) {
         try {
             Payment payment = service.createPayment(dto, PAYPAL_CANCEL_API,
                     PAYPAL_SUCCESS_API);
+
             for (Links link : payment.getLinks()) {
                 if (link.getRel().equals("approval_url")) {
-                    return new RedirectView(link.getHref());
+                    PaypalResponseDto response = new PaypalResponseDto();
+                    response.setPayUrl(link.getHref());
+                    return ResponseEntity.ok(response);
                 }
             }
             // email: sb-c9mcj26117776@personal.example.com
             // password: e@LbdH4n
-            return new RedirectView(PAYPAL_CANCEL_API);
+            throw new BadRequestException(GLOBAL_EXCEPTION);
         } catch (PayPalRESTException e) {
             e.printStackTrace();
             throw new BadRequestException(e.getMessage());
@@ -73,8 +78,9 @@ public class PaypalController {
         try {
             Payment payment = service.executePayment(paymentId, payerId);
             System.out.println(payment.toJSON());
-            if (payment.getState().equals("approved")) {
-                service.createOrderAndEnroll(payment);
+            boolean isApproved = payment.getState().equals("approved");
+            service.updateOrderAndCreateEnroll(payment, isApproved);
+            if (isApproved) {
                 return new RedirectView(PAYPAL_SUCCESS_CLIENT);
             }
             return new RedirectView(PAYPAL_CANCEL_CLIENT);
