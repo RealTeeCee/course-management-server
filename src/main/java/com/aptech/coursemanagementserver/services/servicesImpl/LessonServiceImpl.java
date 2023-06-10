@@ -1,7 +1,9 @@
 package com.aptech.coursemanagementserver.services.servicesImpl;
 
 import static com.aptech.coursemanagementserver.constants.GlobalStorage.BAD_REQUEST_EXCEPTION;
+import static com.aptech.coursemanagementserver.constants.GlobalStorage.VIDEO_PATH;
 
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -16,6 +18,7 @@ import com.aptech.coursemanagementserver.enums.AntType;
 import com.aptech.coursemanagementserver.exceptions.BadRequestException;
 import com.aptech.coursemanagementserver.models.Lesson;
 import com.aptech.coursemanagementserver.models.Section;
+import com.aptech.coursemanagementserver.repositories.CourseRepository;
 import com.aptech.coursemanagementserver.repositories.LessonRepository;
 import com.aptech.coursemanagementserver.repositories.SectionRepository;
 import com.aptech.coursemanagementserver.services.LessonService;
@@ -29,6 +32,7 @@ public class LessonServiceImpl implements LessonService {
 
     private final LessonRepository lessonRepository;
     private final SectionRepository sectionRepository;
+    private final CourseRepository courseRepository;
     private final UserService userService;
 
     @Override
@@ -108,7 +112,8 @@ public class LessonServiceImpl implements LessonService {
         try {
             Lesson lesson = new Lesson();
             // Video video = new Video();
-            lesson.setDescription(lessonDto.getDescription()).setDuration(lessonDto.getDuration())
+            lesson.setDescription(lessonDto.getDescription())
+                    .setDuration(lessonDto.getDuration())
                     .setStatus(lessonDto.getStatus())
                     .setName(lessonDto.getName())
                     .setSection(sectionRepository.findById(lessonDto.getSectionId()).get())
@@ -116,6 +121,10 @@ public class LessonServiceImpl implements LessonService {
                     .setOrdered(lessonDto.getOrdered());
             // video.setLesson(lesson);
             lessonRepository.save(lesson);
+
+            // Set duration for course
+            courseRepository.updateCourseDuration(lesson.getSection().getCourse().getId());
+
             return BaseDto.builder().type(AntType.success).message("Create lesson successfully.").build();
         } catch (NoSuchElementException e) {
             throw new NoSuchElementException(
@@ -144,6 +153,9 @@ public class LessonServiceImpl implements LessonService {
 
             lessonRepository.save(lesson);
 
+            // Set duration for course
+            courseRepository.updateCourseDuration(lesson.getSection().getCourse().getId());
+
             return BaseDto.builder().type(AntType.success).message("Update lesson successfully.").build();
         } catch (NoSuchElementException e) {
             throw new NoSuchElementException(e.getMessage());
@@ -155,9 +167,19 @@ public class LessonServiceImpl implements LessonService {
     @Override
     public BaseDto delete(long lessonId) {
         try {
+
             Lesson lesson = lessonRepository.findById(lessonId).orElseThrow(
                     () -> new NoSuchElementException("The lesson with lessonId: [" + lessonId + "] is not exist."));
+            long courseId = lesson.getSection().getCourse().getId();
             lessonRepository.delete(lesson);
+
+            if (lesson.getVideo() != null) {
+                Files.deleteIfExists(
+                        VIDEO_PATH.resolve(lesson.getVideo().getName()));
+            }
+
+            courseRepository.updateCourseDuration(courseId);
+
             return BaseDto.builder().type(AntType.success).message("Delete lesson successfully.")
                     .build();
         } catch (NoSuchElementException e) {

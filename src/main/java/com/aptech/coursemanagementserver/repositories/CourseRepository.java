@@ -4,7 +4,9 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.aptech.coursemanagementserver.dtos.CourseInterface;
 import com.aptech.coursemanagementserver.models.Course;
@@ -64,7 +66,7 @@ public interface CourseRepository extends JpaRepository<Course, Long> {
                         GROUP BY
                         e.comment, e.progress,
                         --e.rating ,
-                        cat.name, c.[id], c.[created_at], [description], [duration], [published_at] , c.rating ,
+                        cat.name, c.[id], c.[created_at], [description], [duration], c.rating ,
                         [image], [level], c.[name], [net_price], [price], [slug], [status], c.[updated_at], [category_id]
                         ORDER BY
                         --c.ordered DESC
@@ -73,7 +75,7 @@ public interface CourseRepository extends JpaRepository<Course, Long> {
         List<CourseInterface> findAllCourses();
 
         @Query(value = """
-                        SELECT top 1 COUNT(c.id) AS enrollmentCount, c.id
+                        SELECT TOP 1 COUNT(c.id) AS enrollmentCount, c.id
                         FROM course c
                         LEFT JOIN enrollment e ON c.id = e.course_id
                         INNER JOIN category cat ON c.category_id = cat.id
@@ -81,6 +83,21 @@ public interface CourseRepository extends JpaRepository<Course, Long> {
                         GROUP BY  c.id
                                                 """, nativeQuery = true)
         int findEnrollemntCountByCourseId(long courseId);
+
+        @Modifying
+        @Transactional
+        @Query(value = """
+                        UPDATE c
+                        SET c.duration = isnull( (
+                          SELECT SUM(l.duration)
+                          FROM lesson l
+                          INNER JOIN section s ON l.section_id = s.id
+                          WHERE s.course_id = c.id
+                        ),0)
+                        FROM course c
+                        WHERE c.id = :courseId
+                                """, nativeQuery = true)
+        void updateCourseDuration(long courseId);
 
         Course findByName(String courseName);
 

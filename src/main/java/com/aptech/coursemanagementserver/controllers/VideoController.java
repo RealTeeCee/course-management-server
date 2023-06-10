@@ -77,13 +77,6 @@ public class VideoController {
 
             List<String> captionUrls = new ArrayList<>();
 
-            Files.createDirectories(VIDEO_PATH);
-            Files.createDirectories(CAPTION_PATH);
-
-            Files.copy(videoFile.getInputStream(),
-                    VIDEO_PATH.resolve(videoFile.getOriginalFilename()),
-                    StandardCopyOption.REPLACE_EXISTING);
-
             for (MultipartFile captionFile : captionFiles) {
                 Files.copy(captionFile.getInputStream(),
                         CAPTION_PATH.resolve(captionFile.getOriginalFilename()),
@@ -99,6 +92,13 @@ public class VideoController {
             videoDto.setCaptionUrls(captionUrls);
 
             videoService.save(videoDto, lessonId);
+
+            Files.createDirectories(VIDEO_PATH);
+            Files.createDirectories(CAPTION_PATH);
+
+            Files.copy(videoFile.getInputStream(),
+                    VIDEO_PATH.resolve(videoFile.getOriginalFilename()),
+                    StandardCopyOption.REPLACE_EXISTING);
 
             return new ResponseEntity<BaseDto>(
                     BaseDto.builder().type(AntType.success).message("Create video successfully")

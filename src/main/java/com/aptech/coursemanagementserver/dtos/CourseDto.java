@@ -48,9 +48,9 @@ public class CourseDto {
     @Builder.Default
     private int status = 0;
     private Date published_at;
-
     private double net_price;
-    private int duration;
+    @Builder.Default
+    private int duration = 0;
 
     private List<String> sections;
 

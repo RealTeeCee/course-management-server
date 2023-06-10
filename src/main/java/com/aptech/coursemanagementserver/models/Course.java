@@ -61,7 +61,7 @@ public class Course {
         private int level = 0;
         @Column(columnDefinition = "tinyint")
         private int status = 0;
-        private int duration;
+        private int duration = 0;
         @Column(columnDefinition = "decimal(3,2)")
         private double rating = 0;
         @Column(columnDefinition = "datetime")

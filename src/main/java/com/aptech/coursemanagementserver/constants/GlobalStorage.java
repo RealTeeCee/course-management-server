@@ -69,4 +69,8 @@ public interface GlobalStorage {
     String PAYPAL_SUCCESS_API = DEV_DOMAIN_API + "/paypal/pay/success";
     String PAYPAL_CANCEL_URL = "/pay/cancel";
     String PAYPAL_CANCEL_API = DEV_DOMAIN_API + "/paypal/pay/cancel";
+
+    // MOMO
+    String MOMO_REDIRECT_URL = "/pay/redirect";
+    String MOMO_REDIRECT_API = DEV_DOMAIN_API + "/momo/pay/redirect";
 }

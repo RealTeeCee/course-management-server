@@ -10,6 +10,7 @@ import static com.aptech.coursemanagementserver.constants.GlobalStorage.CONTENT_
 import static com.aptech.coursemanagementserver.constants.GlobalStorage.CONTENT_RANGE;
 import static com.aptech.coursemanagementserver.constants.GlobalStorage.CONTENT_TYPE;
 import static com.aptech.coursemanagementserver.constants.GlobalStorage.VIDEO;
+import static com.aptech.coursemanagementserver.constants.GlobalStorage.VIDEO_PATH;
 import static com.aptech.coursemanagementserver.constants.GlobalStorage.VIDEO_CONTENT;
 import static com.aptech.coursemanagementserver.constants.GlobalStorage.VTT_CONTENT;
 
@@ -104,8 +105,16 @@ public class VideoServiceImpl implements VideoService {
             }
 
             Video videoOfLesson = lesson.getVideo();
-            Video video = videoOfLesson == null ? new Video() : videoOfLesson;
-            video.setName(videoDto.getName()).setUrl(videoDto.getUrl()).setStatus(videoDto.getStatus())
+
+            if (videoOfLesson != null) {
+                Files.deleteIfExists(
+                        VIDEO_PATH.resolve(videoOfLesson.getName()));
+            }
+
+            Video video = videoOfLesson != null ? videoOfLesson : new Video();
+            video.setName(videoDto.getName())
+                    .setUrl(videoDto.getUrl())
+                    .setStatus(videoDto.getStatus())
                     .setCaptionUrls(String.join(",", videoDto.getCaptionUrls()));
             if (videoOfLesson == null) {
                 video.setLesson(lesson);
@@ -138,6 +147,10 @@ public class VideoServiceImpl implements VideoService {
             Video video = videoRepository.findById(videoId).orElseThrow(
                     () -> new NoSuchElementException("The video with videoId: [" + videoId + "] is not exist."));
             videoRepository.delete(video);
+
+            Files.deleteIfExists(
+                    VIDEO_PATH.resolve(video.getName()));
+
             return BaseDto.builder().type(AntType.success).message("Delete video successfully.")
                     .build();
         } catch (NoSuchElementException e) {
@@ -152,7 +165,9 @@ public class VideoServiceImpl implements VideoService {
     public BaseDto update(VideoDto videoDto) {
         try {
             Video video = videoRepository.findById(videoDto.getId()).get();
-            video.setUrl(videoDto.getUrl()).setName(videoDto.getName()).setStatus(videoDto.getStatus())
+            video.setUrl(videoDto.getUrl())
+                    .setName(videoDto.getName())
+                    .setStatus(videoDto.getStatus())
                     .setCaptionUrls(String.join(",", videoDto.getCaptionUrls()));
 
             videoRepository.save(video);
