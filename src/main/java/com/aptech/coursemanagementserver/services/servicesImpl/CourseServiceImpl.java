@@ -21,11 +21,13 @@ import com.aptech.coursemanagementserver.exceptions.BadRequestException;
 import com.aptech.coursemanagementserver.mappers.CourseMapper;
 import com.aptech.coursemanagementserver.models.Achievement;
 import com.aptech.coursemanagementserver.models.Course;
+import com.aptech.coursemanagementserver.models.Enrollment;
 import com.aptech.coursemanagementserver.models.Section;
 import com.aptech.coursemanagementserver.models.Tag;
 import com.aptech.coursemanagementserver.repositories.AchievementRepository;
 import com.aptech.coursemanagementserver.repositories.CategoryRepository;
 import com.aptech.coursemanagementserver.repositories.CourseRepository;
+import com.aptech.coursemanagementserver.repositories.EnrollmentRepository;
 import com.aptech.coursemanagementserver.repositories.SectionRepository;
 import com.aptech.coursemanagementserver.repositories.TagRepository;
 import com.aptech.coursemanagementserver.services.CourseService;
@@ -43,6 +45,7 @@ public class CourseServiceImpl implements CourseService {
     private final SectionRepository sectionRepository;
     private final AchievementRepository achievementRepository;
     private final CategoryRepository categoryRepository;
+    private final EnrollmentRepository enrollmentRepository;
     private final UserService userService;
 
     @Override
@@ -187,6 +190,14 @@ public class CourseServiceImpl implements CourseService {
         Course course = new Course();
 
         setProperties(courseDto, course);
+
+        if (userService.findCurrentUser() != null) {
+            Enrollment enrollment = new Enrollment();
+            enrollment.setCourse(course);
+            enrollment.setUser(userService.findCurrentUser());
+            enrollmentRepository.save(enrollment);
+        }
+
         return course;
     }
 

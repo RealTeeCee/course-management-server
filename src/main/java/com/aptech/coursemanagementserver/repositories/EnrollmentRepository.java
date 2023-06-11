@@ -23,7 +23,9 @@ public interface EnrollmentRepository extends JpaRepository<Enrollment, Long> {
       SET c.rating = isnull( (
         SELECT AVG(e.rating)
         FROM enrollment e
+        JOIN users u ON e.user_id = u.id
         WHERE e.course_id = c.id
+        AND u.role = 'USER'
       ),0)
       FROM course c
               """, nativeQuery = true)

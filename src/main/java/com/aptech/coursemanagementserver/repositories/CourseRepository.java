@@ -63,10 +63,12 @@ public interface CourseRepository extends JpaRepository<Course, Long> {
                         FROM course c
                         LEFT JOIN enrollment e ON c.id = e.course_id
                         INNER JOIN category cat ON c.category_id = cat.id
+                        LEFT JOIN users u ON e.user_id = u.id AND u.role = 'USER'
+                        --WHERE u.role = 'USER'
                         GROUP BY
                         e.comment, e.progress,
                         --e.rating ,
-                        cat.name, c.[id], c.[created_at], [description], [duration], c.rating ,
+                        cat.name, c.[id], c.[created_at], [description], [duration], c.rating , c.published_at,
                         [image], [level], c.[name], [net_price], [price], [slug], [status], c.[updated_at], [category_id]
                         ORDER BY
                         --c.ordered DESC

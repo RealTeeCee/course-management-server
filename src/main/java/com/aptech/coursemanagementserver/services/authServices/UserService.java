@@ -10,4 +10,6 @@ public interface UserService {
     Optional<User> findByEmail(String email);
 
     public boolean checkIsUser();
+
+    public User findCurrentUser();
 }
