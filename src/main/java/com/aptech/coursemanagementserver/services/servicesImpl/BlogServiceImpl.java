@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import com.aptech.coursemanagementserver.dtos.BlogDto;
 import com.aptech.coursemanagementserver.dtos.baseDto.BaseDto;
 import com.aptech.coursemanagementserver.enums.AntType;
+import com.aptech.coursemanagementserver.enums.BlogStatus;
 import com.aptech.coursemanagementserver.exceptions.BadRequestException;
 import com.aptech.coursemanagementserver.models.Blog;
 import com.aptech.coursemanagementserver.repositories.BlogRepository;
@@ -33,7 +34,7 @@ public class BlogServiceImpl implements BlogService {
 
     @Override
     public List<BlogDto> findAll() {
-        List<Blog> blogs = blogRepository.findAll();
+        List<Blog> blogs = blogRepository.findByStatus(BlogStatus.PROCCESSING);
         List<BlogDto> blogDtos = new ArrayList<>();
         for (Blog blog : blogs) {
             BlogDto blogDto = toBlogDto(blog);
@@ -124,6 +125,17 @@ public class BlogServiceImpl implements BlogService {
                 .user_id(blog.getUser_id())
                 .build();
         return blogDto;
+    }
+
+    @Override
+    public List<BlogDto> findAllBlogsByUserId(long userId) {
+        List<Blog> blogs = blogRepository.findByUserId(userId);
+        List<BlogDto> blogDtos = new ArrayList<>();
+        for (Blog blog : blogs) {
+            BlogDto blogDto = toBlogDto(blog);
+            blogDtos.add(blogDto);
+        }
+        return blogDtos;
     }
 
 }

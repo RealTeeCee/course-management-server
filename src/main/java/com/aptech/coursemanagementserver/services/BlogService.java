@@ -18,4 +18,6 @@ public interface BlogService {
     public BaseDto delete(long blogId);
 
     public BlogDto findById(long blogId);
+
+    public List<BlogDto> findAllBlogsByUserId(long userId);
 }

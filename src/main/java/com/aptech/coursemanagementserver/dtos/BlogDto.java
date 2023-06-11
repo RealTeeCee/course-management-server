@@ -3,6 +3,7 @@ package com.aptech.coursemanagementserver.dtos;
 import java.time.LocalDateTime;
 
 import com.aptech.coursemanagementserver.enums.BlogStatus;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -25,4 +26,9 @@ public class BlogDto {
     private long user_id;
     private LocalDateTime created_at;
     private LocalDateTime updated_at;
+    private String image;
+
+    @JsonProperty("category_id")
+    private long category;
+    private String category_name;
 }

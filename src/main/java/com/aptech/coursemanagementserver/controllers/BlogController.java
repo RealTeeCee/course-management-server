@@ -106,6 +106,18 @@ public class BlogController {
         } catch (Exception e) {
             throw new BadRequestException(e.getMessage());
         }
+    }
 
+    @GetMapping(path = "my-blog/{userId}")
+    @Operation(summary = "[ANY ROLE] - GET All Blogs By UserId")
+    @PreAuthorize("hasAnyRole('USER', 'ADMIN', 'MANAGER', 'EMPLOYEE')")
+    public ResponseEntity<List<BlogDto>> getAllUserCourses(@PathVariable("userId") long userId) {
+        try {
+            return ResponseEntity.ok(blogService.findAllBlogsByUserId(userId));
+        } catch (NoSuchElementException e) {
+            throw new ResourceNotFoundException(e.getMessage());
+        } catch (Exception e) {
+            throw new BadRequestException(e.getMessage());
+        }
     }
 }
