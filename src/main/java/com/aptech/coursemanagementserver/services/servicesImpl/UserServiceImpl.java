@@ -39,8 +39,10 @@ public class UserServiceImpl implements UserService {
     @Override
     public User findCurrentUser() {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-
-        return auth == null ? null : (User) auth.getPrincipal();
+        if (auth == null) {
+            return null;
+        }
+        return auth.getPrincipal() == "anonymousUser" ? null : (User) auth.getPrincipal();
 
     }
 

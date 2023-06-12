@@ -41,9 +41,18 @@ public class LessonTrackingImpl implements LessonTrackingService {
     @Override
     public LessonTrackingDto loadTrack(LessonTrackingDto lessonTrackingDto) {
         try {
-            LessonTracking lessonTracking = lessonTrackingRepository.findTrackedByEnrollmentIdAndCourseIdAndLessonId(
-                    lessonTrackingDto.getEnrollmentId(), lessonTrackingDto.getCourseId(),
-                    lessonTrackingDto.getLessonId());
+            LessonTracking lessonTracking;
+            if (lessonTrackingDto.getLessonId() > 0) {
+                lessonTracking = lessonTrackingRepository
+                        .findTrackedByEnrollmentIdAndCourseIdAndLessonId(
+                                lessonTrackingDto.getEnrollmentId(), lessonTrackingDto.getCourseId(),
+                                lessonTrackingDto.getLessonId());
+            } else {
+
+                lessonTracking = lessonTrackingRepository
+                        .findTrackedByEnrollmentIdAndCourseId(
+                                lessonTrackingDto.getEnrollmentId(), lessonTrackingDto.getCourseId());
+            }
             if (lessonTracking == null) {
                 return new LessonTrackingDto();
             }

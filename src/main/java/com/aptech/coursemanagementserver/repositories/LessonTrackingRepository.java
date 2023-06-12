@@ -23,8 +23,7 @@ public interface LessonTrackingRepository extends JpaRepository<LessonTracking, 
                         SELECT TOP 1 lt.* FROM lesson_tracking lt
                         WHERE lt.enrollment_id = :enrollmentId
                         AND lt.course_id = :courseId
-                        AND (lt.lesson_id = :lessonId
-                        OR lt.is_tracked = 1)
+                        AND lt.lesson_id = :lessonId
                         ORDER BY is_tracked DESC
                                 """, nativeQuery = true)
         LessonTracking findTrackedByEnrollmentIdAndCourseIdAndLessonId(long enrollmentId, long courseId, long lessonId);

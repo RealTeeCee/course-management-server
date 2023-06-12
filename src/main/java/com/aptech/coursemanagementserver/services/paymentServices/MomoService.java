@@ -74,7 +74,7 @@ public class MomoService {
         // set the necessary parameters for the payment request
         String requestId = String.valueOf(System.currentTimeMillis());
         String orderId = String.valueOf(System.currentTimeMillis());
-        String orderInfo = "Thanh Toán Momo";
+        String orderInfo = "Thanhtoanmomo";
         String redirectUrl = MOMO_REDIRECT_API;
         String ipnUrl = MOMO_REDIRECT_API;
         String extraData = String.valueOf(order.getId());
@@ -83,7 +83,7 @@ public class MomoService {
         momoRequestDto.setPartnerCode(partnerCode);
         momoRequestDto.setRequestId(requestId);
         momoRequestDto.setOrderId(orderId);
-        momoRequestDto.setAmount(Math.round(course.getNet_price() * 2300));
+        momoRequestDto.setAmount(Math.round(course.getNet_price() * 23000));
         momoRequestDto.setLang(momoRequestDto.getLang());
         momoRequestDto.setOrderInfo(orderInfo);
         momoRequestDto.setRedirectUrl(redirectUrl);

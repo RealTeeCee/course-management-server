@@ -40,17 +40,21 @@ public class MomoController {
     @PostMapping
     public ResponseEntity<MomoResponseDto> initiatePaymentMomo(@RequestBody MomoRequestDto momoRequestDto)
             throws Exception {
-
-        MomoResponseDto response = momoService.initPaymentMomo(momoRequestDto);
-        // if (response.getResultCode() == 0 && response.getPayUrl().length() > 0) {
-        // return
-        // ResponseEntity.status(HttpStatus.FOUND).location(URI.create(response.getPayUrl()))
-        // .build();
-        // }
-        if (response.getResultCode() == 0 && response.getPayUrl().length() > 0) {
-            return ResponseEntity.ok(response);
+        try {
+            MomoResponseDto response = momoService.initPaymentMomo(momoRequestDto);
+            // if (response.getResultCode() == 0 && response.getPayUrl().length() > 0) {
+            // return
+            // ResponseEntity.status(HttpStatus.FOUND).location(URI.create(response.getPayUrl()))
+            // .build();
+            // }
+            if (response.getResultCode() == 0 && response.getPayUrl().length() > 0) {
+                return ResponseEntity.ok(response);
+            }
+            throw new BadRequestException(GLOBAL_EXCEPTION);
+        } catch (Exception e) {
+            throw new BadRequestException(GLOBAL_EXCEPTION);
         }
-        throw new BadRequestException(GLOBAL_EXCEPTION);
+
     }
 
     @GetMapping(path = MOMO_REDIRECT_URL)

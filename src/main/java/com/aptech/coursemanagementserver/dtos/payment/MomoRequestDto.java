@@ -16,7 +16,7 @@ public class MomoRequestDto {
     private String partnerCode = "MOMOLRJZ20181206";
     private String requestId = String.valueOf(System.currentTimeMillis());
     private String orderId = String.valueOf(System.currentTimeMillis());
-    private String lang = MomoLanguage.EN.name();
+    private String lang = MomoLanguage.EN.getMomoLanguage();
     private String orderInfo = "Thanh toán qua MoMo";
     private long startTime = System.currentTimeMillis();
 
