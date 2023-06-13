@@ -9,6 +9,7 @@ import static com.aptech.coursemanagementserver.constants.GlobalStorage.PAYPAL_S
 import static com.aptech.coursemanagementserver.constants.GlobalStorage.PAYPAL_SUCCESS_URL;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -25,6 +26,7 @@ import com.paypal.api.payments.Links;
 import com.paypal.api.payments.Payment;
 import com.paypal.base.rest.PayPalRESTException;
 
+import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 
@@ -43,6 +45,8 @@ public class PaypalController {
     }
 
     @PostMapping(path = "/pay")
+    @Operation(summary = "[USER] - Initiate payment PAYPAL")
+    @PreAuthorize("hasAnyRole('USER')")
     public ResponseEntity<PaypalResponseDto> payment(@RequestBody PaypalRequestDto dto) {
         try {
             Payment payment = service.createPayment(dto, PAYPAL_CANCEL_API,
@@ -68,11 +72,13 @@ public class PaypalController {
     }
 
     @GetMapping(path = PAYPAL_CANCEL_URL)
+    @Operation(summary = "[ANORNYMOUS] - Redirect from PAYPAL")
     public RedirectView cancelPay() {
         return new RedirectView(PAYPAL_CANCEL_CLIENT);
     }
 
     @GetMapping(path = PAYPAL_SUCCESS_URL)
+    @Operation(summary = "[ANORNYMOUS] - Redirect from PAYPAL")
     public RedirectView successPay(@RequestParam("paymentId") String paymentId,
             @RequestParam("PayerID") String payerId) {
         try {

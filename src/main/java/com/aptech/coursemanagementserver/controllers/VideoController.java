@@ -54,7 +54,7 @@ public class VideoController {
     private final VideoService videoService;
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    @Operation(summary = "[Any Role] - Get Video By Lesson Id")
+    @Operation(summary = "[ADMIN, MANAGER , EMPLOYEE] - Get Video By Lesson Id")
     public ResponseEntity<VideoDto> getVideoByLessonId(
             @PathVariable("lessonId") long lessonId) {
         try {

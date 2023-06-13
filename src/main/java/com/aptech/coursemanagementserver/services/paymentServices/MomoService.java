@@ -68,13 +68,13 @@ public class MomoService {
                 .setPrice(course.getPrice())
                 .setNet_price(course.getNet_price())
                 .setImage(course.getImage())
-                .setPayment(PaymentType.PAYPAL).setStatus(OrderStatus.PROCESSING);
+                .setPayment(PaymentType.MOMO).setStatus(OrderStatus.PROCESSING);
         ordersRepository.save(order);
 
         // set the necessary parameters for the payment request
         String requestId = String.valueOf(System.currentTimeMillis());
         String orderId = String.valueOf(System.currentTimeMillis());
-        String orderInfo = "Thanhtoanmomo";
+        String orderInfo = "Payment with MoMo";
         String redirectUrl = MOMO_REDIRECT_API;
         String ipnUrl = MOMO_REDIRECT_API;
         String extraData = String.valueOf(order.getId());
@@ -127,7 +127,7 @@ public class MomoService {
         if (resultCode == 0 || resultCode == 9000) {
             order.setStatus(OrderStatus.COMPLETED);
             Enrollment enrollment = new Enrollment();
-            enrollment.setComment("")
+            enrollment.setComment("No comment")
                     .setIsNotify(true)
                     .setProgress(0)
                     .setRating(0)

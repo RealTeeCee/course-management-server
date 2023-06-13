@@ -16,6 +16,12 @@ public interface SectionRepository extends JpaRepository<Section, Long> {
     Section findSectionByName(String name);
 
     @Query(value = """
+            SELECT TOP 1 s.id FROM section s
+            ORDER BY s.id DESC
+            """, nativeQuery = true)
+    long findLastSectionId();
+
+    @Query(value = """
             SELECT s.* FROM section s INNER JOIN course c
             ON s.course_id = c.id
             WHERE c.id = :courseId

@@ -9,6 +9,8 @@ import com.aptech.coursemanagementserver.models.Section;
 public interface SectionService {
     public SectionDto findById(long sectionId);
 
+    public long findLastSectionId();
+
     public Section findSectionByName(String sectionName);
 
     public List<SectionDto> findAllByCourseId(long courseId);

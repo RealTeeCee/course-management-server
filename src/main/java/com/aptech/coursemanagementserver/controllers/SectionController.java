@@ -65,6 +65,19 @@ public class SectionController {
         }
     }
 
+    @PreAuthorize("hasAnyRole('USER', 'ADMIN', 'MANAGER', 'EMPLOYEE')")
+    @Operation(summary = "[ANY ROLE] - Get Last Section Id")
+    @GetMapping(path = "/last", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Long> getLastSectionId() {
+        try {
+            return new ResponseEntity<Long>(sectionService.findLastSectionId(), HttpStatus.OK);
+        } catch (NoSuchElementException e) {
+            throw new ResourceNotFoundException(e.getMessage());
+        } catch (Exception e) {
+            throw new BadRequestException(FETCHING_FAILED);
+        }
+    }
+
     @PostMapping
     @Operation(summary = "[ADMIN, MANAGER, EMPLOYEE] - Create Section")
     public ResponseEntity<BaseDto> create(

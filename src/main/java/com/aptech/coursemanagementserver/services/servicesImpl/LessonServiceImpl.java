@@ -60,6 +60,19 @@ public class LessonServiceImpl implements LessonService {
     }
 
     @Override
+    public long findLastLessonId() {
+        try {
+            return lessonRepository.findLastLessonId();
+        } catch (NoSuchElementException e) {
+            throw new NoSuchElementException(e.getMessage());
+
+        } catch (Exception e) {
+            throw new BadRequestException(BAD_REQUEST_EXCEPTION);
+        }
+
+    }
+
+    @Override
     public Lesson findLessonByName(String lessonName) {
         return lessonRepository.findLessonByName(lessonName);
     }

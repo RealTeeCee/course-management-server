@@ -11,6 +11,8 @@ public interface LessonService {
 
     public LessonDto findById(long lessonId);
 
+    public long findLastLessonId();
+
     public List<Lesson> findAll();
 
     public List<LessonDto> findAllBySectionId(long sectionId);

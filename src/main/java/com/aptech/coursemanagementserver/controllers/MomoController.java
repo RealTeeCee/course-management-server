@@ -1,9 +1,10 @@
 package com.aptech.coursemanagementserver.controllers;
 
-import java.net.URI;
+import static com.aptech.coursemanagementserver.constants.GlobalStorage.GLOBAL_EXCEPTION;
+import static com.aptech.coursemanagementserver.constants.GlobalStorage.MOMO_REDIRECT_URL;
 
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -12,18 +13,14 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.view.RedirectView;
 
-import com.aptech.coursemanagementserver.dtos.baseDto.BaseDto;
 import com.aptech.coursemanagementserver.dtos.payment.MomoRequestDto;
 import com.aptech.coursemanagementserver.dtos.payment.MomoResponseDto;
-import com.aptech.coursemanagementserver.enums.AntType;
 import com.aptech.coursemanagementserver.exceptions.BadRequestException;
 import com.aptech.coursemanagementserver.services.paymentServices.MomoService;
 
+import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
-
-import static com.aptech.coursemanagementserver.constants.GlobalStorage.MOMO_REDIRECT_URL;
-import static com.aptech.coursemanagementserver.constants.GlobalStorage.GLOBAL_EXCEPTION;
 
 @RestController
 @RequiredArgsConstructor
@@ -38,6 +35,8 @@ public class MomoController {
     }
 
     @PostMapping
+    @Operation(summary = "[USER] - Initiate payment MOMO")
+    @PreAuthorize("hasAnyRole('USER')")
     public ResponseEntity<MomoResponseDto> initiatePaymentMomo(@RequestBody MomoRequestDto momoRequestDto)
             throws Exception {
         try {
@@ -58,6 +57,7 @@ public class MomoController {
     }
 
     @GetMapping(path = MOMO_REDIRECT_URL)
+    @Operation(summary = "[ANORNYMOUS] - Redirect from MOMO")
     public RedirectView redirect(@RequestParam int resultCode, @RequestParam String extraData) {
         momoService.UpdateOrderAndCreateEnroll(resultCode, extraData);
         if (resultCode == 0 || resultCode == 9000) {
