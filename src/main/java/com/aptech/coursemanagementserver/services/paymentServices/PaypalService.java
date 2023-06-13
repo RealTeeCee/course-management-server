@@ -126,7 +126,7 @@ public class PaypalService {
         if (isApproved) {
             order.setStatus(OrderStatus.COMPLETED);
             Enrollment enrollment = new Enrollment();
-            enrollment.setComment("")
+            enrollment.setComment("No comment")
                     .setIsNotify(true)
                     .setProgress(0)
                     .setRating(0)

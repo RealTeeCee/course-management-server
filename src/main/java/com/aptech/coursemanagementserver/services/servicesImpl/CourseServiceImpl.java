@@ -95,6 +95,10 @@ public class CourseServiceImpl implements CourseService {
     public List<CourseInterface> findAllCourses() {
         List<CourseInterface> courseDtos = courseRepository.findAllCourses();
 
+        if (userService.findCurrentUser() == null || userService.checkIsUser()) {
+            courseDtos = courseDtos.stream().filter(c -> c.getStatus() == 1).toList();
+        }
+
         return courseDtos;
     }
 
@@ -111,7 +115,8 @@ public class CourseServiceImpl implements CourseService {
             CourseDto courseDto = toCourseDto(course);
             courseDtos.add(courseDto);
         }
-        if (userService.checkIsUser()) {
+
+        if (userService.findCurrentUser() == null || userService.checkIsUser()) {
             courseDtos = courseDtos.stream().filter(c -> c.getStatus() == 1).toList();
         }
         return courseDtos;
@@ -125,8 +130,11 @@ public class CourseServiceImpl implements CourseService {
 
         courses = courses.stream().filter(c -> c.getStatus() == 1 && c.getPrice() == 0).toList();
 
-        for (Course course : courses) {
+        if (userService.findCurrentUser() != null && !userService.checkIsUser()) {
+            courses = courses.stream().filter(c -> c.getPrice() == 0).toList();
+        }
 
+        for (Course course : courses) {
             CourseDto courseDto = toCourseDto(course);
             courseDtos.add(courseDto);
 
@@ -142,25 +150,47 @@ public class CourseServiceImpl implements CourseService {
         List<Course> courses = courseRepository.findAll();
         List<CourseDto> courseDtos = new ArrayList<>();
 
-        Tag tag = isExistTagId ? tagRepository.findById(relatedDto.getTagId()).orElseThrow(
-                () -> new NoSuchElementException("This tag with tagId: [" + relatedDto.getTagId() + "] is not exist."))
-                : new Tag();
+        if (isExistTagId) {
+            // If Tag Exist
+            Tag tag = tagRepository.findById(relatedDto.getTagId()).orElseThrow(
+                    () -> new NoSuchElementException(
+                            "This tag with tagId: [" + relatedDto.getTagId() + "] is not exist."));
 
-        for (Course course : courses) {
-            if (course.getStatus() == 1 && course.getCategory().getId() == relatedDto.getCategoryId()) {
-                if (course.getTags().contains(tag)) {
-                    CourseDto courseDto = toCourseDto(course);
-                    courseDtos.add(courseDto);
-                    continue;
-                }
-                if (isExistTagId)
-                    continue;
+            if (userService.findCurrentUser() == null || userService.checkIsUser()) {
+                // GUEST + USER
+                courses = courses.stream()
+                        .filter(c -> c.getStatus() == 1 &&
+                                (c.getCategory().getId() == relatedDto.getCategoryId()) &&
+                                (c.getTags().contains(tag)))
+                        .toList();
+            } else {
+                // ADMIN
+                courses = courses.stream()
+                        .filter(c -> (c.getCategory().getId() == relatedDto.getCategoryId()) &&
+                                (c.getTags().contains(tag)))
+                        .toList();
+            }
 
-                CourseDto courseDto = toCourseDto(course);
-                courseDtos.add(courseDto);
+        } else {
+            // If Tag Not Exist
+            if (userService.findCurrentUser() == null || userService.checkIsUser()) {
+                // GUEST + USER
+                courses = courses.stream()
+                        .filter(c -> c.getStatus() == 1 &&
+                                (c.getCategory().getId() == relatedDto.getCategoryId()))
+                        .toList();
+            } else {
+                // ADMIN
+                courses = courses.stream()
+                        .filter(c -> (c.getCategory().getId() == relatedDto.getCategoryId()))
+                        .toList();
             }
         }
 
+        for (Course course : courses) {
+            CourseDto courseDto = toCourseDto(course);
+            courseDtos.add(courseDto);
+        }
         return courseDtos;
     }
 
@@ -168,7 +198,7 @@ public class CourseServiceImpl implements CourseService {
     public List<CourseDto> findAll() {
         List<Course> courses = courseRepository.findAll();
         List<CourseDto> courseDtos = new ArrayList<>();
-        if (userService.checkIsUser()) {
+        if (userService.findCurrentUser() == null || userService.checkIsUser()) {
             courses = courses.stream().filter(c -> c.getStatus() == 1).toList();
         }
         for (Course course : courses) {
@@ -407,6 +437,8 @@ public class CourseServiceImpl implements CourseService {
                     .build();
         } catch (NoSuchElementException e) {
             throw new NoSuchElementException("This course with courseId: [" + courseId + "] is not exist.");
+        } catch (BadRequestException e) {
+            throw new BadRequestException(e.getMessage());
         } catch (Exception e) {
             throw new BadRequestException(BAD_REQUEST_EXCEPTION);
         }

@@ -1,13 +1,16 @@
 package com.aptech.coursemanagementserver.controllers;
 
+import static com.aptech.coursemanagementserver.constants.GlobalStorage.CAPTION_API;
 import static com.aptech.coursemanagementserver.constants.GlobalStorage.CAPTION_PATH;
 import static com.aptech.coursemanagementserver.constants.GlobalStorage.FETCHING_FAILED;
-import static com.aptech.coursemanagementserver.constants.GlobalStorage.VIDEO_PATH;
 import static com.aptech.coursemanagementserver.constants.GlobalStorage.STREAM_API;
-import static com.aptech.coursemanagementserver.constants.GlobalStorage.CAPTION_API;
+import static com.aptech.coursemanagementserver.constants.GlobalStorage.VIDEO_PATH;
 
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
+import java.time.Instant;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -51,7 +54,7 @@ public class VideoController {
     private final VideoService videoService;
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    @Operation(summary = "[Any Role] - Get Video By Lesson Id")
+    @Operation(summary = "[ADMIN, MANAGER , EMPLOYEE] - Get Video By Lesson Id")
     public ResponseEntity<VideoDto> getVideoByLessonId(
             @PathVariable("lessonId") long lessonId) {
         try {
@@ -86,9 +89,10 @@ public class VideoController {
 
             VideoDto videoDto = new VideoDto();
             videoDto.setLessonId(lessonId);
-            videoDto.setName(videoFile.getOriginalFilename());
+            videoDto.setName(generateFilename(Instant.now()) + videoFile.getOriginalFilename());
             videoDto.setUrl(
-                    STREAM_API + videoExtension + "/" + FilenameUtils.getBaseName(videoFile.getOriginalFilename()));
+                    STREAM_API + videoExtension + "/" + videoDto.getName().split("_")[0] + "_"
+                            + FilenameUtils.getBaseName(videoFile.getOriginalFilename()));
             videoDto.setCaptionUrls(captionUrls);
 
             videoService.save(videoDto, lessonId);
@@ -97,7 +101,7 @@ public class VideoController {
             Files.createDirectories(CAPTION_PATH);
 
             Files.copy(videoFile.getInputStream(),
-                    VIDEO_PATH.resolve(videoFile.getOriginalFilename()),
+                    VIDEO_PATH.resolve(videoDto.getName()),
                     StandardCopyOption.REPLACE_EXISTING);
 
             return new ResponseEntity<BaseDto>(
@@ -125,6 +129,11 @@ public class VideoController {
         } catch (Exception e) {
             throw new BadRequestException(e.getMessage());
         }
+    }
+
+    private String generateFilename(Instant instant) {
+        return instant.atZone(ZoneId.systemDefault())
+                .format(DateTimeFormatter.ofPattern("yyMMddHHmmss")) + "_";
     }
 
     private boolean isVideoFile(String videoExtension) {

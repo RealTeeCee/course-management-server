@@ -61,7 +61,6 @@ public class CourseController {
 
         @GetMapping(path = "/oldway")
         @Operation(summary = "[ANORNYMOUS] - GET All Courses Old Way")
-        @PreAuthorize("permitAll()")
         public ResponseEntity<List<CourseDto>> getCourses_OldWay() {
                 try {
                         List<CourseDto> courseDtos = courseService.findAll();
@@ -74,7 +73,6 @@ public class CourseController {
 
         @GetMapping
         @Operation(summary = "[ANORNYMOUS] - GET All Courses")
-        @PreAuthorize("permitAll()")
         public ResponseEntity<List<CourseInterface>> getCourses() {
                 try {
                         return ResponseEntity.ok(courseService.findAllCourses());
@@ -122,7 +120,7 @@ public class CourseController {
 
         @PostMapping(path = "/related-course")
         @Operation(summary = "[ANORNYMOUS] - GET Related Courses")
-        @PreAuthorize("permitAll()")
+
         public ResponseEntity<List<CourseDto>> getRelatedCourses(@RequestBody CourseRelatedDto relatedDto) {
                 try {
                         List<CourseDto> courseDtos = courseService.findRelatedCourses(relatedDto);
@@ -187,6 +185,8 @@ public class CourseController {
                         // property-based Creator)"
                 } catch (InvalidFileExtensionException e) {
                         throw new InvalidFileExtensionException(e.getMessage());
+                } catch (BadRequestException e) {
+                        throw new BadRequestException(e.getMessage());
                 } catch (Exception e) {
                         throw new BadRequestException(BAD_REQUEST_EXCEPTION);
                 }
@@ -260,6 +260,8 @@ public class CourseController {
                                         .build(), HttpStatus.BAD_REQUEST);
                 } catch (NoSuchElementException e) {
                         throw new ResourceNotFoundException(e.getMessage());
+                } catch (BadRequestException e) {
+                        throw new BadRequestException(e.getMessage());
                 } catch (Exception e) {
                         throw new BadRequestException(e.getMessage());
                 }

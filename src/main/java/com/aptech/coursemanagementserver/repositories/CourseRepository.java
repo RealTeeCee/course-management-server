@@ -43,8 +43,45 @@ public interface CourseRepository extends JpaRepository<Course, Long> {
                                                     """, nativeQuery = true)
         List<CourseInterface> findAllCoursesByUserId(long userId);
 
+        // @Query(value = """
+        // SELECT COUNT(c.id) AS enrollmentCount , c.* , cat.name [category_name],
+        // STUFF((SELECT DISTINCT ', ' + a.name
+        // FROM course_achievement ca
+        // LEFT JOIN achievement a ON ca.achievement_id = a.id
+        // WHERE ca.course_id = c.id
+        // FOR XML PATH('')),1,1,'') [achievements] ,
+
+        // STUFF((SELECT DISTINCT ', ' + t.name
+        // FROM course_tag ct
+        // LEFT JOIN tag t ON ct.tag_id = t.id
+        // WHERE ct.course_id = c.id
+        // FOR XML PATH('')),1,1,'') [tags],
+
+        // ISNULL(e.progress, 0) [progress],
+        // --ISNULL(e.rating,0) [rating],
+        // ISNULL(e.comment,'No comment') [comment]
+        // FROM course c
+        // LEFT JOIN enrollment e ON c.id = e.course_id
+        // INNER JOIN category cat ON c.category_id = cat.id
+        // LEFT JOIN users u ON e.user_id = u.id AND u.role = 'USER'
+        // --WHERE u.role = 'USER'
+        // GROUP BY
+        // e.comment, e.progress,
+        // --e.rating ,
+        // cat.name, c.[id], c.[created_at], [description], [duration], c.rating ,
+        // c.published_at,
+        // [image], [level], c.[name], [net_price], [price], [slug], [status],
+        // c.[updated_at], [category_id]
+        // ORDER BY
+        // --c.ordered DESC
+        // c.created_at DESC
+        // """, nativeQuery = true)
+        // List<CourseInterface> findAllCourses();
         @Query(value = """
-                        SELECT COUNT(c.id) AS enrollmentCount , c.* , cat.name [category_name],
+                        SELECT
+                        --COUNT(c.id) AS enrollmentCount ,
+                        c.* , cat.name [category_name],
+
                         STUFF((SELECT DISTINCT ', ' + a.name
                         FROM  course_achievement ca
                         LEFT JOIN achievement a ON ca.achievement_id = a.id
@@ -59,7 +96,8 @@ public interface CourseRepository extends JpaRepository<Course, Long> {
 
                         ISNULL(e.progress, 0) [progress],
                         --ISNULL(e.rating,0) [rating],
-                        ISNULL(e.comment,'No comment') [comment]
+                        ISNULL(e.comment,'No comment') [comment],
+                        COUNT(CASE WHEN(u.role = 'USER') THEN u.role END) [enrollmentCount]
                         FROM course c
                         LEFT JOIN enrollment e ON c.id = e.course_id
                         INNER JOIN category cat ON c.category_id = cat.id
@@ -73,7 +111,7 @@ public interface CourseRepository extends JpaRepository<Course, Long> {
                         ORDER BY
                         --c.ordered DESC
                         c.created_at DESC
-                                        """, nativeQuery = true)
+                                                          """, nativeQuery = true)
         List<CourseInterface> findAllCourses();
 
         @Query(value = """

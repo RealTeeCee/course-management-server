@@ -53,6 +53,18 @@ public class SectionServiceImpl implements SectionService {
     }
 
     @Override
+    public long findLastSectionId() {
+        try {
+            return sectionRepository.findLastSectionId();
+        } catch (NoSuchElementException e) {
+            throw new NoSuchElementException(e.getMessage());
+        } catch (Exception e) {
+            throw new BadRequestException(BAD_REQUEST_EXCEPTION);
+        }
+
+    }
+
+    @Override
     public Section findSectionByName(String sectionName) {
         return sectionRepository.findSectionByName(sectionName);
     }

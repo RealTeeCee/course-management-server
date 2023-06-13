@@ -41,7 +41,7 @@ public class LessonController {
     private final LessonService lessonService;
 
     @PreAuthorize("hasAnyRole('USER', 'ADMIN', 'MANAGER', 'EMPLOYEE')")
-    @Operation(summary = "[ADMIN, MANAGER, EMPLOYEE] - Get All Lessons By Section Id")
+    @Operation(summary = "[ANY ROLE] - Get All Lessons By Section Id")
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<List<LessonDto>> getLessonsBySectionId(
             @PathVariable("sectionId") long sectionId) {
@@ -55,7 +55,20 @@ public class LessonController {
     }
 
     @PreAuthorize("hasAnyRole('USER', 'ADMIN', 'MANAGER', 'EMPLOYEE')")
-    @Operation(summary = "[ADMIN, MANAGER, EMPLOYEE] - Get Lesson By Id")
+    @Operation(summary = "[ANY ROLE] - Get Last lessonn Id")
+    @GetMapping(path = "/last", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Long> getLastLessonId() {
+        try {
+            return new ResponseEntity<Long>(lessonService.findLastLessonId(), HttpStatus.OK);
+        } catch (NoSuchElementException e) {
+            throw new ResourceNotFoundException(e.getMessage());
+        } catch (Exception e) {
+            throw new BadRequestException(FETCHING_FAILED);
+        }
+    }
+
+    @PreAuthorize("hasAnyRole('USER', 'ADMIN', 'MANAGER', 'EMPLOYEE')")
+    @Operation(summary = "[ANY ROLE] - Get Lesson By Id")
     @GetMapping(path = "/{lessonId}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<LessonDto> getLessonById(
             @PathVariable("lessonId") long lessonId) {
