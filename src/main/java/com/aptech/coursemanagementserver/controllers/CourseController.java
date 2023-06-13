@@ -185,6 +185,8 @@ public class CourseController {
                         // property-based Creator)"
                 } catch (InvalidFileExtensionException e) {
                         throw new InvalidFileExtensionException(e.getMessage());
+                } catch (BadRequestException e) {
+                        throw new BadRequestException(e.getMessage());
                 } catch (Exception e) {
                         throw new BadRequestException(BAD_REQUEST_EXCEPTION);
                 }
