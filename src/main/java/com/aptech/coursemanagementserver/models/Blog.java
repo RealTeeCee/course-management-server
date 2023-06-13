@@ -32,7 +32,7 @@ public class Blog {
     private String name;
     @Column(unique = true, columnDefinition = "varchar(255)")
     private String slug;
-    @Column(columnDefinition = "tinyint default 2")
+    @Column(columnDefinition = "tinyint default 2") // Always default value if end-user not input = 2 (PROCESSING)
     private BlogStatus status;
     @Column(columnDefinition = "varchar(MAX)")
     private String description;

@@ -10,6 +10,8 @@ import java.util.NoSuchElementException;
 import org.springframework.stereotype.Service;
 
 import com.aptech.coursemanagementserver.dtos.BlogDto;
+import com.aptech.coursemanagementserver.dtos.BlogsInterface;
+import com.aptech.coursemanagementserver.dtos.CourseInterface;
 import com.aptech.coursemanagementserver.dtos.baseDto.BaseDto;
 import com.aptech.coursemanagementserver.enums.AntType;
 import com.aptech.coursemanagementserver.enums.BlogStatus;
@@ -17,6 +19,7 @@ import com.aptech.coursemanagementserver.exceptions.BadRequestException;
 import com.aptech.coursemanagementserver.models.Blog;
 import com.aptech.coursemanagementserver.repositories.BlogRepository;
 import com.aptech.coursemanagementserver.services.BlogService;
+import com.aptech.coursemanagementserver.services.authServices.UserService;
 import com.github.slugify.Slugify;
 
 import lombok.RequiredArgsConstructor;
@@ -26,6 +29,7 @@ import lombok.RequiredArgsConstructor;
 public class BlogServiceImpl implements BlogService {
 
     private final BlogRepository blogRepository;
+    private final UserService userService;
 
     @Override
     public Blog findBlogByName(String name) {
@@ -135,6 +139,17 @@ public class BlogServiceImpl implements BlogService {
             BlogDto blogDto = toBlogDto(blog);
             blogDtos.add(blogDto);
         }
+        return blogDtos;
+    }
+
+    @Override
+    public List<BlogsInterface> findAllBlogs() {
+        List<BlogsInterface> blogDtos = blogRepository.findAllBlogs();
+
+        if (userService.findCurrentUser() == null || userService.checkIsUser()) {
+            blogDtos = blogDtos.stream().filter(c -> c.getStatus() == BlogStatus.ACTIVE).toList(); // load status = 1 (ACTIVE)
+        }
+
         return blogDtos;
     }
 
