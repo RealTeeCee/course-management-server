@@ -1,6 +1,7 @@
 package com.aptech.coursemanagementserver.controllers;
 
 import static com.aptech.coursemanagementserver.constants.GlobalStorage.DEV_DOMAIN_CLIENT;
+import static com.aptech.coursemanagementserver.constants.GlobalStorage.GLOBAL_EXCEPTION;
 
 import java.io.IOException;
 import java.net.URI;
@@ -8,11 +9,13 @@ import java.text.ParseException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -29,6 +32,7 @@ import com.aptech.coursemanagementserver.enums.AntType;
 import com.aptech.coursemanagementserver.events.RegistrationCompleteEvent;
 import com.aptech.coursemanagementserver.exceptions.BadRequestException;
 import com.aptech.coursemanagementserver.exceptions.IsExistedException;
+import com.aptech.coursemanagementserver.exceptions.ResourceNotFoundException;
 import com.aptech.coursemanagementserver.models.Token;
 import com.aptech.coursemanagementserver.models.User;
 import com.aptech.coursemanagementserver.repositories.TokenRepository;
@@ -52,6 +56,7 @@ public class AuthenticationController {
   private final AuthenticationService authService;
   private final JwtService jwtService;
   private final ApplicationEventPublisher publisher;
+  private final PasswordEncoder passwordEncoder;
 
   @PostMapping("/register")
   public ResponseEntity<BaseDto> register(
@@ -87,7 +92,7 @@ public class AuthenticationController {
 
     } catch (ExpiredJwtException e) {
       userService.deleteById(t.getUser().getId());
-      return ResponseEntity.status(HttpStatus.FOUND).location(URI.create(DEV_DOMAIN_CLIENT + "/error?verify=fail"))
+      return ResponseEntity.status(HttpStatus.FOUND).location(URI.create(DEV_DOMAIN_CLIENT + "/token-expire"))
           .build();
     }
     // return new ResponseEntity<String>("Email verified successfully. Now
@@ -95,15 +100,36 @@ public class AuthenticationController {
     // HttpStatus.OK);
   }
 
+  @PostMapping("/reset-password")
+  public ResponseEntity<BaseDto> resetPassword(@RequestParam("token") String token, AuthenticationRequestDto request)
+      throws ParseException {
+    Token t = tokenRepository.findByToken(token).get();
+
+    try {
+      jwtService.isTokenValid(token, t.getUser());
+      User user = userService.findById(t.getUser().getId()).get();
+
+      user.setPassword(passwordEncoder.encode(request.getPassword()));
+      userService.save(user);
+
+      return ResponseEntity.ok(BaseDto.builder().message("Reset password successfully.").type(AntType.success).build());
+
+    } catch (ExpiredJwtException e) {
+      return ResponseEntity
+          .ok(BaseDto.builder().message("Reset password token is expired.").type(AntType.error).build());
+    }
+  }
+
   @PostMapping("/login")
   public ResponseEntity<AuthenticationResponseDto> login(
       @RequestBody AuthenticationRequestDto request) {
     try {
       return new ResponseEntity<AuthenticationResponseDto>(authService.login(request), HttpStatus.OK);
+    } catch (NoSuchElementException e) {
+      throw new ResourceNotFoundException(e.getMessage());
     } catch (Exception e) {
       throw new BadRequestException(e.getMessage());
     }
-
   }
 
   @PostMapping("/authenticate")
@@ -136,7 +162,30 @@ public class AuthenticationController {
       return ResponseEntity.ok(responseDto);
     }
     return ResponseEntity.badRequest().body(null);
+  }
 
+  @PostMapping("/forget-password")
+  public ResponseEntity<?> forgetPassword(@RequestBody AuthenticationRequestDto request) {
+    try {
+      authService.forgetPassword(request);
+      return ResponseEntity.ok("");
+    } catch (NoSuchElementException e) {
+      throw new ResourceNotFoundException(e.getMessage());
+    } catch (Exception e) {
+      throw new BadRequestException(GLOBAL_EXCEPTION);
+    }
+  }
+
+  @PostMapping("/change-password")
+  public ResponseEntity<?> changePassword(@RequestBody AuthenticationRequestDto request) {
+    try {
+      authService.changePassword(request);
+      return ResponseEntity.ok("");
+    } catch (NoSuchElementException e) {
+      throw new ResourceNotFoundException(e.getMessage());
+    } catch (Exception e) {
+      throw new BadRequestException(GLOBAL_EXCEPTION);
+    }
   }
 
   @GetMapping("/noauth")

@@ -187,4 +187,15 @@ public class JwtService {
     tokenRepository.save(token);
   }
 
+  public void saveUserResetPasswordToken(User user, String jwtToken) {
+    var token = Token.builder()
+        .user(user)
+        .token(jwtToken)
+        .token_type(TokenType.RESET_PASSWORD)
+        .isExpired(false)
+        .isRevoked(false)
+        .build();
+    tokenRepository.save(token);
+  }
+
 }
