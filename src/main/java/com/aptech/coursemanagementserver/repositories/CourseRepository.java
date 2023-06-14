@@ -80,6 +80,7 @@ public interface CourseRepository extends JpaRepository<Course, Long> {
         @Query(value = """
                         SELECT
                         --COUNT(c.id) AS enrollmentCount ,
+                        COUNT(CASE WHEN(u.role = 'USER') THEN u.role END) [enrollmentCount],
                         c.* , cat.name [category_name],
 
                         STUFF((SELECT DISTINCT ', ' + a.name
@@ -96,8 +97,8 @@ public interface CourseRepository extends JpaRepository<Course, Long> {
 
                         ISNULL(e.progress, 0) [progress],
                         --ISNULL(e.rating,0) [rating],
-                        ISNULL(e.comment,'No comment') [comment],
-                        COUNT(CASE WHEN(u.role = 'USER') THEN u.role END) [enrollmentCount]
+                        ISNULL(e.comment,'No comment') [comment]
+
                         FROM course c
                         LEFT JOIN enrollment e ON c.id = e.course_id
                         INNER JOIN category cat ON c.category_id = cat.id

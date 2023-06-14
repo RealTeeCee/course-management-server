@@ -37,4 +37,9 @@ public interface LessonTrackingRepository extends JpaRepository<LessonTracking, 
                                 """, nativeQuery = true)
         LessonTracking findTrackedByEnrollmentIdAndCourseId(long enrollmentId, long courseId);
 
+        @Query(value = """
+                        SELECT lt.* FROM lesson_tracking lt
+                        WHERE lt.is_tracked = 1
+                                """, nativeQuery = true)
+        LessonTracking findTracked();
 }

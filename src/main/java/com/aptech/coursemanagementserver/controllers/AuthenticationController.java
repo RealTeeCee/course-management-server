@@ -70,7 +70,6 @@ public class AuthenticationController {
     } catch (Exception e) {
       throw new BadRequestException(e.getMessage());
     }
-
   }
 
   @GetMapping("/verifyEmail")
@@ -91,7 +90,6 @@ public class AuthenticationController {
       return ResponseEntity.status(HttpStatus.FOUND).location(URI.create(DEV_DOMAIN_CLIENT + "/error?verify=fail"))
           .build();
     }
-
     // return new ResponseEntity<String>("Email verified successfully. Now
     // login to your account",
     // HttpStatus.OK);

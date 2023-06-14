@@ -6,6 +6,8 @@ import com.aptech.coursemanagementserver.dtos.LessonTrackingDto;
 public interface LessonTrackingService {
     LessonTrackingDto loadTrack(LessonTrackingDto lessonTrackingDto);
 
+    LessonTrackingDto saveTrackingLesson(LessonTrackingDto id);
+
     boolean saveTrack(LessonTrackingDto lessonTrackingDto);
 
     double complete(LessonTrackingDto lessonTrackingDto);
