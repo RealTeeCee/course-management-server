@@ -30,6 +30,7 @@ public interface LessonRepository extends JpaRepository<Lesson, Long> {
                         JOIN course c
                         ON s.course_id = c.id
                         WHERE c.id = :courseId
+                        ORDER BY l.section_id, l.ordered
                             """, nativeQuery = true)
         List<Lesson> findAllByCourseId(long courseId);
 }

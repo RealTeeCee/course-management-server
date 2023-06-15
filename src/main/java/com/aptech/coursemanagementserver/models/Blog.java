@@ -7,6 +7,7 @@ import com.aptech.coursemanagementserver.enums.BlogStatus;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.ForeignKey;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -38,8 +39,7 @@ public class Blog {
     private String description;
     @Column(columnDefinition = "int")
     private int view_count;
-    @Column(columnDefinition = "bigint")
-    private long user_id;
+
     @Column(columnDefinition = "datetime")
     private Date created_at;
     @Column(columnDefinition = "datetime")
@@ -47,6 +47,10 @@ public class Blog {
 
     // Modified - START
     private String image;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id", nullable = false, foreignKey = @ForeignKey(name = "FK_Blog_User"))
+    private User user;
 
     @ManyToOne(cascade = CascadeType.MERGE)
     @JoinColumn(name = "category_id", nullable = false, foreignKey = @ForeignKey(name = "FK_Blog_Category"))

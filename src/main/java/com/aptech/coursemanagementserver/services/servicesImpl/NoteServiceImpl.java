@@ -29,6 +29,7 @@ public class NoteServiceImpl implements NoteService {
                 return new NoteDto();
             }
             NoteDto returnNoteDto = new NoteDto();
+            returnNoteDto.setId(noteDto.getId());
             returnNoteDto.setEnrollmentId(noteDto.getEnrollmentId());
             returnNoteDto.setCourseId(note.getTrackId().getCourse_id());
             returnNoteDto.setSectionId(note.getTrackId().getSection_id());
@@ -48,8 +49,7 @@ public class NoteServiceImpl implements NoteService {
     @Override
     public boolean saveNote(NoteDto noteDto) {
         try {
-            LessonTrackingId trackId = setTrackId(noteDto);
-            boolean isUpdated = noteRepository.findByTrackId(trackId).isPresent();
+            boolean isUpdated = noteRepository.findById(noteDto.getId()).isPresent();
             addNote(noteDto, isUpdated);
 
             return true;
@@ -62,10 +62,9 @@ public class NoteServiceImpl implements NoteService {
 
     private void addNote(NoteDto noteDto, boolean isUpdated) {
         LessonTrackingId trackId = setTrackId(noteDto);
-
-        Note note = isUpdated ? noteRepository.findByTrackId(trackId).orElseThrow(
+        Note note = isUpdated ? noteRepository.findById(noteDto.getId()).orElseThrow(
                 () -> new NoSuchElementException(
-                        "The note with trackId:[" + trackId.toString() + "] is not exist."))
+                        "The note with noteId:[" + noteDto.getId() + "] is not exist."))
                 : new Note();
 
         note.setTrackId(trackId)

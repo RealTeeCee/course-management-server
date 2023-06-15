@@ -8,8 +8,6 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.Table;
-import jakarta.persistence.UniqueConstraint;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -22,25 +20,21 @@ import lombok.experimental.Accessors;
 @AllArgsConstructor
 @Accessors(chain = true)
 @Entity
-@Table(uniqueConstraints = {
-        @UniqueConstraint(columnNames = { "enrollment_id", "course_id", "section_id", "lesson_id",
-                "video_id" })
-})
 public class Note {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(columnDefinition = "bigint")
-    private long id;
-    @Embedded
-    @AttributeOverrides({
-            @AttributeOverride(name = "enrollment_id", column = @Column(name = "enrollment_id")),
-            @AttributeOverride(name = "course_id", column = @Column(name = "course_id")),
-            @AttributeOverride(name = "section_id", column = @Column(name = "section_id")),
-            @AttributeOverride(name = "lession_id", column = @Column(name = "lesson_id")),
-            @AttributeOverride(name = "video_id", column = @Column(name = "video_id"))
-    })
-    LessonTrackingId trackId;
-    @Column(columnDefinition = "NVARCHAR(MAX)")
-    private String description;
-    private int resumePoint = 0;
+        @Id
+        @GeneratedValue(strategy = GenerationType.IDENTITY)
+        @Column(columnDefinition = "bigint")
+        private long id;
+        @Embedded
+        @AttributeOverrides({
+                        @AttributeOverride(name = "enrollment_id", column = @Column(name = "enrollment_id")),
+                        @AttributeOverride(name = "course_id", column = @Column(name = "course_id")),
+                        @AttributeOverride(name = "section_id", column = @Column(name = "section_id")),
+                        @AttributeOverride(name = "lession_id", column = @Column(name = "lesson_id")),
+                        @AttributeOverride(name = "video_id", column = @Column(name = "video_id"))
+        })
+        LessonTrackingId trackId;
+        @Column(columnDefinition = "NVARCHAR(MAX)")
+        private String description;
+        private int resumePoint = 0;
 }

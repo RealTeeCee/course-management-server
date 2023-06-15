@@ -18,6 +18,7 @@ public class LessonTrackingDto {
     // private long oldSectionId;
     // private long oldLessonId;
     // private long oldVideoId;
+    private long id;
     private long enrollmentId;
     private long courseId;
     private long sectionId;

@@ -13,5 +13,7 @@ import lombok.experimental.Accessors;
 @AllArgsConstructor
 public class AuthenticationRequestDto {
     private String email;
+    private String oldPassword;
     private String password;
+    private String confirmPassword;
 }

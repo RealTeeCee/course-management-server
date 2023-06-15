@@ -15,9 +15,11 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.aptech.coursemanagementserver.dtos.LearningDto;
 import com.aptech.coursemanagementserver.dtos.LessonTrackingDto;
+import com.aptech.coursemanagementserver.dtos.NoteDto;
 import com.aptech.coursemanagementserver.exceptions.BadRequestException;
 import com.aptech.coursemanagementserver.exceptions.ResourceNotFoundException;
 import com.aptech.coursemanagementserver.services.LessonTrackingService;
+import com.aptech.coursemanagementserver.services.NoteService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 
@@ -30,6 +32,7 @@ import lombok.RequiredArgsConstructor;
 @Tag(name = "Tracking Endpoints")
 public class TrackingController {
     private final LessonTrackingService lessonTrackingService;
+    private final NoteService noteService;
 
     @PostMapping(path = "/load")
     @PreAuthorize("hasAnyRole('USER', 'ADMIN', 'MANAGER', 'EMPLOYEE')")
@@ -44,12 +47,51 @@ public class TrackingController {
         }
     }
 
+    @PostMapping(path = "/load-note")
+    @PreAuthorize("hasAnyRole('USER', 'ADMIN', 'MANAGER', 'EMPLOYEE')")
+    public ResponseEntity<LessonTrackingDto> loadNote(@RequestBody NoteDto noteDto)
+            throws JsonMappingException, JsonProcessingException {
+        try {
+            return ResponseEntity.ok(noteService.loadNote(noteDto));
+        } catch (NoSuchElementException e) {
+            throw new ResourceNotFoundException(e.getMessage());
+        } catch (Exception e) {
+            throw new BadRequestException(FETCHING_FAILED);
+        }
+    }
+
     @PostMapping(path = "/save")
     @PreAuthorize("hasAnyRole('USER', 'ADMIN', 'MANAGER', 'EMPLOYEE')")
     public ResponseEntity<Boolean> saveTrack(@RequestBody LessonTrackingDto lessonTrackingDto)
             throws JsonMappingException, JsonProcessingException {
         try {
             return ResponseEntity.ok(lessonTrackingService.saveTrack(lessonTrackingDto));
+        } catch (NoSuchElementException e) {
+            throw new ResourceNotFoundException(e.getMessage());
+        } catch (Exception e) {
+            throw new BadRequestException(e.getMessage());
+        }
+    }
+
+    @PostMapping(path = "/save-note")
+    @PreAuthorize("hasAnyRole('USER', 'ADMIN', 'MANAGER', 'EMPLOYEE')")
+    public ResponseEntity<Boolean> saveNote(@RequestBody NoteDto noteDto)
+            throws JsonMappingException, JsonProcessingException {
+        try {
+            return ResponseEntity.ok(noteService.saveNote(noteDto));
+        } catch (NoSuchElementException e) {
+            throw new ResourceNotFoundException(e.getMessage());
+        } catch (Exception e) {
+            throw new BadRequestException(e.getMessage());
+        }
+    }
+
+    @PostMapping(path = "/save-tracking-lesson")
+    @PreAuthorize("hasAnyRole('USER', 'ADMIN', 'MANAGER', 'EMPLOYEE')")
+    public ResponseEntity<LessonTrackingDto> saveTrackingLesson(@RequestBody LessonTrackingDto lessonTrackingDto)
+            throws JsonMappingException, JsonProcessingException {
+        try {
+            return ResponseEntity.ok(lessonTrackingService.saveTrackingLesson(lessonTrackingDto));
         } catch (NoSuchElementException e) {
             throw new ResourceNotFoundException(e.getMessage());
         } catch (Exception e) {

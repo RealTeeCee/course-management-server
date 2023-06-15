@@ -1,12 +1,16 @@
 package com.aptech.coursemanagementserver.services.authServices;
 
 import static com.aptech.coursemanagementserver.constants.GlobalStorage.TOKEN_PREFIX;
+import static com.aptech.coursemanagementserver.constants.GlobalStorage.DEV_DOMAIN_CLIENT;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.text.ParseException;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 
 import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -25,8 +29,10 @@ import com.aptech.coursemanagementserver.models.Token;
 import com.aptech.coursemanagementserver.models.User;
 import com.aptech.coursemanagementserver.repositories.TokenRepository;
 import com.aptech.coursemanagementserver.repositories.UserRepository;
+import com.aptech.coursemanagementserver.utils.EmailSender;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import jakarta.mail.MessagingException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -35,15 +41,19 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class AuthenticationService {
     private final ModelMapper modelMapper;
-    private final UserRepository repository;
+    private final UserService userService;
     private final TokenRepository tokenRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
     private final AuthenticationManager authenticationManager;
+    private final EmailSender emailSender;
+    @Value("${spring.mail.username}")
+    private String fromEmail;
 
     public AuthenticationResponseDto login(AuthenticationRequestDto request) {
         // try {
-        var user = repository.findByEmail(request.getEmail()).get();
+        var user = userService.findByEmail(request.getEmail()).orElseThrow(() -> new NoSuchElementException(
+                "The user with Email: [" + request.getEmail() + "] is not exist."));
 
         // Check if BCrypt of request MATCHES BCrypt of user (Compare hash)
         Boolean isPwdMatch = passwordEncoder.matches(request.getPassword(), user.getPassword());
@@ -78,7 +88,7 @@ public class AuthenticationService {
 
     // Register method create a user save it to db and generated token
     public User register(RegisterRequestDto request) {
-        Optional<User> user = repository.findByEmail(request.getEmail());
+        Optional<User> user = userService.findByEmail(request.getEmail());
 
         if (user.isPresent()) {
             throw new IsExistedException(request.getEmail());
@@ -90,9 +100,10 @@ public class AuthenticationService {
         // .password(passwordEncoder.encode(request.getPassword()))
         // .role(request.getRole())
         // .build();
-        // var savedUser = repository.save(user);
+        // var savedUser = userService.save(user);
         request.setPassword(passwordEncoder.encode(request.getPassword()));
-        var savedUser = repository.save(modelMapper.map(request, User.class));
+        var savedUser = modelMapper.map(request, User.class);
+        userService.save(savedUser);
 
         // 1. Send Email
         // 2. Customer click on Email. Link URL verify. Ex:
@@ -144,7 +155,7 @@ public class AuthenticationService {
                         request.getPassword()));
 
         // --> Authenticate Success
-        var user = repository.findByEmail(request.getEmail())
+        var user = userService.findByEmail(request.getEmail())
                 .orElseThrow();
         var jwtToken = jwtService.generateToken(user);
         var refreshToken = jwtService.generateRefreshToken(user);
@@ -183,7 +194,7 @@ public class AuthenticationService {
         userEmail = jwtService.extractUsername(refreshToken);
         if (userEmail != null) {
             // Find the User from the extracted email
-            var user = this.repository.findByEmail(userEmail)
+            var user = this.userService.findByEmail(userEmail)
                     .orElseThrow();
 
             // Check if the token is from correct user and not expired
@@ -202,5 +213,38 @@ public class AuthenticationService {
                 new ObjectMapper().writeValue(response.getOutputStream(), authResponse);
             }
         }
+    }
+
+    public void forgetPassword(AuthenticationRequestDto request)
+            throws MessagingException, UnsupportedEncodingException {
+        User user = userService.findByEmail(request.getEmail()).orElseThrow(() -> new NoSuchElementException(
+                "The user with Email: [" + request.getEmail() + "] is not exist."));
+
+        String resetPasswordToken = jwtService.generateToken(user);
+
+        jwtService.saveUserResetPasswordToken(user, resetPasswordToken);
+
+        String url = DEV_DOMAIN_CLIENT + "/reset-password?token=" + resetPasswordToken;
+
+        String subject = "Reset Password";
+        String displayName = "ClicknLearn";
+        String mailContent = "<p> Dear " + user.getFirst_name() + ", </p>" +
+                "<br>" +
+                "<p>We have received a request to reset your password for your ClicknLearn account. </p>" +
+                "<br>" +
+                "<p>To reset your password, please click on the link below:</p>" +
+                "<br>" +
+                "<a href=\"" + url + "\">Click here</a>" + "<br>" +
+                "<p> Thank you for contact with us.<br><br> ClicknLearn";
+
+        emailSender.sendEmail(fromEmail, displayName, user.getEmail(), subject, mailContent);
+
+    }
+
+    public void changePassword(AuthenticationRequestDto request) {
+        User user = userService.findCurrentUser();
+        user.setPassword(passwordEncoder.encode(request.getPassword()));
+
+        userService.save(user);
     }
 }

@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
+import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
@@ -57,6 +58,7 @@ public class LessonTrackingImpl implements LessonTrackingService {
                 return new LessonTrackingDto();
             }
             LessonTrackingDto returnTrackingDto = LessonTrackingDto.builder()
+                    .id(lessonTracking.getId())
                     .enrollmentId(lessonTracking.getTrackId().getEnrollment_id())
                     .courseId(lessonTracking.getTrackId().getCourse_id())
                     .sectionId(lessonTracking.getTrackId().getSection_id())
@@ -67,6 +69,44 @@ public class LessonTrackingImpl implements LessonTrackingService {
                     .resumePoint(lessonTracking.getResumePoint()).build();
             return returnTrackingDto;
 
+        } catch (NoSuchElementException e) {
+            throw new NoSuchElementException(e.getMessage());
+        } catch (Exception e) {
+            throw new BadRequestException(BAD_REQUEST_EXCEPTION);
+        }
+    }
+
+    @Override
+    public LessonTrackingDto saveTrackingLesson(LessonTrackingDto dto) {
+        try {
+            LessonTracking trackedLesson = lessonTrackingRepository
+                    .findTrackedByEnrollmentIdAndCourseId(dto.getEnrollmentId(), dto.getCourseId());
+
+            if (trackedLesson == null) {
+
+            } else {
+                trackedLesson.setTracked(false);
+                lessonTrackingRepository.save(trackedLesson);
+            }
+
+            Optional<LessonTracking> trackingLesson = lessonTrackingRepository.findById(dto.getId());
+            if (trackingLesson.isPresent()) {
+                trackingLesson.get().setTracked(true);
+                lessonTrackingRepository.save(trackingLesson.get());
+
+                LessonTrackingDto lessonTrackingDto = LessonTrackingDto.builder()
+                        .id(trackingLesson.get().getId())
+                        .enrollmentId(trackingLesson.get().getTrackId().getEnrollment_id())
+                        .courseId(trackingLesson.get().getTrackId().getCourse_id())
+                        .sectionId(trackingLesson.get().getTrackId().getSection_id())
+                        .lessonId(trackingLesson.get().getTrackId().getLession_id())
+                        .videoId(trackingLesson.get().getTrackId().getVideo_id())
+                        .isCompleted(trackingLesson.get().isCompleted())
+                        .isTracked(trackingLesson.get().isTracked())
+                        .resumePoint(trackingLesson.get().getResumePoint()).build();
+                return lessonTrackingDto;
+            }
+            return new LessonTrackingDto();
         } catch (NoSuchElementException e) {
             throw new NoSuchElementException(e.getMessage());
         } catch (Exception e) {
@@ -130,9 +170,13 @@ public class LessonTrackingImpl implements LessonTrackingService {
 
             List<Lesson> lessons = lessonRepository.findAllByCourseId(courseId);
             for (Lesson lesson : lessons) {
-                LessonDto lessonDto = LessonDto.builder().description(lesson.getDescription())
-                        .duration(lesson.getDuration()).id(lesson.getId()).name(lesson.getName())
-                        .sectionId(lesson.getSection().getId()).status(lesson.getStatus()).build();
+                LessonDto lessonDto = LessonDto.builder()
+                        .id(lesson.getId()).name(lesson.getName())
+                        .description(lesson.getDescription())
+                        .duration(lesson.getDuration())
+                        .sectionId(lesson.getSection().getId())
+                        .status(lesson.getStatus())
+                        .ordered(lesson.getOrdered()).build();
                 learningDto.getLessonDto().add(lessonDto);
             }
 
