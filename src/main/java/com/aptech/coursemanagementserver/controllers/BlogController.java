@@ -19,7 +19,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.aptech.coursemanagementserver.dtos.BlogDto;
 import com.aptech.coursemanagementserver.dtos.BlogsInterface;
-import com.aptech.coursemanagementserver.dtos.CourseInterface;
 import com.aptech.coursemanagementserver.dtos.baseDto.BaseDto;
 import com.aptech.coursemanagementserver.exceptions.BadRequestException;
 import com.aptech.coursemanagementserver.exceptions.ResourceNotFoundException;
@@ -53,8 +52,8 @@ public class BlogController {
     // }
     // }
 
-    @GetMapping
-    @Operation(summary = "[ANORNYMOUS] - GET All Blogs")
+    @GetMapping(path = "anornymous/blogs")
+    @Operation(summary = "[ANORNYMOUS] - GET All Blogs Not Token")
     public ResponseEntity<List<BlogsInterface>> getAllBlogs() {
         try {
             return ResponseEntity.ok(blogService.findAllBlogs());
