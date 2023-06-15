@@ -18,6 +18,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.aptech.coursemanagementserver.dtos.BlogDto;
+import com.aptech.coursemanagementserver.dtos.BlogsInterface;
+import com.aptech.coursemanagementserver.dtos.CourseInterface;
 import com.aptech.coursemanagementserver.dtos.baseDto.BaseDto;
 import com.aptech.coursemanagementserver.exceptions.BadRequestException;
 import com.aptech.coursemanagementserver.exceptions.ResourceNotFoundException;
@@ -46,6 +48,16 @@ public class BlogController {
         try {
             List<BlogDto> blogDtos = blogService.findAll();
             return ResponseEntity.ok(blogDtos);
+        } catch (Exception e) {
+            throw new BadRequestException(FETCHING_FAILED);
+        }
+    }
+
+    @GetMapping
+    @Operation(summary = "[ANORNYMOUS] - GET All Blogs")
+    public ResponseEntity<List<BlogsInterface>> getAllBlogs() {
+        try {
+            return ResponseEntity.ok(blogService.findAllBlogs());
         } catch (Exception e) {
             throw new BadRequestException(FETCHING_FAILED);
         }
@@ -106,6 +118,18 @@ public class BlogController {
         } catch (Exception e) {
             throw new BadRequestException(e.getMessage());
         }
+    }
 
+    @GetMapping(path = "my-blog/{userId}")
+    @Operation(summary = "[ANY ROLE] - GET All Blogs By UserId")
+    @PreAuthorize("hasAnyRole('USER', 'ADMIN', 'MANAGER', 'EMPLOYEE')")
+    public ResponseEntity<List<BlogDto>> getAllUserCourses(@PathVariable("userId") long userId) {
+        try {
+            return ResponseEntity.ok(blogService.findAllBlogsByUserId(userId));
+        } catch (NoSuchElementException e) {
+            throw new ResourceNotFoundException(e.getMessage());
+        } catch (Exception e) {
+            throw new BadRequestException(e.getMessage());
+        }
     }
 }

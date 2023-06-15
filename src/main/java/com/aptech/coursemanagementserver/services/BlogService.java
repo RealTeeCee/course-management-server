@@ -3,6 +3,7 @@ package com.aptech.coursemanagementserver.services;
 import java.util.List;
 
 import com.aptech.coursemanagementserver.dtos.BlogDto;
+import com.aptech.coursemanagementserver.dtos.BlogsInterface;
 import com.aptech.coursemanagementserver.dtos.baseDto.BaseDto;
 import com.aptech.coursemanagementserver.models.Blog;
 
@@ -18,4 +19,8 @@ public interface BlogService {
     public BaseDto delete(long blogId);
 
     public BlogDto findById(long blogId);
+
+    public List<BlogDto> findAllBlogsByUserId(long userId);
+
+    public List<BlogsInterface> findAllBlogs();
 }
