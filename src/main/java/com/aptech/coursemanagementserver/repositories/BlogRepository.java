@@ -17,8 +17,8 @@ public interface BlogRepository extends JpaRepository<Blog, Long> {
             b.* , cat.name [category_name]
             FROM blog b
             INNER JOIN category cat ON b.category_id = cat.id
-            LEFT JOIN users u ON b.user_id = u.id
-            WHERE b.user_id = :userId
+            LEFT JOIN users u ON b.user.id = u.id
+            WHERE b.user.id = :userId
             GROUP BY
             cat.name, b.*
             ORDER BY
