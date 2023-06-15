@@ -41,17 +41,17 @@ import lombok.extern.slf4j.Slf4j;
 public class BlogController {
     private final BlogService blogService;
 
-    @GetMapping
-    @Operation(summary = "[ANORNYMOUS] - GET All Blogs")
-    @PreAuthorize("permitAll()")
-    public ResponseEntity<List<BlogDto>> getBlogs() {
-        try {
-            List<BlogDto> blogDtos = blogService.findAll();
-            return ResponseEntity.ok(blogDtos);
-        } catch (Exception e) {
-            throw new BadRequestException(FETCHING_FAILED);
-        }
-    }
+    // @GetMapping
+    // @Operation(summary = "[ANORNYMOUS] - GET All Blogs")
+    // @PreAuthorize("permitAll()")
+    // public ResponseEntity<List<BlogDto>> getBlogs() {
+    // try {
+    // List<BlogDto> blogDtos = blogService.findAll();
+    // return ResponseEntity.ok(blogDtos);
+    // } catch (Exception e) {
+    // throw new BadRequestException(FETCHING_FAILED);
+    // }
+    // }
 
     @GetMapping
     @Operation(summary = "[ANORNYMOUS] - GET All Blogs")
