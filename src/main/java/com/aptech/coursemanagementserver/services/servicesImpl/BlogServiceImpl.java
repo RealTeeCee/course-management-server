@@ -16,9 +16,11 @@ import com.aptech.coursemanagementserver.enums.AntType;
 import com.aptech.coursemanagementserver.enums.BlogStatus;
 import com.aptech.coursemanagementserver.exceptions.BadRequestException;
 import com.aptech.coursemanagementserver.models.Blog;
+import com.aptech.coursemanagementserver.models.Category;
 import com.aptech.coursemanagementserver.models.User;
 import com.aptech.coursemanagementserver.repositories.BlogRepository;
 import com.aptech.coursemanagementserver.services.BlogService;
+import com.aptech.coursemanagementserver.services.CategoryService;
 import com.aptech.coursemanagementserver.services.authServices.UserService;
 import com.github.slugify.Slugify;
 
@@ -30,6 +32,7 @@ public class BlogServiceImpl implements BlogService {
 
     private final BlogRepository blogRepository;
     private final UserService userService;
+    private final CategoryService categoryService;
 
     @Override
     public Blog findBlogByName(String name) {
@@ -54,10 +57,12 @@ public class BlogServiceImpl implements BlogService {
             Date now = new Date();
             User user = userService.findById(blogDto.getUser_id()).orElseThrow(() -> new NoSuchElementException(
                     "The user with userId: [" + blogDto.getUser_id() + "] is not exist."));
+            Category category = categoryService.findById(blogDto.getCategory());
             blog.setId(blogDto.getId())
                     .setName(blogDto.getName())
                     .setSlug(Slugify.builder().build().slugify(blogDto.getName()))
                     .setUser(user)
+                    .setCategory(category)
                     .setView_count(blogDto.getView_count())
                     .setStatus(blogDto.getStatus())
                     .setDescription(blogDto.getDescription())
@@ -81,9 +86,11 @@ public class BlogServiceImpl implements BlogService {
             Date now = new Date();
             User user = userService.findById(blogDto.getUser_id()).orElseThrow(() -> new NoSuchElementException(
                     "The user with userId: [" + blogDto.getUser_id() + "] is not exist."));
+            Category category = categoryService.findById(blogDto.getCategory());
             blog.setName(blogDto.getName())
                     .setSlug(Slugify.builder().build().slugify(blogDto.getName()))
                     .setUser(user)
+                    .setCategory(category)
                     .setView_count(blogDto.getView_count())
                     .setStatus(blogDto.getStatus())
                     .setDescription(blogDto.getDescription())
@@ -131,6 +138,8 @@ public class BlogServiceImpl implements BlogService {
                 .status(blog.getStatus())
                 .description(blog.getDescription())
                 .user_id(blog.getUser().getId())
+                .category(blog.getCategory().getId())
+                .category_name(blog.getCategory().getName())
                 .build();
         return blogDto;
     }
@@ -151,7 +160,7 @@ public class BlogServiceImpl implements BlogService {
         List<BlogsInterface> blogDtos = blogRepository.findAllBlogs();
 
         if (userService.findCurrentUser() == null || userService.checkIsUser()) {
-            blogDtos = blogDtos.stream().filter(c -> c.getStatus() == BlogStatus.ACTIVE).toList(); // load status = 1
+            blogDtos = blogDtos.stream().filter(c -> c.getStatus() == 1).toList(); // load status = 1
                                                                                                    // (ACTIVE)
         }
 

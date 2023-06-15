@@ -2,8 +2,6 @@ package com.aptech.coursemanagementserver.models;
 
 import java.util.Date;
 
-import com.aptech.coursemanagementserver.enums.BlogStatus;
-
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -34,7 +32,7 @@ public class Blog {
     @Column(unique = true, columnDefinition = "varchar(255)")
     private String slug;
     @Column(columnDefinition = "tinyint default 2") // Always default value if end-user not input = 2 (PROCESSING)
-    private BlogStatus status;
+    private int status;
     @Column(columnDefinition = "varchar(MAX)")
     private String description;
     @Column(columnDefinition = "int")

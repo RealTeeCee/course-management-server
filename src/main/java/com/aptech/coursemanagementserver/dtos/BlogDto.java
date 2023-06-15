@@ -2,7 +2,6 @@ package com.aptech.coursemanagementserver.dtos;
 
 import java.time.LocalDateTime;
 
-import com.aptech.coursemanagementserver.enums.BlogStatus;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import lombok.AllArgsConstructor;
@@ -20,7 +19,7 @@ public class BlogDto {
     private long id;
     private String name;
     private String slug;
-    private BlogStatus status;
+    private int status;
     private String description;
     private int view_count;
     private long user_id;
