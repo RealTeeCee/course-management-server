@@ -33,7 +33,6 @@ import lombok.extern.slf4j.Slf4j;
 
 @RestController
 @RequiredArgsConstructor
-@PreAuthorize("hasAnyRole('ADMIN', 'MANAGER', 'EMPLOYEE')")
 @Tag(name = "Blog Endpoints")
 @RequestMapping("/blog")
 @Slf4j
@@ -106,10 +105,10 @@ public class BlogController {
         }
     }
 
-    @DeleteMapping
+    @DeleteMapping(path = "/{id}")
     @Operation(summary = "[ADMIN, MANAGER, EMPLOYEE] - Delete Blog")
     @PreAuthorize("hasAnyRole('USER', 'ADMIN', 'MANAGER', 'EMPLOYEE')")
-    public ResponseEntity<BaseDto> delete(long blogId) {
+    public ResponseEntity<BaseDto> delete(@PathVariable("id")long blogId) {
         try {
             return new ResponseEntity<BaseDto>(blogService.delete(blogId), HttpStatus.OK);
         } catch (NoSuchElementException e) {

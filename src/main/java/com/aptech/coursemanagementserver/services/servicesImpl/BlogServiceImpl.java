@@ -57,7 +57,10 @@ public class BlogServiceImpl implements BlogService {
             Date now = new Date();
             User user = userService.findById(blogDto.getUser_id()).orElseThrow(() -> new NoSuchElementException(
                     "The user with userId: [" + blogDto.getUser_id() + "] is not exist."));
-            Category category = categoryService.findById(blogDto.getCategory());
+            Category category = null;
+            if (blogDto.getCategory() > 0) {
+                category = categoryService.findById(blogDto.getCategory());
+            }
             blog.setId(blogDto.getId())
                     .setName(blogDto.getName())
                     .setSlug(Slugify.builder().build().slugify(blogDto.getName()))
@@ -86,7 +89,10 @@ public class BlogServiceImpl implements BlogService {
             Date now = new Date();
             User user = userService.findById(blogDto.getUser_id()).orElseThrow(() -> new NoSuchElementException(
                     "The user with userId: [" + blogDto.getUser_id() + "] is not exist."));
-            Category category = categoryService.findById(blogDto.getCategory());
+            Category category = null;
+            if (blogDto.getCategory() > 0) {
+                category = categoryService.findById(blogDto.getCategory());
+            }
             blog.setName(blogDto.getName())
                     .setSlug(Slugify.builder().build().slugify(blogDto.getName()))
                     .setUser(user)
@@ -161,7 +167,7 @@ public class BlogServiceImpl implements BlogService {
 
         if (userService.findCurrentUser() == null || userService.checkIsUser()) {
             blogDtos = blogDtos.stream().filter(c -> c.getStatus() == 1).toList(); // load status = 1
-                                                                                                   // (ACTIVE)
+                                                                                   // (ACTIVE)
         }
 
         return blogDtos;
