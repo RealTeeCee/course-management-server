@@ -53,8 +53,8 @@ public class BlogController {
         }
     }
 
-    @GetMapping
-    @Operation(summary = "[ANORNYMOUS] - GET All Blogs")
+    @GetMapping(path = "anornymous/blogs")
+    @Operation(summary = "[ANORNYMOUS] - GET All Blogs Not Token")
     public ResponseEntity<List<BlogsInterface>> getAllBlogs() {
         try {
             return ResponseEntity.ok(blogService.findAllBlogs());
