@@ -1,5 +1,6 @@
 package com.aptech.coursemanagementserver.services.servicesImpl;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -54,6 +55,10 @@ public class UserServiceImpl implements UserService {
     @Override
     public void save(User user) {
         userRepository.save(user);
+    }
+
+    public boolean isContains(final List<User> list, final String email) {
+        return list.stream().anyMatch(o -> o.getEmail().equals(email));
     }
 
 }

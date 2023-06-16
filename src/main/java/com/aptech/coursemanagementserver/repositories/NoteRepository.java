@@ -1,5 +1,6 @@
 package com.aptech.coursemanagementserver.repositories;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -12,9 +13,9 @@ public interface NoteRepository extends JpaRepository<Note, Long> {
     Optional<Note> findByTrackId(LessonTrackingId trackId);
 
     @Query(value = """
-            SELECT TOP 1 n.* FROM note n
+            SELECT n.* FROM note n
             WHERE n.enrollment_id = :enrollmentId
             AND n.course_id = :courseId
                     """, nativeQuery = true)
-    Note findAllNotesByEnrollmentIdAndCourseId(long enrollmentId, long courseId);
+    List<Note> findAllNotesByEnrollmentIdAndCourseId(long enrollmentId, long courseId);
 }

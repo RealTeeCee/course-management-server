@@ -120,8 +120,9 @@ public class User implements UserDetails, OAuth2User {
     @Builder.Default
     private Set<Notification> notificationsReceive = new HashSet<>();
 
-    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "user")
-    private Post post;
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "userPost")
+    @Builder.Default
+    private Set<Post> postsOfUser = new HashSet<>();
 
     @ManyToMany(mappedBy = "likedUsers", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @Builder.Default

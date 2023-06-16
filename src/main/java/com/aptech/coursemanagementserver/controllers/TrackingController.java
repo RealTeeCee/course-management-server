@@ -2,10 +2,12 @@ package com.aptech.coursemanagementserver.controllers;
 
 import static com.aptech.coursemanagementserver.constants.GlobalStorage.FETCHING_FAILED;
 
+import java.util.List;
 import java.util.NoSuchElementException;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -16,6 +18,8 @@ import org.springframework.web.bind.annotation.RestController;
 import com.aptech.coursemanagementserver.dtos.LearningDto;
 import com.aptech.coursemanagementserver.dtos.LessonTrackingDto;
 import com.aptech.coursemanagementserver.dtos.NoteDto;
+import com.aptech.coursemanagementserver.dtos.baseDto.BaseDto;
+import com.aptech.coursemanagementserver.enums.AntType;
 import com.aptech.coursemanagementserver.exceptions.BadRequestException;
 import com.aptech.coursemanagementserver.exceptions.ResourceNotFoundException;
 import com.aptech.coursemanagementserver.services.LessonTrackingService;
@@ -47,12 +51,12 @@ public class TrackingController {
         }
     }
 
-    @PostMapping(path = "/load-note")
+    @PostMapping(path = "/load-notes")
     @PreAuthorize("hasAnyRole('USER', 'ADMIN', 'MANAGER', 'EMPLOYEE')")
-    public ResponseEntity<LessonTrackingDto> loadNote(@RequestBody NoteDto noteDto)
+    public ResponseEntity<List<NoteDto>> loadNotes(@RequestBody NoteDto noteDto)
             throws JsonMappingException, JsonProcessingException {
         try {
-            return ResponseEntity.ok(noteService.loadNote(noteDto));
+            return ResponseEntity.ok(noteService.loadNotes(noteDto));
         } catch (NoSuchElementException e) {
             throw new ResourceNotFoundException(e.getMessage());
         } catch (Exception e) {
@@ -75,10 +79,25 @@ public class TrackingController {
 
     @PostMapping(path = "/save-note")
     @PreAuthorize("hasAnyRole('USER', 'ADMIN', 'MANAGER', 'EMPLOYEE')")
-    public ResponseEntity<Boolean> saveNote(@RequestBody NoteDto noteDto)
+    public ResponseEntity<NoteDto> saveNote(@RequestBody NoteDto noteDto)
             throws JsonMappingException, JsonProcessingException {
         try {
             return ResponseEntity.ok(noteService.saveNote(noteDto));
+        } catch (NoSuchElementException e) {
+            throw new ResourceNotFoundException(e.getMessage());
+        } catch (Exception e) {
+            throw new BadRequestException(e.getMessage());
+        }
+    }
+
+    @DeleteMapping(path = "/delete-note/{noteId}")
+    @PreAuthorize("hasAnyRole('USER', 'ADMIN', 'MANAGER', 'EMPLOYEE')")
+    public ResponseEntity<BaseDto> deleteNote(@PathVariable("noteId") long noteId)
+            throws JsonMappingException, JsonProcessingException {
+        try {
+            noteService.deleteNote(noteId);
+            return ResponseEntity
+                    .ok(BaseDto.builder().message("Delete Note successfully.").type(AntType.success).build());
         } catch (NoSuchElementException e) {
             throw new ResourceNotFoundException(e.getMessage());
         } catch (Exception e) {

@@ -1,10 +1,13 @@
 package com.aptech.coursemanagementserver.services;
 
+import java.util.List;
+
 import com.aptech.coursemanagementserver.dtos.NoteDto;
 
 public interface NoteService {
-    NoteDto loadNote(NoteDto noteDto);
+    List<NoteDto> loadNotes(NoteDto noteDto);
 
-    boolean saveNote(NoteDto noteDto);
+    NoteDto saveNote(NoteDto noteDto);
 
+    void deleteNote(long id);
 }
