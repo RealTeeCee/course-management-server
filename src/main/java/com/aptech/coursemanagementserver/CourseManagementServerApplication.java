@@ -5,7 +5,6 @@ import static com.aptech.coursemanagementserver.enums.Role.EMPLOYEE;
 import static com.aptech.coursemanagementserver.enums.Role.MANAGER;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Value;
@@ -18,11 +17,12 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 
 import com.aptech.coursemanagementserver.configs.ApplicationProperties;
 import com.aptech.coursemanagementserver.dtos.CategoryDto;
-import com.aptech.coursemanagementserver.dtos.CourseDto;
+import com.aptech.coursemanagementserver.dtos.PostDto;
 import com.aptech.coursemanagementserver.dtos.RegisterRequestDto;
-import com.aptech.coursemanagementserver.models.Category;
+import com.aptech.coursemanagementserver.models.User;
 import com.aptech.coursemanagementserver.services.CategoryService;
 import com.aptech.coursemanagementserver.services.CourseService;
+import com.aptech.coursemanagementserver.services.PostService;
 import com.aptech.coursemanagementserver.services.authServices.AuthenticationService;
 
 @SpringBootApplication
@@ -43,7 +43,8 @@ public class CourseManagementServerApplication {
 	// order in which they were defined.
 	@Bean
 	CommandLineRunner commandLineRunner(
-			AuthenticationService service, CategoryService categoryService, CourseService courseService) {
+			AuthenticationService service, CategoryService categoryService, CourseService courseService,
+			PostService postService) {
 		return args -> {
 
 			if (seedData.equalsIgnoreCase("create")) {
@@ -87,7 +88,7 @@ public class CourseManagementServerApplication {
 						+
 						service.generateTokenWithoutVerify(service.register(employee)).getAccessToken());
 
-				var userTest = RegisterRequestDto.builder()
+				var userTestDto = RegisterRequestDto.builder()
 						.first_name("UserTest")
 						.last_name("UserTest")
 						.email("user-test@mail.com")
@@ -96,9 +97,44 @@ public class CourseManagementServerApplication {
 						.isVerified(true)
 
 						.build();
+				User userTest = service.register(userTestDto);
 				System.out.println(
-						"User token: " +
-								service.generateTokenWithoutVerify(service.register(userTest)).getAccessToken());
+						"User1 token: " +
+								service.generateTokenWithoutVerify(userTest).getAccessToken());
+				var userTest2Dto = RegisterRequestDto.builder()
+						.first_name("UserTest2")
+						.last_name("UserTest2")
+						.email("user-test2@mail.com")
+						.password("password")
+						// .role(USER)
+						.isVerified(true)
+
+						.build();
+				User userTest2 = service.register(userTest2Dto);
+				System.out.println(
+						"User2 token: " +
+								service.generateTokenWithoutVerify(userTest2).getAccessToken());
+				var userTest3Dto = RegisterRequestDto.builder()
+						.first_name("UserTest3")
+						.last_name("UserTest3")
+						.email("user-test3@mail.com")
+						.password("password")
+						// .role(USER)
+						.isVerified(true)
+
+						.build();
+				User userTest3 = service.register(userTest3Dto);
+				System.out.println(
+						"User3 token: " +
+								service.generateTokenWithoutVerify(userTest3).getAccessToken());
+				postService.create(
+						PostDto.builder().content("first post, this is test!").userId(userTest.getId()).build());
+				postService.create(PostDto.builder()
+						.content("Post2 Lorem ipsum dolor sit amet, consectetur adipiscing elit.")
+						.userId(userTest2.getId()).build());
+				postService.create(PostDto.builder()
+						.content("Post3 Lorem ipsum dolor sit amet, consectetur adipiscing elit.")
+						.userId(userTest3.getId()).build());
 
 				List<CategoryDto> categoryDtos = new ArrayList<>();
 				CategoryDto category1 = CategoryDto.builder().name("Programming").build();
@@ -113,8 +149,7 @@ public class CourseManagementServerApplication {
 
 				categoryService.saveAll(categoryDtos);
 
-				Category savedCategory1 = categoryService.findById(1);
-
+				// Category savedCategory1 = categoryService.findById(1);
 				// CourseDto course1 = CourseDto.builder().achievementName("Master Java,Master
 				// SpringBoot")
 				// .image("https://i.ibb.co/0jCVHrQ/spring-boot.png")

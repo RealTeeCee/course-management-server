@@ -56,7 +56,7 @@ public interface GlobalStorage {
     String CONTENT_RANGE = "Content-Range";
     String ACCEPT_RANGES = "Accept-Ranges";
     String BYTES = "bytes";
-    int CHUNK_SIZE = 314700;
+    int CHUNK_SIZE = 1048576;
     int BYTE_RANGE = 1024;
 
     // PAYPAL

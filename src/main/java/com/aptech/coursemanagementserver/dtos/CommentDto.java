@@ -2,20 +2,23 @@ package com.aptech.coursemanagementserver.dtos;
 
 import java.time.Instant;
 
-import org.hibernate.annotations.CreationTimestamp;
-
 import lombok.AllArgsConstructor;
-import lombok.Getter;
+import lombok.Builder;
+import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
-@Getter
-@Setter
+@Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class NoteDto extends LessonTrackingDto {
-    private String description;
+@Builder
+public class CommentDto {
+    private long id;
 
-    @CreationTimestamp
+    private long userId;
+    private String content;
+
+    private long postId;
+
+    @Builder.Default
     private Instant created_at = Instant.now();
 }

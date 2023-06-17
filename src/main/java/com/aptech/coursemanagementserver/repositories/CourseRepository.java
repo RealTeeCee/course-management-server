@@ -95,7 +95,7 @@ public interface CourseRepository extends JpaRepository<Course, Long> {
                         WHERE ct.course_id = c.id
                         FOR XML PATH('')),1,1,'') [tags],
 
-                        ISNULL(e.progress, 0) [progress],
+                        0  AS [progress],
                         --ISNULL(e.rating,0) [rating],
                         ISNULL(e.comment,'No comment') [comment]
 
@@ -105,7 +105,8 @@ public interface CourseRepository extends JpaRepository<Course, Long> {
                         LEFT JOIN users u ON e.user_id = u.id AND u.role = 'USER'
                         --WHERE u.role = 'USER'
                         GROUP BY
-                        e.comment, e.progress,
+                        e.comment,
+                        --e.progress,
                         --e.rating ,
                         cat.name, c.[id], c.[created_at], [description], [duration], c.rating , c.published_at,
                         [image], [level], c.[name], [net_price], [price], [slug], [status], c.[updated_at], [category_id]

@@ -58,6 +58,8 @@ public class SecurityConfiguration {
         @Value("${application.security.cors.allowedOrigins}")
         private String[] allowedOrigins;
         public static final String[] ENDPOINTS_WHITELIST = {
+                        "/stream/**",
+                        "/post/**",
                         "/momo/**",
                         "/paypal/**",
                         "/video/**",

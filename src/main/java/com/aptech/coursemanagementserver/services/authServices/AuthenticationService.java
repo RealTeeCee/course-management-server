@@ -1,7 +1,7 @@
 package com.aptech.coursemanagementserver.services.authServices;
 
-import static com.aptech.coursemanagementserver.constants.GlobalStorage.TOKEN_PREFIX;
 import static com.aptech.coursemanagementserver.constants.GlobalStorage.DEV_DOMAIN_CLIENT;
+import static com.aptech.coursemanagementserver.constants.GlobalStorage.TOKEN_PREFIX;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -28,7 +28,6 @@ import com.aptech.coursemanagementserver.exceptions.IsExistedException;
 import com.aptech.coursemanagementserver.models.Token;
 import com.aptech.coursemanagementserver.models.User;
 import com.aptech.coursemanagementserver.repositories.TokenRepository;
-import com.aptech.coursemanagementserver.repositories.UserRepository;
 import com.aptech.coursemanagementserver.utils.EmailSender;
 import com.fasterxml.jackson.databind.ObjectMapper;
 

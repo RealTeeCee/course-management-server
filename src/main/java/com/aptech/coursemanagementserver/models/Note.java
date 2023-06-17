@@ -1,5 +1,9 @@
 package com.aptech.coursemanagementserver.models;
 
+import java.time.Instant;
+
+import org.hibernate.annotations.CreationTimestamp;
+
 import jakarta.persistence.AttributeOverride;
 import jakarta.persistence.AttributeOverrides;
 import jakarta.persistence.Column;
@@ -37,4 +41,7 @@ public class Note {
         @Column(columnDefinition = "NVARCHAR(MAX)")
         private String description;
         private int resumePoint = 0;
+
+        @CreationTimestamp
+        private Instant created_at = Instant.now();
 }

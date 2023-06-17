@@ -4,7 +4,7 @@ application:
   security:
     jwt:
       tokenSecret: 32DBfwpPhVmtCh5AyKFoYRwKs889/yBPNXl0TzyBPDZQQVEW/6pniNM1ZoaIBsCpT5TML8jT1Qp6boKhSeJTSg==
-      expiration: 3600000 # a hour
+      expiration: 86400000 # a day
       refreshToken:
         expiration: 604800000 # 7 days
     cors:

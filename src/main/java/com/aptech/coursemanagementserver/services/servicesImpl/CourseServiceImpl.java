@@ -31,6 +31,7 @@ import com.aptech.coursemanagementserver.repositories.EnrollmentRepository;
 import com.aptech.coursemanagementserver.repositories.SectionRepository;
 import com.aptech.coursemanagementserver.repositories.TagRepository;
 import com.aptech.coursemanagementserver.services.CourseService;
+import com.aptech.coursemanagementserver.services.NotificationService;
 import com.aptech.coursemanagementserver.services.authServices.UserService;
 import com.github.slugify.Slugify;
 
@@ -47,6 +48,7 @@ public class CourseServiceImpl implements CourseService {
     private final CategoryRepository categoryRepository;
     private final EnrollmentRepository enrollmentRepository;
     private final UserService userService;
+    private final NotificationService notificationService;
 
     @Override
     public List<Course> findAllByTagName(String tagName) {
@@ -283,6 +285,12 @@ public class CourseServiceImpl implements CourseService {
             sections = tempSections;
             course.setSections(sections);
         }
+
+        // notificationService.save(Notification.builder()
+        // .content("New course from " + commentUser.getUsername())
+        // .notificationType(NotificationType.COMMENT)
+        // .userFrom(commentUser)
+        // .userTo(postUser).build());
 
         courseRepository.save(course);
 
