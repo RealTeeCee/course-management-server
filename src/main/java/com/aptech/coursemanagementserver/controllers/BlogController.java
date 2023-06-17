@@ -51,7 +51,7 @@ public class BlogController {
     // }
     // }
 
-    @GetMapping(path = "anornymous/blogs")
+    @GetMapping(path = "blogs")
     @Operation(summary = "[ANORNYMOUS] - GET All Blogs Not Token")
     public ResponseEntity<List<BlogsInterface>> getAllBlogs() {
         try {
