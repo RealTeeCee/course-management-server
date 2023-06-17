@@ -105,6 +105,7 @@ public class NoteServiceImpl implements NoteService {
         returnNoteDto.setVideoId(note.getTrackId().getVideo_id());
         returnNoteDto.setResumePoint(note.getResumePoint());
         returnNoteDto.setDescription(note.getDescription());
+        returnNoteDto.setCreated_at(note.getCreated_at());
         return returnNoteDto;
     }
 }

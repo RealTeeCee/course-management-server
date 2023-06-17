@@ -12,6 +12,7 @@ import com.aptech.coursemanagementserver.services.VideoService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import reactor.core.publisher.Mono;
 
 @RestController
 @RequestMapping("/video")
@@ -23,18 +24,18 @@ public class VideoStreamController {
 
     @GetMapping("/stream/{fileType}/{fileName}")
     @Operation(summary = "[ANYROLE] - Partial serving video content")
-    public ResponseEntity<byte[]> streamVideo(
+    public Mono<ResponseEntity<byte[]>> streamVideo(
             @RequestHeader(value = "Range", required = false) String httpRangeList,
             @PathVariable("fileType") String fileType,
             @PathVariable("fileName") String fileName) {
-        return videoStreamService.prepareVideoContent(fileName, fileType, httpRangeList);
+        return Mono.just(videoStreamService.prepareVideoContent(fileName, fileType, httpRangeList));
     }
 
     @GetMapping("/caption/{fileName}")
     @Operation(summary = "[ANYROLE] - Get Caption of Video")
-    public ResponseEntity<byte[]> getCaption(
+    public Mono<ResponseEntity<byte[]>> getCaption(
 
             @PathVariable("fileName") String fileName) {
-        return videoStreamService.prepareCaptionContent(fileName);
+        return Mono.just(videoStreamService.prepareCaptionContent(fileName));
     }
 }
