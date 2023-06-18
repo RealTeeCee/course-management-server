@@ -15,6 +15,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.web.client.RestTemplate;
 
 import com.aptech.coursemanagementserver.repositories.UserRepository;
 import com.paypal.base.rest.APIContext;
@@ -45,6 +46,12 @@ public class ApplicationConfiguration {
         // .setSourceNamingConvention(JAVABEANS_MUTATOR); // JAVABEAN Convention:
         // // https://docstore.mik.ua/orelly/java-ent/jnut/ch06_02.htm
         return modelMapper;
+    }
+
+    @Bean
+    public RestTemplate restTemplate() {
+        RestTemplate restTemplate = new RestTemplate();
+        return restTemplate;
     }
 
     @Bean

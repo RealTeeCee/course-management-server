@@ -35,8 +35,8 @@ public interface GlobalStorage {
     String CAPTION_API = "http://localhost:8080/video/caption/";
 
     // CLIENT
-    String PAYPAL_SUCCESS_CLIENT = DEV_DOMAIN_CLIENT + "/payment/success";
-    String PAYPAL_CANCEL_CLIENT = DEV_DOMAIN_CLIENT + "/payment/cancel";
+    String PAYMENT_SUCCESS_CLIENT = DEV_DOMAIN_CLIENT + "/payment/success";
+    String PAYMENT_CANCEL_CLIENT = DEV_DOMAIN_CLIENT + "/payment/cancel";
 
     // OAUTH2
     String OAUTH2_AUTHORIZATION_REQUEST_COOKIE_NAME = "oauth2_auth_request";
@@ -65,12 +65,14 @@ public interface GlobalStorage {
     // Map.entry("language","en_US"),
     // Map.entry("currency", "USD"),
     );
-    String PAYPAL_SUCCESS_URL = "/pay/success";
-    String PAYPAL_SUCCESS_API = DEV_DOMAIN_API + "/paypal/pay/success";
-    String PAYPAL_CANCEL_URL = "/pay/cancel";
-    String PAYPAL_CANCEL_API = DEV_DOMAIN_API + "/paypal/pay/cancel";
+    String PAYPAL_CHECKOUT_API = DEV_DOMAIN_API + "/checkout/paypal";
+    String PAYPAL_SUCCESS_URL = "/paypal/success";
+    String PAYPAL_SUCCESS_API = DEV_DOMAIN_API + "/checkout/paypal/success";
+    String PAYPAL_CANCEL_URL = "/paypal/cancel";
+    String PAYPAL_CANCEL_API = DEV_DOMAIN_API + "/checkout/paypal/cancel";
 
     // MOMO
-    String MOMO_REDIRECT_URL = "/pay/redirect";
-    String MOMO_REDIRECT_API = DEV_DOMAIN_API + "/momo/pay/redirect";
+    String MOMO_CHECKOUT_API = DEV_DOMAIN_API + "/checkout/momo";
+    String MOMO_REDIRECT_URL = "/momo/redirect";
+    String MOMO_REDIRECT_API = DEV_DOMAIN_API + "/momo/redirect";
 }

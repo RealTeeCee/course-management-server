@@ -36,7 +36,7 @@ public class MomoController {
 
     @PostMapping
     @Operation(summary = "[USER] - Initiate payment MOMO")
-    @PreAuthorize("hasAnyRole('USER')")
+    // @PreAuthorize("hasAnyRole('USER')")
     public ResponseEntity<MomoResponseDto> initiatePaymentMomo(@RequestBody MomoRequestDto momoRequestDto)
             throws Exception {
         try {
