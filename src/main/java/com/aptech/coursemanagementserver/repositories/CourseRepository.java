@@ -117,10 +117,11 @@ public interface CourseRepository extends JpaRepository<Course, Long> {
         List<CourseInterface> findAllCourses();
 
         @Query(value = """
-                        SELECT TOP 1 COUNT(c.id) AS enrollmentCount, c.id
+                        SELECT TOP 1 COUNT(CASE WHEN(u.role = 'USER') THEN u.role END) [enrollmentCount], c.id
                         FROM course c
                         LEFT JOIN enrollment e ON c.id = e.course_id
                         INNER JOIN category cat ON c.category_id = cat.id
+                        LEFT JOIN users u ON e.user_id = u.id AND u.role = 'USER'
                         WHERE c.id = :courseId
                         GROUP BY  c.id
                                                 """, nativeQuery = true)
