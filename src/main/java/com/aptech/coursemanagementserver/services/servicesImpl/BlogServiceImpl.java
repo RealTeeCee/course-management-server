@@ -70,9 +70,10 @@ public class BlogServiceImpl implements BlogService {
                     .setStatus(blogDto.getStatus())
                     .setDescription(blogDto.getDescription())
                     .setCreated_at(now)
-                    .setUpdated_at(now);
+                    .setUpdated_at(now)
+                    .setImage(blogDto.getImage());
             blogRepository.save(blog);
-            return BaseDto.builder().type(AntType.success).message("Create blog successfully.").build();
+            return BaseDto.builder().type(AntType.success).message("Blog created successfully. Please wait for admin confirmation.").build();
         } catch (NoSuchElementException e) {
             throw new NoSuchElementException(
                     "The blog with blogId: [" + blogDto.getId() + "] is not exist.");
@@ -100,7 +101,8 @@ public class BlogServiceImpl implements BlogService {
                     .setView_count(blogDto.getView_count())
                     .setStatus(blogDto.getStatus())
                     .setDescription(blogDto.getDescription())
-                    .setUpdated_at(now);
+                    .setUpdated_at(now)
+                    .setImage(blogDto.getImage());
 
             blogRepository.save(blog);
 
@@ -146,6 +148,7 @@ public class BlogServiceImpl implements BlogService {
                 .user_id(blog.getUser().getId())
                 .category(blog.getCategory().getId())
                 .category_name(blog.getCategory().getName())
+                .image(blog.getImage())
                 .build();
         return blogDto;
     }
