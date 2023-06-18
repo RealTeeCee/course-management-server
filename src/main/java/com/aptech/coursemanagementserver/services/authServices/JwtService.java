@@ -52,7 +52,9 @@ public class JwtService {
       return extractClaim(token, Claims::getSubject);// Subject should be username (email) of User
 
     } catch (Exception e) {
-      throw new InvalidTokenException(INVALID_TOKEN_EXCEPTION, HttpStatus.FORBIDDEN);
+      return null;
+      // throw new InvalidTokenException(INVALID_TOKEN_EXCEPTION,
+      // HttpStatus.FORBIDDEN);
     }
   }
 
