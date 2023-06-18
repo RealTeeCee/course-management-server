@@ -103,20 +103,25 @@ public class AuthenticationController {
   @PostMapping("/reset-password")
   public ResponseEntity<BaseDto> resetPassword(@RequestParam("token") String token, AuthenticationRequestDto request)
       throws ParseException {
-    Token t = tokenRepository.findByToken(token).get();
+    Token t = tokenRepository.findByToken(token)
+        .orElseThrow(() -> new NoSuchElementException("The reset password Token is not exist or has been used."));
 
     try {
       jwtService.isTokenValid(token, t.getUser());
       User user = userService.findById(t.getUser().getId()).get();
-
       user.setPassword(passwordEncoder.encode(request.getPassword()));
       userService.save(user);
+      // Xóa token lúc reset password thành công
+      tokenRepository.delete(t);
 
       return ResponseEntity.ok(BaseDto.builder().message("Reset password successfully.").type(AntType.success).build());
 
     } catch (ExpiredJwtException e) {
-      return ResponseEntity
-          .ok(BaseDto.builder().message("Reset password token is expired.").type(AntType.error).build());
+      throw new BadRequestException("Reset password token is expired.");
+    } catch (NoSuchElementException e) {
+      throw new ResourceNotFoundException(e.getMessage());
+    } catch (Exception e) {
+      throw new BadRequestException(GLOBAL_EXCEPTION);
     }
   }
 
