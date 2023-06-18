@@ -73,7 +73,7 @@ public class BlogServiceImpl implements BlogService {
                     .setUpdated_at(now)
                     .setImage(blogDto.getImage());
             blogRepository.save(blog);
-            return BaseDto.builder().type(AntType.success).message("Create blog successfully.").build();
+            return BaseDto.builder().type(AntType.success).message("Blog created successfully. Please wait for admin confirmation.").build();
         } catch (NoSuchElementException e) {
             throw new NoSuchElementException(
                     "The blog with blogId: [" + blogDto.getId() + "] is not exist.");
