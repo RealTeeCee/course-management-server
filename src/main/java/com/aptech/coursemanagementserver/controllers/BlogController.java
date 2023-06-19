@@ -62,8 +62,7 @@ public class BlogController {
     }
 
     @GetMapping(path = "/{id}")
-    @Operation(summary = "[ANY ROLE] - GET Blog By Id")
-    @PreAuthorize("hasAnyRole('USER', 'ADMIN', 'MANAGER', 'EMPLOYEE')")
+    @Operation(summary = "[ANORNYMOUS] - GET Blog By Id")
     public ResponseEntity<BlogDto> getBlogById(@PathVariable("id") long id) {
         try {
             BlogDto blogDto = blogService.findById(id);
@@ -108,7 +107,7 @@ public class BlogController {
     @DeleteMapping(path = "/{id}")
     @Operation(summary = "[ADMIN, MANAGER, EMPLOYEE] - Delete Blog")
     @PreAuthorize("hasAnyRole('USER', 'ADMIN', 'MANAGER', 'EMPLOYEE')")
-    public ResponseEntity<BaseDto> delete(@PathVariable("id")long blogId) {
+    public ResponseEntity<BaseDto> delete(@PathVariable("id") long blogId) {
         try {
             return new ResponseEntity<BaseDto>(blogService.delete(blogId), HttpStatus.OK);
         } catch (NoSuchElementException e) {

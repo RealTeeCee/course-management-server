@@ -1,5 +1,6 @@
 package com.aptech.coursemanagementserver.models;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 
 import jakarta.persistence.CascadeType;
@@ -39,9 +40,9 @@ public class Blog {
     private int view_count;
 
     @Column(columnDefinition = "datetime")
-    private Date created_at;
+    private LocalDateTime created_at;
     @Column(columnDefinition = "datetime")
-    private Date updated_at;
+    private LocalDateTime updated_at;
 
     // Modified - START
     private String image;

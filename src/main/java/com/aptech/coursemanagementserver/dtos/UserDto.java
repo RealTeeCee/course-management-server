@@ -5,6 +5,7 @@ import java.time.Instant;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
+import com.aptech.coursemanagementserver.enums.AuthProvider;
 import com.aptech.coursemanagementserver.enums.Role;
 
 import jakarta.persistence.EnumType;
@@ -25,16 +26,28 @@ public class UserDto {
 
     private String last_name;
 
+    private String name;
+
     private String email;
+
+    private String password;
 
     private String imageUrl;
 
+    @Builder.Default
+    @Enumerated(EnumType.STRING)
+    private AuthProvider provider = AuthProvider.local;
+
+    private String providerId;
     @Builder.Default
     @Enumerated(EnumType.STRING)
     private Role role = Role.USER;
 
     @Builder.Default
     private boolean isVerified = false;
+
+    @Builder.Default
+    private int status = 1;
 
     @CreationTimestamp
     @Builder.Default

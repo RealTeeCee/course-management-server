@@ -2,6 +2,7 @@ package com.aptech.coursemanagementserver.services.servicesImpl;
 
 import static com.aptech.coursemanagementserver.constants.GlobalStorage.BAD_REQUEST_EXCEPTION;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -54,7 +55,6 @@ public class BlogServiceImpl implements BlogService {
     public BaseDto create(BlogDto blogDto) {
         try {
             Blog blog = new Blog();
-            Date now = new Date();
             User user = userService.findById(blogDto.getUser_id()).orElseThrow(() -> new NoSuchElementException(
                     "The user with userId: [" + blogDto.getUser_id() + "] is not exist."));
             Category category = null;
@@ -69,11 +69,12 @@ public class BlogServiceImpl implements BlogService {
                     .setView_count(blogDto.getView_count())
                     .setStatus(blogDto.getStatus())
                     .setDescription(blogDto.getDescription())
-                    .setCreated_at(now)
-                    .setUpdated_at(now)
+                    .setCreated_at(LocalDateTime.now())
+                    .setUpdated_at(LocalDateTime.now())
                     .setImage(blogDto.getImage());
             blogRepository.save(blog);
-            return BaseDto.builder().type(AntType.success).message("Blog created successfully. Please wait for admin confirmation.").build();
+            return BaseDto.builder().type(AntType.success)
+                    .message("Blog created successfully. Please wait for admin confirmation.").build();
         } catch (NoSuchElementException e) {
             throw new NoSuchElementException(
                     "The blog with blogId: [" + blogDto.getId() + "] is not exist.");
@@ -87,7 +88,7 @@ public class BlogServiceImpl implements BlogService {
         try {
             Blog blog = blogRepository.findById(blogDto.getId()).orElseThrow(() -> new NoSuchElementException(
                     "The blog with blogId: [" + blogDto.getId() + "] is not exist."));
-            Date now = new Date();
+
             User user = userService.findById(blogDto.getUser_id()).orElseThrow(() -> new NoSuchElementException(
                     "The user with userId: [" + blogDto.getUser_id() + "] is not exist."));
             Category category = null;
@@ -101,7 +102,7 @@ public class BlogServiceImpl implements BlogService {
                     .setView_count(blogDto.getView_count())
                     .setStatus(blogDto.getStatus())
                     .setDescription(blogDto.getDescription())
-                    .setUpdated_at(now)
+                    .setUpdated_at(LocalDateTime.now())
                     .setImage(blogDto.getImage());
 
             blogRepository.save(blog);
@@ -149,6 +150,8 @@ public class BlogServiceImpl implements BlogService {
                 .category(blog.getCategory().getId())
                 .category_name(blog.getCategory().getName())
                 .image(blog.getImage())
+                .created_at(blog.getCreated_at())
+                .updated_at(blog.getUpdated_at())
                 .build();
         return blogDto;
     }
