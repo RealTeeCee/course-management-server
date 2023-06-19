@@ -139,8 +139,8 @@ public class CourseManagementServerApplication {
 				List<CategoryDto> categoryDtos = new ArrayList<>();
 				CategoryDto category1 = CategoryDto.builder().name("Programming").build();
 				CategoryDto category2 = CategoryDto.builder().name("Graphic Design").build();
-				CategoryDto category3 = CategoryDto.builder().name("Data Science").build();
-				CategoryDto category4 = CategoryDto.builder().name("Artificial Intelligence").build();
+				CategoryDto category3 = CategoryDto.builder().name("Artificial Intelligence").build();
+				CategoryDto category4 = CategoryDto.builder().name("Data Science").build();
 
 				categoryDtos.add(category1);
 				categoryDtos.add(category2);

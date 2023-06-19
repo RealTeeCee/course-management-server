@@ -22,5 +22,6 @@ public class UserProfileDto extends BaseDto {
     private String email;
     private String imageUrl;
     private Role role;
+    private int status;
 
 }

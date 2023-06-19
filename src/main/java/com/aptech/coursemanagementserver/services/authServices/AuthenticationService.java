@@ -66,6 +66,11 @@ public class AuthenticationService {
             throw new BadRequestException("User or Password not correct!");
         }
 
+        if (user.getUserStatus() == 0) {
+            throw new BadRequestException(
+                    "Your account has been blocked due to violate our privacy. Please be advised that you will no longer be able to access your account or use any of its features. Any information please contact ClicknLearn Admin.");
+        }
+
         var jwtToken = jwtService.generateToken(user);
         var refreshToken = jwtService.generateRefreshToken(user);
         revokeAllUserTokens(user);

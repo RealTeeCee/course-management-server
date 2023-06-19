@@ -3,6 +3,7 @@ package com.aptech.coursemanagementserver.controllers;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -12,9 +13,11 @@ import com.aptech.coursemanagementserver.models.User;
 import com.aptech.coursemanagementserver.services.authServices.CurrentUser;
 
 import io.swagger.v3.oas.annotations.tags.Tag;
+import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequestMapping("/auth")
+@RequiredArgsConstructor
 @Tag(name = "Current User Endpoints")
 public class UserController {
 
@@ -22,11 +25,14 @@ public class UserController {
     @PreAuthorize("hasAnyRole('USER', 'ADMIN', 'MANAGER', 'EMPLOYEE')")
     public ResponseEntity<UserProfileDto> getCurrentUser(@CurrentUser User user) {
 
-        var userProfileDto = UserProfileDto.builder().id(user.getId()).email(user.getEmail())
+        var userProfileDto = UserProfileDto.builder()
+                .id(user.getId())
+                .email(user.getEmail())
                 .imageUrl(user.getImageUrl())
                 .name(user.getName())
                 .type(AntType.success)
                 .role(user.getRole())
+                .status(user.getUserStatus())
                 .message("Get current logged in user success.")
                 .build();
         // Authentication authentication) {
@@ -35,5 +41,23 @@ public class UserController {
         // return userRepository.findById(user.getId())
         // .orElseThrow(() -> new UserNotFoundException("Username", "Id",
         // user.getId()));
+    }
+
+    @PostMapping("/user/organize/create")
+    @PreAuthorize("hasAnyRole('USER', 'ADMIN', 'MANAGER', 'EMPLOYEE')")
+    public ResponseEntity<UserProfileDto> createOrganizationUser(@CurrentUser User user) {
+
+        var userProfileDto = UserProfileDto.builder()
+                .id(user.getId())
+                .email(user.getEmail())
+                .imageUrl(user.getImageUrl())
+                .name(user.getName())
+                .type(AntType.success)
+                .role(user.getRole())
+                .status(user.getUserStatus())
+                .message("Get current logged in user success.")
+                .build();
+
+        return ResponseEntity.ok(userProfileDto);
     }
 }

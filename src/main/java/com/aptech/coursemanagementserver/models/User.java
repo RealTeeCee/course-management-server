@@ -64,6 +64,10 @@ public class User implements UserDetails, OAuth2User {
     @Builder.Default
     private boolean isVerified = false;
 
+    @Builder.Default
+    @Column(columnDefinition = "tinyint")
+    private int userStatus = 1;
+
     @CreationTimestamp
     @Builder.Default
     private Instant created_at = Instant.now();

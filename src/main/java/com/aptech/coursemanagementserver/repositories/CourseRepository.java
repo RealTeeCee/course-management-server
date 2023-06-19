@@ -97,7 +97,7 @@ public interface CourseRepository extends JpaRepository<Course, Long> {
 
                         0  AS [progress],
                         --ISNULL(e.rating,0) [rating],
-                        ISNULL(e.comment,'No comment') [comment]
+                        NULL AS [comment]
 
                         FROM course c
                         LEFT JOIN enrollment e ON c.id = e.course_id
@@ -105,7 +105,7 @@ public interface CourseRepository extends JpaRepository<Course, Long> {
                         LEFT JOIN users u ON e.user_id = u.id AND u.role = 'USER'
                         --WHERE u.role = 'USER'
                         GROUP BY
-                        e.comment,
+                        --e.comment,
                         --e.progress,
                         --e.rating ,
                         cat.name, c.[id], c.[created_at], [description], [duration], c.rating , c.published_at,
