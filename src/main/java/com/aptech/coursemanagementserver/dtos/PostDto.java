@@ -5,6 +5,10 @@ import java.util.List;
 
 import org.hibernate.annotations.CreationTimestamp;
 
+import com.aptech.coursemanagementserver.enums.Role;
+
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -21,10 +25,17 @@ public class PostDto {
     private String content;
 
     private long userId;
+    private String userName;
 
-    private List<Long> likedUsersId;
+    @Enumerated(EnumType.STRING)
+    @Builder.Default
+    private Role role = Role.USER;
 
-    private List<Long> commentsId;
+    private long courseId;
+
+    private List<UserDto> likedUsers;
+
+    private List<CommentDto> comments;
 
     private String postImageUrl;
 

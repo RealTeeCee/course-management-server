@@ -8,11 +8,13 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.springframework.http.codec.ServerSentEvent;
+import org.springframework.security.access.method.P;
 import org.springframework.stereotype.Service;
 
 import com.aptech.coursemanagementserver.dtos.CommentDto;
 import com.aptech.coursemanagementserver.dtos.NotificationRequestDto;
 import com.aptech.coursemanagementserver.dtos.PostDto;
+import com.aptech.coursemanagementserver.dtos.UserDto;
 import com.aptech.coursemanagementserver.enums.NotificationType;
 import com.aptech.coursemanagementserver.models.Comment;
 import com.aptech.coursemanagementserver.models.Notification;
@@ -46,8 +48,8 @@ public class PostServiceImpl implements PostService {
                                                 "The user with userId: [" + postDto.getUserId()
                                                                 + "] is not exist."));
                 Post post = new Post();
+                post.setCourseId(postDto.getCourseId());
                 post.setContent(postDto.getContent());
-                post.setPostImageUrl(user.getImageUrl());
                 post.setUserPost(user);
                 post.setComments(new ArrayList<>());
                 post.setLikedUsers(new ArrayList<>());
@@ -55,8 +57,8 @@ public class PostServiceImpl implements PostService {
 
         }
 
-        public List<PostDto> getAll() {
-                List<Post> posts = postRepository.findAll();
+        public List<PostDto> findAllByCourseId(long courseId) {
+                List<Post> posts = postRepository.findAllByCourseId(courseId);
                 List<PostDto> postDtos = new ArrayList<>();
 
                 for (Post post : posts) {
@@ -134,11 +136,12 @@ public class PostServiceImpl implements PostService {
                                                 likedUser.getEmail())) {
                         log.info("call remove like: " + likedUser.getEmail());
                         removeLike(dto);
+                        return;
                 }
                 post.getLikedUsers().add(likedUser);
                 notificationService.save(Notification.builder()
                                 .isDelivered(false)
-                                .content("like from " + likedUser.getUsername())
+                                .content("Like from " + likedUser.getUsername())
                                 .notificationType(NotificationType.LIKE)
                                 .userFrom(likedUser)
                                 .userTo(postOfUser).build());
@@ -148,18 +151,7 @@ public class PostServiceImpl implements PostService {
 
         // Input: postId, userId
         public void removeLike(NotificationRequestDto dto) {
-
-                Post post = postRepository.findById(dto.getPostId()).orElseThrow(() -> new NoSuchElementException(
-                                "The post with postId: [" + dto.getPostId() + "] is not exist."));
-                User unLikedUser = getUserById(dto.getUserId());
-                // it's checking users at the same time
-                List<User> updatedLikes = post.getLikedUsers()
-                                .stream()
-                                .filter(x -> !x.getEmail().equals(unLikedUser.getEmail()))
-                                .collect(Collectors.toList());
-                post.setLikedUsers(updatedLikes);
-                postRepository.save(post);
-
+                postRepository.removeByPostIdAndUserId(dto.getPostId(), dto.getUserId());
         }
 
         public List<CommentDto> getCommentsByPostId(long postId) {
@@ -177,22 +169,41 @@ public class PostServiceImpl implements PostService {
                 return commentDtos;
         }
 
-        public Flux<ServerSentEvent<List<PostDto>>> streamPosts() {
+        public Flux<ServerSentEvent<List<PostDto>>> streamPosts(long courseId) {
                 return Flux.interval(Duration.ofSeconds(2))
                                 .publishOn(Schedulers.boundedElastic())
                                 .map(sequence -> ServerSentEvent.<List<PostDto>>builder().id(String.valueOf(sequence))
-                                                .event("post-list-event").data(getAll())
+                                                .event("post-list-event").data(findAllByCourseId(courseId))
                                                 .build());
         }
 
         private PostDto toPostDto(Post post) {
+                List<Comment> comments = post.getComments();
+                List<User> users = post.getLikedUsers();
+                List<CommentDto> commentDtos = new ArrayList<>();
+                List<UserDto> userDtos = new ArrayList<>();
+
+                for (Comment comment : comments) {
+                        CommentDto commentDto = toCommentDto(comment);
+                        commentDtos.add(commentDto);
+                }
+
+                for (User user : users) {
+                        UserDto userDto = toUserDto(user);
+                        userDtos.add(userDto);
+                }
+
                 PostDto postDto = PostDto.builder()
                                 .id(post.getId())
-                                .commentsId(post.getComments().stream().map(c -> c.getId()).toList())
+                                // .commentsId(post.getComments().stream().map(c -> c.getId()).toList())
+                                .comments(commentDtos)
                                 .userId(post.getUserPost().getId())
-                                .likedUsersId(post.getLikedUsers().stream().map(u -> u.getId()).toList())
+                                .userName(post.getUserPost().getName())
+                                .likedUsers(userDtos)
                                 .content(post.getContent())
-                                .postImageUrl(post.getPostImageUrl())
+                                .postImageUrl(post.getUserPost().getImageUrl())
+                                .courseId(post.getCourseId())
+                                .role(post.getUserPost().getRole())
                                 .created_at(post.getCreated_at())
                                 .build();
                 return postDto;
@@ -202,6 +213,9 @@ public class PostServiceImpl implements PostService {
                 CommentDto commentDto = CommentDto.builder()
                                 .id(comment.getId())
                                 .userId(comment.getUser().getId())
+                                .userName(comment.getUser().getName())
+                                .imageUrl(comment.getUser().getImageUrl())
+                                .role(comment.getUser().getRole())
                                 .postId(comment.getPost().getId())
                                 .content(comment.getContent())
                                 .created_at(comment.getCreated_at())
@@ -209,17 +223,17 @@ public class PostServiceImpl implements PostService {
                 return commentDto;
         }
 
-        // private UserDto toUserDto(User user) {
-        // UserDto userDto = UserDto.builder()
-        // .id(user.getId())
-        // .email(user.getEmail())
-        // .first_name(user.getFirst_name())
-        // .last_name(user.getLast_name())
-        // .imageUrl(user.getImageUrl())
-        // .role(user.getRole())
-        // .build();
-        // return userDto;
-        // }
+        private UserDto toUserDto(User user) {
+                UserDto userDto = UserDto.builder()
+                                .id(user.getId())
+                                .email(user.getEmail())
+                                .first_name(user.getFirst_name())
+                                .last_name(user.getLast_name())
+                                .imageUrl(user.getImageUrl())
+                                .role(user.getRole())
+                                .build();
+                return userDto;
+        }
 
         private Comment getCommentById(long commentId) {
                 Optional<Comment> comment = commentRepository.findById(commentId);

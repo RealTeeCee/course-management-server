@@ -16,9 +16,11 @@ public class NotificationDto {
 
     private String content;
 
-    private long userToId;
+    // private long userToId;
+    private UserDto userTo;
 
-    private long userFromId;
+    // private long userFromId;
+    private UserDto userFrom;
 
     private NotificationType notificationType;
 

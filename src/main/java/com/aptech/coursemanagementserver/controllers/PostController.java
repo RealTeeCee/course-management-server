@@ -35,12 +35,12 @@ import static com.aptech.coursemanagementserver.constants.GlobalStorage.GLOBAL_E
 public class PostController {
     private final PostService postService;
 
-    @GetMapping("/stream")
+    @GetMapping("/stream/{courseId}")
     @Operation(summary = "[ANY ROLE] - Stream Posts")
     // @PreAuthorize("hasAnyRole('USER', 'ADMIN', 'MANAGER', 'EMPLOYEE')")
-    public Flux<ServerSentEvent<List<PostDto>>> streamPosts() {
+    public Flux<ServerSentEvent<List<PostDto>>> streamPosts(@PathVariable("courseId") long courseId) {
         try {
-            return postService.streamPosts();
+            return postService.streamPosts(courseId);
         } catch (NoSuchElementException e) {
             throw new ResourceNotFoundException(e.getMessage());
         } catch (Exception e) {
@@ -48,12 +48,12 @@ public class PostController {
         }
     }
 
-    @GetMapping
+    @GetMapping("/{courseId}")
     @Operation(summary = "[ANY ROLE] - Get All Posts")
     @PreAuthorize("hasAnyRole('USER', 'ADMIN', 'MANAGER', 'EMPLOYEE')")
-    public ResponseEntity<List<PostDto>> getAllPosts() {
+    public ResponseEntity<List<PostDto>> getAllPostsByCourseId(@PathVariable("courseId") long courseId) {
         try {
-            return ResponseEntity.ok(postService.getAll());
+            return ResponseEntity.ok(postService.findAllByCourseId(courseId));
         } catch (NoSuchElementException e) {
             throw new ResourceNotFoundException(e.getMessage());
         } catch (Exception e) {

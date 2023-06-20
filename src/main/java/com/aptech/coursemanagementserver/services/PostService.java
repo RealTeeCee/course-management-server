@@ -16,7 +16,7 @@ public interface PostService {
 
     public List<CommentDto> getCommentsByPostId(long postId);
 
-    public List<PostDto> getAll();
+    public List<PostDto> findAllByCourseId(long courseId);
 
     public void create(PostDto postDto);
 
@@ -30,5 +30,5 @@ public interface PostService {
 
     public void removeLike(NotificationRequestDto dto);
 
-    public Flux<ServerSentEvent<List<PostDto>>> streamPosts();
+    public Flux<ServerSentEvent<List<PostDto>>> streamPosts(long courseId);
 }

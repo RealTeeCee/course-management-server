@@ -1,11 +1,13 @@
 package com.aptech.coursemanagementserver.models;
 
 import java.time.Instant;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.hibernate.annotations.CreationTimestamp;
 
 import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.ForeignKey;
@@ -31,17 +33,20 @@ public class Post {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
+    @Column(columnDefinition = "NVARCHAR(MAX)")
     private String content;
     @ManyToOne(cascade = CascadeType.MERGE, fetch = FetchType.EAGER)
     @JoinColumn(name = "user_post_id", nullable = false, foreignKey = @ForeignKey(name = "FK_Post_UserPost"))
     private User userPost;
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "PostUsers", joinColumns = @JoinColumn(name = "post_id"), inverseJoinColumns = @JoinColumn(name = "user_id"))
-    private List<User> likedUsers;
+    @Builder.Default
+    private List<User> likedUsers = new ArrayList<>();
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, mappedBy = "post")
-    private List<Comment> comments;
+    @Builder.Default
+    private List<Comment> comments = new ArrayList<>();
 
-    private String postImageUrl;
+    private long courseId;
 
     @CreationTimestamp
     @Builder.Default

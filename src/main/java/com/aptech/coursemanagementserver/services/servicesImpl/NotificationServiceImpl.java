@@ -7,7 +7,9 @@ import java.util.NoSuchElementException;
 import org.springframework.stereotype.Service;
 
 import com.aptech.coursemanagementserver.dtos.NotificationDto;
+import com.aptech.coursemanagementserver.dtos.UserDto;
 import com.aptech.coursemanagementserver.models.Notification;
+import com.aptech.coursemanagementserver.models.User;
 import com.aptech.coursemanagementserver.repositories.NotificationRepository;
 import com.aptech.coursemanagementserver.services.NotificationService;
 
@@ -25,7 +27,7 @@ public class NotificationServiceImpl implements NotificationService {
     public NotificationDto findById(long id) {
         Notification notification = notifRepository.findById(id).orElseThrow(() -> new NoSuchElementException(
                 "The notification with notificationId: [" + id + "] is not exist."));
-        return toDto(notification);
+        return toNotifDto(notification);
     }
 
     public List<NotificationDto> findAllByUserIdNotRead(long userID) {
@@ -34,7 +36,7 @@ public class NotificationServiceImpl implements NotificationService {
         List<NotificationDto> notificationDtos = new ArrayList<>();
 
         for (Notification notification : notifications) {
-            NotificationDto notificationDto = toDto(notification);
+            NotificationDto notificationDto = toNotifDto(notification);
             notificationDtos.add(notificationDto);
         }
 
@@ -47,7 +49,7 @@ public class NotificationServiceImpl implements NotificationService {
         List<NotificationDto> notificationDtos = new ArrayList<>();
 
         for (Notification notification : notifications) {
-            NotificationDto notificationDto = toDto(notification);
+            NotificationDto notificationDto = toNotifDto(notification);
             notificationDtos.add(notificationDto);
         }
 
@@ -61,7 +63,7 @@ public class NotificationServiceImpl implements NotificationService {
         notif.setRead(true);
         notifRepository.save(notif);
 
-        NotificationDto notificationDto = toDto(notif);
+        NotificationDto notificationDto = toNotifDto(notif);
         return notificationDto;
     }
 
@@ -69,15 +71,33 @@ public class NotificationServiceImpl implements NotificationService {
         notifRepository.deleteAll();
     }
 
-    private NotificationDto toDto(Notification notification) {
+    private NotificationDto toNotifDto(Notification notification) {
+        User userFrom = notification.getUserFrom();
+        UserDto userFromDto = toUserDto(userFrom);
+
+        User userTo = notification.getUserTo();
+        UserDto userToDto = toUserDto(userTo);
+
         NotificationDto notifDto = NotificationDto.builder()
                 .id(notification.getId())
                 .content(notification.getContent())
                 .isDelivered(notification.isDelivered())
                 .isRead(notification.isRead())
                 .notificationType(notification.getNotificationType())
-                .userFromId(notification.getUserFrom().getId())
-                .userToId(notification.getUserTo().getId()).build();
+                .userFrom(userFromDto)
+                .userTo(userToDto).build();
         return notifDto;
+    }
+
+    private UserDto toUserDto(User user) {
+        UserDto userDto = UserDto.builder()
+                .id(user.getId())
+                .email(user.getEmail())
+                .first_name(user.getFirst_name())
+                .last_name(user.getLast_name())
+                .imageUrl(user.getImageUrl())
+                .role(user.getRole())
+                .build();
+        return userDto;
     }
 }

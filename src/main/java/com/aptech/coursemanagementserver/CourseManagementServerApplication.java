@@ -128,13 +128,14 @@ public class CourseManagementServerApplication {
 						"User3 token: " +
 								service.generateTokenWithoutVerify(userTest3).getAccessToken());
 				postService.create(
-						PostDto.builder().content("first post, this is test!").userId(userTest.getId()).build());
+						PostDto.builder().content("first post, this is test!").userId(userTest.getId()).courseId(1)
+								.build());
 				postService.create(PostDto.builder()
 						.content("Post2 Lorem ipsum dolor sit amet, consectetur adipiscing elit.")
-						.userId(userTest2.getId()).build());
+						.userId(userTest2.getId()).courseId(1).build());
 				postService.create(PostDto.builder()
 						.content("Post3 Lorem ipsum dolor sit amet, consectetur adipiscing elit.")
-						.userId(userTest3.getId()).build());
+						.userId(userTest3.getId()).courseId(1).build());
 
 				List<CategoryDto> categoryDtos = new ArrayList<>();
 				CategoryDto category1 = CategoryDto.builder().name("Programming").build();

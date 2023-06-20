@@ -4,6 +4,7 @@ import com.aptech.coursemanagementserver.enums.NotificationType;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.ForeignKey;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -29,11 +30,11 @@ public class Notification {
     private long id;
 
     private String content;
-    @ManyToOne(cascade = CascadeType.MERGE)
+    @ManyToOne(cascade = CascadeType.MERGE, fetch = FetchType.LAZY)
     @JoinColumn(name = "user_to_id", nullable = false, foreignKey = @ForeignKey(name = "FK_Notifications_UserTo"))
     private User userTo;
 
-    @ManyToOne(cascade = CascadeType.MERGE)
+    @ManyToOne(cascade = CascadeType.MERGE, fetch = FetchType.LAZY)
     @JoinColumn(name = "user_from_id", nullable = false, foreignKey = @ForeignKey(name = "FK_Notifications_UserFrom"))
     private User userFrom;
 

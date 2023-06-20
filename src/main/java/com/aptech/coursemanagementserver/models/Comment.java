@@ -5,6 +5,7 @@ import java.time.Instant;
 import org.hibernate.annotations.CreationTimestamp;
 
 import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.ForeignKey;
 import jakarta.persistence.GeneratedValue;
@@ -30,6 +31,7 @@ public class Comment {
     @ManyToOne(cascade = CascadeType.MERGE)
     @JoinColumn(name = "user_id", nullable = false, foreignKey = @ForeignKey(name = "FK_Comment_User"))
     private User user;
+    @Column(columnDefinition = "NVARCHAR(MAX)")
     private String content;
 
     @ManyToOne(cascade = CascadeType.MERGE)
