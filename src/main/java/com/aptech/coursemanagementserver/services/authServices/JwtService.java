@@ -1,7 +1,5 @@
 package com.aptech.coursemanagementserver.services.authServices;
 
-import static com.aptech.coursemanagementserver.constants.GlobalStorage.INVALID_TOKEN_EXCEPTION;
-
 import java.security.Key;
 import java.util.ArrayList;
 import java.util.Date;
@@ -12,12 +10,10 @@ import java.util.function.Function;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpStatus;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
 import com.aptech.coursemanagementserver.enums.TokenType;
-import com.aptech.coursemanagementserver.exceptions.InvalidTokenException;
 import com.aptech.coursemanagementserver.models.Token;
 import com.aptech.coursemanagementserver.models.User;
 import com.aptech.coursemanagementserver.repositories.TokenRepository;

@@ -1,7 +1,6 @@
 package com.aptech.coursemanagementserver.models;
 
 import java.time.LocalDateTime;
-import java.util.Date;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;

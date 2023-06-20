@@ -118,9 +118,9 @@ public class CourseServiceImpl implements CourseService {
             courseDtos.add(courseDto);
         }
 
-        if (userService.findCurrentUser() == null || userService.checkIsUser()) {
-            courseDtos = courseDtos.stream().filter(c -> c.getStatus() == 1).toList();
-        }
+        // if (userService.findCurrentUser() == null || userService.checkIsUser()) {
+        courseDtos = courseDtos.stream().filter(c -> c.getStatus() == 1).toList();
+        // }
         return courseDtos;
     }
 
@@ -132,14 +132,13 @@ public class CourseServiceImpl implements CourseService {
 
         courses = courses.stream().filter(c -> c.getStatus() == 1 && c.getPrice() == 0).toList();
 
-        if (userService.findCurrentUser() != null && !userService.checkIsUser()) {
-            courses = courses.stream().filter(c -> c.getPrice() == 0).toList();
-        }
+        // if (userService.findCurrentUser() != null && !userService.checkIsUser()) {
+        // courses = courses.stream().filter(c -> c.getPrice() == 0).toList();
+        // }
 
         for (Course course : courses) {
             CourseDto courseDto = toCourseDto(course);
             courseDtos.add(courseDto);
-
         }
         return courseDtos;
     }
@@ -158,35 +157,35 @@ public class CourseServiceImpl implements CourseService {
                     () -> new NoSuchElementException(
                             "This tag with tagId: [" + relatedDto.getTagId() + "] is not exist."));
 
-            if (userService.findCurrentUser() == null || userService.checkIsUser()) {
-                // GUEST + USER
-                courses = courses.stream()
-                        .filter(c -> c.getStatus() == 1 &&
-                                (c.getCategory().getId() == relatedDto.getCategoryId()) &&
-                                (c.getTags().contains(tag)))
-                        .toList();
-            } else {
-                // ADMIN
-                courses = courses.stream()
-                        .filter(c -> (c.getCategory().getId() == relatedDto.getCategoryId()) &&
-                                (c.getTags().contains(tag)))
-                        .toList();
-            }
+            // if (userService.findCurrentUser() == null || userService.checkIsUser()) {
+            // GUEST + USER
+            courses = courses.stream()
+                    .filter(c -> c.getStatus() == 1 &&
+                            (c.getCategory().getId() == relatedDto.getCategoryId()) &&
+                            (c.getTags().contains(tag)))
+                    .toList();
+            // } else {
+            // // ADMIN
+            // courses = courses.stream()
+            // .filter(c -> (c.getCategory().getId() == relatedDto.getCategoryId()) &&
+            // (c.getTags().contains(tag)))
+            // .toList();
+            // }
 
         } else {
             // If Tag Not Exist
-            if (userService.findCurrentUser() == null || userService.checkIsUser()) {
-                // GUEST + USER
-                courses = courses.stream()
-                        .filter(c -> c.getStatus() == 1 &&
-                                (c.getCategory().getId() == relatedDto.getCategoryId()))
-                        .toList();
-            } else {
-                // ADMIN
-                courses = courses.stream()
-                        .filter(c -> (c.getCategory().getId() == relatedDto.getCategoryId()))
-                        .toList();
-            }
+            // if (userService.findCurrentUser() == null || userService.checkIsUser()) {
+            // GUEST + USER
+            courses = courses.stream()
+                    .filter(c -> c.getStatus() == 1 &&
+                            (c.getCategory().getId() == relatedDto.getCategoryId()))
+                    .toList();
+            // } else {
+            // // ADMIN
+            // courses = courses.stream()
+            // .filter(c -> (c.getCategory().getId() == relatedDto.getCategoryId()))
+            // .toList();
+            // }
         }
 
         for (Course course : courses) {
