@@ -1,5 +1,9 @@
 package com.aptech.coursemanagementserver.dtos;
 
+import java.time.Instant;
+
+import org.hibernate.annotations.CreationTimestamp;
+
 import com.aptech.coursemanagementserver.enums.NotificationType;
 
 import lombok.AllArgsConstructor;
@@ -28,4 +32,8 @@ public class NotificationDto {
     private boolean isDelivered = false;
     @Builder.Default
     private boolean isRead = false;
+
+    @CreationTimestamp
+    @Builder.Default
+    private Instant created_at = Instant.now();
 }

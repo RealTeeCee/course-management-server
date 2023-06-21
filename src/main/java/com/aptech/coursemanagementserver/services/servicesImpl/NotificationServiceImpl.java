@@ -61,7 +61,17 @@ public class NotificationServiceImpl implements NotificationService {
                 .orElseThrow(() -> new NoSuchElementException(
                         "The notification with notificationId: [" + id + "] is not exist."));
         notif.setRead(true);
+        notif.setDelivered(false);
         notifRepository.save(notif);
+
+        new Thread(() -> {
+            try {
+                Thread.sleep(10000);
+                notifRepository.deliveredReadProcess();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }).start();
 
         NotificationDto notificationDto = toNotifDto(notif);
         return notificationDto;
@@ -85,7 +95,8 @@ public class NotificationServiceImpl implements NotificationService {
                 .isRead(notification.isRead())
                 .notificationType(notification.getNotificationType())
                 .userFrom(userFromDto)
-                .userTo(userToDto).build();
+                .userTo(userToDto)
+                .created_at(notification.getCreated_at()).build();
         return notifDto;
     }
 
