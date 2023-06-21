@@ -174,7 +174,7 @@ public class User implements UserDetails, OAuth2User {
     @Override
     public String getName() {
 
-        return this.first_name;
+        return this.first_name + " " + this.last_name;
     }
 
 }
