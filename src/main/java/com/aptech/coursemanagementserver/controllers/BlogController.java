@@ -28,6 +28,7 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.websocket.server.PathParam;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -54,6 +55,17 @@ public class BlogController {
     @GetMapping(path = "blogs")
     @Operation(summary = "[ANORNYMOUS] - GET All Blogs Not Token")
     public ResponseEntity<List<BlogsInterface>> getAllBlogs() {
+        try {
+            return ResponseEntity.ok(blogService.findAllBlogs());
+        } catch (Exception e) {
+            throw new BadRequestException(FETCHING_FAILED);
+        }
+    }
+
+    @GetMapping(path = "blogs-admin")
+    @Operation(summary = "[ANORNYMOUS] - GET All Blogs Not Token")
+    @PreAuthorize("hasAnyRole('USER', 'ADMIN', 'MANAGER', 'EMPLOYEE')")
+    public ResponseEntity<List<BlogsInterface>> getAllBlogsAdmin() {
         try {
             return ResponseEntity.ok(blogService.findAllBlogs());
         } catch (Exception e) {
