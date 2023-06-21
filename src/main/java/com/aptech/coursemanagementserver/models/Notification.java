@@ -1,5 +1,9 @@
 package com.aptech.coursemanagementserver.models;
 
+import java.time.Instant;
+
+import org.hibernate.annotations.CreationTimestamp;
+
 import com.aptech.coursemanagementserver.enums.NotificationType;
 
 import jakarta.persistence.CascadeType;
@@ -45,4 +49,7 @@ public class Notification {
     @Builder.Default
     private boolean isRead = false;
 
+    @CreationTimestamp
+    @Builder.Default
+    private Instant created_at = Instant.now();
 }

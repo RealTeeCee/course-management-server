@@ -1,6 +1,7 @@
 package com.aptech.coursemanagementserver.services.servicesImpl;
 
 import java.time.Duration;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -46,8 +47,8 @@ public class PushNotificationServiceImpl implements PushNotificationService {
     private List<NotificationDto> getNotifs(long userId) {
         List<Notification> notifications = notificationRepository.findByUserToIdAndDeliveredFalse(userId);
 
-        notifications.forEach(x -> x.setDelivered(true));
-        notificationRepository.saveAll(notifications);
+        // notifications.forEach(x -> x.setDelivered(true));
+        // notificationRepository.saveAll(notifications);
 
         List<NotificationDto> notificationDtos = new ArrayList<>();
 
@@ -76,7 +77,8 @@ public class PushNotificationServiceImpl implements PushNotificationService {
                 .isRead(notification.isRead())
                 .notificationType(notification.getNotificationType())
                 .userFrom(userFromDto)
-                .userTo(userToDto).build();
+                .userTo(userToDto)
+                .created_at(notification.getCreated_at()).build();
         return notifDto;
     }
 
