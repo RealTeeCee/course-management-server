@@ -1,5 +1,7 @@
 package com.aptech.coursemanagementserver.dtos;
 
+import java.time.Instant;
+
 import com.aptech.coursemanagementserver.dtos.baseDto.BaseDto;
 import com.aptech.coursemanagementserver.enums.Role;
 
@@ -23,5 +25,6 @@ public class UserProfileDto extends BaseDto {
     private String imageUrl;
     private Role role;
     private int status;
+    private Instant created_at;
 
 }

@@ -59,6 +59,7 @@ public class UserController {
                 .type(AntType.success)
                 .role(user.getRole())
                 .status(user.getUserStatus())
+                .created_at(user.getCreated_at())
                 .message("Get current logged in user success.")
                 .build();
         return ResponseEntity.ok(userProfileDto);
