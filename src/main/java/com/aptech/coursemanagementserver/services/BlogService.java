@@ -22,5 +22,7 @@ public interface BlogService {
 
     public List<BlogDto> findAllBlogsByUserId(long userId);
 
+    public List<BlogsInterface> findAllBlogsWithRole();
+
     public List<BlogsInterface> findAllBlogs();
 }

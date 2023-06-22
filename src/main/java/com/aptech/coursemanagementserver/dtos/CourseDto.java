@@ -38,7 +38,7 @@ public class CourseDto {
     private String slug;
     private String image;
     private long progress;
-    private String comment;
+
     @Builder.Default
     private double rating = 0;
     private double price;

@@ -167,7 +167,7 @@ public class BlogServiceImpl implements BlogService {
     }
 
     @Override
-    public List<BlogsInterface> findAllBlogs() {
+    public List<BlogsInterface> findAllBlogsWithRole() {
         List<BlogsInterface> blogDtos = blogRepository.findAllBlogs();
 
         if (userService.findCurrentUser() == null || userService.checkIsUser()) {
@@ -175,6 +175,14 @@ public class BlogServiceImpl implements BlogService {
                                                                                    // (ACTIVE)
         }
 
+        return blogDtos;
+    }
+
+    @Override
+    public List<BlogsInterface> findAllBlogs() {
+        List<BlogsInterface> blogDtos = blogRepository.findAllBlogs();
+        blogDtos = blogDtos.stream().filter(c -> c.getStatus() == 1).toList(); // load status = 1
+                                                                               // (ACTIVE)
         return blogDtos;
     }
 

@@ -32,7 +32,7 @@ public interface CourseRepository extends JpaRepository<Course, Long> {
                         SELECT COUNT(e.id)
                         OVER(PARTITION BY e.user_id) AS enrollmentCount,
                         c.*, c.net_price AS net_price,
-                        cat.name AS [category_name] , e.progress, e.rating, e.comment,
+                        cat.name AS [category_name] , e.progress, e.rating,
                         e.id AS enrollId
                         FROM course c
                         INNER JOIN category cat
@@ -95,9 +95,9 @@ public interface CourseRepository extends JpaRepository<Course, Long> {
                         WHERE ct.course_id = c.id
                         FOR XML PATH('')),1,1,'') [tags],
 
-                        0  AS [progress],
+                        0  AS [progress]
                         --ISNULL(e.rating,0) [rating],
-                        NULL AS [comment]
+                        --NULL AS [comment]
 
                         FROM course c
                         LEFT JOIN enrollment e ON c.id = e.course_id
