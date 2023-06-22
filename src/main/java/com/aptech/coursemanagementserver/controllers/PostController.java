@@ -91,7 +91,7 @@ public class PostController {
     @GetMapping("/comment/{postId}")
     @Operation(summary = "[ANY ROLE] - Get Comments By PostId")
     @PreAuthorize("hasAnyRole('USER', 'ADMIN', 'MANAGER', 'EMPLOYEE')")
-    public ResponseEntity<List<CommentDto>> getCommentsByPostId(@PathVariable int postId) {
+    public ResponseEntity<List<CommentDto>> getCommentsByPostId(@PathVariable long postId) {
         try {
             return ResponseEntity.ok(postService.getCommentsByPostId(postId));
         } catch (NoSuchElementException e) {
@@ -115,12 +115,12 @@ public class PostController {
         }
     }
 
-    @DeleteMapping("/comment")
-    @Operation(summary = "[ANY ROLE] - Delete Comment [Input postId, commentId]")
+    @DeleteMapping("/comment/{commentId}")
+    @Operation(summary = "[ANY ROLE] - Delete Comment by commentId")
     @PreAuthorize("hasAnyRole('USER', 'ADMIN', 'MANAGER', 'EMPLOYEE')")
-    public ResponseEntity<Void> removeComment(@RequestBody NotificationRequestDto request) {
+    public ResponseEntity<Void> removeComment(@PathVariable long commentId) {
         try {
-            postService.removeComment(request);
+            postService.removeComment(commentId);
             return ResponseEntity.ok().build();
         } catch (NoSuchElementException e) {
             throw new ResourceNotFoundException(e.getMessage());

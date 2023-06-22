@@ -50,10 +50,11 @@ public class CourseManagementServerApplication {
 			if (seedData.equalsIgnoreCase("create")) {
 
 				var admin = RegisterRequestDto.builder()
-						.first_name("Admin")
-						.last_name("Admin")
+						.first_name("ClicknLearn")
+						.last_name("")
 						.email("admin@mail.com")
 						.password("password")
+						.imageUrl("https://ibb.co/SKg10dj")
 						.role(ADMIN)
 						.isVerified(true)
 						.build();
@@ -63,10 +64,11 @@ public class CourseManagementServerApplication {
 								service.generateTokenWithoutVerify(service.register(admin)).getAccessToken());
 
 				var manager = RegisterRequestDto.builder()
-						.first_name("manager")
-						.last_name("manager")
+						.first_name("Manager")
+						.last_name("")
 						.email("manager@mail.com")
 						.password("password")
+						.imageUrl("https://ibb.co/SKg10dj")
 						.role(MANAGER)
 						.isVerified(true)
 
@@ -76,10 +78,11 @@ public class CourseManagementServerApplication {
 								service.generateTokenWithoutVerify(service.register(manager)).getAccessToken());
 
 				var employee = RegisterRequestDto.builder()
-						.first_name("employee")
-						.last_name("employee")
+						.first_name("Employee")
+						.last_name("")
 						.email("employee@mail.com")
 						.password("password")
+						.imageUrl("https://ibb.co/SKg10dj")
 						.role(EMPLOYEE)
 						.isVerified(true)
 
@@ -89,10 +92,11 @@ public class CourseManagementServerApplication {
 						service.generateTokenWithoutVerify(service.register(employee)).getAccessToken());
 
 				var userTestDto = RegisterRequestDto.builder()
-						.first_name("UserTest")
-						.last_name("UserTest")
+						.first_name("TeeCee")
+						.last_name("")
 						.email("user-test@mail.com")
 						.password("password")
+						.imageUrl("https://ibb.co/SKg10dj")
 						// .role(USER)
 						.isVerified(true)
 
@@ -102,10 +106,11 @@ public class CourseManagementServerApplication {
 						"User1 token: " +
 								service.generateTokenWithoutVerify(userTest).getAccessToken());
 				var userTest2Dto = RegisterRequestDto.builder()
-						.first_name("UserTest2")
-						.last_name("UserTest2")
+						.first_name("Ric")
+						.last_name("")
 						.email("user-test2@mail.com")
 						.password("password")
+						.imageUrl("https://ibb.co/SKg10dj")
 						// .role(USER)
 						.isVerified(true)
 
@@ -115,10 +120,11 @@ public class CourseManagementServerApplication {
 						"User2 token: " +
 								service.generateTokenWithoutVerify(userTest2).getAccessToken());
 				var userTest3Dto = RegisterRequestDto.builder()
-						.first_name("UserTest3")
-						.last_name("UserTest3")
+						.first_name("AnPham")
+						.last_name("")
 						.email("user-test3@mail.com")
 						.password("password")
+						.imageUrl("https://ibb.co/SKg10dj")
 						// .role(USER)
 						.isVerified(true)
 
@@ -127,8 +133,35 @@ public class CourseManagementServerApplication {
 				System.out.println(
 						"User3 token: " +
 								service.generateTokenWithoutVerify(userTest3).getAccessToken());
+				var userTest4Dto = RegisterRequestDto.builder()
+						.first_name("DiDi")
+						.last_name("")
+						.email("user-test4@mail.com")
+						.password("password")
+						.imageUrl("https://ibb.co/SKg10dj")
+						// .role(USER)
+						.isVerified(true)
+
+						.build();
+				User userTest4 = service.register(userTest4Dto);
+				System.out.println(
+						"User4 token: " +
+								service.generateTokenWithoutVerify(userTest4).getAccessToken());
+				var userTest5Dto = RegisterRequestDto.builder()
+						.first_name("DucTH")
+						.last_name("")
+						.email("user-test5@mail.com")
+						.password("password")
+						.imageUrl("https://ibb.co/SKg10dj")
+						// .role(USER)
+						.isVerified(true)
+						.build();
+				User userTest5 = service.register(userTest5Dto);
+				System.out.println(
+						"User5 token: " +
+								service.generateTokenWithoutVerify(userTest5).getAccessToken());
 				postService.create(
-						PostDto.builder().content("first post, this is test!").userId(userTest.getId()).courseId(1)
+						PostDto.builder().content("First post, Haha!").userId(userTest.getId()).courseId(1)
 								.build());
 				postService.create(PostDto.builder()
 						.content("Post2 Lorem ipsum dolor sit amet, consectetur adipiscing elit.")

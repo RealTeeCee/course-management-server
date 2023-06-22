@@ -36,8 +36,6 @@ public class Enrollment {
     @Column(columnDefinition = "bigint")
     private long id;
     private double progress;
-    @Column(columnDefinition = "nvarchar(MAX)")
-    private String comment;
     @Column(columnDefinition = "decimal(3,2)")
     private double rating;
     @Column(columnDefinition = "bit")

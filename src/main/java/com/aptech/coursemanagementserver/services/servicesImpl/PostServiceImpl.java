@@ -4,11 +4,8 @@ import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
-import java.util.Optional;
-import java.util.stream.Collectors;
 
 import org.springframework.http.codec.ServerSentEvent;
-import org.springframework.security.access.method.P;
 import org.springframework.stereotype.Service;
 
 import com.aptech.coursemanagementserver.dtos.CommentDto;
@@ -104,23 +101,23 @@ public class PostServiceImpl implements PostService {
 
                 post.getComments().add(comment);
 
-                notificationService.save(Notification.builder()
-                                .isDelivered(false)
-                                .content("New comment from " + commentUser.getUsername())
-                                .notificationType(NotificationType.COMMENT)
-                                .userFrom(commentUser)
-                                .userTo(postUser).build());
+                if (dto.getUserId() != postUser.getId()) {
+                        notificationService.save(Notification.builder()
+                                        .isDelivered(false)
+                                        .content("New comment from " + commentUser.getName())
+                                        .notificationType(NotificationType.COMMENT)
+                                        .userFrom(commentUser)
+                                        .userTo(postUser).build());
+                }
 
                 postRepository.save(post);
 
         }
 
         // Input: commentId
-        public void removeComment(NotificationRequestDto dto) {
-                Comment comment = getCommentById(dto.getCommentId());
-
-                commentRepository.delete(comment);
-
+        public void removeComment(long commentId) {
+                // Comment comment = getCommentById(commentId);
+                commentRepository.deleteCommentById(commentId);
         }
 
         // Input: postId, userId
@@ -139,14 +136,16 @@ public class PostServiceImpl implements PostService {
                         return;
                 }
                 post.getLikedUsers().add(likedUser);
-                notificationService.save(Notification.builder()
-                                .isDelivered(false)
-                                .content("Like from " + likedUser.getUsername())
-                                .notificationType(NotificationType.LIKE)
-                                .userFrom(likedUser)
-                                .userTo(postOfUser).build());
-                postRepository.save(post);
 
+                if (dto.getUserId() != postOfUser.getId()) {
+                        notificationService.save(Notification.builder()
+                                        .isDelivered(false)
+                                        .content("Like from " + likedUser.getName())
+                                        .notificationType(NotificationType.LIKE)
+                                        .userFrom(likedUser)
+                                        .userTo(postOfUser).build());
+                }
+                postRepository.save(post);
         }
 
         // Input: postId, userId
@@ -235,21 +234,20 @@ public class PostServiceImpl implements PostService {
                 return userDto;
         }
 
-        private Comment getCommentById(long commentId) {
-                Optional<Comment> comment = commentRepository.findById(commentId);
-                if (comment.isPresent()) {
-                        return comment.get();
-                }
+        // private Comment getCommentById(long commentId) {
+        // Optional<Comment> comment = commentRepository.findById(commentId);
+        // if (comment.isPresent()) {
+        // return comment.get();
+        // }
 
-                return new Comment();
+        // return new Comment();
+        // }
 
-        }
+        // private User getUserById(long userId) {
+        // User user = userService.findById(userId).orElseThrow(() -> new
+        // NoSuchElementException(
+        // "The user with userId: [" + userId + "] is not exist."));
 
-        private User getUserById(long userId) {
-                User user = userService.findById(userId).orElseThrow(() -> new NoSuchElementException(
-                                "The user with userId: [" + userId + "] is not exist."));
-
-                return user;
-
-        }
+        // return user;
+        // }
 }

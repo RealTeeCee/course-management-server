@@ -40,7 +40,7 @@ public class EnrollmentServiceImpl implements EnrollmentService {
 
             if (isFreeCourse) {
                 Enrollment enrollment = new Enrollment();
-                enrollment.setComment(enrollmentDto.getComment())
+                enrollment
                         .setCourse(course)
                         .setIsNotify(enrollmentDto.isNotify())
                         .setProgress(0)

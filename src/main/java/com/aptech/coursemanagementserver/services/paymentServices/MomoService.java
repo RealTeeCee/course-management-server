@@ -127,7 +127,7 @@ public class MomoService {
         if (resultCode == 0 || resultCode == 9000) {
             order.setStatus(OrderStatus.COMPLETED);
             Enrollment enrollment = new Enrollment();
-            enrollment.setComment("No comment")
+            enrollment
                     .setIsNotify(true)
                     .setProgress(0)
                     .setRating(0)
