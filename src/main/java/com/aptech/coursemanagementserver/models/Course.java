@@ -84,6 +84,10 @@ public class Course {
         private Set<Orders> orders = new HashSet<>();
 
         @ManyToOne(cascade = CascadeType.MERGE)
+        @JoinColumn(name = "author_id", nullable = true, foreignKey = @ForeignKey(name = "FK_Course_Author"))
+        private Author author;
+
+        @ManyToOne(cascade = CascadeType.MERGE)
         @JoinColumn(name = "category_id", nullable = false, foreignKey = @ForeignKey(name = "FK_Course_Category"))
         private Category category;
 

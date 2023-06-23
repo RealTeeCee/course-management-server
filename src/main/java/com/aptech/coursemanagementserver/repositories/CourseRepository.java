@@ -108,8 +108,10 @@ public interface CourseRepository extends JpaRepository<Course, Long> {
                         --e.comment,
                         --e.progress,
                         --e.rating ,
-                        cat.name, c.[id], c.[created_at], [description], [duration], c.rating , c.published_at,
-                        [image], [level], c.[name], [net_price], [price], [slug], [status], c.[updated_at], [category_id]
+                        cat.name, c.[id], c.[created_at], [description],
+                        [duration], c.rating , c.published_at, c.author_id,
+                        [image], [level], c.[name], [net_price], [price],
+                         [slug], [status], c.[updated_at], [category_id]
                         ORDER BY
                         --c.ordered DESC
                         c.created_at DESC
