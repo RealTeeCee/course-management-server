@@ -25,6 +25,7 @@ import com.aptech.coursemanagementserver.models.Enrollment;
 import com.aptech.coursemanagementserver.models.Section;
 import com.aptech.coursemanagementserver.models.Tag;
 import com.aptech.coursemanagementserver.repositories.AchievementRepository;
+import com.aptech.coursemanagementserver.repositories.AuthorRepository;
 import com.aptech.coursemanagementserver.repositories.CategoryRepository;
 import com.aptech.coursemanagementserver.repositories.CourseRepository;
 import com.aptech.coursemanagementserver.repositories.EnrollmentRepository;
@@ -46,6 +47,7 @@ public class CourseServiceImpl implements CourseService {
     private final SectionRepository sectionRepository;
     private final AchievementRepository achievementRepository;
     private final CategoryRepository categoryRepository;
+    private final AuthorRepository authorRepository;
     private final EnrollmentRepository enrollmentRepository;
     private final UserService userService;
     private final NotificationService notificationService;
@@ -240,6 +242,7 @@ public class CourseServiceImpl implements CourseService {
 
         course.setName(courseDto.getName().replaceAll("\\s{2,}", " "))
                 .setCategory(categoryRepository.findById(courseDto.getCategory()).get())
+                .setAuthor(authorRepository.findById(courseDto.getAuthor()).get())
                 .setTags(splitTag(courseDto.getTagName(), course))
                 .setAchievements(
                         splitAchievement(courseDto.getAchievementName(), course))
@@ -472,6 +475,8 @@ public class CourseServiceImpl implements CourseService {
                 .enrollmentCount(enrollmentCount)
                 .category(course.getCategory().getId())
                 .category_name(course.getCategory().getName())
+                .author(course.getAuthor().getId())
+                .author_name(course.getAuthor().getName())
                 .achievementName(String.join(",", achievementsList))
                 .tagName(String.join(",", tagsList))
                 .duration(course.getDuration())

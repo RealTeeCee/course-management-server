@@ -16,10 +16,12 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 
 import com.aptech.coursemanagementserver.configs.ApplicationProperties;
+import com.aptech.coursemanagementserver.dtos.AuthorDto;
 import com.aptech.coursemanagementserver.dtos.CategoryDto;
 import com.aptech.coursemanagementserver.dtos.PostDto;
 import com.aptech.coursemanagementserver.dtos.RegisterRequestDto;
 import com.aptech.coursemanagementserver.models.User;
+import com.aptech.coursemanagementserver.services.AuthorService;
 import com.aptech.coursemanagementserver.services.CategoryService;
 import com.aptech.coursemanagementserver.services.CourseService;
 import com.aptech.coursemanagementserver.services.PostService;
@@ -43,7 +45,10 @@ public class CourseManagementServerApplication {
 	// order in which they were defined.
 	@Bean
 	CommandLineRunner commandLineRunner(
-			AuthenticationService service, CategoryService categoryService, CourseService courseService,
+			AuthenticationService service,
+			CategoryService categoryService,
+			AuthorService authorService,
+			CourseService courseService,
 			PostService postService) {
 		return args -> {
 
@@ -182,6 +187,19 @@ public class CourseManagementServerApplication {
 				categoryDtos.add(category4);
 
 				categoryService.saveAll(categoryDtos);
+
+				List<AuthorDto> authorDtos = new ArrayList<>();
+				AuthorDto author1 = AuthorDto.builder().name("Author 1").build();
+				AuthorDto author2 = AuthorDto.builder().name("Author 2").build();
+				AuthorDto author3 = AuthorDto.builder().name("Author 3").build();
+				AuthorDto author4 = AuthorDto.builder().name("Author 4").build();
+
+				authorDtos.add(author1);
+				authorDtos.add(author2);
+				authorDtos.add(author3);
+				authorDtos.add(author4);
+
+				authorService.saveAll(authorDtos);
 
 				// Category savedCategory1 = categoryService.findById(1);
 				// CourseDto course1 = CourseDto.builder().achievementName("Master Java,Master
