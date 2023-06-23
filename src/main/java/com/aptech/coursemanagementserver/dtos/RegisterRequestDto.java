@@ -16,6 +16,7 @@ public class RegisterRequestDto {
     private String last_name;
     private String email;
     private String password;
+    private String imageUrl;
     @Builder.Default
     private Role role = Role.USER;
     @Builder.Default

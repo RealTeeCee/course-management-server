@@ -24,7 +24,7 @@ public interface PostService {
 
     public void addComment(NotificationRequestDto dto);
 
-    public void removeComment(NotificationRequestDto dto);
+    public void removeComment(long commentId);
 
     public void addLike(NotificationRequestDto dto);
 

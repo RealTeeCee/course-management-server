@@ -53,8 +53,18 @@ public class BlogController {
     // }
 
     @GetMapping(path = "blogs")
-    @Operation(summary = "[ANORNYMOUS] - GET All Blogs Not Token")
+    @Operation(summary = "[ANORNYMOUS] - GET All Blogs Different by Role")
     public ResponseEntity<List<BlogsInterface>> getAllBlogs() {
+        try {
+            return ResponseEntity.ok(blogService.findAllBlogsWithRole());
+        } catch (Exception e) {
+            throw new BadRequestException(FETCHING_FAILED);
+        }
+    }
+
+    @GetMapping(path = "blogs-general")
+    @Operation(summary = "[ANORNYMOUS] - GET All Blogs General")
+    public ResponseEntity<List<BlogsInterface>> getAllBlogsGeneral() {
         try {
             return ResponseEntity.ok(blogService.findAllBlogs());
         } catch (Exception e) {

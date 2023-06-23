@@ -247,6 +247,11 @@ public class AuthenticationService {
 
     public void changePassword(AuthenticationRequestDto request) {
         User user = userService.findCurrentUser();
+        Boolean isPwdMatch = passwordEncoder.matches(request.getOldPassword(), user.getPassword());
+
+        if (!isPwdMatch)
+            throw new BadRequestException("Old password is not correct.");
+
         user.setPassword(passwordEncoder.encode(request.getPassword()));
 
         userService.save(user);
