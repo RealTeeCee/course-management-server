@@ -186,4 +186,22 @@ public class BlogServiceImpl implements BlogService {
         return blogDtos;
     }
 
+    @Override
+    public BaseDto updateViewCount(long blogId) {
+        try {
+            Blog blog = blogRepository.findById(blogId).orElseThrow(
+                    () -> new NoSuchElementException("The blog with blogId: [" + blogId + "] is not exist."));
+
+            blog.setView_count(blog.getView_count() + 1);
+
+            blogRepository.save(blog);
+            return BaseDto.builder().type(AntType.success).message("Delete blog successfully.")
+                    .build();
+        } catch (NoSuchElementException e) {
+            throw new NoSuchElementException(e.getMessage());
+        } catch (Exception e) {
+            throw new BadRequestException(BAD_REQUEST_EXCEPTION);
+        }
+    }
+
 }
