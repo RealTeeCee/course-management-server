@@ -188,6 +188,8 @@ public class AuthenticationController {
       return ResponseEntity.ok("");
     } catch (NoSuchElementException e) {
       throw new ResourceNotFoundException(e.getMessage());
+    } catch (BadRequestException e) {
+      throw new BadRequestException(e.getMessage());
     } catch (Exception e) {
       throw new BadRequestException(GLOBAL_EXCEPTION);
     }
