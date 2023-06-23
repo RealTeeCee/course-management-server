@@ -25,4 +25,6 @@ public interface BlogService {
     public List<BlogsInterface> findAllBlogsWithRole();
 
     public List<BlogsInterface> findAllBlogs();
+
+    public BaseDto updateViewCount(long blogId);
 }

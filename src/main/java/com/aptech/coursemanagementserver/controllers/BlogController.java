@@ -39,18 +39,6 @@ import lombok.extern.slf4j.Slf4j;
 public class BlogController {
     private final BlogService blogService;
 
-    // @GetMapping
-    // @Operation(summary = "[ANORNYMOUS] - GET All Blogs")
-    // @PreAuthorize("permitAll()")
-    // public ResponseEntity<List<BlogDto>> getBlogs() {
-    // try {
-    // List<BlogDto> blogDtos = blogService.findAll();
-    // return ResponseEntity.ok(blogDtos);
-    // } catch (Exception e) {
-    // throw new BadRequestException(FETCHING_FAILED);
-    // }
-    // }
-
     @GetMapping(path = "blogs")
     @Operation(summary = "[ANORNYMOUS] - GET All Blogs Different by Role")
     public ResponseEntity<List<BlogsInterface>> getAllBlogs() {
@@ -64,6 +52,27 @@ public class BlogController {
     @GetMapping(path = "blogs-general")
     @Operation(summary = "[ANORNYMOUS] - GET All Blogs General")
     public ResponseEntity<List<BlogsInterface>> getAllBlogsGeneral() {
+        try {
+            return ResponseEntity.ok(blogService.findAllBlogs());
+        } catch (Exception e) {
+            throw new BadRequestException(FETCHING_FAILED);
+        }
+    }
+
+    @PutMapping(path = "view-count/{id}")
+    @Operation(summary = "[ANORNYMOUS] - Update view count Blog")
+    public ResponseEntity<BaseDto> updateViewCount(@PathVariable("id")long id) {
+        try {
+            return ResponseEntity.ok(blogService.updateViewCount(id));
+        } catch (Exception e) {
+            throw new BadRequestException(FETCHING_FAILED);
+        }
+    }
+
+    @GetMapping(path = "blogs-admin")
+    @Operation(summary = "[ANORNYMOUS] - GET All Blogs Not Token")
+    @PreAuthorize("hasAnyRole('USER', 'ADMIN', 'MANAGER', 'EMPLOYEE')")
+    public ResponseEntity<List<BlogsInterface>> getAllBlogsAdmin() {
         try {
             return ResponseEntity.ok(blogService.findAllBlogs());
         } catch (Exception e) {
