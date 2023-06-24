@@ -33,6 +33,8 @@ public interface CourseInterface {
 
     public double getRating();
 
+    public double getUserRating();
+
     public double getPrice();
 
     public double getNet_price();

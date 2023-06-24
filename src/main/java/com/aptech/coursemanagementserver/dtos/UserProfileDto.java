@@ -21,6 +21,8 @@ import lombok.experimental.SuperBuilder;
 public class UserProfileDto extends BaseDto {
     private long id;
     private String name;
+    private String first_name;
+    private String last_name;
     private String email;
     private String imageUrl;
     private Role role;

@@ -59,7 +59,7 @@ public class CourseManagementServerApplication {
 						.last_name("")
 						.email("admin@mail.com")
 						.password("password")
-						.imageUrl("https://ibb.co/SKg10dj")
+						.imageUrl("https://i.ibb.co/2KnQrF0/logo-click-thumb-light.png")
 						.role(ADMIN)
 						.isVerified(true)
 						.build();
@@ -73,7 +73,7 @@ public class CourseManagementServerApplication {
 						.last_name("")
 						.email("manager@mail.com")
 						.password("password")
-						.imageUrl("https://ibb.co/SKg10dj")
+						.imageUrl("https://i.ibb.co/2KnQrF0/logo-click-thumb-light.png")
 						.role(MANAGER)
 						.isVerified(true)
 
@@ -87,7 +87,7 @@ public class CourseManagementServerApplication {
 						.last_name("")
 						.email("employee@mail.com")
 						.password("password")
-						.imageUrl("https://ibb.co/SKg10dj")
+						.imageUrl("https://i.ibb.co/2KnQrF0/logo-click-thumb-light.png")
 						.role(EMPLOYEE)
 						.isVerified(true)
 
@@ -101,7 +101,7 @@ public class CourseManagementServerApplication {
 						.last_name("")
 						.email("user-test@mail.com")
 						.password("password")
-						.imageUrl("https://ibb.co/SKg10dj")
+						.imageUrl("https://i.ibb.co/7GDTVRf/aptech.png")
 						// .role(USER)
 						.isVerified(true)
 
@@ -115,7 +115,7 @@ public class CourseManagementServerApplication {
 						.last_name("")
 						.email("user-test2@mail.com")
 						.password("password")
-						.imageUrl("https://ibb.co/SKg10dj")
+						.imageUrl("https://i.ibb.co/7GDTVRf/aptech.png")
 						// .role(USER)
 						.isVerified(true)
 
@@ -129,7 +129,7 @@ public class CourseManagementServerApplication {
 						.last_name("")
 						.email("user-test3@mail.com")
 						.password("password")
-						.imageUrl("https://ibb.co/SKg10dj")
+						.imageUrl("https://i.ibb.co/7GDTVRf/aptech.png")
 						// .role(USER)
 						.isVerified(true)
 
@@ -143,7 +143,7 @@ public class CourseManagementServerApplication {
 						.last_name("")
 						.email("user-test4@mail.com")
 						.password("password")
-						.imageUrl("https://ibb.co/SKg10dj")
+						.imageUrl("https://i.ibb.co/7GDTVRf/aptech.png")
 						// .role(USER)
 						.isVerified(true)
 
@@ -157,7 +157,7 @@ public class CourseManagementServerApplication {
 						.last_name("")
 						.email("user-test5@mail.com")
 						.password("password")
-						.imageUrl("https://ibb.co/SKg10dj")
+						.imageUrl("https://i.ibb.co/7GDTVRf/aptech.png")
 						// .role(USER)
 						.isVerified(true)
 						.build();

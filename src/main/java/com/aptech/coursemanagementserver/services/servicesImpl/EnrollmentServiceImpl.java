@@ -1,10 +1,12 @@
 package com.aptech.coursemanagementserver.services.servicesImpl;
 
+import java.util.List;
 import java.util.NoSuchElementException;
 
 import org.springframework.stereotype.Service;
 
 import com.aptech.coursemanagementserver.dtos.EnrollmentDto;
+import com.aptech.coursemanagementserver.dtos.RatingStarsInterface;
 import com.aptech.coursemanagementserver.dtos.baseDto.BaseDto;
 import com.aptech.coursemanagementserver.enums.AntType;
 import com.aptech.coursemanagementserver.exceptions.BadRequestException;
@@ -101,4 +103,8 @@ public class EnrollmentServiceImpl implements EnrollmentService {
 
     }
 
+    @Override
+    public List<RatingStarsInterface> getRatingPercentEachStarsByCourseId(long courseId) {
+        return enrollmentRepository.getRatingPercentEachStarsByCourseId(courseId);
+    }
 }
