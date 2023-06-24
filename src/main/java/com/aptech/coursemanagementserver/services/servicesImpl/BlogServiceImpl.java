@@ -195,7 +195,7 @@ public class BlogServiceImpl implements BlogService {
             blog.setView_count(blog.getView_count() + 1);
 
             blogRepository.save(blog);
-            return BaseDto.builder().type(AntType.success).message("Delete blog successfully.")
+            return BaseDto.builder().type(AntType.success)
                     .build();
         } catch (NoSuchElementException e) {
             throw new NoSuchElementException(e.getMessage());

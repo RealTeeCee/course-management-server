@@ -38,4 +38,12 @@ public interface EnrollmentRepository extends JpaRepository<Enrollment, Long> {
   // WHERE user_id =:userId
   // """, nativeQuery = true)
   // Enrollment getEnrollByCourseIdAndUserId(long courseId, long userId);
+
+  // @Query(value = """
+  // SELECT c.author_id FROM course c
+  // INNER JOIN enrollment e
+  // ON c.id = e.course_id
+  // WHERE user_id =:userId
+  // """, nativeQuery = true)
+  // Enrollment getEnrollByCourseIdAndUserId(long courseId, long userId);
 }

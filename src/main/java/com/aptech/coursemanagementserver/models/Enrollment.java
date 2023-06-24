@@ -40,10 +40,9 @@ public class Enrollment {
     private double rating;
     @Column(columnDefinition = "bit")
     private Boolean isNotify;
-    // @Column(columnDefinition = "bigint")
-    // private long user_id;
-    // @Column(columnDefinition = "bigint")
-    // private long course_id;
+
+    @Column(columnDefinition = "bit DEFAULT(0)")
+    private Boolean isPublished = false;
 
     @CreationTimestamp
     private Instant created_at = Instant.now();

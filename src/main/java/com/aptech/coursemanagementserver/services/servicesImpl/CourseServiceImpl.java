@@ -4,6 +4,7 @@ import static com.aptech.coursemanagementserver.constants.GlobalStorage.BAD_REQU
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -29,10 +30,10 @@ import com.aptech.coursemanagementserver.repositories.AuthorRepository;
 import com.aptech.coursemanagementserver.repositories.CategoryRepository;
 import com.aptech.coursemanagementserver.repositories.CourseRepository;
 import com.aptech.coursemanagementserver.repositories.EnrollmentRepository;
+import com.aptech.coursemanagementserver.repositories.NotificationRepository;
 import com.aptech.coursemanagementserver.repositories.SectionRepository;
 import com.aptech.coursemanagementserver.repositories.TagRepository;
 import com.aptech.coursemanagementserver.services.CourseService;
-import com.aptech.coursemanagementserver.services.NotificationService;
 import com.aptech.coursemanagementserver.services.authServices.UserService;
 import com.github.slugify.Slugify;
 
@@ -50,7 +51,7 @@ public class CourseServiceImpl implements CourseService {
     private final AuthorRepository authorRepository;
     private final EnrollmentRepository enrollmentRepository;
     private final UserService userService;
-    private final NotificationService notificationService;
+    private final NotificationRepository notificationRepository;
 
     @Override
     public List<Course> findAllByTagName(String tagName) {
@@ -240,6 +241,10 @@ public class CourseServiceImpl implements CourseService {
             throw new BadRequestException("Cannot deactivate course that 've already had user's enrollment");
         }
 
+        if (courseDto.getAuthor() == 0) {
+            throw new BadRequestException("Cannot create course without Author.");
+        }
+
         course.setName(courseDto.getName().replaceAll("\\s{2,}", " "))
                 .setCategory(categoryRepository.findById(courseDto.getCategory()).get())
                 .setAuthor(authorRepository.findById(courseDto.getAuthor()).get())
@@ -255,6 +260,10 @@ public class CourseServiceImpl implements CourseService {
                 .setDescription(courseDto.getDescription())
                 .setPrice(courseDto.getPrice())
                 .setNet_price(courseDto.getNet_price());
+
+        if (course.getStatus() == 0 && courseDto.getStatus() == 1) {
+            course.setPublished_at(new Date());
+        }
 
         // courseRepository.save(course);
 
@@ -288,13 +297,11 @@ public class CourseServiceImpl implements CourseService {
             course.setSections(sections);
         }
 
-        // notificationService.save(Notification.builder()
-        // .content("New course from " + commentUser.getUsername())
-        // .notificationType(NotificationType.COMMENT)
-        // .userFrom(commentUser)
-        // .userTo(postUser).build());
-
-        courseRepository.save(course);
+        // Nếu course status == 1
+        Course courseNotif = courseRepository.save(course);
+        if (courseNotif.getStatus() == 1) {
+            notificationRepository.pushCourseNotificationToUser(courseNotif.getAuthor().getId());
+        }
 
         return course;
     }
