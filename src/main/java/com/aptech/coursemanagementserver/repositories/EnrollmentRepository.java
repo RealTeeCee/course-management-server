@@ -49,22 +49,22 @@ public interface EnrollmentRepository extends JpaRepository<Enrollment, Long> {
       FROM enrollment e
 
       WHERE e.course_id = :courseId) s
-      group by s.Rating
+      GROUP BY s.Rating
       )
 
       SELECT a.Rating star,
-      ISNULL(ROUND( r.cnt * 100/cast((select sum(cnt) from rating) as float),2) ,0) as ratio
-      from rating r right join (
-      select 1 as Rating, 0 as CNT
-      union all
-      select 2 as Rating, 0 as CNT
-      union all
-      select 3 as Rating, 0 as CNT
-      union all
-      select 4 as Rating, 0 as CNT
-      union all
-      select 5 as Rating, 0 as CNT
-      ) as A on r.Rating = a.Rating
+      ISNULL(ROUND( r.cnt * 100/ CAST((SELECT SUM(cnt) FROM rating) AS float),2) ,0) AS ratio
+      FROM rating r RIGHT JOIN (
+      SELECT 1 AS Rating, 0 AS CNT
+      UNION ALL
+      SELECT 2 AS Rating, 0 AS CNT
+      UNION ALL
+      SELECT 3 AS Rating, 0 AS CNT
+      UNION ALL
+      SELECT 4 AS Rating, 0 AS CNT
+      UNION ALL
+      SELECT 5 AS Rating, 0 AS CNT
+      ) AS A ON r.Rating = a.Rating
         """, nativeQuery = true)
   List<RatingStarsInterface> getRatingPercentEachStarsByCourseId(long courseId);
 
