@@ -32,7 +32,7 @@ public interface CourseRepository extends JpaRepository<Course, Long> {
                         SELECT COUNT(e.id)
                         OVER(PARTITION BY e.user_id) AS enrollmentCount,
                         c.*, c.net_price AS net_price,
-                        cat.name AS [category_name] , e.progress, e.rating,
+                        cat.name AS [category_name] , e.progress, c.rating , e.rating [userRating],
                         e.id AS enrollId
                         FROM course c
                         INNER JOIN category cat

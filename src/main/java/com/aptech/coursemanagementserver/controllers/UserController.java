@@ -56,6 +56,8 @@ public class UserController {
                 .email(user.getEmail())
                 .imageUrl(user.getImageUrl())
                 .name(user.getName())
+                .first_name(user.getFirst_name())
+                .last_name(user.getLast_name())
                 .type(AntType.success)
                 .role(user.getRole())
                 .status(user.getUserStatus())
