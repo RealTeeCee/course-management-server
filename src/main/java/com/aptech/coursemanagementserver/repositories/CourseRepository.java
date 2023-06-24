@@ -31,8 +31,7 @@ public interface CourseRepository extends JpaRepository<Course, Long> {
         @Query(value = """
                         SELECT COUNT(e.id)
                         OVER(PARTITION BY e.user_id) AS enrollmentCount,
-                        c.*, c.net_price AS net_price,
-                        cat.name AS [category_name] , e.progress, c.rating , e.rating [userRating],
+                        c.*, cat.name AS [category_name] , e.progress , e.rating [userRating],
                         e.id AS enrollId
                         FROM course c
                         INNER JOIN category cat
@@ -79,7 +78,6 @@ public interface CourseRepository extends JpaRepository<Course, Long> {
         // List<CourseInterface> findAllCourses();
         @Query(value = """
                         SELECT
-                        --COUNT(c.id) AS enrollmentCount ,
                         COUNT(CASE WHEN(u.role = 'USER') THEN u.role END) [enrollmentCount],
                         c.* , cat.name [category_name],
 
@@ -95,25 +93,22 @@ public interface CourseRepository extends JpaRepository<Course, Long> {
                         WHERE ct.course_id = c.id
                         FOR XML PATH('')),1,1,'') [tags],
 
-                        0  AS [progress]
-                        --ISNULL(e.rating,0) [rating],
-                        --NULL AS [comment]
+                        0 AS [progress],
+                        0 AS  [userRating]
+
 
                         FROM course c
                         LEFT JOIN enrollment e ON c.id = e.course_id
                         INNER JOIN category cat ON c.category_id = cat.id
                         LEFT JOIN users u ON e.user_id = u.id AND u.role = 'USER'
-                        --WHERE u.role = 'USER'
+
                         GROUP BY
-                        --e.comment,
-                        --e.progress,
-                        --e.rating ,
                         cat.name, c.[id], c.[created_at], [description],
                         [duration], c.rating , c.published_at, c.author_id,
                         [image], [level], c.[name], [net_price], [price],
                          [slug], [status], c.[updated_at], [category_id]
                         ORDER BY
-                        --c.ordered DESC
+
                         c.created_at DESC
                                                           """, nativeQuery = true)
         List<CourseInterface> findAllCourses();
