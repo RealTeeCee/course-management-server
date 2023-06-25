@@ -146,7 +146,8 @@ public class TrackingController {
     }
 
     @GetMapping(path = "/learning/{courseId}")
-    @PreAuthorize("hasAnyRole('USER', 'ADMIN', 'MANAGER', 'EMPLOYEE')")
+    // @PreAuthorize("hasAnyRole('USER', 'ADMIN', 'MANAGER', 'EMPLOYEE')")
+    @PreAuthorize("permitAll()")
     public ResponseEntity<LearningDto> getLearnDetail(@PathVariable("courseId") long courseId)
             throws JsonMappingException, JsonProcessingException {
         try {

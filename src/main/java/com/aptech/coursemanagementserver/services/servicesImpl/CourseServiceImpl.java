@@ -148,7 +148,11 @@ public class CourseServiceImpl implements CourseService {
 
     @Override
     public List<CourseDto> findRelatedCourses(CourseRelatedDto relatedDto) {
-        List<String> tagNames = Arrays.asList(relatedDto.getTagName().trim().split(","));
+        List<String> tagNames = new ArrayList<>();
+        if (!(relatedDto.getTagName() == null || relatedDto.getTagName().isBlank())) {
+            Arrays.asList(relatedDto.getTagName().trim().split(","));
+        }
+
         boolean isExistTag = tagNames.size() > 0;
         List<Course> courses = courseRepository.findAll();
         List<CourseDto> courseDtos = new ArrayList<>();

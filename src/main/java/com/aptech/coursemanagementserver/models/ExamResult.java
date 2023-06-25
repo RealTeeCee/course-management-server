@@ -29,10 +29,12 @@ public class ExamResult {
     @Column(columnDefinition = "bigint")
     private long id;
 
+    @Column(columnDefinition = "FLOAT DEFAULT(0)")
     private double totalPoint;
 
     private GradeType grade;
 
+    @Column(columnDefinition = "INTEGER DEFAULT(0)")
     private int totalExamTime;
 
     @Column(columnDefinition = "nvarchar(MAX)")
@@ -41,9 +43,10 @@ public class ExamResult {
     @Column(columnDefinition = "nvarchar(MAX)")
     private String anwserDescription;
 
+    @Column(columnDefinition = "FLOAT DEFAULT(0)")
     private double questionPoint;
 
-    @Column(columnDefinition = "bit")
+    @Column(columnDefinition = "bit DEFAULT(0)")
     private boolean isCorrect;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -62,7 +65,6 @@ public class ExamResult {
     @JoinColumn(name = "answer_id", nullable = false, foreignKey = @ForeignKey(name = "FK_ExamResult_Answer"))
     private Answer answer;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_answer_id", nullable = false, foreignKey = @ForeignKey(name = "FK_ExamResult_UserAnswer"))
-    private Answer userAnswer;
+    @Column(columnDefinition = "bigint DEFAULT(0)")
+    private long userAnswerId;
 }

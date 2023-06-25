@@ -11,6 +11,7 @@ import com.aptech.coursemanagementserver.exceptions.BadRequestException;
 import com.aptech.coursemanagementserver.models.Course;
 import com.aptech.coursemanagementserver.models.Part;
 import com.aptech.coursemanagementserver.repositories.CourseRepository;
+import com.aptech.coursemanagementserver.repositories.ExamResultRepository;
 import com.aptech.coursemanagementserver.repositories.PartRepository;
 import com.aptech.coursemanagementserver.services.PartService;
 
@@ -22,6 +23,7 @@ import lombok.RequiredArgsConstructor;
 public class PartServiceImpl implements PartService {
     private final PartRepository partRepository;
     private final CourseRepository courseRepository;
+    private final ExamResultRepository examResultRepository;
 
     @Override
     public PartDto findById(long id) {
@@ -75,6 +77,10 @@ public class PartServiceImpl implements PartService {
 
         if (part.getQuestions().size() > 0) {
             throw new BadRequestException("The part 've already had question.");
+        }
+
+        if (examResultRepository.findByPartId(partId).size() > 0) {
+            throw new BadRequestException("The Part 've already registered in examination.");
         }
         partRepository.delete(part);
     }
