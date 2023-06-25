@@ -10,6 +10,7 @@ import com.aptech.coursemanagementserver.dtos.QuestionDto;
 import com.aptech.coursemanagementserver.exceptions.BadRequestException;
 import com.aptech.coursemanagementserver.models.Part;
 import com.aptech.coursemanagementserver.models.Question;
+import com.aptech.coursemanagementserver.repositories.ExamResultRepository;
 import com.aptech.coursemanagementserver.repositories.PartRepository;
 import com.aptech.coursemanagementserver.repositories.QuestionRepository;
 import com.aptech.coursemanagementserver.services.QuestionService;
@@ -21,6 +22,7 @@ import lombok.RequiredArgsConstructor;
 public class QuestionServiceImpl implements QuestionService {
     private final QuestionRepository questionRepository;
     private final PartRepository partRepository;
+    private final ExamResultRepository examResultRepository;
 
     @Override
     public QuestionDto findById(long id) {
@@ -73,15 +75,16 @@ public class QuestionServiceImpl implements QuestionService {
         Question question = questionRepository.findById(questionId).orElseThrow(
                 () -> new NoSuchElementException("This question with questionId: [" + questionId + "] is not exist."));
 
-        if (question.getAnswers().size() > 0) {
+        if (examResultRepository.findByQuestionId(questionId).size() > 0) {
             throw new BadRequestException(
-                    "The question 've already have answer");
+                    "The question 've already registered in examination.");
         }
 
         questionRepository.delete(question);
     }
 
-    private QuestionDto toDto(Question question) {
+    @Override
+    public QuestionDto toDto(Question question) {
         QuestionDto questionDto = QuestionDto.builder()
                 .id(question.getId())
                 .description(question.getDescription())

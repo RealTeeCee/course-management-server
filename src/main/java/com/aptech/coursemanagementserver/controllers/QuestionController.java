@@ -1,5 +1,7 @@
 package com.aptech.coursemanagementserver.controllers;
 
+import static com.aptech.coursemanagementserver.constants.GlobalStorage.FETCHING_FAILED;
+
 import java.util.List;
 import java.util.NoSuchElementException;
 
@@ -14,47 +16,46 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.aptech.coursemanagementserver.dtos.PartDto;
+import com.aptech.coursemanagementserver.dtos.QuestionDto;
 import com.aptech.coursemanagementserver.dtos.baseDto.BaseDto;
 import com.aptech.coursemanagementserver.enums.AntType;
 import com.aptech.coursemanagementserver.exceptions.BadRequestException;
 import com.aptech.coursemanagementserver.exceptions.IsExistedException;
 import com.aptech.coursemanagementserver.exceptions.ResourceNotFoundException;
-import com.aptech.coursemanagementserver.services.PartService;
+import com.aptech.coursemanagementserver.services.QuestionService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
-import static com.aptech.coursemanagementserver.constants.GlobalStorage.FETCHING_FAILED;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/part")
-@Tag(name = "Part Endpoints")
-public class PartController {
-    private final PartService partService;
+@RequestMapping("/question")
+@Tag(name = "Question Endpoints")
+public class QuestionController {
+    private final QuestionService questionService;
 
     @GetMapping
-    @Operation(summary = "[ANORNYMOUS] - GET All Parts")
+    @Operation(summary = "[ANORNYMOUS] - GET All Questions")
     @PreAuthorize("permitAll()")
-    public ResponseEntity<List<PartDto>> getParts() {
+    public ResponseEntity<List<QuestionDto>> getQuestions() {
         try {
-            List<PartDto> partDtos = partService.findAll();
-            return ResponseEntity.ok(partDtos);
+            List<QuestionDto> questionDtos = questionService.findAll();
+            return ResponseEntity.ok(questionDtos);
         } catch (Exception e) {
             throw new BadRequestException(FETCHING_FAILED);
         }
     }
 
     @GetMapping(path = "/{id}")
-    @Operation(summary = "[ANY ROLE] - GET Part By Id")
+    @Operation(summary = "[ANY ROLE] - GET Question By Id")
     @PreAuthorize("hasAnyRole('USER', 'ADMIN', 'MANAGER', 'EMPLOYEE')")
-    public ResponseEntity<PartDto> getPartById(@PathVariable("id") long id) {
+    public ResponseEntity<QuestionDto> getQuestionById(@PathVariable("id") long id) {
         try {
-            PartDto partDto = partService.findById(id);
-            return ResponseEntity.ok(partDto);
+            QuestionDto questionDto = questionService.findById(id);
+            return ResponseEntity.ok(questionDto);
         } catch (NoSuchElementException e) {
             throw new ResourceNotFoundException(e.getMessage());
         } catch (Exception e) {
@@ -63,15 +64,15 @@ public class PartController {
     }
 
     @PostMapping
-    @Operation(summary = "[ADMIN, MANAGER, EMPLOYEE] - Create / Update Part")
+    @Operation(summary = "[ADMIN, MANAGER, EMPLOYEE] - Create / Update Question")
     @PreAuthorize("hasAnyRole('ADMIN', 'MANAGER', 'EMPLOYEE')")
-    public ResponseEntity<BaseDto> create(@RequestBody PartDto partDto)
+    public ResponseEntity<BaseDto> create(@RequestBody QuestionDto questionDto)
             throws JsonMappingException, JsonProcessingException {
         try {
-            partService.save(partDto);
+            questionService.save(questionDto);
             return new ResponseEntity<BaseDto>(
                     BaseDto.builder().type(AntType.success).message(
-                            (partDto.getId() == 0 ? "Create new" : "Update") + " part successfully.").build(),
+                            (questionDto.getId() == 0 ? "Create new" : "Update") + " question successfully.").build(),
                     HttpStatus.OK);
         } catch (NoSuchElementException e) {
             throw new ResourceNotFoundException(e.getMessage());
@@ -83,13 +84,13 @@ public class PartController {
     }
 
     @DeleteMapping
-    @Operation(summary = "[ADMIN, MANAGER, EMPLOYEE] - Delete Part")
+    @Operation(summary = "[ADMIN, MANAGER, EMPLOYEE] - Delete Question")
     @PreAuthorize("hasAnyRole('ADMIN', 'MANAGER', 'EMPLOYEE')")
-    public ResponseEntity<BaseDto> delete(long partId) {
+    public ResponseEntity<BaseDto> delete(long questionId) {
         try {
-            partService.deletePart(partId);
+            questionService.deleteQuestion(questionId);
             return new ResponseEntity<BaseDto>(
-                    BaseDto.builder().type(AntType.success).message("Delete part successfully.").build(),
+                    BaseDto.builder().type(AntType.success).message("Delete question successfully.").build(),
                     HttpStatus.OK);
         } catch (NoSuchElementException e) {
             throw new ResourceNotFoundException(e.getMessage());

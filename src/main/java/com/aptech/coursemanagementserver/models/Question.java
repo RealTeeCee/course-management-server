@@ -21,6 +21,7 @@ import jakarta.persistence.OneToMany;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
 
@@ -30,15 +31,18 @@ import lombok.experimental.Accessors;
 @AllArgsConstructor
 @Accessors(chain = true)
 @Entity
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class Question {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(columnDefinition = "bigint")
+    @EqualsAndHashCode.Include
     private long id;
 
     @Column(columnDefinition = "nvarchar(MAX)")
     private String description;
 
+    @Column(columnDefinition = "FLOAT DEFAULT(0)")
     private double point;
 
     @CreationTimestamp
