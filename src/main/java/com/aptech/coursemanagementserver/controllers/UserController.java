@@ -7,7 +7,6 @@ import java.util.NoSuchElementException;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -46,7 +45,6 @@ public class UserController {
     private final TokenRepository tokenRepository;
     private final AuthenticationService authenticationService;
     private final UserService userService;
-    private final PasswordEncoder passwordEncoder;
 
     @GetMapping("/user/me")
     @PreAuthorize("hasAnyRole('USER', 'ADMIN', 'MANAGER', 'EMPLOYEE')")
@@ -139,15 +137,11 @@ public class UserController {
             User user = userService.findById(dto.getId()).orElseThrow(() -> new NoSuchElementException(
                     "The user with userId: [" + dto.getId() + "] is not exist."));
 
-            user = User.builder()
-                    .id(user.getId())
-                    .first_name(dto.getFirst_name())
-                    .last_name(dto.getLast_name())
-                    .email(dto.getEmail())
-                    .password(passwordEncoder.encode(dto.getPassword()))
-                    .role(dto.getRole())
-                    .userStatus(dto.getStatus())
-                    .build();
+            user.setFirst_name(dto.getFirst_name())
+                    .setLast_name(dto.getLast_name())
+                    .setName(dto.getName())
+                    .setImageUrl(dto.getImageUrl());
+
             userService.save(user);
 
             return ResponseEntity

@@ -1,21 +1,25 @@
 package com.aptech.coursemanagementserver.dtos;
 
-import java.util.List;
-
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.Data;
 import lombok.EqualsAndHashCode;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
-@Getter
-@Setter
+@Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode(callSuper = false)
-public class CourseRelatedDto {
-    private long categoryId;
-    private String tagName;
+public class PartDto {
+    private long id;
+
+    private long courseId;
+
+    private double maxPoint;
+
+    private int limitTime;
+
+    @Builder.Default
+    private int status = 0;
 }

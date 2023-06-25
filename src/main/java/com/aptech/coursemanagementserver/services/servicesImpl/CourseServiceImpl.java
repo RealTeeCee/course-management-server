@@ -148,49 +148,28 @@ public class CourseServiceImpl implements CourseService {
 
     @Override
     public List<CourseDto> findRelatedCourses(CourseRelatedDto relatedDto) {
-        // Related Course: Query theo category_id, hoặc nếu có tag thì query theo tag
-        // nữa, này phải check condition nếu có thì lấy ra theo tag nữa kèm category_id
-        boolean isExistTagId = relatedDto.getTagId() > 0;
+        List<String> tagNames = Arrays.asList(relatedDto.getTagName().trim().split(","));
+        boolean isExistTag = tagNames.size() > 0;
         List<Course> courses = courseRepository.findAll();
         List<CourseDto> courseDtos = new ArrayList<>();
+        courses = courses.stream()
+                .filter(c -> c.getStatus() == 1 &&
+                        (c.getCategory().getId() == relatedDto.getCategoryId()))
+                .toList();
 
-        if (isExistTagId) {
-            // If Tag Exist
-            Tag tag = tagRepository.findById(relatedDto.getTagId()).orElseThrow(
-                    () -> new NoSuchElementException(
-                            "This tag with tagId: [" + relatedDto.getTagId() + "] is not exist."));
+        if (isExistTag) {
 
-            // if (userService.findCurrentUser() == null || userService.checkIsUser()) {
-            // GUEST + USER
-            courses = courses.stream()
-                    .filter(c -> c.getStatus() == 1 &&
-                            (c.getCategory().getId() == relatedDto.getCategoryId()) &&
-                            (c.getTags().contains(tag)))
-                    .toList();
-            // } else {
-            // // ADMIN
-            // courses = courses.stream()
-            // .filter(c -> (c.getCategory().getId() == relatedDto.getCategoryId()) &&
-            // (c.getTags().contains(tag)))
-            // .toList();
+            // Set<Tag> tags = new HashSet<>();
+            // for (String tagName : tagNames) {
+            // Tag tag = new Tag();
+            // tag.setName(tagName);
+            // tags.add(tag);
             // }
 
-        } else {
-            // If Tag Not Exist
-            // if (userService.findCurrentUser() == null || userService.checkIsUser()) {
-            // GUEST + USER
-            courses = courses.stream()
-                    .filter(c -> c.getStatus() == 1 &&
-                            (c.getCategory().getId() == relatedDto.getCategoryId()))
+            courses = courses.stream().filter(c -> c.getTags().stream().anyMatch(t -> tagNames.contains(t.getName())))
                     .toList();
-            // } else {
-            // // ADMIN
-            // courses = courses.stream()
-            // .filter(c -> (c.getCategory().getId() == relatedDto.getCategoryId()))
-            // .toList();
-            // }
+
         }
-
         for (Course course : courses) {
             CourseDto courseDto = toCourseDto(course);
             courseDtos.add(courseDto);

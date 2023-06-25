@@ -54,6 +54,8 @@ public class User implements UserDetails, OAuth2User {
     private String first_name;
     @Column(columnDefinition = "nvarchar(100)")
     private String last_name;
+    @Column(columnDefinition = "nvarchar(100)")
+    private String name;
     @Column(unique = true, columnDefinition = "nvarchar(100)")
     private String email;
     @EqualsAndHashCode.Include
@@ -91,14 +93,6 @@ public class User implements UserDetails, OAuth2User {
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY, mappedBy = "user")
     @Builder.Default
     Set<Enrollment> enrollments = new HashSet<>();
-
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY, mappedBy = "user")
-    @Builder.Default
-    Set<Question> questions = new HashSet<>();
-
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY, mappedBy = "user")
-    @Builder.Default
-    Set<Answer> answers = new HashSet<>();
 
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY, mappedBy = "user")
     private List<Token> tokens;

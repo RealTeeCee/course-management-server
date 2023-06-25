@@ -22,24 +22,33 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.experimental.Accessors;
 
 @Data
+@AllArgsConstructor
 @NoArgsConstructor
 @Builder
-@AllArgsConstructor
-@Accessors(chain = true)
 @Entity
-public class Question {
+public class Part {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(columnDefinition = "bigint")
     private long id;
 
-    @Column(columnDefinition = "nvarchar(MAX)")
-    private String description;
+    private double maxPoint;
 
-    private double point;
+    private int limitTime;
+
+    @Builder.Default
+    @Column(columnDefinition = "tinyint")
+    private int status = 0;
+
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "part")
+    @Builder.Default
+    private Set<Question> questions = new HashSet<>();
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "course_id", nullable = false, foreignKey = @ForeignKey(name = "FK_Part_Course"))
+    private Course course;
 
     @CreationTimestamp
     @Builder.Default
@@ -47,16 +56,4 @@ public class Question {
     @UpdateTimestamp
     private Instant updated_at;
 
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "question")
-    @Builder.Default
-    private Set<Answer> answers = new HashSet<>();
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "part_id", nullable = false, foreignKey = @ForeignKey(name = "FK_Question_Part"))
-    private Part part;
-
-    // @ManyToOne(fetch = FetchType.LAZY)
-    // @JoinColumn(name = "course_id", nullable = false, foreignKey =
-    // @ForeignKey(name = "FK_Question_Course"))
-    // private Course course;
 }

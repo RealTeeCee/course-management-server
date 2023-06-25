@@ -15,12 +15,14 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
 
 @Data
 @NoArgsConstructor
+@Builder
 @AllArgsConstructor
 @Accessors(chain = true)
 @Entity
@@ -29,21 +31,18 @@ public class Answer {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(columnDefinition = "bigint")
     private long id;
+
     @Column(columnDefinition = "nvarchar(MAX)")
-    private String content;
-    // @Column(columnDefinition = "bigint")
-    // private long user_id;
-    // @Column(columnDefinition = "bigint")
-    // private long question_id;
+    private String description;
+
+    @Column(columnDefinition = "bit")
+    private boolean isCorrect;
 
     @CreationTimestamp
+    @Builder.Default
     private Instant created_at = Instant.now();
     @UpdateTimestamp
     private Instant updated_at;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id", nullable = false, foreignKey = @ForeignKey(name = "FK_Answer_User"))
-    private User user;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "question_id", nullable = false, foreignKey = @ForeignKey(name = "FK_Answer_Question"))
