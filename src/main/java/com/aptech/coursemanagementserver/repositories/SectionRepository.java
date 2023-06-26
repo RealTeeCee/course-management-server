@@ -28,6 +28,13 @@ public interface SectionRepository extends JpaRepository<Section, Long> {
                 """, nativeQuery = true)
     List<Section> findAllByCourseId(long courseId);
 
+    @Query(value = """
+            SELECT s.* FROM section s INNER JOIN course c
+            ON s.course_id = c.id
+            WHERE c.id = :courseId  AND s.status = 1
+                """, nativeQuery = true)
+    List<Section> findAllActiveByCourseId(long courseId);
+
     @Modifying
     @Transactional
     @Query(value = "DELETE FROM section WHERE id= :id", nativeQuery = true)

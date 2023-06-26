@@ -18,7 +18,7 @@ public class LessonDto {
     private int duration;
     private long sectionId;
     @Builder.Default
-    private int status = 1;
+    private int status = 0;
     @Builder.Default
     private int ordered = 0;
 }

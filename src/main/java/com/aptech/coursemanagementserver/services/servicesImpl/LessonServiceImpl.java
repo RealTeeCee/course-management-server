@@ -127,7 +127,7 @@ public class LessonServiceImpl implements LessonService {
             // Video video = new Video();
             lesson.setDescription(lessonDto.getDescription())
                     .setDuration(lessonDto.getDuration())
-                    .setStatus(lessonDto.getStatus())
+                    .setStatus(0)
                     .setName(lessonDto.getName())
                     .setSection(sectionRepository.findById(lessonDto.getSectionId()).get())
                     // .setVideo(video)

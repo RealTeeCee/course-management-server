@@ -160,7 +160,7 @@ public class SectionServiceImpl implements SectionService {
             Section section = new Section();
             section.setName(sectionDto.getName())
                     .setCourse(course)
-                    .setStatus(sectionDto.getStatus())
+                    .setStatus(0)
                     .setOrdered(sectionDto.getOrdered());
 
             if (sections.contains(section))
@@ -189,6 +189,10 @@ public class SectionServiceImpl implements SectionService {
             Course course = courseRepository.findById(sectionDto.getCourseId())
                     .orElseThrow(() -> new NoSuchElementException(
                             "The course with courseId: [" + sectionDto.getCourseId() + "] is not exist."));
+
+            if (section.getStatus() == 0 && sectionDto.getStatus() == 1 && section.getLessons().size() == 0) {
+                throw new BadRequestException("Cannot active section that not contains any lesson.");
+            }
 
             section.setName(sectionDto.getName())
                     .setCourse(course)
