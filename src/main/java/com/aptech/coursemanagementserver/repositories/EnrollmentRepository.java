@@ -35,7 +35,7 @@ public interface EnrollmentRepository extends JpaRepository<Enrollment, Long> {
   void ratingProcess();
 
   @Query(value = """
-        with rating as
+      with rating as
       (
       SELECT COUNT(ISNULL(s.Rating,0)) CNT, s.Rating FROM
       (
@@ -68,11 +68,13 @@ public interface EnrollmentRepository extends JpaRepository<Enrollment, Long> {
         """, nativeQuery = true)
   List<RatingStarsInterface> getRatingPercentEachStarsByCourseId(long courseId);
 
-  // @Query(value = """
-  // SELECT c.author_id FROM course c
-  // INNER JOIN enrollment e
-  // ON c.id = e.course_id
-  // WHERE user_id =:userId
-  // """, nativeQuery = true)
-  // Enrollment getEnrollByCourseIdAndUserId(long courseId, long userId);
+  @Modifying
+  @Transactional
+  @Query(value = """
+      UPDATE e
+      SET e.is_notify = :isNotify
+      FROM enrollment e
+      WHERE e.user_id = :userId
+              """, nativeQuery = true)
+  void updateIsNotify(boolean isNotify, long userId);
 }

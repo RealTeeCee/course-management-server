@@ -13,5 +13,7 @@ public interface EnrollmentService {
 
     BaseDto updateRating(EnrollmentDto enrollmentDto);
 
+    void updateIsNotify(boolean isNotify, long userId);
+
     List<RatingStarsInterface> getRatingPercentEachStarsByCourseId(long courseId);
 }

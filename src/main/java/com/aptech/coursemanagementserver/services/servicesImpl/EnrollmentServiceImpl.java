@@ -104,6 +104,16 @@ public class EnrollmentServiceImpl implements EnrollmentService {
     }
 
     @Override
+    public void updateIsNotify(boolean isNotify, long userId) {
+        try {
+            enrollmentRepository.updateIsNotify(isNotify, userId);
+        } catch (Exception e) {
+            throw new BadRequestException(GLOBAL_EXCEPTION);
+        }
+
+    }
+
+    @Override
     public List<RatingStarsInterface> getRatingPercentEachStarsByCourseId(long courseId) {
         return enrollmentRepository.getRatingPercentEachStarsByCourseId(courseId);
     }
