@@ -233,7 +233,7 @@ public class CourseController {
                         courseService.setProperties(courseDto, course);
 
                         return new ResponseEntity<BaseDto>(
-                                        BaseDto.builder().type(AntType.success).message("Create course successfully")
+                                        BaseDto.builder().type(AntType.success).message("Update course successfully.")
                                                         .build(),
                                         HttpStatus.OK);
 

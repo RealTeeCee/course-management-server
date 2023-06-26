@@ -225,7 +225,8 @@ public class CourseServiceImpl implements CourseService {
         }
 
         if (courseDto.getAuthor() == 0) {
-            throw new BadRequestException("Cannot create course without Author.");
+            throw new BadRequestException(
+                    (course.getId() > 0 ? "Cannot update" : "Cannot create") + " course without Author.");
         }
 
         course.setName(courseDto.getName().replaceAll("\\s{2,}", " "))

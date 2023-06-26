@@ -31,11 +31,14 @@ public interface CourseRepository extends JpaRepository<Course, Long> {
         @Query(value = """
                         SELECT COUNT(e.id)
                         OVER(PARTITION BY e.user_id) AS enrollmentCount,
-                        c.*, cat.name AS [category_name] , e.progress , e.rating [userRating],
-                        e.id AS enrollId
+                        c.*, cat.name AS [category_name] ,
+                        au.name AS [author_name] ,
+                        e.progress , e.rating [userRating], e.id AS enrollId
                         FROM course c
                         INNER JOIN category cat
                         ON c.category_id = cat.id
+                        INNER JOIN author au
+                        ON c.author_id = au.id
                         INNER JOIN enrollment e
                         ON e.course_id = c.id
                         WHERE e.user_id = :userId
@@ -80,16 +83,19 @@ public interface CourseRepository extends JpaRepository<Course, Long> {
                         SELECT
                         COUNT(CASE WHEN(u.role = 'USER') THEN u.role END) [enrollmentCount],
                         c.* , cat.name [category_name],
+                        au.name [author_name],
 
                         STUFF((SELECT DISTINCT ', ' + a.name
                         FROM  course_achievement ca
-                        LEFT JOIN achievement a ON ca.achievement_id = a.id
+                        LEFT JOIN achievement a
+                        ON ca.achievement_id = a.id
                         WHERE ca.course_id = c.id
                         FOR XML PATH('')),1,1,'') [achievements] ,
 
                         STUFF((SELECT DISTINCT ', ' + t.name
                         FROM  course_tag ct
-                        LEFT JOIN tag t ON ct.tag_id = t.id
+                        LEFT JOIN tag t
+                        ON ct.tag_id = t.id
                         WHERE ct.course_id = c.id
                         FOR XML PATH('')),1,1,'') [tags],
 
@@ -98,19 +104,25 @@ public interface CourseRepository extends JpaRepository<Course, Long> {
 
 
                         FROM course c
-                        LEFT JOIN enrollment e ON c.id = e.course_id
-                        INNER JOIN category cat ON c.category_id = cat.id
+                        LEFT JOIN enrollment e
+                        ON c.id = e.course_id
+                        INNER JOIN category cat
+                        ON c.category_id = cat.id
+                        INNER JOIN author au
+                        ON c.author_id = au.id
                         LEFT JOIN users u ON e.user_id = u.id AND u.role = 'USER'
 
                         GROUP BY
-                        cat.name, c.[id], c.[created_at], [description],
+                        cat.name,
+                        au.name,
+                        c.[id], c.[created_at], [description],
                         [duration], c.rating , c.published_at, c.author_id,
                         [image], [level], c.[name], [net_price], [price],
-                         [slug], [status], c.[updated_at], [category_id]
+                        [slug], [status], c.[updated_at], [category_id]
                         ORDER BY
 
                         c.created_at DESC
-                                                          """, nativeQuery = true)
+                                                                            """, nativeQuery = true)
         List<CourseInterface> findAllCourses();
 
         @Query(value = """
