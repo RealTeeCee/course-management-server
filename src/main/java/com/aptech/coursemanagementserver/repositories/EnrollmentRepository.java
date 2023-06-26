@@ -9,6 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.aptech.coursemanagementserver.dtos.RatingStarsInterface;
 import com.aptech.coursemanagementserver.models.Enrollment;
+import com.aptech.coursemanagementserver.models.User;
 
 public interface EnrollmentRepository extends JpaRepository<Enrollment, Long> {
 
@@ -77,4 +78,13 @@ public interface EnrollmentRepository extends JpaRepository<Enrollment, Long> {
       WHERE e.user_id = :userId
               """, nativeQuery = true)
   void updateIsNotify(boolean isNotify, long userId);
+
+  @Query(value = """
+      SELECT u.*
+      FROM enrollment e
+      INNER JOIN users u ON u.id = e.user_id
+      WHERE e.user_id = :userId
+      AND e.is_notify = :isNotify
+              """, nativeQuery = true)
+  User findUserWithGeneralNotify(boolean isNotify, long userId);
 }

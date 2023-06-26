@@ -27,6 +27,7 @@ public class UserProfileDto extends BaseDto {
     private String imageUrl;
     private Role role;
     private int status;
+    private boolean generalNotify;
     private Instant created_at;
 
 }
