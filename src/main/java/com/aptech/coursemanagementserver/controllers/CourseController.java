@@ -120,6 +120,7 @@ public class CourseController {
 
         @PostMapping(path = "/related-course")
         @Operation(summary = "[ANORNYMOUS] - GET Related Courses")
+        @PreAuthorize("permitAll()")
 
         public ResponseEntity<List<CourseDto>> getRelatedCourses(@RequestBody CourseRelatedDto relatedDto) {
                 try {

@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.aptech.coursemanagementserver.dtos.EnrollmentDto;
 import com.aptech.coursemanagementserver.dtos.RatingStarsInterface;
+import com.aptech.coursemanagementserver.dtos.UserProfileDto;
 import com.aptech.coursemanagementserver.dtos.baseDto.BaseDto;
 import com.aptech.coursemanagementserver.enums.AntType;
 import com.aptech.coursemanagementserver.exceptions.BadRequestException;
@@ -99,7 +100,7 @@ public class EnrollmentController {
 
     @PutMapping("/notify")
     @PreAuthorize("hasAnyRole('USER', 'ADMIN', 'MANAGER', 'EMPLOYEE')")
-    public ResponseEntity<Void> updateIsNotify(@RequestBody EnrollmentDto enrollmentDto) {
+    public ResponseEntity<UserProfileDto> updateIsNotify(@RequestBody EnrollmentDto enrollmentDto) {
         try {
             enrollmentService.updateIsNotify(enrollmentDto.isNotify(), enrollmentDto.getUser_id());
             return ResponseEntity.ok().build();
