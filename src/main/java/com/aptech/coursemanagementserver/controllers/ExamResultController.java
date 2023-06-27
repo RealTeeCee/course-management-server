@@ -23,8 +23,9 @@ public class ExamResultController {
     @PostMapping
     @PreAuthorize("hasAnyRole('USER', 'ADMIN', 'MANAGER', 'EMPLOYEE')")
     public ResponseEntity<?> createExamResult(@RequestBody ExamResultDto dto) {
-        examResultService.createExamResult(dto.getPartId(), dto.getUserId());
+        int examSession = examResultService.createExamResult(dto.getPartId(), dto.getUserId(), dto.getCourseId());
         return ResponseEntity
-                .ok(examResultService.findExamResultDetailByPartIdAndUserId(dto.getPartId(), dto.getUserId()));
+                .ok(examResultService.findExamResultByPartIdAndUserIdAndExamSession(dto.getPartId(), dto.getUserId(),
+                        examSession));
     }
 }

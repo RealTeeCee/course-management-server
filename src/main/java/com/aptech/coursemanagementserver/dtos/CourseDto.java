@@ -38,6 +38,7 @@ public class CourseDto {
     private String slug;
     private String image;
     private long progress;
+    private String requirement;
 
     @Builder.Default
     private double rating = 0;
@@ -61,6 +62,7 @@ public class CourseDto {
 
     private String category_name;
     private String author_name;
+    private String author_image;
 
     @JsonProperty("tags")
     private String tagName;

@@ -49,6 +49,12 @@ public class ExamResult {
     @Column(columnDefinition = "bit DEFAULT(0)")
     private boolean isCorrect;
 
+    private int examSession;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "course_id", nullable = false, foreignKey = @ForeignKey(name = "FK_ExamResult_Course"))
+    private Course course;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false, foreignKey = @ForeignKey(name = "FK_ExamResult_User"))
     private User user;

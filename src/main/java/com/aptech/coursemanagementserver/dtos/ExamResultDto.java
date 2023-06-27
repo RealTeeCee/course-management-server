@@ -14,4 +14,5 @@ import lombok.experimental.Accessors;
 public class ExamResultDto {
     private long partId;
     private long userId;
+    private long courseId;
 }

@@ -32,7 +32,7 @@ public interface CourseRepository extends JpaRepository<Course, Long> {
                         SELECT COUNT(e.id)
                         OVER(PARTITION BY e.user_id) AS enrollmentCount,
                         c.*, cat.name AS [category_name] ,
-                        au.name AS [author_name] ,
+                        au.name AS [author_name] , au.image AS [author_image],
                         e.progress , e.rating [userRating], e.id AS enrollId
                         FROM course c
                         INNER JOIN category cat
@@ -83,7 +83,7 @@ public interface CourseRepository extends JpaRepository<Course, Long> {
                         SELECT
                         COUNT(CASE WHEN(u.role = 'USER') THEN u.role END) [enrollmentCount],
                         c.* , cat.name [category_name],
-                        au.name [author_name],
+                        au.name [author_name], au.image [author_image],
 
                         STUFF((SELECT DISTINCT ', ' + a.name
                         FROM  course_achievement ca
@@ -114,14 +114,12 @@ public interface CourseRepository extends JpaRepository<Course, Long> {
 
                         GROUP BY
                         cat.name,
-                        au.name,
-                        c.[id], c.[created_at], [description],
+                        au.name, au.image,
+                        c.[id], c.[created_at], [description], c.requirement,
                         [duration], c.rating , c.published_at, c.author_id,
-                        [image], [level], c.[name], [net_price], [price],
+                        c.image, [level], c.[name], [net_price], [price],
                         [slug], [status], c.[updated_at], [category_id]
-                        ORDER BY
-
-                        c.created_at DESC
+                        ORDER BY c.created_at DESC
                                                                             """, nativeQuery = true)
         List<CourseInterface> findAllCourses();
 

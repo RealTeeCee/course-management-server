@@ -30,8 +30,8 @@ public class NotificationServiceImpl implements NotificationService {
         return toNotifDto(notification);
     }
 
-    public List<NotificationDto> findAllByUserIdNotRead(long userID) {
-        List<Notification> notifications = notifRepository.findByUserToIdAndDeliveredFalse(userID);
+    public List<NotificationDto> findAllByUserIdNotRead(long userToId) {
+        List<Notification> notifications = notifRepository.findByUserToIdAndDeliveredFalse(userToId);
 
         List<NotificationDto> notificationDtos = new ArrayList<>();
 
@@ -43,7 +43,7 @@ public class NotificationServiceImpl implements NotificationService {
         return notificationDtos;
     }
 
-    public List<NotificationDto> findAllByUserId(long userID) {
+    public List<NotificationDto> findAllByUserToId(long userID) {
         List<Notification> notifications = notifRepository.findByUserToId(userID);
 
         List<NotificationDto> notificationDtos = new ArrayList<>();
@@ -67,7 +67,7 @@ public class NotificationServiceImpl implements NotificationService {
         new Thread(() -> {
             try {
                 Thread.sleep(10000);
-                notifRepository.deliveredReadProcess();
+                notifRepository.deliveredReadProcessByNotifId(id);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
@@ -75,6 +75,32 @@ public class NotificationServiceImpl implements NotificationService {
 
         NotificationDto notificationDto = toNotifDto(notif);
         return notificationDto;
+    }
+
+    public List<NotificationDto> updateAllStatusToRead(long userToId) {
+        List<Notification> notifications = notifRepository.findByUserToId(userToId);
+
+        List<NotificationDto> notificationDtos = new ArrayList<>();
+
+        for (Notification notification : notifications) {
+            notification.setRead(true);
+            notification.setDelivered(false);
+
+            NotificationDto notificationDto = toNotifDto(notification);
+            notificationDtos.add(notificationDto);
+        }
+
+        notifRepository.saveAll(notifications);
+        new Thread(() -> {
+            try {
+                Thread.sleep(10000);
+                notifRepository.deliveredAllReadProcessByUserToId(notifications.get(0).getUserTo().getId());
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }).start();
+
+        return notificationDtos;
     }
 
     public void clear() {

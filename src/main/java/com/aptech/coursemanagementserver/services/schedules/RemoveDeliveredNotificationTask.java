@@ -9,7 +9,7 @@ import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
-public class DeliveredReadNotificationTask {
+public class RemoveDeliveredNotificationTask {
     private final NotificationRepository notifRepository;
 
     @Scheduled(initialDelay = 6000000, fixedRate = 6000000)

@@ -19,4 +19,8 @@ public class ExamResultResponseDto {
 
     @Builder.Default
     private List<AnswerDto> answers = new ArrayList<>();
+
+    private int examSession;
+
+    private long courseId;
 }

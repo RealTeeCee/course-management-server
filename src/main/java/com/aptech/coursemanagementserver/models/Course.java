@@ -68,6 +68,8 @@ public class Course {
         private Date published_at;
         // @Column(columnDefinition = "bigint")
         // private long category_id;
+        @Column(columnDefinition = "nvarchar(100)")
+        private String requirement;
 
         @CreationTimestamp
         private Instant created_at = Instant.now();

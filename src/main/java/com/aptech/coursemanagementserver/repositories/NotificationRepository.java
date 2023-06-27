@@ -42,9 +42,19 @@ public interface NotificationRepository extends JpaRepository<Notification, Long
                         UPDATE n
                         SET n.is_delivered = 1
                         FROM notifications n
-                        WHERE n.is_read = 1
+                        WHERE n.id = :id AND n.is_read = 1
                                 """, nativeQuery = true)
-        void deliveredReadProcess();
+        void deliveredReadProcessByNotifId(long id);
+
+        @Modifying
+        @Transactional
+        @Query(value = """
+                        UPDATE n
+                        SET n.is_delivered = 1
+                        FROM notifications n
+                        WHERE n.user_to_id = :id AND n.is_read = 1
+                                """, nativeQuery = true)
+        void deliveredAllReadProcessByUserToId(long id);
 
         @Modifying
         @Transactional
@@ -67,7 +77,7 @@ public interface NotificationRepository extends JpaRepository<Notification, Long
                           ON e.course_id = c.id
                           INNER JOIN author a
                           ON c.author_id = a.id
-                          WHERE c.author_id = 1 AND u.role = 'USER'
+                          WHERE c.author_id = :authorId AND u.role = 'USER'
                           AND is_published = 0 AND is_notify = 1
 
                         UPDATE e set e.is_published = 1
@@ -78,7 +88,7 @@ public interface NotificationRepository extends JpaRepository<Notification, Long
                           ON e.course_id = c.id
                           INNER JOIN author a
                           ON c.author_id = a.id
-                          WHERE c.author_id = 1 AND u.role = 'USER'
+                          WHERE c.author_id = :authorId AND u.role = 'USER'
                           AND is_published = 0 AND is_notify = 1
                                                                                 """, nativeQuery = true)
         void pushCourseNotificationToUser(long authorId);
