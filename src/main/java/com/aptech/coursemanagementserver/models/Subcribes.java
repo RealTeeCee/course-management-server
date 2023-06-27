@@ -3,7 +3,6 @@ package com.aptech.coursemanagementserver.models;
 import java.time.Instant;
 
 import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.UpdateTimestamp;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -25,36 +24,25 @@ import lombok.experimental.Accessors;
 @NoArgsConstructor
 @AllArgsConstructor
 @Accessors(chain = true)
-@Table(indexes = {
-        @Index(name = "IDX_Enrollment_CourseId_UserId", columnList = "course_id, user_id", unique = true),
-})
 @Entity
-
-public class Enrollment {
+@Table(indexes = {
+        @Index(name = "IDX_Enrollment_AuthorId_UserId", columnList = "author_id, user_id", unique = true),
+})
+public class Subcribes {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(columnDefinition = "bigint")
     private long id;
-    private double progress;
-    @Column(columnDefinition = "decimal(3,2)")
-    private double rating;
-    @Column(columnDefinition = "bit DEFAULT(0)")
-    private Boolean isNotify;
-
-    @Column(columnDefinition = "bit DEFAULT(0)")
-    private Boolean isPublished = false;
 
     @CreationTimestamp
     private Instant created_at = Instant.now();
-    @UpdateTimestamp
-    private Instant updated_at;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "course_id", nullable = false, foreignKey = @ForeignKey(name = "FK_Enrollment_Course"))
-    private Course course;
+    @JoinColumn(name = "author_id", nullable = false, foreignKey = @ForeignKey(name = "FK_Subcribes_author"))
+    private Author author;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id", nullable = false, foreignKey = @ForeignKey(name = "FK_Enrollment_User"))
+    @JoinColumn(name = "user_id", nullable = false, foreignKey = @ForeignKey(name = "FK_Subcribes_User"))
     private User user;
 
 }

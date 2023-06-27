@@ -468,9 +468,11 @@ public class CourseServiceImpl implements CourseService {
                 .category_name(course.getCategory().getName())
                 .author(course.getAuthor().getId())
                 .author_name(course.getAuthor().getName())
+                .author_image(course.getAuthor().getImage())
                 .achievementName(String.join(",", achievementsList))
                 .tagName(String.join(",", tagsList))
                 .duration(course.getDuration())
+                .requirement(course.getRequirement())
                 .build();
 
         return courseDto;

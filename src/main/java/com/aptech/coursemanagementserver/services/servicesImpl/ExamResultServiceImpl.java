@@ -27,13 +27,16 @@ public class ExamResultServiceImpl implements ExamResultService {
     private final AnswerService answerService;
 
     @Override
-    public void createExamResult(long partId, long userId) {
-        examResultRepository.createExamResultByPartIdAndUserId(partId, userId);
+    public int createExamResult(long partId, long userId, long courseId) {
+        return examResultRepository.createExamResultByPartIdAndUserIdAndCourseId(partId, userId, courseId);
     }
 
     @Override
-    public List<ExamResultResponseDto> findExamResultDetailByPartIdAndUserId(long partId, long userId) {
-        List<ExamResult> examResults = examResultRepository.findExamResultByPartIdAndUserId(partId, userId);
+    public List<ExamResultResponseDto> findExamResultByPartIdAndUserIdAndExamSession(long partId, long userId,
+            int examSession) {
+        List<ExamResult> examResults = examResultRepository.findExamResultByPartIdAndUserIdAndExamSession(partId,
+                userId,
+                examSession);
 
         List<ExamResultResponseDto> examResultDtos = new ArrayList<>();
         Set<Question> questions = examResults.stream().map(e -> e.getQuestion()).collect(Collectors.toSet());

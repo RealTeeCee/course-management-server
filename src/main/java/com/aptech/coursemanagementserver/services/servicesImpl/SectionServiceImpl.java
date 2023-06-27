@@ -83,9 +83,10 @@ public class SectionServiceImpl implements SectionService {
                 .collect(Collectors.toList());
         List<SectionDto> sectionsDto = new ArrayList<>();
 
-        if (userService.checkIsUser()) {
+        if (userService.checkIsUser() || userService.findCurrentUser() == null) {
             sectionsOfCourse = sectionsOfCourse.stream().filter(sec -> sec.getStatus() == 1).toList();
         }
+
         for (Section section : sectionsOfCourse) {
 
             SectionDto sectionDto = new SectionDto();

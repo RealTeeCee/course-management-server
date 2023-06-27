@@ -15,11 +15,12 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode(callSuper = false)
-public class AuthorDto {
+public class SubcribesDto {
     private long id;
-    private String name;
+    private long userId;
+    private long authorId;
+    private String authorName;
     private String image;
-
     @CreationTimestamp
     @Builder.Default
     private Instant created_at = Instant.now();

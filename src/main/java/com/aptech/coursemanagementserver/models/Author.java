@@ -1,7 +1,11 @@
 package com.aptech.coursemanagementserver.models;
 
+import java.time.Instant;
 import java.util.HashSet;
 import java.util.Set;
+
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -33,6 +37,13 @@ public class Author {
     private long id;
     @Column(columnDefinition = "nvarchar(100)")
     private String name;
+
+    private String image;
+
+    @CreationTimestamp
+    private Instant created_at = Instant.now();
+    @UpdateTimestamp
+    private Instant updated_at;
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "author")
     private Set<Course> courses = new HashSet<>();// Set doesn't take duplicate value -> high performance

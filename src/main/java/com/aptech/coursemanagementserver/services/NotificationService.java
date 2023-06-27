@@ -12,9 +12,11 @@ public interface NotificationService {
 
     public List<NotificationDto> findAllByUserIdNotRead(long userID);
 
-    public List<NotificationDto> findAllByUserId(long userID);
+    public List<NotificationDto> findAllByUserToId(long userID);
 
     public NotificationDto updateStatusToRead(long id);
+
+    public List<NotificationDto> updateAllStatusToRead(long id);
 
     public void clear();
 }

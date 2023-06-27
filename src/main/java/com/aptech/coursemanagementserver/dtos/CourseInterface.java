@@ -25,6 +25,8 @@ public interface CourseInterface {
 
     public String getAuthor_name();
 
+    public String getAuthor_image();
+
     public String getDescription();
 
     public String getSlug();

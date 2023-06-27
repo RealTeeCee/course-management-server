@@ -28,26 +28,38 @@ import static com.aptech.coursemanagementserver.constants.GlobalStorage.GLOBAL_E
 public class NotificationController {
     private final NotificationService notifService;
 
-    @GetMapping("/{userId}")
-    @Operation(summary = "[ANY ROLE] - Get Notification By UserId")
+    @GetMapping("/{userToId}")
+    @Operation(summary = "[ANY ROLE] - Get Notification By UserToId")
     @PreAuthorize("hasAnyRole('USER', 'ADMIN', 'MANAGER', 'EMPLOYEE')")
-    public ResponseEntity<List<NotificationDto>> getNotificationsByUserID(@PathVariable int userId) {
+    public ResponseEntity<List<NotificationDto>> getNotificationsByUserToId(@PathVariable int userToId) {
         try {
-            return ResponseEntity.ok(notifService.findAllByUserId(userId));
+            return ResponseEntity.ok(notifService.findAllByUserToId(userToId));
         } catch (NoSuchElementException e) {
             throw new ResourceNotFoundException(e.getMessage());
         } catch (Exception e) {
             throw new BadRequestException(GLOBAL_EXCEPTION);
         }
-
     }
 
     @PatchMapping("/read/{notifId}")
-    @Operation(summary = "[ANY ROLE] - Update Status To Read")
+    @Operation(summary = "[ANY ROLE] - Update Status To Read By NotifId")
     @PreAuthorize("hasAnyRole('USER', 'ADMIN', 'MANAGER', 'EMPLOYEE')")
-    public ResponseEntity<NotificationDto> changeNotifStatusToRead(@PathVariable int notifId) {
+    public ResponseEntity<NotificationDto> changeNotifStatusToRead(@PathVariable long notifId) {
         try {
             return ResponseEntity.ok(notifService.updateStatusToRead(notifId));
+        } catch (NoSuchElementException e) {
+            throw new ResourceNotFoundException(e.getMessage());
+        } catch (Exception e) {
+            throw new BadRequestException(GLOBAL_EXCEPTION);
+        }
+    }
+
+    @PatchMapping("/read-all/{userToId}")
+    @Operation(summary = "[ANY ROLE] - Update All Status To Read By UserToId")
+    @PreAuthorize("hasAnyRole('USER', 'ADMIN', 'MANAGER', 'EMPLOYEE')")
+    public ResponseEntity<List<NotificationDto>> changeAllNotifStatusToRead(@PathVariable long userToId) {
+        try {
+            return ResponseEntity.ok(notifService.updateAllStatusToRead(userToId));
         } catch (NoSuchElementException e) {
             throw new ResourceNotFoundException(e.getMessage());
         } catch (Exception e) {
