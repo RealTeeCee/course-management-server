@@ -23,4 +23,9 @@ public class ExamResultResponseDto {
     private int examSession;
 
     private long courseId;
+
+    private long userId;
+
+    private int limitTime;
+
 }
