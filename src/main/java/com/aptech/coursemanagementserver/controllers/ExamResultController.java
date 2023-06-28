@@ -8,6 +8,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.aptech.coursemanagementserver.dtos.ExamResultDto;
+import com.aptech.coursemanagementserver.dtos.FinishExamRequestDto;
+import com.aptech.coursemanagementserver.dtos.FinishExamResponseDto;
 import com.aptech.coursemanagementserver.services.ExamResultService;
 
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -23,9 +25,19 @@ public class ExamResultController {
     @PostMapping
     @PreAuthorize("hasAnyRole('USER', 'ADMIN', 'MANAGER', 'EMPLOYEE')")
     public ResponseEntity<?> createExamResult(@RequestBody ExamResultDto dto) {
-        int examSession = examResultService.createExamResult(dto.getPartId(), dto.getUserId(), dto.getCourseId());
+
+        int examSession = examResultService.createExamResult(dto.getUserId(), dto.getCourseId());
         return ResponseEntity
-                .ok(examResultService.findExamResultByPartIdAndUserIdAndExamSession(dto.getPartId(), dto.getUserId(),
+                .ok(examResultService.findExamResultByCourseIdAndUserIdAndExamSession(dto.getCourseId(),
+                        dto.getUserId(),
                         examSession));
+    }
+
+    @PostMapping("/finish-exam")
+    @PreAuthorize("hasAnyRole('USER', 'ADMIN', 'MANAGER', 'EMPLOYEE')")
+    public ResponseEntity<FinishExamResponseDto> finishExam(@RequestBody FinishExamRequestDto dto) {
+        FinishExamResponseDto finishDto = examResultService.finishExam(dto);
+        return ResponseEntity
+                .ok(finishDto);
     }
 }

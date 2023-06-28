@@ -74,5 +74,5 @@ public interface GlobalStorage {
     // MOMO
     String MOMO_CHECKOUT_API = DEV_DOMAIN_API + "/checkout/momo";
     String MOMO_REDIRECT_URL = "/momo/redirect";
-    String MOMO_REDIRECT_API = DEV_DOMAIN_API + "/momo/redirect";
+    String MOMO_REDIRECT_API = DEV_DOMAIN_API + "/checkout/momo/redirect";
 }

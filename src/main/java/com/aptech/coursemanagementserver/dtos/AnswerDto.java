@@ -19,4 +19,6 @@ public class AnswerDto {
     private boolean isCorrect;
 
     private long questionId;
+
+    private long userAnswerId;
 }

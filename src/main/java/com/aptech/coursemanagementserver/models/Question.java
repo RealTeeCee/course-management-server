@@ -55,6 +55,10 @@ public class Question {
     @Builder.Default
     private Set<Answer> answers = new HashSet<>();
 
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "question")
+    @Builder.Default
+    private Set<ExamResult> examResults = new HashSet<>();
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "part_id", nullable = false, foreignKey = @ForeignKey(name = "FK_Question_Part"))
     private Part part;

@@ -189,10 +189,14 @@ public class CourseManagementServerApplication {
 				categoryService.saveAll(categoryDtos);
 
 				List<AuthorDto> authorDtos = new ArrayList<>();
-				AuthorDto author1 = AuthorDto.builder().name("Author 1").build();
-				AuthorDto author2 = AuthorDto.builder().name("Author 2").build();
-				AuthorDto author3 = AuthorDto.builder().name("Author 3").build();
-				AuthorDto author4 = AuthorDto.builder().name("Author 4").build();
+				AuthorDto author1 = AuthorDto.builder().name("Author 1")
+						.image("https://i.ibb.co/PZ1mLcR/1ccad4bd825948071148.jpg").build();
+				AuthorDto author2 = AuthorDto.builder().name("Author 2")
+						.image("https://i.ibb.co/ZKk06Ds/member-lucia.jpg").build();
+				AuthorDto author3 = AuthorDto.builder().name("Author 3")
+						.image("https://i.ibb.co/3THGf9j/member-braum.jpg").build();
+				AuthorDto author4 = AuthorDto.builder().name("Author 4")
+						.image("https://i.ibb.co/GTGRmZp/member-nana.jpg").build();
 
 				authorDtos.add(author1);
 				authorDtos.add(author2);

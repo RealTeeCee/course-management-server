@@ -1,10 +1,8 @@
 package com.aptech.coursemanagementserver.services.servicesImpl;
 
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 import java.util.NoSuchElementException;
-import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 
@@ -34,11 +32,6 @@ public class AuthorServiceImpl implements AuthorService {
     @Override
     public List<AuthorDto> findAll() {
         List<Author> authors = authorRepository.findAll();
-
-        authors.stream()
-                // Sort by Ordered then Created_at
-                .sorted(Comparator.comparing(Author::getCreated_at).reversed())
-                .collect(Collectors.toList());
 
         List<AuthorDto> authorDtos = new ArrayList<>();
 
@@ -94,6 +87,7 @@ public class AuthorServiceImpl implements AuthorService {
                 .id(author.getId())
                 .name(author.getName())
                 .image(author.getImage())
+                .created_at(author.getCreated_at())
                 .build();
         return authorDto;
     }

@@ -66,7 +66,7 @@ public class TrackingController {
 
     @PostMapping(path = "/save")
     @PreAuthorize("hasAnyRole('USER', 'ADMIN', 'MANAGER', 'EMPLOYEE')")
-    public ResponseEntity<Boolean> saveTrack(@RequestBody LessonTrackingDto lessonTrackingDto)
+    public ResponseEntity<LessonTrackingDto> saveTrack(@RequestBody LessonTrackingDto lessonTrackingDto)
             throws JsonMappingException, JsonProcessingException {
         try {
             return ResponseEntity.ok(lessonTrackingService.saveTrack(lessonTrackingDto));
