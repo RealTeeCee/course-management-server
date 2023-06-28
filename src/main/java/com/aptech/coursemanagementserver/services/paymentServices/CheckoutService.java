@@ -9,6 +9,7 @@ import org.springframework.web.client.RestTemplate;
 
 import com.aptech.coursemanagementserver.dtos.payment.CheckoutDto;
 import com.aptech.coursemanagementserver.dtos.payment.MomoRequestDto;
+import com.aptech.coursemanagementserver.dtos.payment.MomoResponseDto;
 import com.aptech.coursemanagementserver.dtos.payment.PaypalRequestDto;
 import com.aptech.coursemanagementserver.dtos.payment.PaypalResponseDto;
 import com.aptech.coursemanagementserver.enums.payment.PaymentType;
@@ -34,7 +35,7 @@ public class CheckoutService {
         MomoRequestDto.setCourseId(checkoutDto.getCourseId());
         MomoRequestDto.setUserId(checkoutDto.getUserId());
         MomoRequestDto.setAmount(checkoutDto.getAmount());
-        MomoRequestDto response = restTemplate.postForObject(MOMO_CHECKOUT_API, MomoRequestDto, MomoRequestDto.class);
+        MomoResponseDto response = restTemplate.postForObject(MOMO_CHECKOUT_API, MomoRequestDto, MomoResponseDto.class);
         return ResponseEntity.ok(response);
     }
 }

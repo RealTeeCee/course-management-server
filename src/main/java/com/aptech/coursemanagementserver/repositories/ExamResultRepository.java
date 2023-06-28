@@ -37,7 +37,11 @@ public interface ExamResultRepository extends JpaRepository<ExamResult, Long> {
     // FROM question q INNER JOIN answer a
     // ON q.id = a.question_id
     // WHERE part_id = 1 ;
-    // set @session = (CASE WHEN @session = 0 THEN 1 ELSE @session end);
+    // SET @session = (CASE WHEN @session = 0 THEN 1 ELSE @session end);
+
+    // DECLARE @session INT
+    // EXEC sp_insert_exam 1, 4, 1, @session OUTPUT
+    // PRINT @session;
     // """)
     @Procedure(value = """
             sp_insert_exam
@@ -53,10 +57,10 @@ public interface ExamResultRepository extends JpaRepository<ExamResult, Long> {
             SET total_point =
             (SELECT SUM(question_point) total_point FROM exam_result
             WHERE user_id = :userId
-            AND part_id = 1
+            AND course_id = :courseId
             AND user_answer_id = answer_id
             AND is_correct = 1)
-            WHERE part_id = :partId
+            AND exam_session = :examSession
                                     """, nativeQuery = true)
-    void updateExamResultByPartIdAndUserId(long partId, long userId);
+    void updateExamResultByCourseIdAndUserIdAndExamSession(long courseId, long userId, int examSession);
 }

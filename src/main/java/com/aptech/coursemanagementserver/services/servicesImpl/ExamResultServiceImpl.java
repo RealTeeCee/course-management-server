@@ -7,8 +7,12 @@ import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 
+import com.aptech.coursemanagementserver.dtos.AnswerDetailDto;
 import com.aptech.coursemanagementserver.dtos.ExamResultResponseDto;
+import com.aptech.coursemanagementserver.dtos.FinishExamRequestDto;
+import com.aptech.coursemanagementserver.dtos.FinishExamResponseDto;
 import com.aptech.coursemanagementserver.dtos.QuestionDto;
+import com.aptech.coursemanagementserver.enums.GradeType;
 import com.aptech.coursemanagementserver.models.Answer;
 import com.aptech.coursemanagementserver.models.ExamResult;
 import com.aptech.coursemanagementserver.models.Part;
@@ -20,9 +24,11 @@ import com.aptech.coursemanagementserver.services.ExamResultService;
 import com.aptech.coursemanagementserver.services.QuestionService;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class ExamResultServiceImpl implements ExamResultService {
     private final ExamResultRepository examResultRepository;
     private final PartRepository partRepository;
@@ -71,4 +77,63 @@ public class ExamResultServiceImpl implements ExamResultService {
         return examResultDtos;
     }
 
+    @Override
+    public FinishExamResponseDto finishExam(FinishExamRequestDto dto) {
+        List<ExamResult> examResults = examResultRepository.findExamResultByCourseIdAndUserIdAndExamSession(
+                dto.getCourseId(),
+                dto.getUserId(),
+                dto.getExamSession());
+
+        // Tính tổng point answer correct
+        var trueAnwserPoint = dto.getAnswers().stream()
+                .filter(a -> a.getUserAnswerId() == a.getAnswerId() && a.isCorrect() == true)
+                .map(a -> a.getPoint()).toList();
+
+        double totalPoint = trueAnwserPoint.size() == 0 ? 0 : trueAnwserPoint.stream().reduce((a, b) -> a + b).get();
+
+        // double totalPoint = 97.5;
+        double maxPoint = examResults.get(0).getPart().getMaxPoint();
+        double percentPoint = totalPoint * 100 / maxPoint;
+        // 0-40: FAIL 40-65: AVERAGE 65-80: GOOD >=80: EXCELLENT
+        GradeType grade = GradeType.FAIL;
+        if (percentPoint >= 0 && percentPoint < 40) {
+            grade = GradeType.FAIL;
+        } else if (percentPoint >= 40 && percentPoint < 65) {
+            grade = GradeType.AVERAGE;
+        } else if (percentPoint >= 65 && percentPoint < 80) {
+            grade = GradeType.GOOD;
+        } else {
+            grade = GradeType.EXCELLENT;
+        }
+
+        for (AnswerDetailDto answer : dto.getAnswers()) {
+            final GradeType gradeType = grade;
+            examResults.forEach(e -> {
+                if (e.getQuestion().getId() == answer.getId()) {
+                    e.setUserAnswerId(answer.getUserAnswerId());
+                }
+                e.setTotalExamTime(dto.getTotalExamTime())
+                        .setTotalPoint(totalPoint)
+                        .setGrade(gradeType);
+            });
+        }
+        // for (ExamResult examResult : examResults) {
+        // try {
+        // examResult.setTotalExamTime(dto.getTotalExamTime())
+        // .setTotalPoint(totalPoint)
+        // .setGrade(grade);
+        // } catch (Exception e) {
+        // log.error("", e);
+        // }
+
+        // }
+        examResultRepository.saveAll(examResults);
+
+        FinishExamResponseDto finishDto = FinishExamResponseDto.builder()
+                .totalExamTime(dto.getTotalExamTime())
+                .totalPoint(totalPoint)
+                .grade(grade)
+                .build();
+        return finishDto;
+    }
 }

@@ -8,6 +8,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.aptech.coursemanagementserver.dtos.ExamResultDto;
+import com.aptech.coursemanagementserver.dtos.FinishExamRequestDto;
+import com.aptech.coursemanagementserver.dtos.FinishExamResponseDto;
 import com.aptech.coursemanagementserver.services.ExamResultService;
 
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -29,5 +31,13 @@ public class ExamResultController {
                 .ok(examResultService.findExamResultByCourseIdAndUserIdAndExamSession(dto.getCourseId(),
                         dto.getUserId(),
                         examSession));
+    }
+
+    @PostMapping("/finish-exam")
+    @PreAuthorize("hasAnyRole('USER', 'ADMIN', 'MANAGER', 'EMPLOYEE')")
+    public ResponseEntity<FinishExamResponseDto> finishExam(@RequestBody FinishExamRequestDto dto) {
+        FinishExamResponseDto finishDto = examResultService.finishExam(dto);
+        return ResponseEntity
+                .ok(finishDto);
     }
 }

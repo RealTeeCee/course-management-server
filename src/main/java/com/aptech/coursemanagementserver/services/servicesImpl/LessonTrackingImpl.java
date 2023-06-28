@@ -115,13 +115,23 @@ public class LessonTrackingImpl implements LessonTrackingService {
     }
 
     @Override
-    public boolean saveTrack(LessonTrackingDto lessonTrackingDto) {
+    public LessonTrackingDto saveTrack(LessonTrackingDto lessonTrackingDto) {
         try {
             LessonTrackingId trackId = setTrackId(lessonTrackingDto);
             boolean isUpdated = lessonTrackingRepository.findByTrackId(trackId).isPresent();
-            addTrack(lessonTrackingDto, isUpdated);
+            var tracking = addTrack(lessonTrackingDto, isUpdated);
+            LessonTrackingDto dto = LessonTrackingDto.builder()
+                    .id(tracking.getId())
+                    .enrollmentId(tracking.getTrackId().getEnrollment_id())
+                    .courseId(tracking.getTrackId().getCourse_id())
+                    .sectionId(tracking.getTrackId().getSection_id())
+                    .lessonId(tracking.getTrackId().getLession_id())
+                    .videoId(tracking.getTrackId().getVideo_id())
+                    .isCompleted(tracking.isCompleted())
+                    .isTracked(tracking.isTracked())
+                    .resumePoint(tracking.getResumePoint()).build();
 
-            return true;
+            return dto;
         } catch (NoSuchElementException e) {
             throw new NoSuchElementException(e.getMessage());
         } catch (Exception e) {
@@ -133,13 +143,21 @@ public class LessonTrackingImpl implements LessonTrackingService {
     public double complete(LessonTrackingDto lessonTrackingDto) {
         try {
             LessonTrackingId trackId = setTrackId(lessonTrackingDto);
-            LessonTracking lessonTracking = lessonTrackingRepository.findByTrackId(trackId).orElseThrow(
-                    () -> new NoSuchElementException(
-                            "The track with trackId:[" + trackId.toString() + "] is not exist."));
-            lessonTracking.setCompleted(true);
-            lessonTrackingRepository.save(lessonTracking);
+            Optional<LessonTracking> lessonTracking = lessonTrackingRepository.findByTrackId(trackId);
+
+            if (lessonTracking.isPresent()) {
+                lessonTracking.get().setCompleted(true);
+                lessonTrackingRepository.save(lessonTracking.get());
+
+            } else {
+                LessonTracking newTracking = new LessonTracking();
+                newTracking.setTrackId(trackId);
+                newTracking.setCompleted(true);
+                lessonTrackingRepository.save(newTracking);
+            }
             double progress = updateProgress(lessonTrackingDto.getEnrollmentId(), lessonTrackingDto.getCourseId());
             return progress;
+
         } catch (NoSuchElementException e) {
             throw new NoSuchElementException(e.getMessage());
         } catch (Exception e) {
@@ -210,7 +228,7 @@ public class LessonTrackingImpl implements LessonTrackingService {
         }
     }
 
-    private void addTrack(LessonTrackingDto lessonTrackingDto, boolean isUpdated) {
+    private LessonTracking addTrack(LessonTrackingDto lessonTrackingDto, boolean isUpdated) {
         LessonTrackingId trackId = setTrackId(lessonTrackingDto);
 
         LessonTracking lessonTracking = isUpdated ? lessonTrackingRepository.findByTrackId(trackId).orElseThrow(
@@ -238,7 +256,7 @@ public class LessonTrackingImpl implements LessonTrackingService {
                     .setResumePoint(lessonTrackingDto.getResumePoint());
         }
 
-        lessonTrackingRepository.save(lessonTracking);
+        return lessonTrackingRepository.save(lessonTracking);
     }
 
     private LessonTrackingId setTrackId(LessonTrackingDto lessonTrackingDto) {

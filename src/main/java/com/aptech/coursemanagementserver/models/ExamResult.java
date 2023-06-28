@@ -63,11 +63,11 @@ public class ExamResult {
     @JoinColumn(name = "part_id", nullable = false, foreignKey = @ForeignKey(name = "FK_ExamResult_Part"))
     private Part part;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "question_id", nullable = false, foreignKey = @ForeignKey(name = "FK_ExamResult_Question"))
     private Question question;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "answer_id", nullable = false, foreignKey = @ForeignKey(name = "FK_ExamResult_Answer"))
     private Answer answer;
 

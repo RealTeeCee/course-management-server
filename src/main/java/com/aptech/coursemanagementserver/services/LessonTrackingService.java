@@ -8,7 +8,7 @@ public interface LessonTrackingService {
 
     LessonTrackingDto saveTrackingLesson(LessonTrackingDto id);
 
-    boolean saveTrack(LessonTrackingDto lessonTrackingDto);
+    LessonTrackingDto saveTrack(LessonTrackingDto lessonTrackingDto);
 
     double complete(LessonTrackingDto lessonTrackingDto);
 

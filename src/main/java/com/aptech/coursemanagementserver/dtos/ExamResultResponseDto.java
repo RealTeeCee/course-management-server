@@ -28,4 +28,6 @@ public class ExamResultResponseDto {
 
     private int limitTime;
 
+    private int totalExamTime;
+
 }
