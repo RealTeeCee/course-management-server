@@ -62,14 +62,15 @@ public class AuthorServiceImpl implements AuthorService {
 
     @Override
     public void saveAll(List<AuthorDto> authorDtos) {
-        List<Author> categories = new ArrayList<>();
+        List<Author> authors = new ArrayList<>();
 
         for (AuthorDto authorDto : authorDtos) {
             Author author = new Author();
             author.setName(authorDto.getName());
-            categories.add(author);
+            author.setImage(authorDto.getImage());
+            authors.add(author);
         }
-        authorRepository.saveAll(categories);
+        authorRepository.saveAll(authors);
     }
 
     @Override

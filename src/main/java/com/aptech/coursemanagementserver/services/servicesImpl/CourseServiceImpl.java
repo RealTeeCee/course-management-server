@@ -32,6 +32,7 @@ import com.aptech.coursemanagementserver.repositories.CourseRepository;
 import com.aptech.coursemanagementserver.repositories.EnrollmentRepository;
 import com.aptech.coursemanagementserver.repositories.NotificationRepository;
 import com.aptech.coursemanagementserver.repositories.SectionRepository;
+import com.aptech.coursemanagementserver.repositories.SubcribesRepository;
 import com.aptech.coursemanagementserver.repositories.TagRepository;
 import com.aptech.coursemanagementserver.services.CourseService;
 import com.aptech.coursemanagementserver.services.authServices.UserService;
@@ -52,6 +53,7 @@ public class CourseServiceImpl implements CourseService {
     private final EnrollmentRepository enrollmentRepository;
     private final UserService userService;
     private final NotificationRepository notificationRepository;
+    private final SubcribesRepository subcribesRepository;
 
     @Override
     public List<Course> findAllByTagName(String tagName) {
@@ -284,7 +286,8 @@ public class CourseServiceImpl implements CourseService {
         // Nếu course status == 1
         Course courseNotif = courseRepository.save(course);
         if (courseNotif.getStatus() == 1) {
-            notificationRepository.pushCourseNotificationToUser(courseNotif.getAuthor().getId());
+            notificationRepository.pushCourseNotificationToUser(courseNotif.getAuthor().getId(),
+                    courseNotif.getId());
         }
 
         return course;

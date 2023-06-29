@@ -51,9 +51,16 @@ public class PaypalService {
         Course course = courseRepository.findById(dto.getCourseId()).get();
         User user = userRepository.findById(dto.getUserId()).get();
         Orders order = new Orders();
-        order.setUser(user).setCourse(course).setName(course.getName()).setDescription(course.getDescription())
-                .setDuration(course.getDuration()).setPrice(course.getPrice()).setNet_price(course.getNet_price())
-                .setImage(course.getImage()).setPayment(PaymentType.PAYPAL).setStatus(OrderStatus.PROCESSING);
+        order.setUser(user)
+                .setCourse(course)
+                .setName(course.getName())
+                .setDescription(course.getDescription())
+                .setUserDescription(dto.getUserDescription())
+                .setDuration(course.getDuration())
+                .setPrice(course.getPrice())
+                .setNet_price(course.getNet_price())
+                .setImage(course.getImage())
+                .setPayment(PaymentType.PAYPAL).setStatus(OrderStatus.PROCESSING);
         ordersRepository.save(order);
 
         Amount amount = new Amount();
@@ -125,9 +132,9 @@ public class PaypalService {
         Orders order = ordersRepository.findById(Long.valueOf(payment.getTransactions().get(0).getCustom())).get();
         if (isApproved) {
             order.setStatus(OrderStatus.COMPLETED);
+            order.setTransactionId(payment.getId());
             Enrollment enrollment = new Enrollment();
             enrollment
-                    .setIsNotify(true)
                     .setProgress(0)
                     .setRating(0)
                     .setCourse(order.getCourse())

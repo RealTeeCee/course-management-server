@@ -16,4 +16,5 @@ public class CheckoutDto {
     private long userId;
     private long courseId;
     private PaymentType paymentType = PaymentType.PAYPAL;
+    private String userDescription;
 }

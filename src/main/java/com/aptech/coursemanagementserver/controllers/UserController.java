@@ -58,6 +58,7 @@ public class UserController {
                 .last_name(user.getLast_name())
                 .type(AntType.success)
                 .role(user.getRole())
+                .isNotify(user.isNotify())
                 .status(user.getUserStatus())
                 .created_at(user.getCreated_at())
                 .message("Get current logged in user success.")
@@ -130,7 +131,7 @@ public class UserController {
     }
 
     @PutMapping("/user")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAnyRole('USER', 'ADMIN', 'MANAGER', 'EMPLOYEE')")
     public ResponseEntity<BaseDto> updateUser(@RequestBody UserDto dto) {
 
         try {
@@ -146,6 +147,28 @@ public class UserController {
 
             return ResponseEntity
                     .ok(BaseDto.builder().message("Update user successfully.").type(AntType.success).build());
+        } catch (BadRequestException e) {
+            throw new BadRequestException(e.getMessage());
+        } catch (NoSuchElementException e) {
+            throw new ResourceNotFoundException(e.getMessage());
+        } catch (Exception e) {
+            throw new BadRequestException(GLOBAL_EXCEPTION);
+        }
+    }
+
+    @PutMapping("/user/notify")
+    @PreAuthorize("hasAnyRole('USER', 'ADMIN', 'MANAGER', 'EMPLOYEE')")
+    public ResponseEntity<BaseDto> updateUserNotify(@RequestBody UserDto dto) {
+
+        try {
+            User user = userService.findById(dto.getId()).orElseThrow(() -> new NoSuchElementException(
+                    "The user with userId: [" + dto.getId() + "] is not exist."));
+
+            user.setNotify(dto.isNotify());
+            userService.save(user);
+
+            return ResponseEntity
+                    .ok(BaseDto.builder().message("Update notify successfully.").type(AntType.success).build());
         } catch (BadRequestException e) {
             throw new BadRequestException(e.getMessage());
         } catch (NoSuchElementException e) {

@@ -38,8 +38,6 @@ public class Enrollment {
     private double progress;
     @Column(columnDefinition = "decimal(3,2)")
     private double rating;
-    @Column(columnDefinition = "bit DEFAULT(0)")
-    private Boolean isNotify;
 
     @Column(columnDefinition = "bit DEFAULT(0)")
     private Boolean isPublished = false;

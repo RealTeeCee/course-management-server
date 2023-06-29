@@ -18,6 +18,7 @@ public class PaypalRequestDto {
     private PaypalMethod method = PaypalMethod.paypal;
     private PaypalIntent intent = PaypalIntent.sale;
     private String description;
+    private String userDescription;
     private long userId;
     private long courseId;
 }

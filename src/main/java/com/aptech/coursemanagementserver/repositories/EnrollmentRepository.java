@@ -69,22 +69,4 @@ public interface EnrollmentRepository extends JpaRepository<Enrollment, Long> {
         """, nativeQuery = true)
   List<RatingStarsInterface> getRatingPercentEachStarsByCourseId(long courseId);
 
-  @Modifying
-  @Transactional
-  @Query(value = """
-      UPDATE e
-      SET e.is_notify = :isNotify
-      FROM enrollment e
-      WHERE e.user_id = :userId
-              """, nativeQuery = true)
-  void updateIsNotify(boolean isNotify, long userId);
-
-  @Query(value = """
-      SELECT u.*
-      FROM enrollment e
-      INNER JOIN users u ON u.id = e.user_id
-      WHERE e.user_id = :userId
-      AND e.is_notify = :isNotify
-              """, nativeQuery = true)
-  User findUserWithGeneralNotify(boolean isNotify, long userId);
 }

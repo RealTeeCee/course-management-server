@@ -38,9 +38,12 @@ public class Orders {
     @Column(columnDefinition = "nvarchar(100)")
     @EqualsAndHashCode.Include
     private String name;
-    @Column(columnDefinition = "nvarchar(MAX)")
+    @Column(columnDefinition = "varchar(MAX)")
     private String image;
+    @Column(columnDefinition = "nvarchar(MAX)")
     private String description;
+    @Column(columnDefinition = "nvarchar(MAX)")
+    private String userDescription;
     @Column(columnDefinition = "decimal(10,2)")
     private double price;
     @Column(columnDefinition = "decimal(10,2)")
@@ -48,8 +51,7 @@ public class Orders {
     private PaymentType payment = PaymentType.PAYPAL;
     private OrderStatus status = OrderStatus.PENDING;
     private int duration;
-    // @Column(columnDefinition = "bigint")
-    // private long category_id;
+    private String transactionId;
     @CreationTimestamp
     private Instant created_at = Instant.now();
     @UpdateTimestamp

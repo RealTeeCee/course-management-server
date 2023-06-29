@@ -70,27 +70,15 @@ public interface NotificationRepository extends JpaRepository<Notification, Long
         @Query(value = """
                         INSERT [dbo].[notifications] ( [content], [created_at], [is_delivered], [is_read],
                         [notification_type], [user_from_id], [user_to_id])
-                        SELECT 'New Course from ' + a.name , GETUTCDATE(), 0, 0, 4, 1, u.id  FROM users u
-                          INNER JOIN enrollment e
-                          ON u.id = e.user_id
-                          INNER JOIN course c
-                          ON e.course_id = c.id
-                          INNER JOIN author a
-                          ON c.author_id = a.id
-                          WHERE c.author_id = :authorId AND u.role = 'USER'
-                          AND is_published = 0 AND is_notify = 1
-
-                        UPDATE e set e.is_published = 1
+                        SELECT 'New Course from ' + a.name , GETUTCDATE(), 0, 0, 4, 1, s.user_id
                         FROM users u
-                          INNER JOIN enrollment e
-                          ON u.id = e.user_id
-                          INNER JOIN course c
-                          ON e.course_id = c.id
-                          INNER JOIN author a
-                          ON c.author_id = a.id
-                          WHERE c.author_id = :authorId AND u.role = 'USER'
-                          AND is_published = 0 AND is_notify = 1
-                                                                                """, nativeQuery = true)
-        void pushCourseNotificationToUser(long authorId);
+                        INNER JOIN subcribes s ON s.user_id = u.id
+                        INNER JOIN author a ON s.author_id = a.id
+                        INNER JOIN course c ON a.id = c.author_id
+                        WHERE c.author_id = :authorId AND u.role = 'USER'
+                        AND c.id = :courseId
+                        AND u.is_notify = 1
+                                """, nativeQuery = true)
+        void pushCourseNotificationToUser(long authorId, long courseId);
 
 }

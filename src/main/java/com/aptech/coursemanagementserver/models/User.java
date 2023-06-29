@@ -69,6 +69,10 @@ public class User implements UserDetails, OAuth2User {
     @Column(columnDefinition = "tinyint")
     private int userStatus = 1;
 
+    @Column(columnDefinition = "bit DEFAULT(0)")
+    @Builder.Default
+    private boolean isNotify = true;
+
     @CreationTimestamp
     @Builder.Default
     private Instant created_at = Instant.now();

@@ -27,6 +27,7 @@ public class CheckoutService {
             paypalRequestDto.setCourseId(checkoutDto.getCourseId());
             paypalRequestDto.setUserId(checkoutDto.getUserId());
             paypalRequestDto.setPrice(checkoutDto.getAmount());
+            paypalRequestDto.setUserDescription(checkoutDto.getUserDescription());
             PaypalResponseDto response = restTemplate.postForObject(PAYPAL_CHECKOUT_API, paypalRequestDto,
                     PaypalResponseDto.class);
             return ResponseEntity.ok(response);
@@ -35,6 +36,7 @@ public class CheckoutService {
         MomoRequestDto.setCourseId(checkoutDto.getCourseId());
         MomoRequestDto.setUserId(checkoutDto.getUserId());
         MomoRequestDto.setAmount(checkoutDto.getAmount());
+        MomoRequestDto.setUserDescription(checkoutDto.getUserDescription());
         MomoResponseDto response = restTemplate.postForObject(MOMO_CHECKOUT_API, MomoRequestDto, MomoResponseDto.class);
         return ResponseEntity.ok(response);
     }

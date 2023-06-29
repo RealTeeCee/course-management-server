@@ -1,5 +1,7 @@
 package com.aptech.coursemanagementserver.services.servicesImpl;
 
+import static com.aptech.coursemanagementserver.constants.GlobalStorage.GLOBAL_EXCEPTION;
+
 import java.util.List;
 import java.util.NoSuchElementException;
 
@@ -7,7 +9,6 @@ import org.springframework.stereotype.Service;
 
 import com.aptech.coursemanagementserver.dtos.EnrollmentDto;
 import com.aptech.coursemanagementserver.dtos.RatingStarsInterface;
-import com.aptech.coursemanagementserver.dtos.UserProfileDto;
 import com.aptech.coursemanagementserver.dtos.baseDto.BaseDto;
 import com.aptech.coursemanagementserver.enums.AntType;
 import com.aptech.coursemanagementserver.exceptions.BadRequestException;
@@ -18,7 +19,7 @@ import com.aptech.coursemanagementserver.repositories.CourseRepository;
 import com.aptech.coursemanagementserver.repositories.EnrollmentRepository;
 import com.aptech.coursemanagementserver.repositories.UserRepository;
 import com.aptech.coursemanagementserver.services.EnrollmentService;
-import static com.aptech.coursemanagementserver.constants.GlobalStorage.GLOBAL_EXCEPTION;
+
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -45,7 +46,6 @@ public class EnrollmentServiceImpl implements EnrollmentService {
                 Enrollment enrollment = new Enrollment();
                 enrollment
                         .setCourse(course)
-                        .setIsNotify(enrollmentDto.isNotify())
                         .setProgress(0)
                         .setRating(enrollmentDto.getRating())
                         .setUser(user);
@@ -98,32 +98,6 @@ public class EnrollmentServiceImpl implements EnrollmentService {
             enrollmentRepository.save(enroll);
 
             return BaseDto.builder().type(AntType.success).build();
-        } catch (Exception e) {
-            throw new BadRequestException(GLOBAL_EXCEPTION);
-        }
-
-    }
-
-    @Override
-    public UserProfileDto updateIsNotify(boolean isNotify, long userId) {
-        try {
-            enrollmentRepository.updateIsNotify(isNotify, userId);
-            User user = enrollmentRepository.findUserWithGeneralNotify(isNotify, userId);
-            var userProfileDto = UserProfileDto.builder()
-                    .id(user.getId())
-                    .email(user.getEmail())
-                    .imageUrl(user.getImageUrl())
-                    .name(user.getName())
-                    .first_name(user.getFirst_name())
-                    .last_name(user.getLast_name())
-                    .type(AntType.success)
-                    .role(user.getRole())
-                    .status(user.getUserStatus())
-                    .generalNotify(isNotify)
-                    .created_at(user.getCreated_at())
-                    .build();
-
-            return userProfileDto;
         } catch (Exception e) {
             throw new BadRequestException(GLOBAL_EXCEPTION);
         }
