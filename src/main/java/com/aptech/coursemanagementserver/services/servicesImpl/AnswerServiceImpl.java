@@ -58,6 +58,11 @@ public class AnswerServiceImpl implements AnswerService {
                 () -> new NoSuchElementException(
                         "This question with questionId: [" + answerDto.getQuestionId() + "] is not exist."));
 
+        int answerCount = question.getAnswers().size() + 1;
+        if (answerCount > 4) {
+            throw new BadRequestException("There's only 4 options in one question");
+        }
+
         answer.setDescription(answerDto.getDescription());
         answer.setCorrect(answerDto.isCorrect());
         answer.setQuestion(question);

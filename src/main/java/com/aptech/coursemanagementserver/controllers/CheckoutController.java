@@ -11,6 +11,7 @@ import static com.aptech.coursemanagementserver.constants.GlobalStorage.PAYPAL_S
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -18,12 +19,14 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.view.RedirectView;
 
+import com.aptech.coursemanagementserver.dtos.OrderDto;
 import com.aptech.coursemanagementserver.dtos.payment.CheckoutDto;
 import com.aptech.coursemanagementserver.dtos.payment.MomoRequestDto;
 import com.aptech.coursemanagementserver.dtos.payment.MomoResponseDto;
 import com.aptech.coursemanagementserver.dtos.payment.PaypalRequestDto;
 import com.aptech.coursemanagementserver.dtos.payment.PaypalResponseDto;
 import com.aptech.coursemanagementserver.exceptions.BadRequestException;
+import com.aptech.coursemanagementserver.services.OrderService;
 import com.aptech.coursemanagementserver.services.paymentServices.CheckoutService;
 import com.aptech.coursemanagementserver.services.paymentServices.MomoService;
 import com.aptech.coursemanagementserver.services.paymentServices.PaypalService;
@@ -43,6 +46,7 @@ public class CheckoutController {
     private final CheckoutService checkoutService;
     private final MomoService momoService;
     private final PaypalService service;
+    private final OrderService orderService;
 
     @PostMapping()
     @Operation(summary = "[USER] - Initiate payment MOMO")
@@ -157,6 +161,16 @@ public class CheckoutController {
             return new RedirectView(PAYMENT_CANCEL_CLIENT);
         } catch (PayPalRESTException e) {
             throw new BadRequestException(e.getMessage());
+        } catch (Exception e) {
+            throw new BadRequestException(GLOBAL_EXCEPTION);
+        }
+    }
+
+    @GetMapping(path = "/details/{transactionId}")
+    @Operation(summary = "[USER] - Get Checkout Detail")
+    public ResponseEntity<OrderDto> getCheckoutDetail(@PathVariable String transactionId) {
+        try {
+            return ResponseEntity.ok(orderService.findByTransactionId(transactionId));
         } catch (Exception e) {
             throw new BadRequestException(GLOBAL_EXCEPTION);
         }

@@ -1,18 +1,16 @@
 package com.aptech.coursemanagementserver.repositories;
 
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Query;
+import java.util.List;
+import java.util.Optional;
 
-import com.aptech.coursemanagementserver.dtos.OrderDto;
+import org.springframework.data.jpa.repository.JpaRepository;
+
 import com.aptech.coursemanagementserver.models.Orders;
 
 public interface OrdersRepository extends JpaRepository<Orders, Long> {
-    @Query(value = """
-            SELECT TOP o.* FROM orders o
-            WHERE o.user_id = :userId
-            AND o.course_id = :courseId
-            AND o.status = 'COMPLETED'
-            ORDER BY created_at DESC
-                    """, nativeQuery = true)
-    OrderDto findCompletedOrderByUserIdAndCourseId(long userId, long courseId);
+
+    List<Orders> findByUserId(long userId);
+
+    Optional<Orders> findByTransactionId(String transactionId);
+
 }
