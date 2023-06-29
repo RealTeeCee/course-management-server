@@ -3,13 +3,16 @@ package com.aptech.coursemanagementserver.services.servicesImpl;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.stream.Stream;
 
 import org.springframework.stereotype.Service;
 
 import com.aptech.coursemanagementserver.dtos.AuthorDto;
+import com.aptech.coursemanagementserver.enums.Role;
 import com.aptech.coursemanagementserver.exceptions.BadRequestException;
 import com.aptech.coursemanagementserver.exceptions.IsExistedException;
 import com.aptech.coursemanagementserver.models.Author;
+import com.aptech.coursemanagementserver.models.Enrollment;
 import com.aptech.coursemanagementserver.repositories.AuthorRepository;
 import com.aptech.coursemanagementserver.services.AuthorService;
 
@@ -77,9 +80,13 @@ public class AuthorServiceImpl implements AuthorService {
     public void deleteAuthor(long authorId) {
         Author author = authorRepository.findById(authorId).orElseThrow(
                 () -> new NoSuchElementException("This author with authorId: [" + authorId + "] is not exist."));
-        if (author.getCourses().size() > 0) {
-            throw new BadRequestException("Cannot delete author who has already taught courses.");
-        }
+        author.getCourses().forEach(c -> {
+            Stream<Enrollment> filter = c.getEnrollments().stream().filter(e -> e.getUser().getRole() == Role.USER);
+            if (filter.count() > 0) {
+                throw new BadRequestException("Cannot delete author who has already taught courses.");
+            }
+        });
+
         authorRepository.delete(author);
     }
 
