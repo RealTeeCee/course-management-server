@@ -1,5 +1,9 @@
 package com.aptech.coursemanagementserver.dtos;
 
+import java.time.Instant;
+
+import org.hibernate.annotations.CreationTimestamp;
+
 import com.aptech.coursemanagementserver.enums.OrderStatus;
 import com.aptech.coursemanagementserver.enums.payment.PaymentType;
 
@@ -19,6 +23,8 @@ public class OrderDto {
     private String userName;
     private String courseName;
     private String description;
+    private String userDescription;
+    private String slug;
     private int duration;
     private String image;
     private double price;
@@ -26,4 +32,7 @@ public class OrderDto {
     @Builder.Default
     private PaymentType payment = PaymentType.PAYPAL;
     private OrderStatus status;
+
+    @CreationTimestamp
+    private Instant created_at;
 }

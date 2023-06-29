@@ -3,6 +3,7 @@ package com.aptech.coursemanagementserver.services.servicesImpl;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
@@ -54,6 +55,26 @@ public class PartServiceImpl implements PartService {
                     () -> new NoSuchElementException(
                             "This part with partId: [" + partDto.getId() + "] is not exist."));
         }
+
+        if (partDto.getStatus() == 1) {
+            Optional<Double> questionsPoint = part.getQuestions().stream().map(q -> q.getPoint())
+                    .reduce((a, b) -> a + b);
+            if (questionsPoint.isPresent() && questionsPoint.get() != partDto.getMaxPoint()) {
+                throw new BadRequestException("Total point of questions must be equal part's max point.");
+            }
+
+            StringBuilder invalidQuestions = new StringBuilder();
+            part.getQuestions().forEach(q -> {
+                if (q.getAnswers().size() < 4) {
+                    invalidQuestions.append(" + " + q.getDescription() + "\n");
+                }
+            });
+
+            if (invalidQuestions.length() > 0) {
+                throw new BadRequestException(
+                        "Question: \n" + invalidQuestions.toString() + "don't have enough answers.");
+            }
+        }
         Course course = courseRepository.findById(partDto.getCourseId()).orElseThrow(
                 () -> new NoSuchElementException(
                         "This course with courseId: [" + partDto.getCourseId() + "] is not exist."));
@@ -61,12 +82,7 @@ public class PartServiceImpl implements PartService {
         part.setCourse(course);
         part.setLimitTime(partDto.getLimitTime());
         part.setMaxPoint(partDto.getMaxPoint());
-
-        if (part.getStatus() == 0 && partDto.getStatus() == 1 && part.getQuestions().size() < 4) {
-            throw new BadRequestException("The limit question must be greater than or equal 4.");
-        }
         part.setStatus(partDto.getStatus());
-
         partRepository.save(part);
     }
 

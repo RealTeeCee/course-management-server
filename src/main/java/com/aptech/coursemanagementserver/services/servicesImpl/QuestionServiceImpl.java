@@ -58,13 +58,13 @@ public class QuestionServiceImpl implements QuestionService {
                 () -> new NoSuchElementException(
                         "This part with partId: [" + questionDto.getPartId() + "] is not exist."));
 
-        question.setDescription(questionDto.getDescription());
-        question.setPart(part);
         if (part.getQuestions().stream().mapToDouble(q -> q.getPoint()).sum() + questionDto.getPoint() > part
                 .getMaxPoint()) {
             throw new BadRequestException(
                     "The total points for this part's questions exceeds the maximum allowed points.");
         }
+        question.setDescription(questionDto.getDescription());
+        question.setPart(part);
         question.setPoint(question.getPoint());
 
         questionRepository.save(question);

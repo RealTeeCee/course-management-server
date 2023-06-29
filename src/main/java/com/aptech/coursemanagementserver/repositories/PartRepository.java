@@ -9,7 +9,7 @@ import com.aptech.coursemanagementserver.models.Part;
 
 public interface PartRepository extends JpaRepository<Part, Long> {
     @Query(value = """
-            SELECT p.* FROM part p WHERE p.course_id = :courseId
+            SELECT p.* FROM part p WHERE p.course_id = :courseId AND p.status = 1
             """, nativeQuery = true)
-    List<Part> findAllByCourseId(long courseId);
+    List<Part> findActivePartByCourseId(long courseId);
 }
