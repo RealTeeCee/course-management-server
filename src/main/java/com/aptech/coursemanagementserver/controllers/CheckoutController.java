@@ -10,6 +10,7 @@ import static com.aptech.coursemanagementserver.constants.GlobalStorage.PAYPAL_S
 import static com.aptech.coursemanagementserver.constants.GlobalStorage.PAYPAL_SUCCESS_URL;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -49,8 +50,8 @@ public class CheckoutController {
     private final OrderService orderService;
 
     @PostMapping()
-    @Operation(summary = "[USER] - Initiate payment MOMO")
-    // @PreAuthorize("hasAnyRole('USER')")
+    @Operation(summary = "[USER] - Initiate payment")
+    @PreAuthorize("hasAnyRole('USER')")
     public ResponseEntity<?> checkout(@RequestBody CheckoutDto checkoutDto)
             throws Exception {
         try {
@@ -62,7 +63,7 @@ public class CheckoutController {
     }
 
     @PostMapping(path = ("/momo"))
-    @Operation(summary = "[USER] - Initiate payment")
+    @Operation(summary = "[USER] - Initiate payment MOMO")
     // @PreAuthorize("hasAnyRole('USER')")
     public ResponseEntity<MomoResponseDto> initiatePaymentMomo(@RequestBody MomoRequestDto momoRequestDto)
             throws Exception {
@@ -85,6 +86,7 @@ public class CheckoutController {
 
     @GetMapping(path = MOMO_REDIRECT_URL)
     @Operation(summary = "[ANORNYMOUS] - Redirect from MOMO")
+    @PreAuthorize("permitAll()")
     public RedirectView redirect(@RequestParam int resultCode, @RequestParam String extraData,
             @RequestParam String orderId) {
         momoService.UpdateOrderAndCreateEnroll(resultCode, extraData, orderId);
@@ -142,12 +144,14 @@ public class CheckoutController {
 
     @GetMapping(path = PAYPAL_CANCEL_URL)
     @Operation(summary = "[ANORNYMOUS] - Redirect from PAYPAL")
+    @PreAuthorize("permitAll()")
     public RedirectView cancelPay() {
         return new RedirectView(PAYMENT_CANCEL_CLIENT);
     }
 
     @GetMapping(path = PAYPAL_SUCCESS_URL)
     @Operation(summary = "[ANORNYMOUS] - Redirect from PAYPAL")
+    @PreAuthorize("permitAll()")
     public RedirectView successPay(@RequestParam("paymentId") String paymentId,
             @RequestParam("PayerID") String payerId) {
         try {
@@ -168,6 +172,7 @@ public class CheckoutController {
 
     @GetMapping(path = "/details/{transactionId}")
     @Operation(summary = "[USER] - Get Checkout Detail")
+    @PreAuthorize("hasAnyRole('USER')")
     public ResponseEntity<OrderDto> getCheckoutDetail(@PathVariable String transactionId) {
         try {
             return ResponseEntity.ok(orderService.findByTransactionId(transactionId));
