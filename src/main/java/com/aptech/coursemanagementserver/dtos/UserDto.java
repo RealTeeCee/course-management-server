@@ -49,6 +49,8 @@ public class UserDto {
     @Builder.Default
     private int status = 1;
 
+    private boolean isNotify;
+
     @CreationTimestamp
     @Builder.Default
     private Instant created_at = Instant.now();

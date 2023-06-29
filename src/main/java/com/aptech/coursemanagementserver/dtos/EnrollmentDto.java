@@ -16,7 +16,6 @@ public class EnrollmentDto {
     private double progress;
     private String comment;
     private double rating;
-    private boolean isNotify;
     private long user_id;
     private long course_id;
 

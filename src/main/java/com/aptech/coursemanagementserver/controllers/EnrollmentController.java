@@ -11,14 +11,12 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.aptech.coursemanagementserver.dtos.EnrollmentDto;
 import com.aptech.coursemanagementserver.dtos.RatingStarsInterface;
-import com.aptech.coursemanagementserver.dtos.UserProfileDto;
 import com.aptech.coursemanagementserver.dtos.baseDto.BaseDto;
 import com.aptech.coursemanagementserver.enums.AntType;
 import com.aptech.coursemanagementserver.exceptions.BadRequestException;
@@ -91,19 +89,6 @@ public class EnrollmentController {
     public ResponseEntity<List<RatingStarsInterface>> getCourseRating(@PathVariable("courseId") long courseId) {
         try {
             return ResponseEntity.ok(enrollmentService.getRatingPercentEachStarsByCourseId(courseId));
-        } catch (NoSuchElementException e) {
-            throw new ResourceNotFoundException(e.getMessage());
-        } catch (Exception e) {
-            throw new BadRequestException(e.getMessage());
-        }
-    }
-
-    @PutMapping("/notify")
-    @PreAuthorize("hasAnyRole('USER', 'ADMIN', 'MANAGER', 'EMPLOYEE')")
-    public ResponseEntity<UserProfileDto> updateIsNotify(@RequestBody EnrollmentDto enrollmentDto) {
-        try {
-            enrollmentService.updateIsNotify(enrollmentDto.isNotify(), enrollmentDto.getUser_id());
-            return ResponseEntity.ok().build();
         } catch (NoSuchElementException e) {
             throw new ResourceNotFoundException(e.getMessage());
         } catch (Exception e) {

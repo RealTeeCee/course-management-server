@@ -58,7 +58,7 @@ public class CheckoutController {
     }
 
     @PostMapping(path = ("/momo"))
-    @Operation(summary = "[USER] - Initiate payment MOMO")
+    @Operation(summary = "[USER] - Initiate payment")
     // @PreAuthorize("hasAnyRole('USER')")
     public ResponseEntity<MomoResponseDto> initiatePaymentMomo(@RequestBody MomoRequestDto momoRequestDto)
             throws Exception {
@@ -81,11 +81,11 @@ public class CheckoutController {
 
     @GetMapping(path = MOMO_REDIRECT_URL)
     @Operation(summary = "[ANORNYMOUS] - Redirect from MOMO")
-    public RedirectView redirect(@RequestParam int resultCode, @RequestParam String extraData) {
-        momoService.UpdateOrderAndCreateEnroll(resultCode, extraData);
+    public RedirectView redirect(@RequestParam int resultCode, @RequestParam String extraData,
+            @RequestParam String orderId) {
+        momoService.UpdateOrderAndCreateEnroll(resultCode, extraData, orderId);
         if (resultCode == 0 || resultCode == 9000) {
-
-            return new RedirectView(PAYMENT_SUCCESS_CLIENT);
+            return new RedirectView(PAYMENT_SUCCESS_CLIENT + "?transactionId=" + orderId);
         }
         // 1001: Giao dịch thanh toán thất bại do tài khoản người dùng không đủ tiền.
         // 1005: Giao dịch thất bại do url hoặc QR code đã hết hạn.
@@ -101,7 +101,7 @@ public class CheckoutController {
             return new RedirectView(PAYMENT_CANCEL_CLIENT + "?resultCode=1006");
         } else {
             resultCode = 9999;
-            momoService.UpdateOrderAndCreateEnroll(resultCode, extraData);
+            momoService.UpdateOrderAndCreateEnroll(resultCode, extraData, orderId);
             return new RedirectView(PAYMENT_CANCEL_CLIENT);
         }
 
@@ -152,7 +152,7 @@ public class CheckoutController {
             boolean isApproved = payment.getState().equals("approved");
             service.updateOrderAndCreateEnroll(payment, isApproved);
             if (isApproved) {
-                return new RedirectView(PAYMENT_SUCCESS_CLIENT);
+                return new RedirectView(PAYMENT_SUCCESS_CLIENT + "?transactionId=" + payment.getId());
             }
             return new RedirectView(PAYMENT_CANCEL_CLIENT);
         } catch (PayPalRESTException e) {

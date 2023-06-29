@@ -34,5 +34,6 @@ public class MomoRequestDto {
     private String signature;
     private long userId;
     private long courseId;
+    private String userDescription;
 
 }

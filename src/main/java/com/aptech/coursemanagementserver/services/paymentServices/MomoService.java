@@ -63,7 +63,10 @@ public class MomoService {
         Course course = courseRepository.findById(momoRequestDto.getCourseId()).get();
         User user = userRepository.findById(momoRequestDto.getUserId()).get();
         Orders order = new Orders();
-        order.setUser(user).setCourse(course).setName(course.getName()).setDescription(course.getDescription())
+        order.setUser(user).setCourse(course)
+                .setName(course.getName())
+                .setDescription(course.getDescription())
+                .setUserDescription(momoRequestDto.getUserDescription())
                 .setDuration(course.getDuration())
                 .setPrice(course.getPrice())
                 .setNet_price(course.getNet_price())
@@ -76,6 +79,7 @@ public class MomoService {
         String orderId = String.valueOf(System.currentTimeMillis());
         String orderInfo = "Payment with MoMo";
         String redirectUrl = MOMO_REDIRECT_API;
+
         String ipnUrl = MOMO_REDIRECT_API;
         String extraData = String.valueOf(order.getId());
 
@@ -121,14 +125,14 @@ public class MomoService {
         return objectMapper.readValue(content, MomoResponseDto.class);
     }
 
-    public void UpdateOrderAndCreateEnroll(int resultCode, String extraData) {
+    public void UpdateOrderAndCreateEnroll(int resultCode, String extraData, String orderId) {
 
         Orders order = ordersRepository.findById(Long.valueOf(extraData)).get();
         if (resultCode == 0 || resultCode == 9000) {
+            order.setTransactionId(orderId);
             order.setStatus(OrderStatus.COMPLETED);
             Enrollment enrollment = new Enrollment();
             enrollment
-                    .setIsNotify(true)
                     .setProgress(0)
                     .setRating(0)
                     .setCourse(order.getCourse())
