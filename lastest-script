@@ -1,654 +1,5 @@
 USE [CMDB]
 GO
-/****** Object:  Table [dbo].[achievement]    Script Date: 6/29/2023 7:16:25 AM ******/
-SET ANSI_NULLS ON
-GO
-SET QUOTED_IDENTIFIER ON
-GO
-IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[achievement]') AND type in (N'U'))
-BEGIN
-CREATE TABLE [dbo].[achievement](
-	[id] [bigint] IDENTITY(1,1) NOT NULL,
-	[created_at] [datetimeoffset](6) NULL,
-	[name] [varchar](255) NULL,
-	[updated_at] [datetimeoffset](6) NULL,
-PRIMARY KEY CLUSTERED 
-(
-	[id] ASC
-)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
-) ON [PRIMARY]
-END
-GO
-/****** Object:  Table [dbo].[answer]    Script Date: 6/29/2023 7:16:25 AM ******/
-SET ANSI_NULLS ON
-GO
-SET QUOTED_IDENTIFIER ON
-GO
-IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[answer]') AND type in (N'U'))
-BEGIN
-CREATE TABLE [dbo].[answer](
-	[id] [bigint] IDENTITY(1,1) NOT NULL,
-	[created_at] [datetimeoffset](6) NULL,
-	[description] [nvarchar](max) NULL,
-	[is_correct] [bit] NULL,
-	[updated_at] [datetimeoffset](6) NULL,
-	[question_id] [bigint] NOT NULL,
-PRIMARY KEY CLUSTERED 
-(
-	[id] ASC
-)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
-) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
-END
-GO
-/****** Object:  Table [dbo].[author]    Script Date: 6/29/2023 7:16:25 AM ******/
-SET ANSI_NULLS ON
-GO
-SET QUOTED_IDENTIFIER ON
-GO
-IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[author]') AND type in (N'U'))
-BEGIN
-CREATE TABLE [dbo].[author](
-	[id] [bigint] IDENTITY(1,1) NOT NULL,
-	[created_at] [datetimeoffset](6) NULL,
-	[image] [varchar](255) NULL,
-	[name] [nvarchar](100) NULL,
-	[updated_at] [datetimeoffset](6) NULL,
-PRIMARY KEY CLUSTERED 
-(
-	[id] ASC
-)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
-) ON [PRIMARY]
-END
-GO
-/****** Object:  Table [dbo].[blog]    Script Date: 6/29/2023 7:16:25 AM ******/
-SET ANSI_NULLS ON
-GO
-SET QUOTED_IDENTIFIER ON
-GO
-IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[blog]') AND type in (N'U'))
-BEGIN
-CREATE TABLE [dbo].[blog](
-	[id] [bigint] IDENTITY(1,1) NOT NULL,
-	[created_at] [datetime] NULL,
-	[description] [varchar](max) NULL,
-	[image] [varchar](255) NULL,
-	[name] [varchar](100) NULL,
-	[slug] [varchar](255) NULL,
-	[status] [tinyint] NULL,
-	[updated_at] [datetime] NULL,
-	[view_count] [int] NULL,
-	[category_id] [bigint] NOT NULL,
-	[user_id] [bigint] NOT NULL,
-PRIMARY KEY CLUSTERED 
-(
-	[id] ASC
-)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
-) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
-END
-GO
-/****** Object:  Table [dbo].[category]    Script Date: 6/29/2023 7:16:25 AM ******/
-SET ANSI_NULLS ON
-GO
-SET QUOTED_IDENTIFIER ON
-GO
-IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[category]') AND type in (N'U'))
-BEGIN
-CREATE TABLE [dbo].[category](
-	[id] [bigint] IDENTITY(1,1) NOT NULL,
-	[created_at] [datetimeoffset](6) NULL,
-	[name] [nvarchar](100) NULL,
-	[updated_at] [datetimeoffset](6) NULL,
-PRIMARY KEY CLUSTERED 
-(
-	[id] ASC
-)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
-) ON [PRIMARY]
-END
-GO
-/****** Object:  Table [dbo].[comment]    Script Date: 6/29/2023 7:16:25 AM ******/
-SET ANSI_NULLS ON
-GO
-SET QUOTED_IDENTIFIER ON
-GO
-IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[comment]') AND type in (N'U'))
-BEGIN
-CREATE TABLE [dbo].[comment](
-	[id] [bigint] IDENTITY(1,1) NOT NULL,
-	[content] [nvarchar](max) NULL,
-	[created_at] [datetimeoffset](6) NULL,
-	[post_id] [bigint] NOT NULL,
-	[user_id] [bigint] NOT NULL,
-PRIMARY KEY CLUSTERED 
-(
-	[id] ASC
-)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
-) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
-END
-GO
-/****** Object:  Table [dbo].[contact]    Script Date: 6/29/2023 7:16:25 AM ******/
-SET ANSI_NULLS ON
-GO
-SET QUOTED_IDENTIFIER ON
-GO
-IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[contact]') AND type in (N'U'))
-BEGIN
-CREATE TABLE [dbo].[contact](
-	[id] [bigint] IDENTITY(1,1) NOT NULL,
-	[address] [varchar](255) NULL,
-	[created_at] [datetimeoffset](6) NULL,
-	[email] [nvarchar](100) NULL,
-	[is_subcribe] [bit] NULL,
-	[name] [nvarchar](100) NULL,
-	[phone] [varchar](12) NULL,
-	[updated_at] [datetimeoffset](6) NULL,
-PRIMARY KEY CLUSTERED 
-(
-	[id] ASC
-)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
-) ON [PRIMARY]
-END
-GO
-/****** Object:  Table [dbo].[course]    Script Date: 6/29/2023 7:16:25 AM ******/
-SET ANSI_NULLS ON
-GO
-SET QUOTED_IDENTIFIER ON
-GO
-IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[course]') AND type in (N'U'))
-BEGIN
-CREATE TABLE [dbo].[course](
-	[id] [bigint] IDENTITY(1,1) NOT NULL,
-	[created_at] [datetimeoffset](6) NULL,
-	[description] [nvarchar](max) NULL,
-	[duration] [int] NOT NULL,
-	[image] [varchar](255) NULL,
-	[level] [tinyint] NULL,
-	[name] [nvarchar](100) NULL,
-	[net_price] [decimal](10, 2) NULL,
-	[price] [decimal](10, 2) NULL,
-	[published_at] [datetime] NULL,
-	[rating] [decimal](3, 2) NULL,
-	[requirement] [nvarchar](100) NULL,
-	[slug] [varchar](255) NULL,
-	[status] [tinyint] NULL,
-	[updated_at] [datetimeoffset](6) NULL,
-	[author_id] [bigint] NULL,
-	[category_id] [bigint] NOT NULL,
-PRIMARY KEY CLUSTERED 
-(
-	[id] ASC
-)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
-) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
-END
-GO
-/****** Object:  Table [dbo].[course_achievement]    Script Date: 6/29/2023 7:16:25 AM ******/
-SET ANSI_NULLS ON
-GO
-SET QUOTED_IDENTIFIER ON
-GO
-IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[course_achievement]') AND type in (N'U'))
-BEGIN
-CREATE TABLE [dbo].[course_achievement](
-	[course_id] [bigint] NOT NULL,
-	[achievement_id] [bigint] NOT NULL,
-PRIMARY KEY CLUSTERED 
-(
-	[course_id] ASC,
-	[achievement_id] ASC
-)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
-) ON [PRIMARY]
-END
-GO
-/****** Object:  Table [dbo].[course_tag]    Script Date: 6/29/2023 7:16:25 AM ******/
-SET ANSI_NULLS ON
-GO
-SET QUOTED_IDENTIFIER ON
-GO
-IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[course_tag]') AND type in (N'U'))
-BEGIN
-CREATE TABLE [dbo].[course_tag](
-	[course_id] [bigint] NOT NULL,
-	[tag_id] [bigint] NOT NULL,
-PRIMARY KEY CLUSTERED 
-(
-	[course_id] ASC,
-	[tag_id] ASC
-)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
-) ON [PRIMARY]
-END
-GO
-/****** Object:  Table [dbo].[enrollment]    Script Date: 6/29/2023 7:16:25 AM ******/
-SET ANSI_NULLS ON
-GO
-SET QUOTED_IDENTIFIER ON
-GO
-IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[enrollment]') AND type in (N'U'))
-BEGIN
-CREATE TABLE [dbo].[enrollment](
-	[id] [bigint] IDENTITY(1,1) NOT NULL,
-	[created_at] [datetimeoffset](6) NULL,
-	[is_published] [bit] NULL,
-	[progress] [float] NOT NULL,
-	[rating] [decimal](3, 2) NULL,
-	[updated_at] [datetimeoffset](6) NULL,
-	[course_id] [bigint] NOT NULL,
-	[user_id] [bigint] NOT NULL,
-PRIMARY KEY CLUSTERED 
-(
-	[id] ASC
-)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
-) ON [PRIMARY]
-END
-GO
-/****** Object:  Table [dbo].[exam_result]    Script Date: 6/29/2023 7:16:25 AM ******/
-SET ANSI_NULLS ON
-GO
-SET QUOTED_IDENTIFIER ON
-GO
-IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[exam_result]') AND type in (N'U'))
-BEGIN
-CREATE TABLE [dbo].[exam_result](
-	[id] [bigint] IDENTITY(1,1) NOT NULL,
-	[anwser_description] [nvarchar](max) NULL,
-	[exam_session] [int] NOT NULL,
-	[grade] [smallint] NULL,
-	[is_correct] [bit] NULL,
-	[question_description] [nvarchar](max) NULL,
-	[question_point] [float] NULL,
-	[total_exam_time] [int] NULL,
-	[total_point] [float] NULL,
-	[user_answer_id] [bigint] NULL,
-	[answer_id] [bigint] NOT NULL,
-	[course_id] [bigint] NOT NULL,
-	[part_id] [bigint] NOT NULL,
-	[question_id] [bigint] NOT NULL,
-	[user_id] [bigint] NOT NULL,
-PRIMARY KEY CLUSTERED 
-(
-	[id] ASC
-)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
-) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
-END
-GO
-/****** Object:  Table [dbo].[lesson]    Script Date: 6/29/2023 7:16:25 AM ******/
-SET ANSI_NULLS ON
-GO
-SET QUOTED_IDENTIFIER ON
-GO
-IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[lesson]') AND type in (N'U'))
-BEGIN
-CREATE TABLE [dbo].[lesson](
-	[id] [bigint] IDENTITY(1,1) NOT NULL,
-	[created_at] [datetimeoffset](6) NULL,
-	[description] [nvarchar](max) NULL,
-	[duration] [int] NOT NULL,
-	[name] [nvarchar](100) NULL,
-	[ordered] [int] NOT NULL,
-	[status] [tinyint] NULL,
-	[updated_at] [datetimeoffset](6) NULL,
-	[section_id] [bigint] NOT NULL,
-PRIMARY KEY CLUSTERED 
-(
-	[id] ASC
-)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
-) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
-END
-GO
-/****** Object:  Table [dbo].[lesson_tracking]    Script Date: 6/29/2023 7:16:25 AM ******/
-SET ANSI_NULLS ON
-GO
-SET QUOTED_IDENTIFIER ON
-GO
-IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[lesson_tracking]') AND type in (N'U'))
-BEGIN
-CREATE TABLE [dbo].[lesson_tracking](
-	[id] [bigint] IDENTITY(1,1) NOT NULL,
-	[created_at] [datetimeoffset](6) NULL,
-	[is_completed] [bit] NOT NULL,
-	[is_tracked] [bit] NOT NULL,
-	[resume_point] [int] NOT NULL,
-	[course_id] [bigint] NULL,
-	[enrollment_id] [bigint] NULL,
-	[lesson_id] [bigint] NULL,
-	[section_id] [bigint] NULL,
-	[video_id] [bigint] NULL,
-	[updated_at] [datetimeoffset](6) NULL,
-PRIMARY KEY CLUSTERED 
-(
-	[id] ASC
-)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
-) ON [PRIMARY]
-END
-GO
-/****** Object:  Table [dbo].[note]    Script Date: 6/29/2023 7:16:25 AM ******/
-SET ANSI_NULLS ON
-GO
-SET QUOTED_IDENTIFIER ON
-GO
-IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[note]') AND type in (N'U'))
-BEGIN
-CREATE TABLE [dbo].[note](
-	[id] [bigint] IDENTITY(1,1) NOT NULL,
-	[created_at] [datetimeoffset](6) NULL,
-	[description] [nvarchar](max) NULL,
-	[resume_point] [int] NOT NULL,
-	[course_id] [bigint] NULL,
-	[enrollment_id] [bigint] NULL,
-	[lesson_id] [bigint] NULL,
-	[section_id] [bigint] NULL,
-	[video_id] [bigint] NULL,
-PRIMARY KEY CLUSTERED 
-(
-	[id] ASC
-)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
-) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
-END
-GO
-/****** Object:  Table [dbo].[notifications]    Script Date: 6/29/2023 7:16:25 AM ******/
-SET ANSI_NULLS ON
-GO
-SET QUOTED_IDENTIFIER ON
-GO
-IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[notifications]') AND type in (N'U'))
-BEGIN
-CREATE TABLE [dbo].[notifications](
-	[id] [bigint] IDENTITY(1,1) NOT NULL,
-	[content] [varchar](255) NULL,
-	[created_at] [datetimeoffset](6) NULL,
-	[is_delivered] [bit] NOT NULL,
-	[is_read] [bit] NOT NULL,
-	[notification_type] [smallint] NULL,
-	[user_from_id] [bigint] NOT NULL,
-	[user_to_id] [bigint] NOT NULL,
-PRIMARY KEY CLUSTERED 
-(
-	[id] ASC
-)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
-) ON [PRIMARY]
-END
-GO
-/****** Object:  Table [dbo].[orders]    Script Date: 6/29/2023 7:16:25 AM ******/
-SET ANSI_NULLS ON
-GO
-SET QUOTED_IDENTIFIER ON
-GO
-IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[orders]') AND type in (N'U'))
-BEGIN
-CREATE TABLE [dbo].[orders](
-	[id] [bigint] IDENTITY(1,1) NOT NULL,
-	[created_at] [datetimeoffset](6) NULL,
-	[description] [varchar](255) NULL,
-	[duration] [int] NOT NULL,
-	[image] [nvarchar](max) NULL,
-	[name] [nvarchar](100) NULL,
-	[net_price] [decimal](10, 2) NULL,
-	[payment] [smallint] NULL,
-	[price] [decimal](10, 2) NULL,
-	[status] [smallint] NULL,
-	[updated_at] [datetimeoffset](6) NULL,
-	[course_id] [bigint] NOT NULL,
-	[user_id] [bigint] NOT NULL,
-PRIMARY KEY CLUSTERED 
-(
-	[id] ASC
-)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
-) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
-END
-GO
-/****** Object:  Table [dbo].[part]    Script Date: 6/29/2023 7:16:25 AM ******/
-SET ANSI_NULLS ON
-GO
-SET QUOTED_IDENTIFIER ON
-GO
-IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[part]') AND type in (N'U'))
-BEGIN
-CREATE TABLE [dbo].[part](
-	[id] [bigint] IDENTITY(1,1) NOT NULL,
-	[created_at] [datetimeoffset](6) NULL,
-	[limit_time] [int] NOT NULL,
-	[max_point] [float] NOT NULL,
-	[status] [tinyint] NULL,
-	[updated_at] [datetimeoffset](6) NULL,
-	[course_id] [bigint] NOT NULL,
-PRIMARY KEY CLUSTERED 
-(
-	[id] ASC
-)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
-) ON [PRIMARY]
-END
-GO
-/****** Object:  Table [dbo].[post]    Script Date: 6/29/2023 7:16:25 AM ******/
-SET ANSI_NULLS ON
-GO
-SET QUOTED_IDENTIFIER ON
-GO
-IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[post]') AND type in (N'U'))
-BEGIN
-CREATE TABLE [dbo].[post](
-	[id] [bigint] IDENTITY(1,1) NOT NULL,
-	[content] [nvarchar](max) NULL,
-	[course_id] [bigint] NOT NULL,
-	[created_at] [datetimeoffset](6) NULL,
-	[user_post_id] [bigint] NOT NULL,
-PRIMARY KEY CLUSTERED 
-(
-	[id] ASC
-)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
-) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
-END
-GO
-/****** Object:  Table [dbo].[post_users]    Script Date: 6/29/2023 7:16:25 AM ******/
-SET ANSI_NULLS ON
-GO
-SET QUOTED_IDENTIFIER ON
-GO
-IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[post_users]') AND type in (N'U'))
-BEGIN
-CREATE TABLE [dbo].[post_users](
-	[post_id] [bigint] NOT NULL,
-	[user_id] [bigint] NOT NULL
-) ON [PRIMARY]
-END
-GO
-/****** Object:  Table [dbo].[question]    Script Date: 6/29/2023 7:16:25 AM ******/
-SET ANSI_NULLS ON
-GO
-SET QUOTED_IDENTIFIER ON
-GO
-IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[question]') AND type in (N'U'))
-BEGIN
-CREATE TABLE [dbo].[question](
-	[id] [bigint] IDENTITY(1,1) NOT NULL,
-	[created_at] [datetimeoffset](6) NULL,
-	[description] [nvarchar](max) NULL,
-	[point] [float] NULL,
-	[updated_at] [datetimeoffset](6) NULL,
-	[part_id] [bigint] NOT NULL,
-PRIMARY KEY CLUSTERED 
-(
-	[id] ASC
-)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
-) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
-END
-GO
-/****** Object:  Table [dbo].[section]    Script Date: 6/29/2023 7:16:25 AM ******/
-SET ANSI_NULLS ON
-GO
-SET QUOTED_IDENTIFIER ON
-GO
-IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[section]') AND type in (N'U'))
-BEGIN
-CREATE TABLE [dbo].[section](
-	[id] [bigint] IDENTITY(1,1) NOT NULL,
-	[created_at] [datetimeoffset](6) NULL,
-	[name] [nvarchar](100) NULL,
-	[ordered] [int] NOT NULL,
-	[status] [tinyint] NULL,
-	[updated_at] [datetimeoffset](6) NULL,
-	[course_id] [bigint] NOT NULL,
-PRIMARY KEY CLUSTERED 
-(
-	[id] ASC
-)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
-) ON [PRIMARY]
-END
-GO
-/****** Object:  Table [dbo].[subcribes]    Script Date: 6/29/2023 7:16:25 AM ******/
-SET ANSI_NULLS ON
-GO
-SET QUOTED_IDENTIFIER ON
-GO
-IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[subcribes]') AND type in (N'U'))
-BEGIN
-CREATE TABLE [dbo].[subcribes](
-	[id] [bigint] IDENTITY(1,1) NOT NULL,
-	[created_at] [datetimeoffset](6) NULL,
-	[author_id] [bigint] NOT NULL,
-	[user_id] [bigint] NOT NULL,
-PRIMARY KEY CLUSTERED 
-(
-	[id] ASC
-)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
-) ON [PRIMARY]
-END
-GO
-/****** Object:  Table [dbo].[tag]    Script Date: 6/29/2023 7:16:25 AM ******/
-SET ANSI_NULLS ON
-GO
-SET QUOTED_IDENTIFIER ON
-GO
-IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[tag]') AND type in (N'U'))
-BEGIN
-CREATE TABLE [dbo].[tag](
-	[id] [bigint] IDENTITY(1,1) NOT NULL,
-	[created_at] [datetimeoffset](6) NULL,
-	[name] [varchar](255) NULL,
-	[updated_at] [datetimeoffset](6) NULL,
-PRIMARY KEY CLUSTERED 
-(
-	[id] ASC
-)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
-) ON [PRIMARY]
-END
-GO
-/****** Object:  Table [dbo].[Test]    Script Date: 6/29/2023 7:16:25 AM ******/
-SET ANSI_NULLS ON
-GO
-SET QUOTED_IDENTIFIER ON
-GO
-IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[Test]') AND type in (N'U'))
-BEGIN
-CREATE TABLE [dbo].[Test](
-	[id] [int] IDENTITY(1,1) NOT NULL,
-	[part_id] [bigint] NOT NULL,
-	[question_id] [bigint] NOT NULL,
-	[answer_id] [bigint] NOT NULL,
-	[user_answer_id] [bigint] NOT NULL,
-	[Question_Description] [nvarchar](max) NOT NULL,
-	[Answer_Description] [nvarchar](max) NOT NULL,
-	[TotalExamTime] [int] NOT NULL,
-	[Question_Point] [float] NOT NULL,
-	[Iscorrect] [bit] NULL,
-	[user_id] [bigint] NULL
-) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
-END
-GO
-/****** Object:  Table [dbo].[token]    Script Date: 6/29/2023 7:16:25 AM ******/
-SET ANSI_NULLS ON
-GO
-SET QUOTED_IDENTIFIER ON
-GO
-IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[token]') AND type in (N'U'))
-BEGIN
-CREATE TABLE [dbo].[token](
-	[id] [bigint] IDENTITY(1,1) NOT NULL,
-	[is_expired] [bit] NOT NULL,
-	[is_revoked] [bit] NOT NULL,
-	[token] [varchar](2000) NULL,
-	[token_type] [varchar](255) NULL,
-	[user_id] [bigint] NULL,
-PRIMARY KEY CLUSTERED 
-(
-	[id] ASC
-)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
-) ON [PRIMARY]
-END
-GO
-/****** Object:  Table [dbo].[user_profile]    Script Date: 6/29/2023 7:16:25 AM ******/
-SET ANSI_NULLS ON
-GO
-SET QUOTED_IDENTIFIER ON
-GO
-IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[user_profile]') AND type in (N'U'))
-BEGIN
-CREATE TABLE [dbo].[user_profile](
-	[id] [bigint] IDENTITY(1,1) NOT NULL,
-	[bio] [nvarchar](max) NULL,
-	[birth_date] [date] NULL,
-	[created_at] [datetimeoffset](6) NULL,
-	[image] [varchar](255) NULL,
-	[phone] [varchar](12) NULL,
-	[updated_at] [datetimeoffset](6) NULL,
-	[user_id] [bigint] NULL,
-PRIMARY KEY CLUSTERED 
-(
-	[id] ASC
-)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
-) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
-END
-GO
-/****** Object:  Table [dbo].[users]    Script Date: 6/29/2023 7:16:25 AM ******/
-SET ANSI_NULLS ON
-GO
-SET QUOTED_IDENTIFIER ON
-GO
-IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[users]') AND type in (N'U'))
-BEGIN
-CREATE TABLE [dbo].[users](
-	[id] [bigint] IDENTITY(1,1) NOT NULL,
-	[created_at] [datetimeoffset](6) NULL,
-	[email] [nvarchar](100) NULL,
-	[first_name] [nvarchar](100) NULL,
-	[image_url] [varchar](255) NULL,
-	[is_notify] [bit] NULL,
-	[is_verified] [bit] NULL,
-	[last_name] [nvarchar](100) NULL,
-	[name] [nvarchar](100) NULL,
-	[password] [varchar](255) NULL,
-	[provider] [varchar](255) NULL,
-	[provider_id] [varchar](255) NULL,
-	[role] [varchar](255) NULL,
-	[updated_at] [datetimeoffset](6) NULL,
-	[user_status] [tinyint] NULL,
-PRIMARY KEY CLUSTERED 
-(
-	[id] ASC
-)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
-) ON [PRIMARY]
-END
-GO
-/****** Object:  Table [dbo].[video]    Script Date: 6/29/2023 7:16:25 AM ******/
-SET ANSI_NULLS ON
-GO
-SET QUOTED_IDENTIFIER ON
-GO
-IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[video]') AND type in (N'U'))
-BEGIN
-CREATE TABLE [dbo].[video](
-	[lesson_id] [bigint] NOT NULL,
-	[caption_urls] [varchar](255) NULL,
-	[created_at] [datetimeoffset](6) NULL,
-	[duration] [bigint] NOT NULL,
-	[name] [nvarchar](100) NULL,
-	[status] [tinyint] NULL,
-	[updated_at] [datetimeoffset](6) NULL,
-	[url] [varchar](255) NULL,
-PRIMARY KEY CLUSTERED 
-(
-	[lesson_id] ASC
-)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
-) ON [PRIMARY]
-END
-GO
 SET IDENTITY_INSERT [dbo].[achievement] ON 
 
 INSERT [dbo].[achievement] ([id], [created_at], [name], [updated_at]) VALUES (1, CAST(N'2023-06-01T23:48:04.9349360+00:00' AS DateTimeOffset), N'Master Java', CAST(N'2023-06-01T23:48:04.9349360+00:00' AS DateTimeOffset))
@@ -686,6 +37,73 @@ INSERT [dbo].[achievement] ([id], [created_at], [name], [updated_at]) VALUES (32
 INSERT [dbo].[achievement] ([id], [created_at], [name], [updated_at]) VALUES (33, CAST(N'2023-06-11T05:47:39.7217980+00:00' AS DateTimeOffset), N'Master ReactJS with new Hook ( useState', CAST(N'2023-06-11T05:47:39.7217980+00:00' AS DateTimeOffset))
 SET IDENTITY_INSERT [dbo].[achievement] OFF
 GO
+SET IDENTITY_INSERT [dbo].[author] ON 
+
+INSERT [dbo].[author] ([id], [created_at], [image], [name], [updated_at]) VALUES (1, CAST(N'2023-06-29T06:04:24.1033970+00:00' AS DateTimeOffset), N'https://i.ibb.co/PZ1mLcR/1ccad4bd825948071148.jpg', N'Author 1', CAST(N'2023-06-29T06:04:24.1033970+00:00' AS DateTimeOffset))
+INSERT [dbo].[author] ([id], [created_at], [image], [name], [updated_at]) VALUES (2, CAST(N'2023-06-29T06:04:24.1083990+00:00' AS DateTimeOffset), N'https://i.ibb.co/ZKk06Ds/member-lucia.jpg', N'Author 2', CAST(N'2023-06-29T06:04:24.1083990+00:00' AS DateTimeOffset))
+INSERT [dbo].[author] ([id], [created_at], [image], [name], [updated_at]) VALUES (3, CAST(N'2023-06-29T06:04:24.1124000+00:00' AS DateTimeOffset), N'https://i.ibb.co/3THGf9j/member-braum.jpg', N'Author 3', CAST(N'2023-06-29T06:04:24.1124000+00:00' AS DateTimeOffset))
+INSERT [dbo].[author] ([id], [created_at], [image], [name], [updated_at]) VALUES (4, CAST(N'2023-06-29T06:04:24.1143950+00:00' AS DateTimeOffset), N'https://i.ibb.co/GTGRmZp/member-nana.jpg', N'Author 4', CAST(N'2023-06-29T06:04:24.1143950+00:00' AS DateTimeOffset))
+SET IDENTITY_INSERT [dbo].[author] OFF
+GO
+SET IDENTITY_INSERT [dbo].[category] ON 
+
+INSERT [dbo].[category] ([id], [created_at], [name], [updated_at]) VALUES (1, CAST(N'2023-06-29T06:04:24.0843990+00:00' AS DateTimeOffset), N'Programming', CAST(N'2023-06-29T06:04:24.0843990+00:00' AS DateTimeOffset))
+INSERT [dbo].[category] ([id], [created_at], [name], [updated_at]) VALUES (2, CAST(N'2023-06-29T06:04:24.0883960+00:00' AS DateTimeOffset), N'Graphic Design', CAST(N'2023-06-29T06:04:24.0883960+00:00' AS DateTimeOffset))
+INSERT [dbo].[category] ([id], [created_at], [name], [updated_at]) VALUES (3, CAST(N'2023-06-29T06:04:24.0923990+00:00' AS DateTimeOffset), N'Artificial Intelligence', CAST(N'2023-06-29T06:04:24.0923990+00:00' AS DateTimeOffset))
+INSERT [dbo].[category] ([id], [created_at], [name], [updated_at]) VALUES (4, CAST(N'2023-06-29T06:04:24.0953970+00:00' AS DateTimeOffset), N'Data Science', CAST(N'2023-06-29T06:04:24.0953970+00:00' AS DateTimeOffset))
+SET IDENTITY_INSERT [dbo].[category] OFF
+GO
+SET IDENTITY_INSERT [dbo].[course] ON 
+
+INSERT [dbo].[course] ([id], [created_at], [description], [duration], [image], [level], [name], [net_price], [price], [published_at], [rating], [requirement], [slug], [status], [updated_at], [author_id], [category_id]) VALUES (1, CAST(N'2023-06-01T04:44:48.2542230+00:00' AS DateTimeOffset), N'<strong><span style="color: rgb(200, 0, 0);">Description Course 1</span></strong><br/><br/><img src="https://i.ibb.co/YtSK8yC/aptech.png" alt="aptech" border="0" />', 65, N'https://i.ibb.co/fkR987X/spring-boot.png', 1, N'Java SpringBoot 2023', CAST(10.00 AS Decimal(10, 2)), CAST(15.00 AS Decimal(10, 2)), NULL, CAST(3.40 AS Decimal(3, 2)), NULL, N'java-springboot-2023', 1, CAST(N'2023-06-17T09:55:37.9683790+00:00' AS DateTimeOffset), 1, 1)
+INSERT [dbo].[course] ([id], [created_at], [description], [duration], [image], [level], [name], [net_price], [price], [published_at], [rating], [requirement], [slug], [status], [updated_at], [author_id], [category_id]) VALUES (2, CAST(N'2023-05-31T22:33:08.0819860+00:00' AS DateTimeOffset), N'<p>Description Course 2</p>', 0, N'https://i.ibb.co/VTZ3J7q/redux.png', 1, N'Advance ReactJS with Redux - Redux Toolkit', CAST(5.00 AS Decimal(10, 2)), CAST(10.00 AS Decimal(10, 2)), NULL, CAST(0.00 AS Decimal(3, 2)), NULL, N'advance-reactjs-with-redux-redux-toolkit', 0, CAST(N'2023-06-11T05:24:34.4395430+00:00' AS DateTimeOffset), 1, 1)
+INSERT [dbo].[course] ([id], [created_at], [description], [duration], [image], [level], [name], [net_price], [price], [published_at], [rating], [requirement], [slug], [status], [updated_at], [author_id], [category_id]) VALUES (3, CAST(N'2023-05-31T22:33:08.0819860+00:00' AS DateTimeOffset), N'<p>Description ReactJS</p>', 0, N'https://i.ibb.co/XphQ2PC/284601068-113074531414219-1330789727702240346-n.jpg', 0, N'ReactJS', CAST(5.00 AS Decimal(10, 2)), CAST(10.00 AS Decimal(10, 2)), NULL, CAST(0.00 AS Decimal(3, 2)), NULL, N'reactjs', 1, CAST(N'2023-06-11T05:48:23.3714380+00:00' AS DateTimeOffset), 1, 1)
+INSERT [dbo].[course] ([id], [created_at], [description], [duration], [image], [level], [name], [net_price], [price], [published_at], [rating], [requirement], [slug], [status], [updated_at], [author_id], [category_id]) VALUES (4, CAST(N'2023-05-31T22:33:08.0819860+00:00' AS DateTimeOffset), N'<p>Description Course 4</p>', 0, N'https://i.ibb.co/DQ5GDg2/dotnet.png', 1, N'CSharp Dotnet ( .NET )', CAST(5.00 AS Decimal(10, 2)), CAST(10.00 AS Decimal(10, 2)), NULL, CAST(0.00 AS Decimal(3, 2)), NULL, N'csharp-dotnet-net', 1, CAST(N'2023-06-11T05:45:33.0315720+00:00' AS DateTimeOffset), 1, 1)
+INSERT [dbo].[course] ([id], [created_at], [description], [duration], [image], [level], [name], [net_price], [price], [published_at], [rating], [requirement], [slug], [status], [updated_at], [author_id], [category_id]) VALUES (5, CAST(N'2023-05-31T22:33:08.0819860+00:00' AS DateTimeOffset), N'<p>Description Course 5</p>', 96, N'https://i.ibb.co/YffsdXR/laravel.jpg', 1, N'PHP Laravel', CAST(5.00 AS Decimal(10, 2)), CAST(10.00 AS Decimal(10, 2)), NULL, CAST(0.00 AS Decimal(3, 2)), NULL, N'php-laravel', 1, CAST(N'2023-06-11T04:50:27.3308410+00:00' AS DateTimeOffset), 1, 1)
+INSERT [dbo].[course] ([id], [created_at], [description], [duration], [image], [level], [name], [net_price], [price], [published_at], [rating], [requirement], [slug], [status], [updated_at], [author_id], [category_id]) VALUES (6, CAST(N'2023-05-31T22:33:08.0819860+00:00' AS DateTimeOffset), N'<p>Description Course 6</p>', 0, N'https://i.ibb.co/gPRv1ZN/ruby.png', 0, N'Ruby Rails', CAST(5.00 AS Decimal(10, 2)), CAST(10.00 AS Decimal(10, 2)), NULL, CAST(0.00 AS Decimal(3, 2)), NULL, N'ruby-rails', 1, CAST(N'2023-06-11T04:42:28.7606060+00:00' AS DateTimeOffset), 1, 1)
+INSERT [dbo].[course] ([id], [created_at], [description], [duration], [image], [level], [name], [net_price], [price], [published_at], [rating], [requirement], [slug], [status], [updated_at], [author_id], [category_id]) VALUES (7, CAST(N'2023-06-11T04:56:17.1231750+00:00' AS DateTimeOffset), N'<p>Description Blender...</p>', 0, N'https://i.ibb.co/bKrqZk8/3d-blender.png', 1, N'3D Modeling with Blender 3.0', CAST(0.00 AS Decimal(10, 2)), CAST(1299.00 AS Decimal(10, 2)), NULL, CAST(0.00 AS Decimal(3, 2)), NULL, N'3d-modeling-with-blender-3-0', 0, CAST(N'2023-06-13T07:58:45.6588090+00:00' AS DateTimeOffset), 2, 2)
+SET IDENTITY_INSERT [dbo].[course] OFF
+GO
+INSERT [dbo].[course_achievement] ([course_id], [achievement_id]) VALUES (1, 1)
+INSERT [dbo].[course_achievement] ([course_id], [achievement_id]) VALUES (1, 2)
+INSERT [dbo].[course_achievement] ([course_id], [achievement_id]) VALUES (2, 12)
+INSERT [dbo].[course_achievement] ([course_id], [achievement_id]) VALUES (2, 13)
+INSERT [dbo].[course_achievement] ([course_id], [achievement_id]) VALUES (2, 14)
+INSERT [dbo].[course_achievement] ([course_id], [achievement_id]) VALUES (3, 29)
+INSERT [dbo].[course_achievement] ([course_id], [achievement_id]) VALUES (3, 30)
+INSERT [dbo].[course_achievement] ([course_id], [achievement_id]) VALUES (3, 33)
+INSERT [dbo].[course_achievement] ([course_id], [achievement_id]) VALUES (4, 26)
+INSERT [dbo].[course_achievement] ([course_id], [achievement_id]) VALUES (4, 27)
+INSERT [dbo].[course_achievement] ([course_id], [achievement_id]) VALUES (4, 28)
+INSERT [dbo].[course_achievement] ([course_id], [achievement_id]) VALUES (5, 16)
+INSERT [dbo].[course_achievement] ([course_id], [achievement_id]) VALUES (5, 18)
+INSERT [dbo].[course_achievement] ([course_id], [achievement_id]) VALUES (5, 19)
+INSERT [dbo].[course_achievement] ([course_id], [achievement_id]) VALUES (5, 20)
+INSERT [dbo].[course_achievement] ([course_id], [achievement_id]) VALUES (5, 21)
+INSERT [dbo].[course_achievement] ([course_id], [achievement_id]) VALUES (5, 22)
+INSERT [dbo].[course_achievement] ([course_id], [achievement_id]) VALUES (6, 10)
+INSERT [dbo].[course_achievement] ([course_id], [achievement_id]) VALUES (6, 11)
+INSERT [dbo].[course_achievement] ([course_id], [achievement_id]) VALUES (7, 23)
+INSERT [dbo].[course_achievement] ([course_id], [achievement_id]) VALUES (7, 24)
+INSERT [dbo].[course_achievement] ([course_id], [achievement_id]) VALUES (7, 25)
+GO
+SET IDENTITY_INSERT [dbo].[part] ON 
+
+INSERT [dbo].[part] ([id], [created_at], [limit_time], [max_point], [status], [updated_at], [course_id]) VALUES (1, CAST(N'2023-06-25T10:25:54.0970000+07:00' AS DateTimeOffset), 3600, 10, 1, CAST(N'2023-06-25T10:25:54.0970000+07:00' AS DateTimeOffset), 1)
+INSERT [dbo].[part] ([id], [created_at], [limit_time], [max_point], [status], [updated_at], [course_id]) VALUES (2, CAST(N'2023-06-25T10:25:54.0970000+07:00' AS DateTimeOffset), 1800, 100, 0, CAST(N'2023-06-25T10:25:54.0970000+07:00' AS DateTimeOffset), 1)
+SET IDENTITY_INSERT [dbo].[part] OFF
+GO
+SET IDENTITY_INSERT [dbo].[question] ON 
+
+INSERT [dbo].[question] ([id], [created_at], [description], [point], [updated_at], [part_id]) VALUES (1, CAST(N'2023-06-25T10:25:54.0970000+07:00' AS DateTimeOffset), N'Which of the following is related to Spring Framework?', 2.5, CAST(N'2023-06-25T10:25:54.0970000+07:00' AS DateTimeOffset), 1)
+INSERT [dbo].[question] ([id], [created_at], [description], [point], [updated_at], [part_id]) VALUES (2, CAST(N'2023-06-25T10:25:54.0970000+07:00' AS DateTimeOffset), N'Which of the following is not the Spring supported DI?
+', 2.5, CAST(N'2023-06-25T10:25:54.0970000+07:00' AS DateTimeOffset), 1)
+INSERT [dbo].[question] ([id], [created_at], [description], [point], [updated_at], [part_id]) VALUES (3, CAST(N'2023-06-25T10:25:54.0970000+07:00' AS DateTimeOffset), N'Which of the following is not the Spring supported DI?
+', 2.5, CAST(N'2023-06-25T10:25:54.0970000+07:00' AS DateTimeOffset), 2)
+INSERT [dbo].[question] ([id], [created_at], [description], [point], [updated_at], [part_id]) VALUES (4, CAST(N'2023-06-25T10:25:54.0970000+07:00' AS DateTimeOffset), N'Which of the following is not the Spring supported DI?
+', 2.5, CAST(N'2023-06-25T10:25:54.0970000+07:00' AS DateTimeOffset), 2)
+SET IDENTITY_INSERT [dbo].[question] OFF
+GO
 SET IDENTITY_INSERT [dbo].[answer] ON 
 
 INSERT [dbo].[answer] ([id], [created_at], [description], [is_correct], [updated_at], [question_id]) VALUES (1, CAST(N'2023-06-25T10:25:54.0970000+07:00' AS DateTimeOffset), N'Container
@@ -722,13 +140,18 @@ INSERT [dbo].[answer] ([id], [created_at], [description], [is_correct], [updated
 ', 0, CAST(N'2023-06-25T10:25:54.0970000+07:00' AS DateTimeOffset), 4)
 SET IDENTITY_INSERT [dbo].[answer] OFF
 GO
-SET IDENTITY_INSERT [dbo].[author] ON 
+SET IDENTITY_INSERT [dbo].[users] ON 
 
-INSERT [dbo].[author] ([id], [created_at], [image], [name], [updated_at]) VALUES (1, CAST(N'2023-06-29T00:07:47.6534330+00:00' AS DateTimeOffset), NULL, N'Author 1', CAST(N'2023-06-29T00:07:47.6534330+00:00' AS DateTimeOffset))
-INSERT [dbo].[author] ([id], [created_at], [image], [name], [updated_at]) VALUES (2, CAST(N'2023-06-29T00:07:47.6594340+00:00' AS DateTimeOffset), NULL, N'Author 2', CAST(N'2023-06-29T00:07:47.6594340+00:00' AS DateTimeOffset))
-INSERT [dbo].[author] ([id], [created_at], [image], [name], [updated_at]) VALUES (3, CAST(N'2023-06-29T00:07:47.6614330+00:00' AS DateTimeOffset), NULL, N'Author 3', CAST(N'2023-06-29T00:07:47.6614330+00:00' AS DateTimeOffset))
-INSERT [dbo].[author] ([id], [created_at], [image], [name], [updated_at]) VALUES (4, CAST(N'2023-06-29T00:07:47.6644350+00:00' AS DateTimeOffset), NULL, N'Author 4', CAST(N'2023-06-29T00:07:47.6644350+00:00' AS DateTimeOffset))
-SET IDENTITY_INSERT [dbo].[author] OFF
+INSERT [dbo].[users] ([id], [created_at], [email], [first_name], [image_url], [is_notify], [is_verified], [last_name], [name], [password], [provider], [provider_id], [role], [updated_at], [user_status]) VALUES (1, CAST(N'2023-06-29T06:04:22.7383970+00:00' AS DateTimeOffset), N'admin@mail.com', N'ClicknLearn', N'https://i.ibb.co/2KnQrF0/logo-click-thumb-light.png', 1, 1, N'', NULL, N'$2a$10$FHp/hQqHtd7chIwN50SQUeo9ED5aHC..14JziR0IAz3BPrx6SKxvy', N'local', NULL, N'ADMIN', CAST(N'2023-06-29T06:04:22.7413980+00:00' AS DateTimeOffset), 1)
+INSERT [dbo].[users] ([id], [created_at], [email], [first_name], [image_url], [is_notify], [is_verified], [last_name], [name], [password], [provider], [provider_id], [role], [updated_at], [user_status]) VALUES (2, CAST(N'2023-06-29T06:04:23.2323980+00:00' AS DateTimeOffset), N'manager@mail.com', N'Manager', N'https://i.ibb.co/2KnQrF0/logo-click-thumb-light.png', 1, 1, N'', NULL, N'$2a$10$NV9vuhzkELT95Fv2pXQ4AuUsmIzwlmDwVziVvPJNHxE6fz95H9bky', N'local', NULL, N'MANAGER', CAST(N'2023-06-29T06:04:23.2323980+00:00' AS DateTimeOffset), 1)
+INSERT [dbo].[users] ([id], [created_at], [email], [first_name], [image_url], [is_notify], [is_verified], [last_name], [name], [password], [provider], [provider_id], [role], [updated_at], [user_status]) VALUES (3, CAST(N'2023-06-29T06:04:23.3783960+00:00' AS DateTimeOffset), N'employee@mail.com', N'Employee', N'https://i.ibb.co/2KnQrF0/logo-click-thumb-light.png', 1, 1, N'', NULL, N'$2a$10$u2XnkNlPsLj1du.EKQszN.5lj2wYRgeZQlX4qIUEsFhp4TmV01n2a', N'local', NULL, N'EMPLOYEE', CAST(N'2023-06-29T06:04:23.3783960+00:00' AS DateTimeOffset), 1)
+INSERT [dbo].[users] ([id], [created_at], [email], [first_name], [image_url], [is_notify], [is_verified], [last_name], [name], [password], [provider], [provider_id], [role], [updated_at], [user_status]) VALUES (4, CAST(N'2023-06-29T06:04:23.5123940+00:00' AS DateTimeOffset), N'user-test@mail.com', N'TeeCee', N'https://i.ibb.co/7GDTVRf/aptech.png', 1, 1, N'', NULL, N'$2a$10$kfe.NcoZHHaCFZX4k7s4T.LFXinqBlGrMLX04weY.1Tip7s4oK0mq', N'local', NULL, N'USER', CAST(N'2023-06-29T06:04:23.5123940+00:00' AS DateTimeOffset), 1)
+INSERT [dbo].[users] ([id], [created_at], [email], [first_name], [image_url], [is_notify], [is_verified], [last_name], [name], [password], [provider], [provider_id], [role], [updated_at], [user_status]) VALUES (5, CAST(N'2023-06-29T06:04:23.6263950+00:00' AS DateTimeOffset), N'user-test2@mail.com', N'Ric', N'https://i.ibb.co/7GDTVRf/aptech.png', 1, 1, N'', NULL, N'$2a$10$ehjOrqeUt7V4DGdfIrnZ6uyFwCGuCwE.AwIUqo/mc7PjxOnQZbVie', N'local', NULL, N'USER', CAST(N'2023-06-29T06:04:23.6263950+00:00' AS DateTimeOffset), 1)
+INSERT [dbo].[users] ([id], [created_at], [email], [first_name], [image_url], [is_notify], [is_verified], [last_name], [name], [password], [provider], [provider_id], [role], [updated_at], [user_status]) VALUES (6, CAST(N'2023-06-29T06:04:23.7333960+00:00' AS DateTimeOffset), N'user-test3@mail.com', N'AnPham', N'https://i.ibb.co/7GDTVRf/aptech.png', 1, 1, N'', NULL, N'$2a$10$7j.95n94L34owpCbnz10Fuh3XwPzyx5vTxoMYvB0kVm3o.VtSjSXK', N'local', NULL, N'USER', CAST(N'2023-06-29T06:04:23.7333960+00:00' AS DateTimeOffset), 1)
+INSERT [dbo].[users] ([id], [created_at], [email], [first_name], [image_url], [is_notify], [is_verified], [last_name], [name], [password], [provider], [provider_id], [role], [updated_at], [user_status]) VALUES (7, CAST(N'2023-06-29T06:04:23.8373960+00:00' AS DateTimeOffset), N'user-test4@mail.com', N'DiDi', N'https://i.ibb.co/7GDTVRf/aptech.png', 1, 1, N'', NULL, N'$2a$10$bQFAo2S.tkwIV5ZYeW3WN.b1SyE.oK1K4GWoqWazIW0VdDAzWa8p2', N'local', NULL, N'USER', CAST(N'2023-06-29T06:04:23.8373960+00:00' AS DateTimeOffset), 1)
+INSERT [dbo].[users] ([id], [created_at], [email], [first_name], [image_url], [is_notify], [is_verified], [last_name], [name], [password], [provider], [provider_id], [role], [updated_at], [user_status]) VALUES (8, CAST(N'2023-06-29T06:04:23.9493980+00:00' AS DateTimeOffset), N'user-test5@mail.com', N'DucTH', N'https://i.ibb.co/7GDTVRf/aptech.png', 1, 1, N'', NULL, N'$2a$10$xIn6YqBQnaYaT0mT..sTKO/T/maGaewurmfZRI3XiSSwoC2XRXK0e', N'local', NULL, N'USER', CAST(N'2023-06-29T06:04:23.9493980+00:00' AS DateTimeOffset), 1)
+INSERT [dbo].[users] ([id], [created_at], [email], [first_name], [image_url], [is_notify], [is_verified], [last_name], [name], [password], [provider], [provider_id], [role], [updated_at], [user_status]) VALUES (9, CAST(N'2023-06-23T13:36:12.1209910+00:00' AS DateTimeOffset), N'nguyenngocnguyen.rtc@gmail.com', N'Nguyên Nguyễn', N'https://lh3.googleusercontent.com/a/AAcHTtdFuJNV7w6tlYZDhpIUAH11R0UvMtEsf7lngz1v=s96-c', 0, 0, NULL, NULL, NULL, N'google', N'106018291131107288524', N'USER', CAST(N'2023-06-23T13:36:12.1209910+00:00' AS DateTimeOffset), 1)
+SET IDENTITY_INSERT [dbo].[users] OFF
 GO
 SET IDENTITY_INSERT [dbo].[blog] ON 
 
@@ -738,54 +161,39 @@ INSERT [dbo].[blog] ([id], [created_at], [description], [image], [name], [slug],
 INSERT [dbo].[blog] ([id], [created_at], [description], [image], [name], [slug], [status], [updated_at], [view_count], [category_id], [user_id]) VALUES (4, CAST(N'2023-06-22T20:18:58.097' AS DateTime), N'<p>&nbsp;Publish the course you want, in the way you want, and always have control of your own content.</p>', N'https://i.ibb.co/rpJNWbx/news6.jpg', N'Blog 4', N'blog-4', 1, CAST(N'2023-06-22T20:19:23.510' AS DateTime), 0, 1, 1)
 SET IDENTITY_INSERT [dbo].[blog] OFF
 GO
-SET IDENTITY_INSERT [dbo].[category] ON 
+SET IDENTITY_INSERT [dbo].[orders] ON 
 
-INSERT [dbo].[category] ([id], [created_at], [name], [updated_at]) VALUES (1, CAST(N'2023-06-29T00:07:47.6294350+00:00' AS DateTimeOffset), N'Programming', CAST(N'2023-06-29T00:07:47.6294350+00:00' AS DateTimeOffset))
-INSERT [dbo].[category] ([id], [created_at], [name], [updated_at]) VALUES (2, CAST(N'2023-06-29T00:07:47.6364330+00:00' AS DateTimeOffset), N'Graphic Design', CAST(N'2023-06-29T00:07:47.6364330+00:00' AS DateTimeOffset))
-INSERT [dbo].[category] ([id], [created_at], [name], [updated_at]) VALUES (3, CAST(N'2023-06-29T00:07:47.6384350+00:00' AS DateTimeOffset), N'Artificial Intelligence', CAST(N'2023-06-29T00:07:47.6384350+00:00' AS DateTimeOffset))
-INSERT [dbo].[category] ([id], [created_at], [name], [updated_at]) VALUES (4, CAST(N'2023-06-29T00:07:47.6404350+00:00' AS DateTimeOffset), N'Data Science', CAST(N'2023-06-29T00:07:47.6404350+00:00' AS DateTimeOffset))
-SET IDENTITY_INSERT [dbo].[category] OFF
+INSERT [dbo].[orders] ([id], [created_at], [description], [duration], [image], [name], [net_price], [payment], [price], [status], [transaction_id], [updated_at], [user_description], [course_id], [user_id]) VALUES (1, CAST(N'2023-06-23T14:29:56.6825530+00:00' AS DateTimeOffset), N'<strong><span style="color: rgb(200, 0, 0);">Description Course 1</span></p>', 300, N'https://i.ibb.co/fkR987X/spring-boot.png', N'Java SpringBoot 2023', CAST(10.00 AS Decimal(10, 2)), 0, CAST(15.00 AS Decimal(10, 2)), 3, NULL, CAST(N'2023-06-23T14:29:56.6825530+00:00' AS DateTimeOffset), NULL, 1, 1)
+INSERT [dbo].[orders] ([id], [created_at], [description], [duration], [image], [name], [net_price], [payment], [price], [status], [transaction_id], [updated_at], [user_description], [course_id], [user_id]) VALUES (2, CAST(N'2023-06-23T14:36:07.0521230+00:00' AS DateTimeOffset), N'<strong><span style="color: rgb(200, 0, 0);">Description Course 1</span></p>', 300, N'https://i.ibb.co/fkR987X/spring-boot.png', N'Java SpringBoot 2023', CAST(10.00 AS Decimal(10, 2)), 1, CAST(15.00 AS Decimal(10, 2)), 3, NULL, CAST(N'2023-06-23T14:36:07.0521230+00:00' AS DateTimeOffset), NULL, 1, 1)
+INSERT [dbo].[orders] ([id], [created_at], [description], [duration], [image], [name], [net_price], [payment], [price], [status], [transaction_id], [updated_at], [user_description], [course_id], [user_id]) VALUES (3, CAST(N'2023-06-23T14:38:04.1276550+00:00' AS DateTimeOffset), N'<strong><span style="color: rgb(200, 0, 0);">Description Course 1</span></p>', 300, N'https://i.ibb.co/fkR987X/spring-boot.png', N'Java SpringBoot 2023', CAST(10.00 AS Decimal(10, 2)), 1, CAST(15.00 AS Decimal(10, 2)), 3, NULL, CAST(N'2023-06-23T14:38:04.1276550+00:00' AS DateTimeOffset), NULL, 1, 5)
+INSERT [dbo].[orders] ([id], [created_at], [description], [duration], [image], [name], [net_price], [payment], [price], [status], [transaction_id], [updated_at], [user_description], [course_id], [user_id]) VALUES (4, CAST(N'2023-06-23T14:38:10.8866300+00:00' AS DateTimeOffset), N'<strong><span style="color: rgb(200, 0, 0);">Description Course 1</span></p>', 300, N'https://i.ibb.co/fkR987X/spring-boot.png', N'Java SpringBoot 2023', CAST(10.00 AS Decimal(10, 2)), 1, CAST(15.00 AS Decimal(10, 2)), 3, NULL, CAST(N'2023-06-23T14:38:10.8866300+00:00' AS DateTimeOffset), NULL, 1, 1)
+INSERT [dbo].[orders] ([id], [created_at], [description], [duration], [image], [name], [net_price], [payment], [price], [status], [transaction_id], [updated_at], [user_description], [course_id], [user_id]) VALUES (5, CAST(N'2023-06-23T14:38:40.0420130+00:00' AS DateTimeOffset), N'<strong><span style="color: rgb(200, 0, 0);">Description Course 1</span></p>', 300, N'https://i.ibb.co/fkR987X/spring-boot.png', N'Java SpringBoot 2023', CAST(10.00 AS Decimal(10, 2)), 1, CAST(15.00 AS Decimal(10, 2)), 3, NULL, CAST(N'2023-06-23T14:38:40.0420130+00:00' AS DateTimeOffset), NULL, 1, 5)
+INSERT [dbo].[orders] ([id], [created_at], [description], [duration], [image], [name], [net_price], [payment], [price], [status], [transaction_id], [updated_at], [user_description], [course_id], [user_id]) VALUES (6, CAST(N'2023-06-23T14:41:27.4735590+00:00' AS DateTimeOffset), N'<strong><span style="color: rgb(200, 0, 0);">Description Course 1</span></p>', 300, N'https://i.ibb.co/fkR987X/spring-boot.png', N'Java SpringBoot 2023', CAST(10.00 AS Decimal(10, 2)), 1, CAST(15.00 AS Decimal(10, 2)), 3, NULL, CAST(N'2023-06-23T14:41:27.4735590+00:00' AS DateTimeOffset), NULL, 1, 5)
+SET IDENTITY_INSERT [dbo].[orders] OFF
 GO
-SET IDENTITY_INSERT [dbo].[comment] ON 
+SET IDENTITY_INSERT [dbo].[section] ON 
 
-INSERT [dbo].[comment] ([id], [content], [created_at], [post_id], [user_id]) VALUES (1, N'<strong><span style="color: rgb(200, 0, 0);">Amazing good job e!</span></strong>', CAST(N'2023-06-20T00:47:27.6691690+00:00' AS DateTimeOffset), 4, 1)
-INSERT [dbo].[comment] ([id], [content], [created_at], [post_id], [user_id]) VALUES (2, N'<strong><span style="color: rgb(200, 0, 0);">Excellent work!</span></p>', CAST(N'2023-06-21T10:18:39.6764360+00:00' AS DateTimeOffset), 1, 1)
-INSERT [dbo].[comment] ([id], [content], [created_at], [post_id], [user_id]) VALUES (3, N'<p><strong>This is the reply!</strong></p>', CAST(N'2023-06-23T15:55:20.7602310+00:00' AS DateTimeOffset), 2, 4)
-SET IDENTITY_INSERT [dbo].[comment] OFF
+INSERT [dbo].[section] ([id], [created_at], [name], [ordered], [status], [updated_at], [course_id]) VALUES (1, CAST(N'2023-06-01T04:44:48.2622250+00:00' AS DateTimeOffset), N'Section 1', 1, 1, CAST(N'2023-06-11T06:37:09.6657930+00:00' AS DateTimeOffset), 1)
+INSERT [dbo].[section] ([id], [created_at], [name], [ordered], [status], [updated_at], [course_id]) VALUES (2, CAST(N'2023-06-01T04:44:48.2692270+00:00' AS DateTimeOffset), N'Section 2', 2, 1, CAST(N'2023-06-11T06:36:19.1550590+00:00' AS DateTimeOffset), 1)
+INSERT [dbo].[section] ([id], [created_at], [name], [ordered], [status], [updated_at], [course_id]) VALUES (3, CAST(N'2023-06-01T04:44:48.2712260+00:00' AS DateTimeOffset), N'Section 3', 3, 1, CAST(N'2023-06-11T06:36:20.4764750+00:00' AS DateTimeOffset), 1)
+INSERT [dbo].[section] ([id], [created_at], [name], [ordered], [status], [updated_at], [course_id]) VALUES (4, CAST(N'2023-06-11T05:50:44.8541370+00:00' AS DateTimeOffset), N'Section 1', 0, 1, CAST(N'2023-06-11T06:36:11.6663530+00:00' AS DateTimeOffset), 5)
+SET IDENTITY_INSERT [dbo].[section] OFF
 GO
-SET IDENTITY_INSERT [dbo].[course] ON 
+SET IDENTITY_INSERT [dbo].[tag] ON 
 
-INSERT [dbo].[course] ([id], [created_at], [description], [duration], [image], [level], [name], [net_price], [price], [published_at], [rating], [requirement], [slug], [status], [updated_at], [author_id], [category_id]) VALUES (1, CAST(N'2023-06-01T04:44:48.2542230+00:00' AS DateTimeOffset), N'<strong><span style="color: rgb(200, 0, 0);">Description Course 1</span></strong><br/><br/><img src="https://i.ibb.co/YtSK8yC/aptech.png" alt="aptech" border="0" />', 65, N'https://i.ibb.co/fkR987X/spring-boot.png', 1, N'Java SpringBoot 2023', CAST(10.00 AS Decimal(10, 2)), CAST(15.00 AS Decimal(10, 2)), NULL, CAST(3.40 AS Decimal(3, 2)), NULL, N'java-springboot-2023', 1, CAST(N'2023-06-17T09:55:37.9683790+00:00' AS DateTimeOffset), 1, 1)
-INSERT [dbo].[course] ([id], [created_at], [description], [duration], [image], [level], [name], [net_price], [price], [published_at], [rating], [requirement], [slug], [status], [updated_at], [author_id], [category_id]) VALUES (2, CAST(N'2023-05-31T22:33:08.0819860+00:00' AS DateTimeOffset), N'<p>Description Course 2</p>', 0, N'https://i.ibb.co/VTZ3J7q/redux.png', 1, N'Advance ReactJS with Redux - Redux Toolkit', CAST(5.00 AS Decimal(10, 2)), CAST(10.00 AS Decimal(10, 2)), NULL, CAST(0.00 AS Decimal(3, 2)), NULL, N'advance-reactjs-with-redux-redux-toolkit', 0, CAST(N'2023-06-11T05:24:34.4395430+00:00' AS DateTimeOffset), 1, 1)
-INSERT [dbo].[course] ([id], [created_at], [description], [duration], [image], [level], [name], [net_price], [price], [published_at], [rating], [requirement], [slug], [status], [updated_at], [author_id], [category_id]) VALUES (3, CAST(N'2023-05-31T22:33:08.0819860+00:00' AS DateTimeOffset), N'<p>Description ReactJS</p>', 0, N'https://i.ibb.co/XphQ2PC/284601068-113074531414219-1330789727702240346-n.jpg', 0, N'ReactJS', CAST(5.00 AS Decimal(10, 2)), CAST(10.00 AS Decimal(10, 2)), NULL, CAST(0.00 AS Decimal(3, 2)), NULL, N'reactjs', 1, CAST(N'2023-06-11T05:48:23.3714380+00:00' AS DateTimeOffset), 1, 1)
-INSERT [dbo].[course] ([id], [created_at], [description], [duration], [image], [level], [name], [net_price], [price], [published_at], [rating], [requirement], [slug], [status], [updated_at], [author_id], [category_id]) VALUES (4, CAST(N'2023-05-31T22:33:08.0819860+00:00' AS DateTimeOffset), N'<p>Description Course 4</p>', 0, N'https://i.ibb.co/DQ5GDg2/dotnet.png', 1, N'CSharp Dotnet ( .NET )', CAST(5.00 AS Decimal(10, 2)), CAST(10.00 AS Decimal(10, 2)), NULL, CAST(0.00 AS Decimal(3, 2)), NULL, N'csharp-dotnet-net', 1, CAST(N'2023-06-11T05:45:33.0315720+00:00' AS DateTimeOffset), 1, 1)
-INSERT [dbo].[course] ([id], [created_at], [description], [duration], [image], [level], [name], [net_price], [price], [published_at], [rating], [requirement], [slug], [status], [updated_at], [author_id], [category_id]) VALUES (5, CAST(N'2023-05-31T22:33:08.0819860+00:00' AS DateTimeOffset), N'<p>Description Course 5</p>', 96, N'https://i.ibb.co/YffsdXR/laravel.jpg', 1, N'PHP Laravel', CAST(5.00 AS Decimal(10, 2)), CAST(10.00 AS Decimal(10, 2)), NULL, CAST(0.00 AS Decimal(3, 2)), NULL, N'php-laravel', 1, CAST(N'2023-06-11T04:50:27.3308410+00:00' AS DateTimeOffset), 1, 1)
-INSERT [dbo].[course] ([id], [created_at], [description], [duration], [image], [level], [name], [net_price], [price], [published_at], [rating], [requirement], [slug], [status], [updated_at], [author_id], [category_id]) VALUES (6, CAST(N'2023-05-31T22:33:08.0819860+00:00' AS DateTimeOffset), N'<p>Description Course 6</p>', 0, N'https://i.ibb.co/gPRv1ZN/ruby.png', 0, N'Ruby Rails', CAST(5.00 AS Decimal(10, 2)), CAST(10.00 AS Decimal(10, 2)), NULL, CAST(0.00 AS Decimal(3, 2)), NULL, N'ruby-rails', 1, CAST(N'2023-06-11T04:42:28.7606060+00:00' AS DateTimeOffset), 1, 1)
-INSERT [dbo].[course] ([id], [created_at], [description], [duration], [image], [level], [name], [net_price], [price], [published_at], [rating], [requirement], [slug], [status], [updated_at], [author_id], [category_id]) VALUES (7, CAST(N'2023-06-11T04:56:17.1231750+00:00' AS DateTimeOffset), N'<p>Description Blender...</p>', 0, N'https://i.ibb.co/bKrqZk8/3d-blender.png', 1, N'3D Modeling with Blender 3.0', CAST(0.00 AS Decimal(10, 2)), CAST(1299.00 AS Decimal(10, 2)), NULL, CAST(0.00 AS Decimal(3, 2)), NULL, N'3d-modeling-with-blender-3-0', 0, CAST(N'2023-06-13T07:58:45.6588090+00:00' AS DateTimeOffset), 2, 2)
-SET IDENTITY_INSERT [dbo].[course] OFF
-GO
-INSERT [dbo].[course_achievement] ([course_id], [achievement_id]) VALUES (1, 1)
-INSERT [dbo].[course_achievement] ([course_id], [achievement_id]) VALUES (1, 2)
-INSERT [dbo].[course_achievement] ([course_id], [achievement_id]) VALUES (2, 12)
-INSERT [dbo].[course_achievement] ([course_id], [achievement_id]) VALUES (2, 13)
-INSERT [dbo].[course_achievement] ([course_id], [achievement_id]) VALUES (2, 14)
-INSERT [dbo].[course_achievement] ([course_id], [achievement_id]) VALUES (3, 29)
-INSERT [dbo].[course_achievement] ([course_id], [achievement_id]) VALUES (3, 30)
-INSERT [dbo].[course_achievement] ([course_id], [achievement_id]) VALUES (3, 33)
-INSERT [dbo].[course_achievement] ([course_id], [achievement_id]) VALUES (4, 26)
-INSERT [dbo].[course_achievement] ([course_id], [achievement_id]) VALUES (4, 27)
-INSERT [dbo].[course_achievement] ([course_id], [achievement_id]) VALUES (4, 28)
-INSERT [dbo].[course_achievement] ([course_id], [achievement_id]) VALUES (5, 16)
-INSERT [dbo].[course_achievement] ([course_id], [achievement_id]) VALUES (5, 18)
-INSERT [dbo].[course_achievement] ([course_id], [achievement_id]) VALUES (5, 19)
-INSERT [dbo].[course_achievement] ([course_id], [achievement_id]) VALUES (5, 20)
-INSERT [dbo].[course_achievement] ([course_id], [achievement_id]) VALUES (5, 21)
-INSERT [dbo].[course_achievement] ([course_id], [achievement_id]) VALUES (5, 22)
-INSERT [dbo].[course_achievement] ([course_id], [achievement_id]) VALUES (6, 10)
-INSERT [dbo].[course_achievement] ([course_id], [achievement_id]) VALUES (6, 11)
-INSERT [dbo].[course_achievement] ([course_id], [achievement_id]) VALUES (7, 23)
-INSERT [dbo].[course_achievement] ([course_id], [achievement_id]) VALUES (7, 24)
-INSERT [dbo].[course_achievement] ([course_id], [achievement_id]) VALUES (7, 25)
+INSERT [dbo].[tag] ([id], [created_at], [name], [updated_at]) VALUES (1, CAST(N'2023-06-01T23:48:04.8899390+00:00' AS DateTimeOffset), N'hibernate', CAST(N'2023-06-01T23:48:04.8899390+00:00' AS DateTimeOffset))
+INSERT [dbo].[tag] ([id], [created_at], [name], [updated_at]) VALUES (2, CAST(N'2023-06-01T23:48:04.8979360+00:00' AS DateTimeOffset), N'spring boot', CAST(N'2023-06-01T23:48:04.8979360+00:00' AS DateTimeOffset))
+INSERT [dbo].[tag] ([id], [created_at], [name], [updated_at]) VALUES (3, CAST(N'2023-06-01T23:48:04.9009400+00:00' AS DateTimeOffset), N'java', CAST(N'2023-06-01T23:48:04.9009400+00:00' AS DateTimeOffset))
+INSERT [dbo].[tag] ([id], [created_at], [name], [updated_at]) VALUES (4, CAST(N'2023-06-11T02:18:05.4984070+00:00' AS DateTimeOffset), N'php', CAST(N'2023-06-11T02:18:05.4984070+00:00' AS DateTimeOffset))
+INSERT [dbo].[tag] ([id], [created_at], [name], [updated_at]) VALUES (5, CAST(N'2023-06-11T02:18:05.5006280+00:00' AS DateTimeOffset), N'my sql', CAST(N'2023-06-11T02:18:05.5006280+00:00' AS DateTimeOffset))
+INSERT [dbo].[tag] ([id], [created_at], [name], [updated_at]) VALUES (6, CAST(N'2023-06-11T03:51:41.0177420+00:00' AS DateTimeOffset), N'reactjs', CAST(N'2023-06-11T03:51:41.0177420+00:00' AS DateTimeOffset))
+INSERT [dbo].[tag] ([id], [created_at], [name], [updated_at]) VALUES (7, CAST(N'2023-06-11T03:51:41.0187480+00:00' AS DateTimeOffset), N'redux', CAST(N'2023-06-11T03:51:41.0187480+00:00' AS DateTimeOffset))
+INSERT [dbo].[tag] ([id], [created_at], [name], [updated_at]) VALUES (8, CAST(N'2023-06-11T04:34:56.9065430+00:00' AS DateTimeOffset), N'dotnet', CAST(N'2023-06-11T04:34:56.9065430+00:00' AS DateTimeOffset))
+INSERT [dbo].[tag] ([id], [created_at], [name], [updated_at]) VALUES (9, CAST(N'2023-06-11T04:42:28.7367750+00:00' AS DateTimeOffset), N'ruby', CAST(N'2023-06-11T04:42:28.7367750+00:00' AS DateTimeOffset))
+INSERT [dbo].[tag] ([id], [created_at], [name], [updated_at]) VALUES (10, CAST(N'2023-06-11T04:56:17.1069120+00:00' AS DateTimeOffset), N'graphic', CAST(N'2023-06-11T04:56:17.1069120+00:00' AS DateTimeOffset))
+INSERT [dbo].[tag] ([id], [created_at], [name], [updated_at]) VALUES (11, CAST(N'2023-06-11T04:56:17.1106840+00:00' AS DateTimeOffset), N'3d', CAST(N'2023-06-11T04:56:17.1106840+00:00' AS DateTimeOffset))
+INSERT [dbo].[tag] ([id], [created_at], [name], [updated_at]) VALUES (12, CAST(N'2023-06-11T05:48:23.3509560+00:00' AS DateTimeOffset), N'react', CAST(N'2023-06-11T05:48:23.3509560+00:00' AS DateTimeOffset))
+SET IDENTITY_INSERT [dbo].[tag] OFF
 GO
 INSERT [dbo].[course_tag] ([course_id], [tag_id]) VALUES (1, 1)
 INSERT [dbo].[course_tag] ([course_id], [tag_id]) VALUES (1, 2)
@@ -826,24 +234,34 @@ INSERT [dbo].[lesson] ([id], [created_at], [description], [duration], [name], [o
 INSERT [dbo].[lesson] ([id], [created_at], [description], [duration], [name], [ordered], [status], [updated_at], [section_id]) VALUES (6, CAST(N'2023-06-11T06:30:31.4041580+00:00' AS DateTimeOffset), N'<p>Lesson 01Lesson 01Lesson 01Lesson 01Lesson 01Lesson 01Lesson 01</p>', 96, N'Lesson 1', 0, 1, CAST(N'2023-06-11T07:38:19.1949210+00:00' AS DateTimeOffset), 4)
 SET IDENTITY_INSERT [dbo].[lesson] OFF
 GO
-SET IDENTITY_INSERT [dbo].[lesson_tracking] ON 
-
-INSERT [dbo].[lesson_tracking] ([id], [created_at], [is_completed], [is_tracked], [resume_point], [course_id], [enrollment_id], [lesson_id], [section_id], [video_id], [updated_at]) VALUES (1, CAST(N'2023-06-13T11:09:08.4429980+00:00' AS DateTimeOffset), 1, 0, 12, 1, 8, 1, 1, 1, CAST(N'2023-06-23T14:50:06.9945530+00:00' AS DateTimeOffset))
-INSERT [dbo].[lesson_tracking] ([id], [created_at], [is_completed], [is_tracked], [resume_point], [course_id], [enrollment_id], [lesson_id], [section_id], [video_id], [updated_at]) VALUES (2, CAST(N'2023-06-13T11:09:29.3221590+00:00' AS DateTimeOffset), 1, 0, 13, 1, 8, 3, 2, 3, CAST(N'2023-06-25T09:34:16.2848140+00:00' AS DateTimeOffset))
-INSERT [dbo].[lesson_tracking] ([id], [created_at], [is_completed], [is_tracked], [resume_point], [course_id], [enrollment_id], [lesson_id], [section_id], [video_id], [updated_at]) VALUES (3, CAST(N'2023-06-13T11:51:40.3339100+00:00' AS DateTimeOffset), 1, 0, 13, 1, 8, 4, 2, 4, CAST(N'2023-06-23T15:30:18.3059530+00:00' AS DateTimeOffset))
-INSERT [dbo].[lesson_tracking] ([id], [created_at], [is_completed], [is_tracked], [resume_point], [course_id], [enrollment_id], [lesson_id], [section_id], [video_id], [updated_at]) VALUES (4, CAST(N'2023-06-13T12:47:44.8686410+00:00' AS DateTimeOffset), 1, 1, 1582, 1, 8, 5, 2, 5, CAST(N'2023-06-25T09:34:29.9182920+00:00' AS DateTimeOffset))
-INSERT [dbo].[lesson_tracking] ([id], [created_at], [is_completed], [is_tracked], [resume_point], [course_id], [enrollment_id], [lesson_id], [section_id], [video_id], [updated_at]) VALUES (5, CAST(N'2023-06-13T13:01:02.3536900+00:00' AS DateTimeOffset), 1, 0, 13, 1, 8, 2, 1, 2, CAST(N'2023-06-23T14:17:03.3477380+00:00' AS DateTimeOffset))
-SET IDENTITY_INSERT [dbo].[lesson_tracking] OFF
+INSERT [dbo].[video] ([lesson_id], [caption_urls], [created_at], [duration], [name], [status], [updated_at], [url]) VALUES (1, N'http://localhost:8080/video/caption/sample.en.vtt,http://localhost:8080/video/caption/sample.vi.vtt,http://localhost:8080/video/caption/sample.jp.vtt', CAST(N'2023-06-12T15:36:43.8405520+00:00' AS DateTimeOffset), 0, N'230612223643_course_1.mp4', 1, CAST(N'2023-06-12T15:36:43.8405520+00:00' AS DateTimeOffset), N'http://localhost:8080/video/stream/mp4/230612223643_course_1')
+INSERT [dbo].[video] ([lesson_id], [caption_urls], [created_at], [duration], [name], [status], [updated_at], [url]) VALUES (2, N'http://localhost:8080/video/caption/sample.en.vtt,http://localhost:8080/video/caption/sample.vi.vtt,http://localhost:8080/video/caption/sample.jp.vtt', CAST(N'2023-06-12T15:36:57.0965040+00:00' AS DateTimeOffset), 0, N'230612223657_course_2.mp4', 1, CAST(N'2023-06-12T15:36:57.0965040+00:00' AS DateTimeOffset), N'http://localhost:8080/video/stream/mp4/230612223657_course_2')
+INSERT [dbo].[video] ([lesson_id], [caption_urls], [created_at], [duration], [name], [status], [updated_at], [url]) VALUES (3, N'http://localhost:8080/video/caption/sample.en.vtt,http://localhost:8080/video/caption/sample.vi.vtt,http://localhost:8080/video/caption/sample.jp.vtt', CAST(N'2023-06-12T15:37:08.8835050+00:00' AS DateTimeOffset), 0, N'230612223723_course_3.mp4', 1, CAST(N'2023-06-12T15:37:23.6215040+00:00' AS DateTimeOffset), N'http://localhost:8080/video/stream/mp4/230612223723_course_3')
+INSERT [dbo].[video] ([lesson_id], [caption_urls], [created_at], [duration], [name], [status], [updated_at], [url]) VALUES (4, N'http://localhost:8080/video/caption/sample.en.vtt,http://localhost:8080/video/caption/sample.vi.vtt,http://localhost:8080/video/caption/sample.jp.vtt', CAST(N'2023-06-12T15:37:16.0865020+00:00' AS DateTimeOffset), 0, N'230612223716_course_4.mp4', 1, CAST(N'2023-06-12T15:37:16.0865020+00:00' AS DateTimeOffset), N'http://localhost:8080/video/stream/mp4/230612223716_course_4')
+INSERT [dbo].[video] ([lesson_id], [caption_urls], [created_at], [duration], [name], [status], [updated_at], [url]) VALUES (5, N'http://localhost:8080/video/caption/sample.en.vtt,http://localhost:8080/video/caption/sample.vi.vtt,http://localhost:8080/video/caption/sample.jp.vtt', CAST(N'2023-06-12T15:37:16.0865020+00:00' AS DateTimeOffset), 0, N'230619053720_StarSecurity video.mp4', 1, CAST(N'2023-06-12T15:37:16.0865020+00:00' AS DateTimeOffset), N'http://localhost:8080/video/stream/mp4/230619053720_StarSecurity video')
 GO
-SET IDENTITY_INSERT [dbo].[note] ON 
+SET IDENTITY_INSERT [dbo].[post] ON 
 
-INSERT [dbo].[note] ([id], [created_at], [description], [resume_point], [course_id], [enrollment_id], [lesson_id], [section_id], [video_id]) VALUES (1, CAST(N'2023-06-17T16:50:48.1600000+00:00' AS DateTimeOffset), N'<p>update lesson 1 at 4 sec</p>', 4, 1, 8, 1, 1, 1)
-INSERT [dbo].[note] ([id], [created_at], [description], [resume_point], [course_id], [enrollment_id], [lesson_id], [section_id], [video_id]) VALUES (2, CAST(N'2023-06-17T16:51:48.1600000+00:00' AS DateTimeOffset), N'<p>update lesson 1 at 6 sec</p>', 6, 1, 8, 1, 1, 1)
-INSERT [dbo].[note] ([id], [created_at], [description], [resume_point], [course_id], [enrollment_id], [lesson_id], [section_id], [video_id]) VALUES (3, CAST(N'2023-06-17T16:52:48.1600000+00:00' AS DateTimeOffset), N'<p><span style="color: rgb(200, 0, 0);">update note lesson 1 at 10s</span></p>', 10, 1, 8, 1, 1, 1)
-INSERT [dbo].[note] ([id], [created_at], [description], [resume_point], [course_id], [enrollment_id], [lesson_id], [section_id], [video_id]) VALUES (4, CAST(N'2023-06-17T16:53:48.1600000+00:00' AS DateTimeOffset), N'<p>note lesson 1 at 11s</p>', 11, 1, 8, 1, 1, 1)
-INSERT [dbo].[note] ([id], [created_at], [description], [resume_point], [course_id], [enrollment_id], [lesson_id], [section_id], [video_id]) VALUES (5, CAST(N'2023-06-17T16:54:48.1600000+00:00' AS DateTimeOffset), N'<p>note lesson 1 at 13s</p>', 13, 1, 8, 1, 1, 1)
-INSERT [dbo].[note] ([id], [created_at], [description], [resume_point], [course_id], [enrollment_id], [lesson_id], [section_id], [video_id]) VALUES (6, CAST(N'2023-06-23T14:51:25.3440180+00:00' AS DateTimeOffset), N'<p><strong>Note lesson 4 at 8 seconds. This note is vert important!</strong></p>', 8, 1, 8, 4, 2, 4)
-SET IDENTITY_INSERT [dbo].[note] OFF
+INSERT [dbo].[post] ([id], [content], [course_id], [created_at], [user_post_id]) VALUES (1, N'First post, Haha!', 1, CAST(N'2023-06-29T06:04:24.0123960+00:00' AS DateTimeOffset), 4)
+INSERT [dbo].[post] ([id], [content], [course_id], [created_at], [user_post_id]) VALUES (2, N'Post2 Lorem ipsum dolor sit amet, consectetur adipiscing elit.', 1, CAST(N'2023-06-29T06:04:24.0363970+00:00' AS DateTimeOffset), 5)
+INSERT [dbo].[post] ([id], [content], [course_id], [created_at], [user_post_id]) VALUES (3, N'Post3 Lorem ipsum dolor sit amet, consectetur adipiscing elit.', 1, CAST(N'2023-06-29T06:04:24.0764060+00:00' AS DateTimeOffset), 6)
+INSERT [dbo].[post] ([id], [content], [course_id], [created_at], [user_post_id]) VALUES (4, N'<strong><span style="color: rgb(200, 0, 0);">Ai cho comment? Xin phép tui chưa?</span></strong>', 1, CAST(N'2023-06-20T00:03:46.1336210+00:00' AS DateTimeOffset), 1)
+INSERT [dbo].[post] ([id], [content], [course_id], [created_at], [user_post_id]) VALUES (5, N'<p>Post5 Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>', 1, CAST(N'2023-06-20T00:06:16.4667310+00:00' AS DateTimeOffset), 4)
+INSERT [dbo].[post] ([id], [content], [course_id], [created_at], [user_post_id]) VALUES (6, N'<p>Post6 Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>', 1, CAST(N'2023-06-22T12:52:56.6728850+00:00' AS DateTimeOffset), 7)
+INSERT [dbo].[post] ([id], [content], [course_id], [created_at], [user_post_id]) VALUES (10, N'<p>Post7 Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>', 1, CAST(N'2023-06-22T12:52:56.6728850+00:00' AS DateTimeOffset), 8)
+SET IDENTITY_INSERT [dbo].[post] OFF
+GO
+INSERT [dbo].[post_users] ([post_id], [user_id]) VALUES (1, 1)
+INSERT [dbo].[post_users] ([post_id], [user_id]) VALUES (4, 4)
+INSERT [dbo].[post_users] ([post_id], [user_id]) VALUES (1, 4)
+INSERT [dbo].[post_users] ([post_id], [user_id]) VALUES (2, 4)
+INSERT [dbo].[post_users] ([post_id], [user_id]) VALUES (5, 1)
+GO
+SET IDENTITY_INSERT [dbo].[comment] ON 
+
+INSERT [dbo].[comment] ([id], [content], [created_at], [post_id], [user_id]) VALUES (2, N'<strong><span style="color: rgb(200, 0, 0);">Excellent work!</span></p>', CAST(N'2023-06-21T10:18:39.6764360+00:00' AS DateTimeOffset), 1, 1)
+INSERT [dbo].[comment] ([id], [content], [created_at], [post_id], [user_id]) VALUES (3, N'<p><strong>This is the reply!</strong></p>', CAST(N'2023-06-23T15:55:20.7602310+00:00' AS DateTimeOffset), 2, 4)
+SET IDENTITY_INSERT [dbo].[comment] OFF
 GO
 SET IDENTITY_INSERT [dbo].[notifications] ON 
 
@@ -859,222 +277,16 @@ INSERT [dbo].[notifications] ([id], [content], [created_at], [is_delivered], [is
 INSERT [dbo].[notifications] ([id], [content], [created_at], [is_delivered], [is_read], [notification_type], [user_from_id], [user_to_id]) VALUES (21, N'New Course from Author 1', CAST(N'2023-06-24T00:55:32.2300000+00:00' AS DateTimeOffset), 0, 0, 4, 1, 8)
 SET IDENTITY_INSERT [dbo].[notifications] OFF
 GO
-SET IDENTITY_INSERT [dbo].[orders] ON 
-
-INSERT [dbo].[orders] ([id], [created_at], [description], [duration], [image], [name], [net_price], [payment], [price], [status], [updated_at], [course_id], [user_id]) VALUES (1, CAST(N'2023-06-23T14:29:56.6825530+00:00' AS DateTimeOffset), N'<strong><span style="color: rgb(200, 0, 0);">Description Course 1</span></p>', 300, N'https://i.ibb.co/fkR987X/spring-boot.png', N'Java SpringBoot 2023', CAST(10.00 AS Decimal(10, 2)), 0, CAST(15.00 AS Decimal(10, 2)), 3, CAST(N'2023-06-23T14:29:56.6825530+00:00' AS DateTimeOffset), 1, 1)
-INSERT [dbo].[orders] ([id], [created_at], [description], [duration], [image], [name], [net_price], [payment], [price], [status], [updated_at], [course_id], [user_id]) VALUES (2, CAST(N'2023-06-23T14:36:07.0521230+00:00' AS DateTimeOffset), N'<strong><span style="color: rgb(200, 0, 0);">Description Course 1</span></p>', 300, N'https://i.ibb.co/fkR987X/spring-boot.png', N'Java SpringBoot 2023', CAST(10.00 AS Decimal(10, 2)), 1, CAST(15.00 AS Decimal(10, 2)), 3, CAST(N'2023-06-23T14:36:07.0521230+00:00' AS DateTimeOffset), 1, 1)
-INSERT [dbo].[orders] ([id], [created_at], [description], [duration], [image], [name], [net_price], [payment], [price], [status], [updated_at], [course_id], [user_id]) VALUES (3, CAST(N'2023-06-23T14:38:04.1276550+00:00' AS DateTimeOffset), N'<strong><span style="color: rgb(200, 0, 0);">Description Course 1</span></p>', 300, N'https://i.ibb.co/fkR987X/spring-boot.png', N'Java SpringBoot 2023', CAST(10.00 AS Decimal(10, 2)), 1, CAST(15.00 AS Decimal(10, 2)), 3, CAST(N'2023-06-23T14:38:04.1276550+00:00' AS DateTimeOffset), 1, 5)
-INSERT [dbo].[orders] ([id], [created_at], [description], [duration], [image], [name], [net_price], [payment], [price], [status], [updated_at], [course_id], [user_id]) VALUES (4, CAST(N'2023-06-23T14:38:10.8866300+00:00' AS DateTimeOffset), N'<strong><span style="color: rgb(200, 0, 0);">Description Course 1</span></p>', 300, N'https://i.ibb.co/fkR987X/spring-boot.png', N'Java SpringBoot 2023', CAST(10.00 AS Decimal(10, 2)), 1, CAST(15.00 AS Decimal(10, 2)), 3, CAST(N'2023-06-23T14:38:10.8866300+00:00' AS DateTimeOffset), 1, 1)
-INSERT [dbo].[orders] ([id], [created_at], [description], [duration], [image], [name], [net_price], [payment], [price], [status], [updated_at], [course_id], [user_id]) VALUES (5, CAST(N'2023-06-23T14:38:40.0420130+00:00' AS DateTimeOffset), N'<strong><span style="color: rgb(200, 0, 0);">Description Course 1</span></p>', 300, N'https://i.ibb.co/fkR987X/spring-boot.png', N'Java SpringBoot 2023', CAST(10.00 AS Decimal(10, 2)), 1, CAST(15.00 AS Decimal(10, 2)), 3, CAST(N'2023-06-23T14:38:40.0420130+00:00' AS DateTimeOffset), 1, 5)
-INSERT [dbo].[orders] ([id], [created_at], [description], [duration], [image], [name], [net_price], [payment], [price], [status], [updated_at], [course_id], [user_id]) VALUES (6, CAST(N'2023-06-23T14:41:27.4735590+00:00' AS DateTimeOffset), N'<strong><span style="color: rgb(200, 0, 0);">Description Course 1</span></p>', 300, N'https://i.ibb.co/fkR987X/spring-boot.png', N'Java SpringBoot 2023', CAST(10.00 AS Decimal(10, 2)), 1, CAST(15.00 AS Decimal(10, 2)), 3, CAST(N'2023-06-23T14:41:27.4735590+00:00' AS DateTimeOffset), 1, 5)
-SET IDENTITY_INSERT [dbo].[orders] OFF
-GO
-SET IDENTITY_INSERT [dbo].[part] ON 
-
-INSERT [dbo].[part] ([id], [created_at], [limit_time], [max_point], [status], [updated_at], [course_id]) VALUES (1, CAST(N'2023-06-25T10:25:54.0970000+07:00' AS DateTimeOffset), 3600, 10, 1, CAST(N'2023-06-25T10:25:54.0970000+07:00' AS DateTimeOffset), 1)
-INSERT [dbo].[part] ([id], [created_at], [limit_time], [max_point], [status], [updated_at], [course_id]) VALUES (2, CAST(N'2023-06-25T10:25:54.0970000+07:00' AS DateTimeOffset), 1800, 100, 0, CAST(N'2023-06-25T10:25:54.0970000+07:00' AS DateTimeOffset), 1)
-SET IDENTITY_INSERT [dbo].[part] OFF
-GO
-SET IDENTITY_INSERT [dbo].[post] ON 
-
-INSERT [dbo].[post] ([id], [content], [course_id], [created_at], [user_post_id]) VALUES (1, N'First post, Haha!', 1, CAST(N'2023-06-29T00:07:47.5574370+00:00' AS DateTimeOffset), 4)
-INSERT [dbo].[post] ([id], [content], [course_id], [created_at], [user_post_id]) VALUES (2, N'Post2 Lorem ipsum dolor sit amet, consectetur adipiscing elit.', 1, CAST(N'2023-06-29T00:07:47.6034330+00:00' AS DateTimeOffset), 5)
-INSERT [dbo].[post] ([id], [content], [course_id], [created_at], [user_post_id]) VALUES (3, N'Post3 Lorem ipsum dolor sit amet, consectetur adipiscing elit.', 1, CAST(N'2023-06-29T00:07:47.6234350+00:00' AS DateTimeOffset), 6)
-INSERT [dbo].[post] ([id], [content], [course_id], [created_at], [user_post_id]) VALUES (4, N'<strong><span style="color: rgb(200, 0, 0);">Ai cho comment? Xin phép tui chưa?</span></strong>', 1, CAST(N'2023-06-20T00:03:46.1336210+00:00' AS DateTimeOffset), 1)
-INSERT [dbo].[post] ([id], [content], [course_id], [created_at], [user_post_id]) VALUES (5, N'<p>Post5 Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>', 1, CAST(N'2023-06-20T00:06:16.4667310+00:00' AS DateTimeOffset), 4)
-INSERT [dbo].[post] ([id], [content], [course_id], [created_at], [user_post_id]) VALUES (6, N'<p>Post6 Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>', 1, CAST(N'2023-06-22T12:52:56.6728850+00:00' AS DateTimeOffset), 7)
-INSERT [dbo].[post] ([id], [content], [course_id], [created_at], [user_post_id]) VALUES (10, N'<p>Post7 Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>', 1, CAST(N'2023-06-22T12:52:56.6728850+00:00' AS DateTimeOffset), 8)
-SET IDENTITY_INSERT [dbo].[post] OFF
-GO
-INSERT [dbo].[post_users] ([post_id], [user_id]) VALUES (1, 1)
-INSERT [dbo].[post_users] ([post_id], [user_id]) VALUES (4, 4)
-INSERT [dbo].[post_users] ([post_id], [user_id]) VALUES (1, 4)
-INSERT [dbo].[post_users] ([post_id], [user_id]) VALUES (2, 4)
-INSERT [dbo].[post_users] ([post_id], [user_id]) VALUES (5, 1)
-GO
-SET IDENTITY_INSERT [dbo].[question] ON 
-
-INSERT [dbo].[question] ([id], [created_at], [description], [point], [updated_at], [part_id]) VALUES (1, CAST(N'2023-06-25T10:25:54.0970000+07:00' AS DateTimeOffset), N'Which of the following is related to Spring Framework?', 2.5, CAST(N'2023-06-25T10:25:54.0970000+07:00' AS DateTimeOffset), 1)
-INSERT [dbo].[question] ([id], [created_at], [description], [point], [updated_at], [part_id]) VALUES (2, CAST(N'2023-06-25T10:25:54.0970000+07:00' AS DateTimeOffset), N'Which of the following is not the Spring supported DI?
-', 2.5, CAST(N'2023-06-25T10:25:54.0970000+07:00' AS DateTimeOffset), 1)
-INSERT [dbo].[question] ([id], [created_at], [description], [point], [updated_at], [part_id]) VALUES (3, CAST(N'2023-06-25T10:25:54.0970000+07:00' AS DateTimeOffset), N'Which of the following is not the Spring supported DI?
-', 2.5, CAST(N'2023-06-25T10:25:54.0970000+07:00' AS DateTimeOffset), 2)
-INSERT [dbo].[question] ([id], [created_at], [description], [point], [updated_at], [part_id]) VALUES (4, CAST(N'2023-06-25T10:25:54.0970000+07:00' AS DateTimeOffset), N'Which of the following is not the Spring supported DI?
-', 2.5, CAST(N'2023-06-25T10:25:54.0970000+07:00' AS DateTimeOffset), 2)
-SET IDENTITY_INSERT [dbo].[question] OFF
-GO
-SET IDENTITY_INSERT [dbo].[section] ON 
-
-INSERT [dbo].[section] ([id], [created_at], [name], [ordered], [status], [updated_at], [course_id]) VALUES (1, CAST(N'2023-06-01T04:44:48.2622250+00:00' AS DateTimeOffset), N'Section 1', 1, 1, CAST(N'2023-06-11T06:37:09.6657930+00:00' AS DateTimeOffset), 1)
-INSERT [dbo].[section] ([id], [created_at], [name], [ordered], [status], [updated_at], [course_id]) VALUES (2, CAST(N'2023-06-01T04:44:48.2692270+00:00' AS DateTimeOffset), N'Section 2', 2, 1, CAST(N'2023-06-11T06:36:19.1550590+00:00' AS DateTimeOffset), 1)
-INSERT [dbo].[section] ([id], [created_at], [name], [ordered], [status], [updated_at], [course_id]) VALUES (3, CAST(N'2023-06-01T04:44:48.2712260+00:00' AS DateTimeOffset), N'Section 3', 3, 1, CAST(N'2023-06-11T06:36:20.4764750+00:00' AS DateTimeOffset), 1)
-INSERT [dbo].[section] ([id], [created_at], [name], [ordered], [status], [updated_at], [course_id]) VALUES (4, CAST(N'2023-06-11T05:50:44.8541370+00:00' AS DateTimeOffset), N'Section 1', 0, 1, CAST(N'2023-06-11T06:36:11.6663530+00:00' AS DateTimeOffset), 5)
-SET IDENTITY_INSERT [dbo].[section] OFF
-GO
-SET IDENTITY_INSERT [dbo].[tag] ON 
-
-INSERT [dbo].[tag] ([id], [created_at], [name], [updated_at]) VALUES (1, CAST(N'2023-06-01T23:48:04.8899390+00:00' AS DateTimeOffset), N'hibernate', CAST(N'2023-06-01T23:48:04.8899390+00:00' AS DateTimeOffset))
-INSERT [dbo].[tag] ([id], [created_at], [name], [updated_at]) VALUES (2, CAST(N'2023-06-01T23:48:04.8979360+00:00' AS DateTimeOffset), N'spring boot', CAST(N'2023-06-01T23:48:04.8979360+00:00' AS DateTimeOffset))
-INSERT [dbo].[tag] ([id], [created_at], [name], [updated_at]) VALUES (3, CAST(N'2023-06-01T23:48:04.9009400+00:00' AS DateTimeOffset), N'java', CAST(N'2023-06-01T23:48:04.9009400+00:00' AS DateTimeOffset))
-INSERT [dbo].[tag] ([id], [created_at], [name], [updated_at]) VALUES (4, CAST(N'2023-06-11T02:18:05.4984070+00:00' AS DateTimeOffset), N'php', CAST(N'2023-06-11T02:18:05.4984070+00:00' AS DateTimeOffset))
-INSERT [dbo].[tag] ([id], [created_at], [name], [updated_at]) VALUES (5, CAST(N'2023-06-11T02:18:05.5006280+00:00' AS DateTimeOffset), N'my sql', CAST(N'2023-06-11T02:18:05.5006280+00:00' AS DateTimeOffset))
-INSERT [dbo].[tag] ([id], [created_at], [name], [updated_at]) VALUES (6, CAST(N'2023-06-11T03:51:41.0177420+00:00' AS DateTimeOffset), N'reactjs', CAST(N'2023-06-11T03:51:41.0177420+00:00' AS DateTimeOffset))
-INSERT [dbo].[tag] ([id], [created_at], [name], [updated_at]) VALUES (7, CAST(N'2023-06-11T03:51:41.0187480+00:00' AS DateTimeOffset), N'redux', CAST(N'2023-06-11T03:51:41.0187480+00:00' AS DateTimeOffset))
-INSERT [dbo].[tag] ([id], [created_at], [name], [updated_at]) VALUES (8, CAST(N'2023-06-11T04:34:56.9065430+00:00' AS DateTimeOffset), N'dotnet', CAST(N'2023-06-11T04:34:56.9065430+00:00' AS DateTimeOffset))
-INSERT [dbo].[tag] ([id], [created_at], [name], [updated_at]) VALUES (9, CAST(N'2023-06-11T04:42:28.7367750+00:00' AS DateTimeOffset), N'ruby', CAST(N'2023-06-11T04:42:28.7367750+00:00' AS DateTimeOffset))
-INSERT [dbo].[tag] ([id], [created_at], [name], [updated_at]) VALUES (10, CAST(N'2023-06-11T04:56:17.1069120+00:00' AS DateTimeOffset), N'graphic', CAST(N'2023-06-11T04:56:17.1069120+00:00' AS DateTimeOffset))
-INSERT [dbo].[tag] ([id], [created_at], [name], [updated_at]) VALUES (11, CAST(N'2023-06-11T04:56:17.1106840+00:00' AS DateTimeOffset), N'3d', CAST(N'2023-06-11T04:56:17.1106840+00:00' AS DateTimeOffset))
-INSERT [dbo].[tag] ([id], [created_at], [name], [updated_at]) VALUES (12, CAST(N'2023-06-11T05:48:23.3509560+00:00' AS DateTimeOffset), N'react', CAST(N'2023-06-11T05:48:23.3509560+00:00' AS DateTimeOffset))
-SET IDENTITY_INSERT [dbo].[tag] OFF
-GO
-SET IDENTITY_INSERT [dbo].[Test] ON 
-
-INSERT [dbo].[Test] ([id], [part_id], [question_id], [answer_id], [user_answer_id], [Question_Description], [Answer_Description], [TotalExamTime], [Question_Point], [Iscorrect], [user_id]) VALUES (8, 2, 2, 1, 4, N'Which of the following is related to Spring Framework?', N'A. Container', 0, 2.5, 0, 4)
-INSERT [dbo].[Test] ([id], [part_id], [question_id], [answer_id], [user_answer_id], [Question_Description], [Answer_Description], [TotalExamTime], [Question_Point], [Iscorrect], [user_id]) VALUES (9, 2, 2, 2, 4, N'Which of the following is related to Spring Framework?', N'B. Beans', 0, 2.5, 0, 4)
-INSERT [dbo].[Test] ([id], [part_id], [question_id], [answer_id], [user_answer_id], [Question_Description], [Answer_Description], [TotalExamTime], [Question_Point], [Iscorrect], [user_id]) VALUES (10, 2, 2, 3, 4, N'Which of the following is related to Spring Framework?', N'C. IoC', 0, 2.5, 0, 4)
-INSERT [dbo].[Test] ([id], [part_id], [question_id], [answer_id], [user_answer_id], [Question_Description], [Answer_Description], [TotalExamTime], [Question_Point], [Iscorrect], [user_id]) VALUES (11, 2, 2, 4, 4, N'Which of the following is related to Spring Framework?', N'D. All of these', 0, 2.5, 1, 4)
-INSERT [dbo].[Test] ([id], [part_id], [question_id], [answer_id], [user_answer_id], [Question_Description], [Answer_Description], [TotalExamTime], [Question_Point], [Iscorrect], [user_id]) VALUES (12, 2, 3, 5, 6, N'Which of the following is not the Spring supported DI?', N'A. Constructor-based', 0, 1, 0, 4)
-INSERT [dbo].[Test] ([id], [part_id], [question_id], [answer_id], [user_answer_id], [Question_Description], [Answer_Description], [TotalExamTime], [Question_Point], [Iscorrect], [user_id]) VALUES (13, 2, 3, 6, 6, N'Which of the following is not the Spring supported DI?', N'B. Setter-based', 0, 1, 0, 4)
-INSERT [dbo].[Test] ([id], [part_id], [question_id], [answer_id], [user_answer_id], [Question_Description], [Answer_Description], [TotalExamTime], [Question_Point], [Iscorrect], [user_id]) VALUES (14, 2, 3, 7, 6, N'Which of the following is not the Spring supported DI?', N'C. Destructor-based', 0, 1, 1, 4)
-INSERT [dbo].[Test] ([id], [part_id], [question_id], [answer_id], [user_answer_id], [Question_Description], [Answer_Description], [TotalExamTime], [Question_Point], [Iscorrect], [user_id]) VALUES (15, 2, 3, 8, 6, N'Which of the following is not the Spring supported DI?', N'D. All of these', 0, 1, 0, 4)
-GO
-INSERT [dbo].[Test] ([id], [part_id], [question_id], [answer_id], [user_answer_id], [Question_Description], [Answer_Description], [TotalExamTime], [Question_Point], [Iscorrect], [user_id]) VALUES (10, 2, 2, 3, 4, N'Which of the following is related to Spring Framework?', N'C. IoC', 0, 2.5, 0, 4)
-INSERT [dbo].[Test] ([id], [part_id], [question_id], [answer_id], [user_answer_id], [Question_Description], [Answer_Description], [TotalExamTime], [Question_Point], [Iscorrect], [user_id]) VALUES (11, 2, 2, 4, 4, N'Which of the following is related to Spring Framework?', N'D. All of these', 0, 2.5, 1, 4)
-INSERT [dbo].[Test] ([id], [part_id], [question_id], [answer_id], [user_answer_id], [Question_Description], [Answer_Description], [TotalExamTime], [Question_Point], [Iscorrect], [user_id]) VALUES (12, 2, 3, 5, 6, N'Which of the following is not the Spring supported DI?', N'A. Constructor-based', 0, 1, 0, 4)
-INSERT [dbo].[Test] ([id], [part_id], [question_id], [answer_id], [user_answer_id], [Question_Description], [Answer_Description], [TotalExamTime], [Question_Point], [Iscorrect], [user_id]) VALUES (13, 2, 3, 6, 6, N'Which of the following is not the Spring supported DI?', N'B. Setter-based', 0, 1, 0, 4)
-INSERT [dbo].[Test] ([id], [part_id], [question_id], [answer_id], [user_answer_id], [Question_Description], [Answer_Description], [TotalExamTime], [Question_Point], [Iscorrect], [user_id]) VALUES (14, 2, 3, 7, 6, N'Which of the following is not the Spring supported DI?', N'C. Destructor-based', 0, 1, 1, 4)
-INSERT [dbo].[Test] ([id], [part_id], [question_id], [answer_id], [user_answer_id], [Question_Description], [Answer_Description], [TotalExamTime], [Question_Point], [Iscorrect], [user_id]) VALUES (15, 2, 3, 8, 6, N'Which of the following is not the Spring supported DI?', N'D. All of these', 0, 1, 0, 4)
-INSERT [dbo].[Test] ([id], [part_id], [question_id], [answer_id], [user_answer_id], [Question_Description], [Answer_Description], [TotalExamTime], [Question_Point], [Iscorrect], [user_id]) VALUES (8, 2, 2, 1, 4, N'Which of the following is related to Spring Framework?', N'A. Container', 0, 2.5, 0, 4)
-INSERT [dbo].[Test] ([id], [part_id], [question_id], [answer_id], [user_answer_id], [Question_Description], [Answer_Description], [TotalExamTime], [Question_Point], [Iscorrect], [user_id]) VALUES (9, 2, 2, 2, 4, N'Which of the following is related to Spring Framework?', N'B. Beans', 0, 2.5, 0, 4)
-GO
-INSERT [dbo].[Test] ([id], [part_id], [question_id], [answer_id], [user_answer_id], [Question_Description], [Answer_Description], [TotalExamTime], [Question_Point], [Iscorrect], [user_id]) VALUES (9, 2, 2, 2, 4, N'Which of the following is related to Spring Framework?', N'B. Beans', 0, 2.5, 0, 4)
-INSERT [dbo].[Test] ([id], [part_id], [question_id], [answer_id], [user_answer_id], [Question_Description], [Answer_Description], [TotalExamTime], [Question_Point], [Iscorrect], [user_id]) VALUES (8, 2, 2, 1, 4, N'Which of the following is related to Spring Framework?', N'A. Container', 0, 2.5, 0, 4)
-INSERT [dbo].[Test] ([id], [part_id], [question_id], [answer_id], [user_answer_id], [Question_Description], [Answer_Description], [TotalExamTime], [Question_Point], [Iscorrect], [user_id]) VALUES (10, 2, 2, 3, 4, N'Which of the following is related to Spring Framework?', N'C. IoC', 0, 2.5, 0, 4)
-INSERT [dbo].[Test] ([id], [part_id], [question_id], [answer_id], [user_answer_id], [Question_Description], [Answer_Description], [TotalExamTime], [Question_Point], [Iscorrect], [user_id]) VALUES (11, 2, 2, 4, 4, N'Which of the following is related to Spring Framework?', N'D. All of these', 0, 2.5, 1, 4)
-INSERT [dbo].[Test] ([id], [part_id], [question_id], [answer_id], [user_answer_id], [Question_Description], [Answer_Description], [TotalExamTime], [Question_Point], [Iscorrect], [user_id]) VALUES (12, 2, 3, 5, 6, N'Which of the following is not the Spring supported DI?', N'A. Constructor-based', 0, 1, 0, 4)
-INSERT [dbo].[Test] ([id], [part_id], [question_id], [answer_id], [user_answer_id], [Question_Description], [Answer_Description], [TotalExamTime], [Question_Point], [Iscorrect], [user_id]) VALUES (13, 2, 3, 6, 6, N'Which of the following is not the Spring supported DI?', N'B. Setter-based', 0, 1, 0, 4)
-INSERT [dbo].[Test] ([id], [part_id], [question_id], [answer_id], [user_answer_id], [Question_Description], [Answer_Description], [TotalExamTime], [Question_Point], [Iscorrect], [user_id]) VALUES (14, 2, 3, 7, 6, N'Which of the following is not the Spring supported DI?', N'C. Destructor-based', 0, 1, 1, 4)
-INSERT [dbo].[Test] ([id], [part_id], [question_id], [answer_id], [user_answer_id], [Question_Description], [Answer_Description], [TotalExamTime], [Question_Point], [Iscorrect], [user_id]) VALUES (15, 2, 3, 8, 6, N'Which of the following is not the Spring supported DI?', N'D. All of these', 0, 1, 0, 4)
-GO
-INSERT [dbo].[Test] ([id], [part_id], [question_id], [answer_id], [user_answer_id], [Question_Description], [Answer_Description], [TotalExamTime], [Question_Point], [Iscorrect], [user_id]) VALUES (10, 2, 2, 3, 4, N'Which of the following is related to Spring Framework?', N'C. IoC', 0, 2.5, 0, 4)
-INSERT [dbo].[Test] ([id], [part_id], [question_id], [answer_id], [user_answer_id], [Question_Description], [Answer_Description], [TotalExamTime], [Question_Point], [Iscorrect], [user_id]) VALUES (11, 2, 2, 4, 4, N'Which of the following is related to Spring Framework?', N'D. All of these', 0, 2.5, 1, 4)
-INSERT [dbo].[Test] ([id], [part_id], [question_id], [answer_id], [user_answer_id], [Question_Description], [Answer_Description], [TotalExamTime], [Question_Point], [Iscorrect], [user_id]) VALUES (12, 2, 3, 5, 6, N'Which of the following is not the Spring supported DI?', N'A. Constructor-based', 0, 1, 0, 4)
-INSERT [dbo].[Test] ([id], [part_id], [question_id], [answer_id], [user_answer_id], [Question_Description], [Answer_Description], [TotalExamTime], [Question_Point], [Iscorrect], [user_id]) VALUES (13, 2, 3, 6, 6, N'Which of the following is not the Spring supported DI?', N'B. Setter-based', 0, 1, 0, 4)
-INSERT [dbo].[Test] ([id], [part_id], [question_id], [answer_id], [user_answer_id], [Question_Description], [Answer_Description], [TotalExamTime], [Question_Point], [Iscorrect], [user_id]) VALUES (14, 2, 3, 7, 6, N'Which of the following is not the Spring supported DI?', N'C. Destructor-based', 0, 1, 1, 4)
-INSERT [dbo].[Test] ([id], [part_id], [question_id], [answer_id], [user_answer_id], [Question_Description], [Answer_Description], [TotalExamTime], [Question_Point], [Iscorrect], [user_id]) VALUES (15, 2, 3, 8, 6, N'Which of the following is not the Spring supported DI?', N'D. All of these', 0, 1, 0, 4)
-INSERT [dbo].[Test] ([id], [part_id], [question_id], [answer_id], [user_answer_id], [Question_Description], [Answer_Description], [TotalExamTime], [Question_Point], [Iscorrect], [user_id]) VALUES (8, 2, 2, 1, 4, N'Which of the following is related to Spring Framework?', N'A. Container', 0, 2.5, 0, 4)
-INSERT [dbo].[Test] ([id], [part_id], [question_id], [answer_id], [user_answer_id], [Question_Description], [Answer_Description], [TotalExamTime], [Question_Point], [Iscorrect], [user_id]) VALUES (9, 2, 2, 2, 4, N'Which of the following is related to Spring Framework?', N'B. Beans', 0, 2.5, 0, 4)
-GO
-INSERT [dbo].[Test] ([id], [part_id], [question_id], [answer_id], [user_answer_id], [Question_Description], [Answer_Description], [TotalExamTime], [Question_Point], [Iscorrect], [user_id]) VALUES (11, 2, 2, 4, 4, N'Which of the following is related to Spring Framework?', N'D. All of these', 0, 2.5, 1, 4)
-INSERT [dbo].[Test] ([id], [part_id], [question_id], [answer_id], [user_answer_id], [Question_Description], [Answer_Description], [TotalExamTime], [Question_Point], [Iscorrect], [user_id]) VALUES (12, 2, 3, 5, 6, N'Which of the following is not the Spring supported DI?', N'A. Constructor-based', 0, 1, 0, 4)
-INSERT [dbo].[Test] ([id], [part_id], [question_id], [answer_id], [user_answer_id], [Question_Description], [Answer_Description], [TotalExamTime], [Question_Point], [Iscorrect], [user_id]) VALUES (13, 2, 3, 6, 6, N'Which of the following is not the Spring supported DI?', N'B. Setter-based', 0, 1, 0, 4)
-INSERT [dbo].[Test] ([id], [part_id], [question_id], [answer_id], [user_answer_id], [Question_Description], [Answer_Description], [TotalExamTime], [Question_Point], [Iscorrect], [user_id]) VALUES (14, 2, 3, 7, 6, N'Which of the following is not the Spring supported DI?', N'C. Destructor-based', 0, 1, 1, 4)
-INSERT [dbo].[Test] ([id], [part_id], [question_id], [answer_id], [user_answer_id], [Question_Description], [Answer_Description], [TotalExamTime], [Question_Point], [Iscorrect], [user_id]) VALUES (15, 2, 3, 8, 6, N'Which of the following is not the Spring supported DI?', N'D. All of these', 0, 1, 0, 4)
-INSERT [dbo].[Test] ([id], [part_id], [question_id], [answer_id], [user_answer_id], [Question_Description], [Answer_Description], [TotalExamTime], [Question_Point], [Iscorrect], [user_id]) VALUES (10, 2, 2, 3, 4, N'Which of the following is related to Spring Framework?', N'C. IoC', 0, 2.5, 0, 4)
-INSERT [dbo].[Test] ([id], [part_id], [question_id], [answer_id], [user_answer_id], [Question_Description], [Answer_Description], [TotalExamTime], [Question_Point], [Iscorrect], [user_id]) VALUES (8, 2, 2, 1, 4, N'Which of the following is related to Spring Framework?', N'A. Container', 0, 2.5, 0, 4)
-INSERT [dbo].[Test] ([id], [part_id], [question_id], [answer_id], [user_answer_id], [Question_Description], [Answer_Description], [TotalExamTime], [Question_Point], [Iscorrect], [user_id]) VALUES (9, 2, 2, 2, 4, N'Which of the following is related to Spring Framework?', N'B. Beans', 0, 2.5, 0, 4)
-GO
-INSERT [dbo].[Test] ([id], [part_id], [question_id], [answer_id], [user_answer_id], [Question_Description], [Answer_Description], [TotalExamTime], [Question_Point], [Iscorrect], [user_id]) VALUES (12, 2, 3, 5, 6, N'Which of the following is not the Spring supported DI?', N'A. Constructor-based', 0, 1, 0, 4)
-INSERT [dbo].[Test] ([id], [part_id], [question_id], [answer_id], [user_answer_id], [Question_Description], [Answer_Description], [TotalExamTime], [Question_Point], [Iscorrect], [user_id]) VALUES (13, 2, 3, 6, 6, N'Which of the following is not the Spring supported DI?', N'B. Setter-based', 0, 1, 0, 4)
-INSERT [dbo].[Test] ([id], [part_id], [question_id], [answer_id], [user_answer_id], [Question_Description], [Answer_Description], [TotalExamTime], [Question_Point], [Iscorrect], [user_id]) VALUES (14, 2, 3, 7, 6, N'Which of the following is not the Spring supported DI?', N'C. Destructor-based', 0, 1, 1, 4)
-INSERT [dbo].[Test] ([id], [part_id], [question_id], [answer_id], [user_answer_id], [Question_Description], [Answer_Description], [TotalExamTime], [Question_Point], [Iscorrect], [user_id]) VALUES (15, 2, 3, 8, 6, N'Which of the following is not the Spring supported DI?', N'D. All of these', 0, 1, 0, 4)
-INSERT [dbo].[Test] ([id], [part_id], [question_id], [answer_id], [user_answer_id], [Question_Description], [Answer_Description], [TotalExamTime], [Question_Point], [Iscorrect], [user_id]) VALUES (8, 2, 2, 1, 4, N'Which of the following is related to Spring Framework?', N'A. Container', 0, 2.5, 0, 4)
-INSERT [dbo].[Test] ([id], [part_id], [question_id], [answer_id], [user_answer_id], [Question_Description], [Answer_Description], [TotalExamTime], [Question_Point], [Iscorrect], [user_id]) VALUES (9, 2, 2, 2, 4, N'Which of the following is related to Spring Framework?', N'B. Beans', 0, 2.5, 0, 4)
-INSERT [dbo].[Test] ([id], [part_id], [question_id], [answer_id], [user_answer_id], [Question_Description], [Answer_Description], [TotalExamTime], [Question_Point], [Iscorrect], [user_id]) VALUES (10, 2, 2, 3, 4, N'Which of the following is related to Spring Framework?', N'C. IoC', 0, 2.5, 0, 4)
-INSERT [dbo].[Test] ([id], [part_id], [question_id], [answer_id], [user_answer_id], [Question_Description], [Answer_Description], [TotalExamTime], [Question_Point], [Iscorrect], [user_id]) VALUES (11, 2, 2, 4, 4, N'Which of the following is related to Spring Framework?', N'D. All of these', 0, 2.5, 1, 4)
-GO
-INSERT [dbo].[Test] ([id], [part_id], [question_id], [answer_id], [user_answer_id], [Question_Description], [Answer_Description], [TotalExamTime], [Question_Point], [Iscorrect], [user_id]) VALUES (8, 2, 2, 1, 4, N'Which of the following is related to Spring Framework?', N'A. Container', 0, 2.5, 0, 4)
-INSERT [dbo].[Test] ([id], [part_id], [question_id], [answer_id], [user_answer_id], [Question_Description], [Answer_Description], [TotalExamTime], [Question_Point], [Iscorrect], [user_id]) VALUES (9, 2, 2, 2, 4, N'Which of the following is related to Spring Framework?', N'B. Beans', 0, 2.5, 0, 4)
-INSERT [dbo].[Test] ([id], [part_id], [question_id], [answer_id], [user_answer_id], [Question_Description], [Answer_Description], [TotalExamTime], [Question_Point], [Iscorrect], [user_id]) VALUES (10, 2, 2, 3, 4, N'Which of the following is related to Spring Framework?', N'C. IoC', 0, 2.5, 0, 4)
-INSERT [dbo].[Test] ([id], [part_id], [question_id], [answer_id], [user_answer_id], [Question_Description], [Answer_Description], [TotalExamTime], [Question_Point], [Iscorrect], [user_id]) VALUES (11, 2, 2, 4, 4, N'Which of the following is related to Spring Framework?', N'D. All of these', 0, 2.5, 1, 4)
-INSERT [dbo].[Test] ([id], [part_id], [question_id], [answer_id], [user_answer_id], [Question_Description], [Answer_Description], [TotalExamTime], [Question_Point], [Iscorrect], [user_id]) VALUES (12, 2, 3, 5, 6, N'Which of the following is not the Spring supported DI?', N'A. Constructor-based', 0, 1, 0, 4)
-INSERT [dbo].[Test] ([id], [part_id], [question_id], [answer_id], [user_answer_id], [Question_Description], [Answer_Description], [TotalExamTime], [Question_Point], [Iscorrect], [user_id]) VALUES (13, 2, 3, 6, 6, N'Which of the following is not the Spring supported DI?', N'B. Setter-based', 0, 1, 0, 4)
-INSERT [dbo].[Test] ([id], [part_id], [question_id], [answer_id], [user_answer_id], [Question_Description], [Answer_Description], [TotalExamTime], [Question_Point], [Iscorrect], [user_id]) VALUES (14, 2, 3, 7, 6, N'Which of the following is not the Spring supported DI?', N'C. Destructor-based', 0, 1, 1, 4)
-INSERT [dbo].[Test] ([id], [part_id], [question_id], [answer_id], [user_answer_id], [Question_Description], [Answer_Description], [TotalExamTime], [Question_Point], [Iscorrect], [user_id]) VALUES (15, 2, 3, 8, 6, N'Which of the following is not the Spring supported DI?', N'D. All of these', 0, 1, 0, 4)
-GO
-INSERT [dbo].[Test] ([id], [part_id], [question_id], [answer_id], [user_answer_id], [Question_Description], [Answer_Description], [TotalExamTime], [Question_Point], [Iscorrect], [user_id]) VALUES (12, 2, 3, 5, 6, N'Which of the following is not the Spring supported DI?', N'A. Constructor-based', 0, 1, 0, 4)
-INSERT [dbo].[Test] ([id], [part_id], [question_id], [answer_id], [user_answer_id], [Question_Description], [Answer_Description], [TotalExamTime], [Question_Point], [Iscorrect], [user_id]) VALUES (13, 2, 3, 6, 6, N'Which of the following is not the Spring supported DI?', N'B. Setter-based', 0, 1, 0, 4)
-INSERT [dbo].[Test] ([id], [part_id], [question_id], [answer_id], [user_answer_id], [Question_Description], [Answer_Description], [TotalExamTime], [Question_Point], [Iscorrect], [user_id]) VALUES (14, 2, 3, 7, 6, N'Which of the following is not the Spring supported DI?', N'C. Destructor-based', 0, 1, 1, 4)
-INSERT [dbo].[Test] ([id], [part_id], [question_id], [answer_id], [user_answer_id], [Question_Description], [Answer_Description], [TotalExamTime], [Question_Point], [Iscorrect], [user_id]) VALUES (15, 2, 3, 8, 6, N'Which of the following is not the Spring supported DI?', N'D. All of these', 0, 1, 0, 4)
-INSERT [dbo].[Test] ([id], [part_id], [question_id], [answer_id], [user_answer_id], [Question_Description], [Answer_Description], [TotalExamTime], [Question_Point], [Iscorrect], [user_id]) VALUES (8, 2, 2, 1, 4, N'Which of the following is related to Spring Framework?', N'A. Container', 0, 2.5, 0, 4)
-INSERT [dbo].[Test] ([id], [part_id], [question_id], [answer_id], [user_answer_id], [Question_Description], [Answer_Description], [TotalExamTime], [Question_Point], [Iscorrect], [user_id]) VALUES (9, 2, 2, 2, 4, N'Which of the following is related to Spring Framework?', N'B. Beans', 0, 2.5, 0, 4)
-INSERT [dbo].[Test] ([id], [part_id], [question_id], [answer_id], [user_answer_id], [Question_Description], [Answer_Description], [TotalExamTime], [Question_Point], [Iscorrect], [user_id]) VALUES (10, 2, 2, 3, 4, N'Which of the following is related to Spring Framework?', N'C. IoC', 0, 2.5, 0, 4)
-INSERT [dbo].[Test] ([id], [part_id], [question_id], [answer_id], [user_answer_id], [Question_Description], [Answer_Description], [TotalExamTime], [Question_Point], [Iscorrect], [user_id]) VALUES (11, 2, 2, 4, 4, N'Which of the following is related to Spring Framework?', N'D. All of these', 0, 2.5, 1, 4)
-GO
-INSERT [dbo].[Test] ([id], [part_id], [question_id], [answer_id], [user_answer_id], [Question_Description], [Answer_Description], [TotalExamTime], [Question_Point], [Iscorrect], [user_id]) VALUES (8, 2, 2, 1, 4, N'Which of the following is related to Spring Framework?', N'A. Container', 0, 2.5, 0, 4)
-INSERT [dbo].[Test] ([id], [part_id], [question_id], [answer_id], [user_answer_id], [Question_Description], [Answer_Description], [TotalExamTime], [Question_Point], [Iscorrect], [user_id]) VALUES (9, 2, 2, 2, 4, N'Which of the following is related to Spring Framework?', N'B. Beans', 0, 2.5, 0, 4)
-INSERT [dbo].[Test] ([id], [part_id], [question_id], [answer_id], [user_answer_id], [Question_Description], [Answer_Description], [TotalExamTime], [Question_Point], [Iscorrect], [user_id]) VALUES (10, 2, 2, 3, 4, N'Which of the following is related to Spring Framework?', N'C. IoC', 0, 2.5, 0, 4)
-INSERT [dbo].[Test] ([id], [part_id], [question_id], [answer_id], [user_answer_id], [Question_Description], [Answer_Description], [TotalExamTime], [Question_Point], [Iscorrect], [user_id]) VALUES (11, 2, 2, 4, 4, N'Which of the following is related to Spring Framework?', N'D. All of these', 0, 2.5, 1, 4)
-INSERT [dbo].[Test] ([id], [part_id], [question_id], [answer_id], [user_answer_id], [Question_Description], [Answer_Description], [TotalExamTime], [Question_Point], [Iscorrect], [user_id]) VALUES (12, 2, 3, 5, 6, N'Which of the following is not the Spring supported DI?', N'A. Constructor-based', 0, 1, 0, 4)
-INSERT [dbo].[Test] ([id], [part_id], [question_id], [answer_id], [user_answer_id], [Question_Description], [Answer_Description], [TotalExamTime], [Question_Point], [Iscorrect], [user_id]) VALUES (13, 2, 3, 6, 6, N'Which of the following is not the Spring supported DI?', N'B. Setter-based', 0, 1, 0, 4)
-INSERT [dbo].[Test] ([id], [part_id], [question_id], [answer_id], [user_answer_id], [Question_Description], [Answer_Description], [TotalExamTime], [Question_Point], [Iscorrect], [user_id]) VALUES (14, 2, 3, 7, 6, N'Which of the following is not the Spring supported DI?', N'C. Destructor-based', 0, 1, 1, 4)
-INSERT [dbo].[Test] ([id], [part_id], [question_id], [answer_id], [user_answer_id], [Question_Description], [Answer_Description], [TotalExamTime], [Question_Point], [Iscorrect], [user_id]) VALUES (15, 2, 3, 8, 6, N'Which of the following is not the Spring supported DI?', N'D. All of these', 0, 1, 0, 4)
-GO
-INSERT [dbo].[Test] ([id], [part_id], [question_id], [answer_id], [user_answer_id], [Question_Description], [Answer_Description], [TotalExamTime], [Question_Point], [Iscorrect], [user_id]) VALUES (14, 2, 3, 7, 6, N'Which of the following is not the Spring supported DI?', N'C. Destructor-based', 0, 1, 1, 4)
-INSERT [dbo].[Test] ([id], [part_id], [question_id], [answer_id], [user_answer_id], [Question_Description], [Answer_Description], [TotalExamTime], [Question_Point], [Iscorrect], [user_id]) VALUES (15, 2, 3, 8, 6, N'Which of the following is not the Spring supported DI?', N'D. All of these', 0, 1, 0, 4)
-INSERT [dbo].[Test] ([id], [part_id], [question_id], [answer_id], [user_answer_id], [Question_Description], [Answer_Description], [TotalExamTime], [Question_Point], [Iscorrect], [user_id]) VALUES (13, 2, 3, 6, 6, N'Which of the following is not the Spring supported DI?', N'B. Setter-based', 0, 1, 0, 4)
-INSERT [dbo].[Test] ([id], [part_id], [question_id], [answer_id], [user_answer_id], [Question_Description], [Answer_Description], [TotalExamTime], [Question_Point], [Iscorrect], [user_id]) VALUES (8, 2, 2, 1, 4, N'Which of the following is related to Spring Framework?', N'A. Container', 0, 2.5, 0, 4)
-INSERT [dbo].[Test] ([id], [part_id], [question_id], [answer_id], [user_answer_id], [Question_Description], [Answer_Description], [TotalExamTime], [Question_Point], [Iscorrect], [user_id]) VALUES (9, 2, 2, 2, 4, N'Which of the following is related to Spring Framework?', N'B. Beans', 0, 2.5, 0, 4)
-INSERT [dbo].[Test] ([id], [part_id], [question_id], [answer_id], [user_answer_id], [Question_Description], [Answer_Description], [TotalExamTime], [Question_Point], [Iscorrect], [user_id]) VALUES (10, 2, 2, 3, 4, N'Which of the following is related to Spring Framework?', N'C. IoC', 0, 2.5, 0, 4)
-INSERT [dbo].[Test] ([id], [part_id], [question_id], [answer_id], [user_answer_id], [Question_Description], [Answer_Description], [TotalExamTime], [Question_Point], [Iscorrect], [user_id]) VALUES (11, 2, 2, 4, 4, N'Which of the following is related to Spring Framework?', N'D. All of these', 0, 2.5, 1, 4)
-INSERT [dbo].[Test] ([id], [part_id], [question_id], [answer_id], [user_answer_id], [Question_Description], [Answer_Description], [TotalExamTime], [Question_Point], [Iscorrect], [user_id]) VALUES (12, 2, 3, 5, 6, N'Which of the following is not the Spring supported DI?', N'A. Constructor-based', 0, 1, 0, 4)
-GO
-INSERT [dbo].[Test] ([id], [part_id], [question_id], [answer_id], [user_answer_id], [Question_Description], [Answer_Description], [TotalExamTime], [Question_Point], [Iscorrect], [user_id]) VALUES (15, 2, 3, 8, 6, N'Which of the following is not the Spring supported DI?', N'D. All of these', 0, 1, 0, 4)
-INSERT [dbo].[Test] ([id], [part_id], [question_id], [answer_id], [user_answer_id], [Question_Description], [Answer_Description], [TotalExamTime], [Question_Point], [Iscorrect], [user_id]) VALUES (8, 2, 2, 1, 4, N'Which of the following is related to Spring Framework?', N'A. Container', 0, 2.5, 0, 4)
-INSERT [dbo].[Test] ([id], [part_id], [question_id], [answer_id], [user_answer_id], [Question_Description], [Answer_Description], [TotalExamTime], [Question_Point], [Iscorrect], [user_id]) VALUES (9, 2, 2, 2, 4, N'Which of the following is related to Spring Framework?', N'B. Beans', 0, 2.5, 0, 4)
-INSERT [dbo].[Test] ([id], [part_id], [question_id], [answer_id], [user_answer_id], [Question_Description], [Answer_Description], [TotalExamTime], [Question_Point], [Iscorrect], [user_id]) VALUES (10, 2, 2, 3, 4, N'Which of the following is related to Spring Framework?', N'C. IoC', 0, 2.5, 0, 4)
-INSERT [dbo].[Test] ([id], [part_id], [question_id], [answer_id], [user_answer_id], [Question_Description], [Answer_Description], [TotalExamTime], [Question_Point], [Iscorrect], [user_id]) VALUES (11, 2, 2, 4, 4, N'Which of the following is related to Spring Framework?', N'D. All of these', 0, 2.5, 1, 4)
-INSERT [dbo].[Test] ([id], [part_id], [question_id], [answer_id], [user_answer_id], [Question_Description], [Answer_Description], [TotalExamTime], [Question_Point], [Iscorrect], [user_id]) VALUES (12, 2, 3, 5, 6, N'Which of the following is not the Spring supported DI?', N'A. Constructor-based', 0, 1, 0, 4)
-INSERT [dbo].[Test] ([id], [part_id], [question_id], [answer_id], [user_answer_id], [Question_Description], [Answer_Description], [TotalExamTime], [Question_Point], [Iscorrect], [user_id]) VALUES (13, 2, 3, 6, 6, N'Which of the following is not the Spring supported DI?', N'B. Setter-based', 0, 1, 0, 4)
-INSERT [dbo].[Test] ([id], [part_id], [question_id], [answer_id], [user_answer_id], [Question_Description], [Answer_Description], [TotalExamTime], [Question_Point], [Iscorrect], [user_id]) VALUES (14, 2, 3, 7, 6, N'Which of the following is not the Spring supported DI?', N'C. Destructor-based', 0, 1, 1, 4)
-GO
-INSERT [dbo].[Test] ([id], [part_id], [question_id], [answer_id], [user_answer_id], [Question_Description], [Answer_Description], [TotalExamTime], [Question_Point], [Iscorrect], [user_id]) VALUES (10, 2, 2, 3, 4, N'Which of the following is related to Spring Framework?', N'C. IoC', 0, 2.5, 0, 4)
-INSERT [dbo].[Test] ([id], [part_id], [question_id], [answer_id], [user_answer_id], [Question_Description], [Answer_Description], [TotalExamTime], [Question_Point], [Iscorrect], [user_id]) VALUES (11, 2, 2, 4, 4, N'Which of the following is related to Spring Framework?', N'D. All of these', 0, 2.5, 1, 4)
-INSERT [dbo].[Test] ([id], [part_id], [question_id], [answer_id], [user_answer_id], [Question_Description], [Answer_Description], [TotalExamTime], [Question_Point], [Iscorrect], [user_id]) VALUES (12, 2, 3, 5, 6, N'Which of the following is not the Spring supported DI?', N'A. Constructor-based', 0, 1, 0, 4)
-INSERT [dbo].[Test] ([id], [part_id], [question_id], [answer_id], [user_answer_id], [Question_Description], [Answer_Description], [TotalExamTime], [Question_Point], [Iscorrect], [user_id]) VALUES (13, 2, 3, 6, 6, N'Which of the following is not the Spring supported DI?', N'B. Setter-based', 0, 1, 0, 4)
-INSERT [dbo].[Test] ([id], [part_id], [question_id], [answer_id], [user_answer_id], [Question_Description], [Answer_Description], [TotalExamTime], [Question_Point], [Iscorrect], [user_id]) VALUES (14, 2, 3, 7, 6, N'Which of the following is not the Spring supported DI?', N'C. Destructor-based', 0, 1, 1, 4)
-INSERT [dbo].[Test] ([id], [part_id], [question_id], [answer_id], [user_answer_id], [Question_Description], [Answer_Description], [TotalExamTime], [Question_Point], [Iscorrect], [user_id]) VALUES (15, 2, 3, 8, 6, N'Which of the following is not the Spring supported DI?', N'D. All of these', 0, 1, 0, 4)
-INSERT [dbo].[Test] ([id], [part_id], [question_id], [answer_id], [user_answer_id], [Question_Description], [Answer_Description], [TotalExamTime], [Question_Point], [Iscorrect], [user_id]) VALUES (8, 2, 2, 1, 4, N'Which of the following is related to Spring Framework?', N'A. Container', 0, 2.5, 0, 4)
-INSERT [dbo].[Test] ([id], [part_id], [question_id], [answer_id], [user_answer_id], [Question_Description], [Answer_Description], [TotalExamTime], [Question_Point], [Iscorrect], [user_id]) VALUES (9, 2, 2, 2, 4, N'Which of the following is related to Spring Framework?', N'B. Beans', 0, 2.5, 0, 4)
-GO
-INSERT [dbo].[Test] ([id], [part_id], [question_id], [answer_id], [user_answer_id], [Question_Description], [Answer_Description], [TotalExamTime], [Question_Point], [Iscorrect], [user_id]) VALUES (9, 2, 2, 2, 4, N'Which of the following is related to Spring Framework?', N'B. Beans', 0, 2.5, 0, 4)
-INSERT [dbo].[Test] ([id], [part_id], [question_id], [answer_id], [user_answer_id], [Question_Description], [Answer_Description], [TotalExamTime], [Question_Point], [Iscorrect], [user_id]) VALUES (10, 2, 2, 3, 4, N'Which of the following is related to Spring Framework?', N'C. IoC', 0, 2.5, 0, 4)
-INSERT [dbo].[Test] ([id], [part_id], [question_id], [answer_id], [user_answer_id], [Question_Description], [Answer_Description], [TotalExamTime], [Question_Point], [Iscorrect], [user_id]) VALUES (11, 2, 2, 4, 4, N'Which of the following is related to Spring Framework?', N'D. All of these', 0, 2.5, 1, 4)
-INSERT [dbo].[Test] ([id], [part_id], [question_id], [answer_id], [user_answer_id], [Question_Description], [Answer_Description], [TotalExamTime], [Question_Point], [Iscorrect], [user_id]) VALUES (12, 2, 3, 5, 6, N'Which of the following is not the Spring supported DI?', N'A. Constructor-based', 0, 1, 0, 4)
-INSERT [dbo].[Test] ([id], [part_id], [question_id], [answer_id], [user_answer_id], [Question_Description], [Answer_Description], [TotalExamTime], [Question_Point], [Iscorrect], [user_id]) VALUES (13, 2, 3, 6, 6, N'Which of the following is not the Spring supported DI?', N'B. Setter-based', 0, 1, 0, 4)
-INSERT [dbo].[Test] ([id], [part_id], [question_id], [answer_id], [user_answer_id], [Question_Description], [Answer_Description], [TotalExamTime], [Question_Point], [Iscorrect], [user_id]) VALUES (14, 2, 3, 7, 6, N'Which of the following is not the Spring supported DI?', N'C. Destructor-based', 0, 1, 1, 4)
-INSERT [dbo].[Test] ([id], [part_id], [question_id], [answer_id], [user_answer_id], [Question_Description], [Answer_Description], [TotalExamTime], [Question_Point], [Iscorrect], [user_id]) VALUES (15, 2, 3, 8, 6, N'Which of the following is not the Spring supported DI?', N'D. All of these', 0, 1, 0, 4)
-INSERT [dbo].[Test] ([id], [part_id], [question_id], [answer_id], [user_answer_id], [Question_Description], [Answer_Description], [TotalExamTime], [Question_Point], [Iscorrect], [user_id]) VALUES (8, 2, 2, 1, 4, N'Which of the following is related to Spring Framework?', N'A. Container', 0, 2.5, 0, 4)
-GO
-INSERT [dbo].[Test] ([id], [part_id], [question_id], [answer_id], [user_answer_id], [Question_Description], [Answer_Description], [TotalExamTime], [Question_Point], [Iscorrect], [user_id]) VALUES (13, 2, 3, 6, 6, N'Which of the following is not the Spring supported DI?', N'B. Setter-based', 0, 1, 0, 4)
-INSERT [dbo].[Test] ([id], [part_id], [question_id], [answer_id], [user_answer_id], [Question_Description], [Answer_Description], [TotalExamTime], [Question_Point], [Iscorrect], [user_id]) VALUES (14, 2, 3, 7, 6, N'Which of the following is not the Spring supported DI?', N'C. Destructor-based', 0, 1, 1, 4)
-INSERT [dbo].[Test] ([id], [part_id], [question_id], [answer_id], [user_answer_id], [Question_Description], [Answer_Description], [TotalExamTime], [Question_Point], [Iscorrect], [user_id]) VALUES (15, 2, 3, 8, 6, N'Which of the following is not the Spring supported DI?', N'D. All of these', 0, 1, 0, 4)
-INSERT [dbo].[Test] ([id], [part_id], [question_id], [answer_id], [user_answer_id], [Question_Description], [Answer_Description], [TotalExamTime], [Question_Point], [Iscorrect], [user_id]) VALUES (10, 2, 2, 3, 4, N'Which of the following is related to Spring Framework?', N'C. IoC', 0, 2.5, 0, 4)
-INSERT [dbo].[Test] ([id], [part_id], [question_id], [answer_id], [user_answer_id], [Question_Description], [Answer_Description], [TotalExamTime], [Question_Point], [Iscorrect], [user_id]) VALUES (11, 2, 2, 4, 4, N'Which of the following is related to Spring Framework?', N'D. All of these', 0, 2.5, 1, 4)
-INSERT [dbo].[Test] ([id], [part_id], [question_id], [answer_id], [user_answer_id], [Question_Description], [Answer_Description], [TotalExamTime], [Question_Point], [Iscorrect], [user_id]) VALUES (12, 2, 3, 5, 6, N'Which of the following is not the Spring supported DI?', N'A. Constructor-based', 0, 1, 0, 4)
-INSERT [dbo].[Test] ([id], [part_id], [question_id], [answer_id], [user_answer_id], [Question_Description], [Answer_Description], [TotalExamTime], [Question_Point], [Iscorrect], [user_id]) VALUES (8, 2, 2, 1, 4, N'Which of the following is related to Spring Framework?', N'A. Container', 0, 2.5, 0, 4)
-INSERT [dbo].[Test] ([id], [part_id], [question_id], [answer_id], [user_answer_id], [Question_Description], [Answer_Description], [TotalExamTime], [Question_Point], [Iscorrect], [user_id]) VALUES (9, 2, 2, 2, 4, N'Which of the following is related to Spring Framework?', N'B. Beans', 0, 2.5, 0, 4)
-GO
-INSERT [dbo].[Test] ([id], [part_id], [question_id], [answer_id], [user_answer_id], [Question_Description], [Answer_Description], [TotalExamTime], [Question_Point], [Iscorrect], [user_id]) VALUES (11, 2, 2, 4, 4, N'Which of the following is related to Spring Framework?', N'D. All of these', 0, 2.5, 1, 4)
-INSERT [dbo].[Test] ([id], [part_id], [question_id], [answer_id], [user_answer_id], [Question_Description], [Answer_Description], [TotalExamTime], [Question_Point], [Iscorrect], [user_id]) VALUES (12, 2, 3, 5, 6, N'Which of the following is not the Spring supported DI?', N'A. Constructor-based', 0, 1, 0, 4)
-INSERT [dbo].[Test] ([id], [part_id], [question_id], [answer_id], [user_answer_id], [Question_Description], [Answer_Description], [TotalExamTime], [Question_Point], [Iscorrect], [user_id]) VALUES (13, 2, 3, 6, 6, N'Which of the following is not the Spring supported DI?', N'B. Setter-based', 0, 1, 0, 4)
-INSERT [dbo].[Test] ([id], [part_id], [question_id], [answer_id], [user_answer_id], [Question_Description], [Answer_Description], [TotalExamTime], [Question_Point], [Iscorrect], [user_id]) VALUES (14, 2, 3, 7, 6, N'Which of the following is not the Spring supported DI?', N'C. Destructor-based', 0, 1, 1, 4)
-INSERT [dbo].[Test] ([id], [part_id], [question_id], [answer_id], [user_answer_id], [Question_Description], [Answer_Description], [TotalExamTime], [Question_Point], [Iscorrect], [user_id]) VALUES (15, 2, 3, 8, 6, N'Which of the following is not the Spring supported DI?', N'D. All of these', 0, 1, 0, 4)
-INSERT [dbo].[Test] ([id], [part_id], [question_id], [answer_id], [user_answer_id], [Question_Description], [Answer_Description], [TotalExamTime], [Question_Point], [Iscorrect], [user_id]) VALUES (8, 2, 2, 1, 4, N'Which of the following is related to Spring Framework?', N'A. Container', 0, 2.5, 0, 4)
-INSERT [dbo].[Test] ([id], [part_id], [question_id], [answer_id], [user_answer_id], [Question_Description], [Answer_Description], [TotalExamTime], [Question_Point], [Iscorrect], [user_id]) VALUES (9, 2, 2, 2, 4, N'Which of the following is related to Spring Framework?', N'B. Beans', 0, 2.5, 0, 4)
-INSERT [dbo].[Test] ([id], [part_id], [question_id], [answer_id], [user_answer_id], [Question_Description], [Answer_Description], [TotalExamTime], [Question_Point], [Iscorrect], [user_id]) VALUES (10, 2, 2, 3, 4, N'Which of the following is related to Spring Framework?', N'C. IoC', 0, 2.5, 0, 4)
-SET IDENTITY_INSERT [dbo].[Test] OFF
-GO
 SET IDENTITY_INSERT [dbo].[token] ON 
 
-INSERT [dbo].[token] ([id], [is_expired], [is_revoked], [token], [token_type], [user_id]) VALUES (1, 0, 0, N'eyJhbGciOiJIUzI1NiJ9.eyJyb2xlcyI6WyJNQU5BR0VSX1VQREFURSIsIk1BTkFHRVJfREVMRVRFIiwiTUFOQUdFUl9SRUFEIiwiRU1QTE9ZRUVfUkVBRCIsIkFETUlOX0RFTEVURSIsIkFETUlOX1JFQUQiLCJNQU5BR0VSX0NSRUFURSIsIkFETUlOX1VQREFURSIsIkFETUlOX0NSRUFURSIsIlJPTEVfQURNSU4iXSwic3ViIjoiYWRtaW5AbWFpbC5jb20iLCJpYXQiOjE2ODc5OTcyNjYsImV4cCI6MTY4ODA4MzY2Nn0.4YkVnY_U_dwQTT-uQXjqo4uVnt6zmHjpi7M9looXQDM', N'BEARER_ACCESS_TOKEN', 1)
-INSERT [dbo].[token] ([id], [is_expired], [is_revoked], [token], [token_type], [user_id]) VALUES (2, 0, 0, N'eyJhbGciOiJIUzI1NiJ9.eyJyb2xlcyI6WyJNQU5BR0VSX1JFQUQiLCJNQU5BR0VSX1VQREFURSIsIk1BTkFHRVJfREVMRVRFIiwiTUFOQUdFUl9DUkVBVEUiLCJST0xFX01BTkFHRVIiXSwic3ViIjoibWFuYWdlckBtYWlsLmNvbSIsImlhdCI6MTY4Nzk5NzI2NiwiZXhwIjoxNjg4MDgzNjY2fQ.lGN68HsIREGNOf3OXMZtQBOGkzWPK-ZOeGsQ5eiNp3g', N'BEARER_ACCESS_TOKEN', 2)
-INSERT [dbo].[token] ([id], [is_expired], [is_revoked], [token], [token_type], [user_id]) VALUES (3, 0, 0, N'eyJhbGciOiJIUzI1NiJ9.eyJyb2xlcyI6WyJFTVBMT1lFRV9SRUFEIiwiUk9MRV9FTVBMT1lFRSJdLCJzdWIiOiJlbXBsb3llZUBtYWlsLmNvbSIsImlhdCI6MTY4Nzk5NzI2NiwiZXhwIjoxNjg4MDgzNjY2fQ.SAV1Gjkb6ExFZPoLPvut0h1y93I-O9IzizsdbqOf-J0', N'BEARER_ACCESS_TOKEN', 3)
-INSERT [dbo].[token] ([id], [is_expired], [is_revoked], [token], [token_type], [user_id]) VALUES (4, 0, 0, N'eyJhbGciOiJIUzI1NiJ9.eyJyb2xlcyI6WyJST0xFX1VTRVIiXSwic3ViIjoidXNlci10ZXN0QG1haWwuY29tIiwiaWF0IjoxNjg3OTk3MjY2LCJleHAiOjE2ODgwODM2NjZ9.qYT0QVqS1A0NJqOcdU4Qmu5GhwtX4obwpYOAmjzK8mg', N'BEARER_ACCESS_TOKEN', 4)
-INSERT [dbo].[token] ([id], [is_expired], [is_revoked], [token], [token_type], [user_id]) VALUES (5, 0, 0, N'eyJhbGciOiJIUzI1NiJ9.eyJyb2xlcyI6WyJST0xFX1VTRVIiXSwic3ViIjoidXNlci10ZXN0MkBtYWlsLmNvbSIsImlhdCI6MTY4Nzk5NzI2NywiZXhwIjoxNjg4MDgzNjY3fQ.Mx3cKzD6dw1xorPpfbULfdqhjGL8ecutJqPWqWRIiEQ', N'BEARER_ACCESS_TOKEN', 5)
-INSERT [dbo].[token] ([id], [is_expired], [is_revoked], [token], [token_type], [user_id]) VALUES (6, 0, 0, N'eyJhbGciOiJIUzI1NiJ9.eyJyb2xlcyI6WyJST0xFX1VTRVIiXSwic3ViIjoidXNlci10ZXN0M0BtYWlsLmNvbSIsImlhdCI6MTY4Nzk5NzI2NywiZXhwIjoxNjg4MDgzNjY3fQ.KuE1YDLVZeSc1pzegy4E0deCKaza-HsY8ZJhfYiVWDc', N'BEARER_ACCESS_TOKEN', 6)
-INSERT [dbo].[token] ([id], [is_expired], [is_revoked], [token], [token_type], [user_id]) VALUES (7, 0, 0, N'eyJhbGciOiJIUzI1NiJ9.eyJyb2xlcyI6WyJST0xFX1VTRVIiXSwic3ViIjoidXNlci10ZXN0NEBtYWlsLmNvbSIsImlhdCI6MTY4Nzk5NzI2NywiZXhwIjoxNjg4MDgzNjY3fQ.QFFeGUYNhqO6uUMi0dntxb8UMQ1z-0dX62CC9_cpdO0', N'BEARER_ACCESS_TOKEN', 7)
-INSERT [dbo].[token] ([id], [is_expired], [is_revoked], [token], [token_type], [user_id]) VALUES (8, 0, 0, N'eyJhbGciOiJIUzI1NiJ9.eyJyb2xlcyI6WyJST0xFX1VTRVIiXSwic3ViIjoidXNlci10ZXN0NUBtYWlsLmNvbSIsImlhdCI6MTY4Nzk5NzI2NywiZXhwIjoxNjg4MDgzNjY3fQ.hdHc4psvt1dhmkacK9IuqXG1_-uJHxO4taTENvfNvAA', N'BEARER_ACCESS_TOKEN', 8)
+INSERT [dbo].[token] ([id], [is_expired], [is_revoked], [token], [token_type], [user_id]) VALUES (1, 0, 0, N'eyJhbGciOiJIUzI1NiJ9.eyJyb2xlcyI6WyJNQU5BR0VSX1VQREFURSIsIkFETUlOX1VQREFURSIsIk1BTkFHRVJfREVMRVRFIiwiQURNSU5fUkVBRCIsIk1BTkFHRVJfQ1JFQVRFIiwiTUFOQUdFUl9SRUFEIiwiQURNSU5fQ1JFQVRFIiwiRU1QTE9ZRUVfUkVBRCIsIkFETUlOX0RFTEVURSIsIlJPTEVfQURNSU4iXSwic3ViIjoiYWRtaW5AbWFpbC5jb20iLCJpYXQiOjE2ODgwMTg2NjIsImV4cCI6MTY4ODEwNTA2Mn0.YFw-JZBm4Q8fTo3it_SB7AjFMVra81oEbcWoaqgffGc', N'BEARER_ACCESS_TOKEN', 1)
+INSERT [dbo].[token] ([id], [is_expired], [is_revoked], [token], [token_type], [user_id]) VALUES (2, 0, 0, N'eyJhbGciOiJIUzI1NiJ9.eyJyb2xlcyI6WyJNQU5BR0VSX1JFQUQiLCJNQU5BR0VSX1VQREFURSIsIk1BTkFHRVJfREVMRVRFIiwiTUFOQUdFUl9DUkVBVEUiLCJST0xFX01BTkFHRVIiXSwic3ViIjoibWFuYWdlckBtYWlsLmNvbSIsImlhdCI6MTY4ODAxODY2MywiZXhwIjoxNjg4MTA1MDYzfQ.mXlf_bp-xc89qzCV0gpfMDuhhY_wZwiW6pgaIX81Ejs', N'BEARER_ACCESS_TOKEN', 2)
+INSERT [dbo].[token] ([id], [is_expired], [is_revoked], [token], [token_type], [user_id]) VALUES (3, 0, 0, N'eyJhbGciOiJIUzI1NiJ9.eyJyb2xlcyI6WyJFTVBMT1lFRV9SRUFEIiwiUk9MRV9FTVBMT1lFRSJdLCJzdWIiOiJlbXBsb3llZUBtYWlsLmNvbSIsImlhdCI6MTY4ODAxODY2MywiZXhwIjoxNjg4MTA1MDYzfQ.yA9y5C-acmVKANGb8WrzVM6u5CP9R1ZPkIITgb0pNLQ', N'BEARER_ACCESS_TOKEN', 3)
+INSERT [dbo].[token] ([id], [is_expired], [is_revoked], [token], [token_type], [user_id]) VALUES (4, 0, 0, N'eyJhbGciOiJIUzI1NiJ9.eyJyb2xlcyI6WyJST0xFX1VTRVIiXSwic3ViIjoidXNlci10ZXN0QG1haWwuY29tIiwiaWF0IjoxNjg4MDE4NjYzLCJleHAiOjE2ODgxMDUwNjN9.qLrYe0K6qKPbxkYZBe1owlRShyTDpCwn9zj-xgSoBFM', N'BEARER_ACCESS_TOKEN', 4)
+INSERT [dbo].[token] ([id], [is_expired], [is_revoked], [token], [token_type], [user_id]) VALUES (5, 0, 0, N'eyJhbGciOiJIUzI1NiJ9.eyJyb2xlcyI6WyJST0xFX1VTRVIiXSwic3ViIjoidXNlci10ZXN0MkBtYWlsLmNvbSIsImlhdCI6MTY4ODAxODY2MywiZXhwIjoxNjg4MTA1MDYzfQ.LgesRtsdgpJ_ktYNSHnAw-7vsqmRVVu_rM9aoVLozDI', N'BEARER_ACCESS_TOKEN', 5)
+INSERT [dbo].[token] ([id], [is_expired], [is_revoked], [token], [token_type], [user_id]) VALUES (6, 0, 0, N'eyJhbGciOiJIUzI1NiJ9.eyJyb2xlcyI6WyJST0xFX1VTRVIiXSwic3ViIjoidXNlci10ZXN0M0BtYWlsLmNvbSIsImlhdCI6MTY4ODAxODY2MywiZXhwIjoxNjg4MTA1MDYzfQ.uNOmHN729qdwYySyaLtIFl97ofOOGmsOtdHhnEJtsmM', N'BEARER_ACCESS_TOKEN', 6)
+INSERT [dbo].[token] ([id], [is_expired], [is_revoked], [token], [token_type], [user_id]) VALUES (7, 0, 0, N'eyJhbGciOiJIUzI1NiJ9.eyJyb2xlcyI6WyJST0xFX1VTRVIiXSwic3ViIjoidXNlci10ZXN0NEBtYWlsLmNvbSIsImlhdCI6MTY4ODAxODY2MywiZXhwIjoxNjg4MTA1MDYzfQ.1tCj9EGHiMnE7Uq4q87UMfQ8az6PR5fC9Rr8d3ny_F4', N'BEARER_ACCESS_TOKEN', 7)
+INSERT [dbo].[token] ([id], [is_expired], [is_revoked], [token], [token_type], [user_id]) VALUES (8, 0, 0, N'eyJhbGciOiJIUzI1NiJ9.eyJyb2xlcyI6WyJST0xFX1VTRVIiXSwic3ViIjoidXNlci10ZXN0NUBtYWlsLmNvbSIsImlhdCI6MTY4ODAxODY2MywiZXhwIjoxNjg4MTA1MDYzfQ.YFeC5F3QH0g2W5r7NJLGwLG1-uxWmaZVT1v_1x8T8vg', N'BEARER_ACCESS_TOKEN', 8)
 INSERT [dbo].[token] ([id], [is_expired], [is_revoked], [token], [token_type], [user_id]) VALUES (9, 1, 1, N'eyJhbGciOiJIUzI1NiJ9.eyJyb2xlcyI6WyJST0xFX1VTRVIiXSwic3ViIjoidXNlci10ZXN0QG1haWwuY29tIiwiaWF0IjoxNjg3NTI1MTE2LCJleHAiOjE2ODc2MTE1MTZ9.TyhnVbf0UKOiXgECMMQUFc8OuMssmOku4LJNZuPmU1Q', N'BEARER_ACCESS_TOKEN', 4)
 INSERT [dbo].[token] ([id], [is_expired], [is_revoked], [token], [token_type], [user_id]) VALUES (10, 1, 1, N'eyJhbGciOiJIUzI1NiJ9.eyJyb2xlcyI6WyJST0xFX1VTRVIiXSwic3ViIjoidXNlci10ZXN0QG1haWwuY29tIiwiaWF0IjoxNjg2NzExMzc2LCJleHAiOjE2ODY3OTc3NzZ9.N6OKGNp7PdArcwvoWwKPvNmQFJFgpODiY3Ooinb1y3c', N'BEARER_ACCESS_TOKEN', 4)
 INSERT [dbo].[token] ([id], [is_expired], [is_revoked], [token], [token_type], [user_id]) VALUES (11, 1, 1, N'eyJhbGciOiJIUzI1NiJ9.eyJyb2xlcyI6WyJST0xFX1VTRVIiXSwic3ViIjoidXNlci10ZXN0QG1haWwuY29tIiwiaWF0IjoxNjg3MjE5NDcxLCJleHAiOjE2ODczMDU4NzF9.-RrQM7nMlWYN2LyPEupgPCX_Izx7bJljxgif2LvnSM4', N'BEARER_ACCESS_TOKEN', 4)
@@ -1101,8 +313,6 @@ INSERT [dbo].[token] ([id], [is_expired], [is_revoked], [token], [token_type], [
 INSERT [dbo].[token] ([id], [is_expired], [is_revoked], [token], [token_type], [user_id]) VALUES (68, 1, 1, N'eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1c2VyLXRlc3RAbWFpbC5jb20iLCJpYXQiOjE2ODc0MzkxOTQsImV4cCI6MTY4ODA0Mzk5NH0.C2619ov3e-EH6n1USzHFq0c23Hy9b5HRtH1N6aCS6WQ', N'BEARER_REFRESH_TOKEN', 4)
 INSERT [dbo].[token] ([id], [is_expired], [is_revoked], [token], [token_type], [user_id]) VALUES (69, 1, 1, N'eyJhbGciOiJIUzI1NiJ9.eyJyb2xlcyI6WyJST0xFX1VTRVIiXSwic3ViIjoidXNlci10ZXN0QG1haWwuY29tIiwiaWF0IjoxNjg3NDM5MTk4LCJleHAiOjE2ODc1MjU1OTh9.4L-IKc-CYBsvcci3t44Y5bS4LDw1Ptiz0qofxLZsRB0', N'BEARER_ACCESS_TOKEN', 4)
 INSERT [dbo].[token] ([id], [is_expired], [is_revoked], [token], [token_type], [user_id]) VALUES (70, 1, 1, N'eyJhbGciOiJIUzI1NiJ9.eyJyb2xlcyI6WyJST0xFX1VTRVIiXSwic3ViIjoidXNlci10ZXN0QG1haWwuY29tIiwiaWF0IjoxNjg3NTI1NTkwLCJleHAiOjE2ODc2MTE5OTB9.TmEIXF_GWy-W1dPiPlex148vRXMGxlEuDLp7PtNQXqk', N'BEARER_ACCESS_TOKEN', 4)
-INSERT [dbo].[token] ([id], [is_expired], [is_revoked], [token], [token_type], [user_id]) VALUES (71, 0, 0, N'eyJhbGciOiJIUzI1NiJ9.eyJyb2xlcyI6WyJST0xFX1VTRVIiXSwic3ViIjoibmd1eWVubmdvY25ndXllbi5ydGNAZ21haWwuY29tIiwiaWF0IjoxNjg3NTI3MzcyLCJleHAiOjE2ODc2MTM3NzJ9.cQaxnc8KT1o-iahsNP6ZhIB-0YBNIFTQYG7dBSjNXNg', N'BEARER_ACCESS_TOKEN', 9)
-INSERT [dbo].[token] ([id], [is_expired], [is_revoked], [token], [token_type], [user_id]) VALUES (72, 0, 0, N'eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJuZ3V5ZW5uZ29jbmd1eWVuLnJ0Y0BnbWFpbC5jb20iLCJpYXQiOjE2ODc1MjczNzIsImV4cCI6MTY4ODEzMjE3Mn0.OsAveK8CgJwWbRtHZGwv3ma4b_inlgLDocz3ih-qmoI', N'BEARER_REFRESH_TOKEN', 9)
 INSERT [dbo].[token] ([id], [is_expired], [is_revoked], [token], [token_type], [user_id]) VALUES (73, 1, 1, N'eyJhbGciOiJIUzI1NiJ9.eyJyb2xlcyI6WyJST0xFX1VTRVIiXSwic3ViIjoidXNlci10ZXN0QG1haWwuY29tIiwiaWF0IjoxNjg3NTI4MTg0LCJleHAiOjE2ODc2MTQ1ODR9.ujSY8y0_6z3iU8_56gi9j2hEogSaYSJtHhFNmHDe-2Q', N'BEARER_ACCESS_TOKEN', 4)
 INSERT [dbo].[token] ([id], [is_expired], [is_revoked], [token], [token_type], [user_id]) VALUES (74, 1, 1, N'eyJhbGciOiJIUzI1NiJ9.eyJyb2xlcyI6WyJNQU5BR0VSX0RFTEVURSIsIk1BTkFHRVJfVVBEQVRFIiwiQURNSU5fUkVBRCIsIkFETUlOX0RFTEVURSIsIkVNUExPWUVFX1JFQUQiLCJNQU5BR0VSX0NSRUFURSIsIk1BTkFHRVJfUkVBRCIsIkFETUlOX0NSRUFURSIsIkFETUlOX1VQREFURSIsIlJPTEVfQURNSU4iXSwic3ViIjoiYWRtaW5AbWFpbC5jb20iLCJpYXQiOjE2ODc1MjgyODIsImV4cCI6MTY4NzYxNDY4Mn0.fONHZw0m8t_5cbDCzf1vWvHbgRRFFnfbWQ51Mw7EgpE', N'BEARER_ACCESS_TOKEN', 1)
 INSERT [dbo].[token] ([id], [is_expired], [is_revoked], [token], [token_type], [user_id]) VALUES (75, 1, 1, N'eyJhbGciOiJIUzI1NiJ9.eyJyb2xlcyI6WyJST0xFX1VTRVIiXSwic3ViIjoidXNlci10ZXN0QG1haWwuY29tIiwiaWF0IjoxNjg3NTI5NjExLCJleHAiOjE2ODc2MTYwMTF9.rnzDmsLs0kYWInG_YiTh_d46WQCPd6AyhXdtiT2ZjmE', N'BEARER_ACCESS_TOKEN', 4)
@@ -1111,434 +321,91 @@ INSERT [dbo].[token] ([id], [is_expired], [is_revoked], [token], [token_type], [
 INSERT [dbo].[token] ([id], [is_expired], [is_revoked], [token], [token_type], [user_id]) VALUES (78, 1, 1, N'eyJhbGciOiJIUzI1NiJ9.eyJyb2xlcyI6WyJST0xFX1VTRVIiXSwic3ViIjoidXNlci10ZXN0QG1haWwuY29tIiwiaWF0IjoxNjg3NTM0MzE3LCJleHAiOjE2ODc2MjA3MTd9.vhsCx-f-s6_tLOug_squw8XLK-ZvFrgZXpbHE841WDY', N'BEARER_ACCESS_TOKEN', 4)
 INSERT [dbo].[token] ([id], [is_expired], [is_revoked], [token], [token_type], [user_id]) VALUES (79, 0, 0, N'eyJhbGciOiJIUzI1NiJ9.eyJyb2xlcyI6WyJST0xFX1VTRVIiXSwic3ViIjoidXNlci10ZXN0MkBtYWlsLmNvbSIsImlhdCI6MTY4NzUzNTg2OSwiZXhwIjoxNjg3NjIyMjY5fQ.lbptaWNcteiut6WTXn5owCkklib2QJT8Z5s-L87sCsY', N'BEARER_ACCESS_TOKEN', 5)
 INSERT [dbo].[token] ([id], [is_expired], [is_revoked], [token], [token_type], [user_id]) VALUES (80, 1, 1, N'eyJhbGciOiJIUzI1NiJ9.eyJyb2xlcyI6WyJST0xFX1VTRVIiXSwic3ViIjoidXNlci10ZXN0QG1haWwuY29tIiwiaWF0IjoxNjg3NTY2ODk5LCJleHAiOjE2ODc2NTMyOTl9.Nd0YR97RE6hdpqohC6FbGUsbIghtoCXFKjtW8tnDydc', N'BEARER_ACCESS_TOKEN', 4)
-INSERT [dbo].[token] ([id], [is_expired], [is_revoked], [token], [token_type], [user_id]) VALUES (81, 0, 0, N'eyJhbGciOiJIUzI1NiJ9.eyJyb2xlcyI6WyJNQU5BR0VSX1JFQUQiLCJBRE1JTl9SRUFEIiwiQURNSU5fQ1JFQVRFIiwiQURNSU5fREVMRVRFIiwiTUFOQUdFUl9ERUxFVEUiLCJNQU5BR0VSX0NSRUFURSIsIkVNUExPWUVFX1JFQUQiLCJBRE1JTl9VUERBVEUiLCJNQU5BR0VSX1VQREFURSIsIlJPTEVfQURNSU4iXSwic3ViIjoiYWRtaW5AbWFpbC5jb20iLCJpYXQiOjE2ODc1NjY5MTQsImV4cCI6MTY4NzY1MzMxNH0.IhtbJfO_0MZN7XW-r_-bJYlx5-nrh--__BjOYkyYvLc', N'BEARER_ACCESS_TOKEN', 1)
-INSERT [dbo].[token] ([id], [is_expired], [is_revoked], [token], [token_type], [user_id]) VALUES (83, 0, 0, N'eyJhbGciOiJIUzI1NiJ9.eyJyb2xlcyI6WyJST0xFX1VTRVIiXSwic3ViIjoidXNlci10ZXN0QG1haWwuY29tIiwiaWF0IjoxNjg3Njg1NjIwLCJleHAiOjE2ODc3NzIwMjB9.qZ-ufwZcLmnOryeDu3g7Wajay-eO9Fb9eSONFW69Nns', N'BEARER_ACCESS_TOKEN', 4)
-INSERT [dbo].[token] ([id], [is_expired], [is_revoked], [token], [token_type], [user_id]) VALUES (84, 0, 0, N'eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1c2VyLXRlc3RAbWFpbC5jb20iLCJpYXQiOjE2ODc2ODU2MjAsImV4cCI6MTY4ODI5MDQyMH0.ZFFL9BPPKQXs0rEOd9EzwQsnxCoTINA5MV6h3TYqAvw', N'BEARER_REFRESH_TOKEN', 4)
+INSERT [dbo].[token] ([id], [is_expired], [is_revoked], [token], [token_type], [user_id]) VALUES (83, 1, 1, N'eyJhbGciOiJIUzI1NiJ9.eyJyb2xlcyI6WyJST0xFX1VTRVIiXSwic3ViIjoidXNlci10ZXN0QG1haWwuY29tIiwiaWF0IjoxNjg3Njg1NjIwLCJleHAiOjE2ODc3NzIwMjB9.qZ-ufwZcLmnOryeDu3g7Wajay-eO9Fb9eSONFW69Nns', N'BEARER_ACCESS_TOKEN', 4)
+INSERT [dbo].[token] ([id], [is_expired], [is_revoked], [token], [token_type], [user_id]) VALUES (84, 1, 1, N'eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1c2VyLXRlc3RAbWFpbC5jb20iLCJpYXQiOjE2ODc2ODU2MjAsImV4cCI6MTY4ODI5MDQyMH0.ZFFL9BPPKQXs0rEOd9EzwQsnxCoTINA5MV6h3TYqAvw', N'BEARER_REFRESH_TOKEN', 4)
+INSERT [dbo].[token] ([id], [is_expired], [is_revoked], [token], [token_type], [user_id]) VALUES (85, 0, 0, N'eyJhbGciOiJIUzI1NiJ9.eyJyb2xlcyI6WyJBRE1JTl9ERUxFVEUiLCJBRE1JTl9SRUFEIiwiQURNSU5fQ1JFQVRFIiwiRU1QTE9ZRUVfUkVBRCIsIk1BTkFHRVJfUkVBRCIsIkFETUlOX1VQREFURSIsIk1BTkFHRVJfREVMRVRFIiwiTUFOQUdFUl9VUERBVEUiLCJNQU5BR0VSX0NSRUFURSIsIlJPTEVfQURNSU4iXSwic3ViIjoiYWRtaW5AbWFpbC5jb20iLCJpYXQiOjE2ODgwMDk1NDksImV4cCI6MTY4ODA5NTk0OX0.k-gHzT3pVIMD7VgEpg9hNjE8Hn_B7-9Oc-v_2jdbxfY', N'BEARER_ACCESS_TOKEN', 1)
+INSERT [dbo].[token] ([id], [is_expired], [is_revoked], [token], [token_type], [user_id]) VALUES (86, 0, 0, N'eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbkBtYWlsLmNvbSIsImlhdCI6MTY4ODAwOTU0OSwiZXhwIjoxNjg4NjE0MzQ5fQ.NYGpMjTE4T_AC-PUtddaU9uo6lM9Hec0VOrrKI5jAqc', N'BEARER_REFRESH_TOKEN', 1)
+INSERT [dbo].[token] ([id], [is_expired], [is_revoked], [token], [token_type], [user_id]) VALUES (87, 1, 1, N'eyJhbGciOiJIUzI1NiJ9.eyJyb2xlcyI6WyJST0xFX1VTRVIiXSwic3ViIjoidXNlci10ZXN0QG1haWwuY29tIiwiaWF0IjoxNjg4MDA5Njc1LCJleHAiOjE2ODgwOTYwNzV9.fXYikTMRKACJQXWQ_u__-X8joIwNYulxEOnhWu8Xh6w', N'BEARER_ACCESS_TOKEN', 4)
+INSERT [dbo].[token] ([id], [is_expired], [is_revoked], [token], [token_type], [user_id]) VALUES (88, 0, 0, N'eyJhbGciOiJIUzI1NiJ9.eyJyb2xlcyI6WyJST0xFX1VTRVIiXSwic3ViIjoidXNlci10ZXN0QG1haWwuY29tIiwiaWF0IjoxNjg4MDA5NzU5LCJleHAiOjE2ODgwOTYxNTl9.3jeBqomKCnCd4me_UraGZofcELgVPUvjPWwUEj-SfzU', N'BEARER_ACCESS_TOKEN', 4)
 SET IDENTITY_INSERT [dbo].[token] OFF
 GO
-SET IDENTITY_INSERT [dbo].[users] ON 
+SET IDENTITY_INSERT [dbo].[lesson_tracking] ON 
 
-INSERT [dbo].[users] ([id], [created_at], [email], [first_name], [image_url], [is_notify], [is_verified], [last_name], [name], [password], [provider], [provider_id], [role], [updated_at], [user_status]) VALUES (1, CAST(N'2023-06-29T00:07:46.1984360+00:00' AS DateTimeOffset), N'admin@mail.com', N'ClicknLearn', N'https://i.ibb.co/2KnQrF0/logo-click-thumb-light.png', 0, 1, N'', NULL, N'$2a$10$lUZ5ruzCSusX1COJelytDOM/c06776x/zQd19Sgpuv6bkhurHIIwq', N'local', NULL, N'ADMIN', CAST(N'2023-06-29T00:07:46.1994350+00:00' AS DateTimeOffset), 1)
-INSERT [dbo].[users] ([id], [created_at], [email], [first_name], [image_url], [is_notify], [is_verified], [last_name], [name], [password], [provider], [provider_id], [role], [updated_at], [user_status]) VALUES (2, CAST(N'2023-06-29T00:07:46.7094340+00:00' AS DateTimeOffset), N'manager@mail.com', N'Manager', N'https://i.ibb.co/2KnQrF0/logo-click-thumb-light.png', 0, 1, N'', NULL, N'$2a$10$uHt7vasMwPlM7IHIfCBRQ.ZnkFVApJFUlLp/yCK1lhM.eKkYus90i', N'local', NULL, N'MANAGER', CAST(N'2023-06-29T00:07:46.7094340+00:00' AS DateTimeOffset), 1)
-INSERT [dbo].[users] ([id], [created_at], [email], [first_name], [image_url], [is_notify], [is_verified], [last_name], [name], [password], [provider], [provider_id], [role], [updated_at], [user_status]) VALUES (3, CAST(N'2023-06-29T00:07:46.8314340+00:00' AS DateTimeOffset), N'employee@mail.com', N'Employee', N'https://i.ibb.co/2KnQrF0/logo-click-thumb-light.png', 0, 1, N'', NULL, N'$2a$10$BqDnxSXWTA2Q8/qoM0sNSuiCMYV5DTpiv7E5PCkVg1rZ7m0RNFJ1i', N'local', NULL, N'EMPLOYEE', CAST(N'2023-06-29T00:07:46.8314340+00:00' AS DateTimeOffset), 1)
-INSERT [dbo].[users] ([id], [created_at], [email], [first_name], [image_url], [is_notify], [is_verified], [last_name], [name], [password], [provider], [provider_id], [role], [updated_at], [user_status]) VALUES (4, CAST(N'2023-06-29T00:07:46.9784340+00:00' AS DateTimeOffset), N'user-test@mail.com', N'TeeCee', N'https://i.ibb.co/7GDTVRf/aptech.png', 0, 1, N'', NULL, N'$2a$10$7Qb6VQsdnBOTmisazwisZO8eZOHRNOly0c9NPZqXDkAnzHQZM9ldu', N'local', NULL, N'USER', CAST(N'2023-06-29T00:07:46.9784340+00:00' AS DateTimeOffset), 1)
-INSERT [dbo].[users] ([id], [created_at], [email], [first_name], [image_url], [is_notify], [is_verified], [last_name], [name], [password], [provider], [provider_id], [role], [updated_at], [user_status]) VALUES (5, CAST(N'2023-06-29T00:07:47.0974330+00:00' AS DateTimeOffset), N'user-test2@mail.com', N'Ric', N'https://i.ibb.co/7GDTVRf/aptech.png', 0, 1, N'', NULL, N'$2a$10$VBJNwnM2bHsOsCdOAZ5wueicrqEY.apiGE50PpjdFI5uSq6SqckRi', N'local', NULL, N'USER', CAST(N'2023-06-29T00:07:47.0974330+00:00' AS DateTimeOffset), 1)
-INSERT [dbo].[users] ([id], [created_at], [email], [first_name], [image_url], [is_notify], [is_verified], [last_name], [name], [password], [provider], [provider_id], [role], [updated_at], [user_status]) VALUES (6, CAST(N'2023-06-29T00:07:47.2164340+00:00' AS DateTimeOffset), N'user-test3@mail.com', N'AnPham', N'https://i.ibb.co/7GDTVRf/aptech.png', 0, 1, N'', NULL, N'$2a$10$2Rgsv42GgrtPbfSEzhtqvOBY37BUXmiWOzZ0cv4VSgLiU7IEp6sce', N'local', NULL, N'USER', CAST(N'2023-06-29T00:07:47.2164340+00:00' AS DateTimeOffset), 1)
-INSERT [dbo].[users] ([id], [created_at], [email], [first_name], [image_url], [is_notify], [is_verified], [last_name], [name], [password], [provider], [provider_id], [role], [updated_at], [user_status]) VALUES (7, CAST(N'2023-06-29T00:07:47.3304320+00:00' AS DateTimeOffset), N'user-test4@mail.com', N'DiDi', N'https://i.ibb.co/7GDTVRf/aptech.png', 0, 1, N'', NULL, N'$2a$10$r3I2S.TolZ5Xo3pdhs.SOOFGYn/3nzsy1giBr3mRTqxbnEwEoUlU2', N'local', NULL, N'USER', CAST(N'2023-06-29T00:07:47.3304320+00:00' AS DateTimeOffset), 1)
-INSERT [dbo].[users] ([id], [created_at], [email], [first_name], [image_url], [is_notify], [is_verified], [last_name], [name], [password], [provider], [provider_id], [role], [updated_at], [user_status]) VALUES (8, CAST(N'2023-06-29T00:07:47.4654330+00:00' AS DateTimeOffset), N'user-test5@mail.com', N'DucTH', N'https://i.ibb.co/7GDTVRf/aptech.png', 0, 1, N'', NULL, N'$2a$10$2K.qK7iwG7RBm5odQ4pkK.3OJr01246PYUbQ7N1ihwXf4q7vtV1pq', N'local', NULL, N'USER', CAST(N'2023-06-29T00:07:47.4654330+00:00' AS DateTimeOffset), 1)
-INSERT [dbo].[users] ([id], [created_at], [email], [first_name], [image_url], [is_notify], [is_verified], [last_name], [name], [password], [provider], [provider_id], [role], [updated_at], [user_status]) VALUES (9, CAST(N'2023-06-23T13:36:12.1209910+00:00' AS DateTimeOffset), N'nguyenngocnguyen.rtc@gmail.com', N'Nguyên Nguyễn', N'https://lh3.googleusercontent.com/a/AAcHTtdFuJNV7w6tlYZDhpIUAH11R0UvMtEsf7lngz1v=s96-c', 0, 0, NULL, NULL, NULL, N'google', N'106018291131107288524', N'USER', CAST(N'2023-06-23T13:36:12.1209910+00:00' AS DateTimeOffset), 1)
-SET IDENTITY_INSERT [dbo].[users] OFF
-GO
-INSERT [dbo].[video] ([lesson_id], [caption_urls], [created_at], [duration], [name], [status], [updated_at], [url]) VALUES (1, N'http://localhost:8080/video/caption/sample.en.vtt,http://localhost:8080/video/caption/sample.vi.vtt,http://localhost:8080/video/caption/sample.jp.vtt', CAST(N'2023-06-12T15:36:43.8405520+00:00' AS DateTimeOffset), 0, N'230612223643_course_1.mp4', 1, CAST(N'2023-06-12T15:36:43.8405520+00:00' AS DateTimeOffset), N'http://localhost:8080/video/stream/mp4/230612223643_course_1')
-INSERT [dbo].[video] ([lesson_id], [caption_urls], [created_at], [duration], [name], [status], [updated_at], [url]) VALUES (2, N'http://localhost:8080/video/caption/sample.en.vtt,http://localhost:8080/video/caption/sample.vi.vtt,http://localhost:8080/video/caption/sample.jp.vtt', CAST(N'2023-06-12T15:36:57.0965040+00:00' AS DateTimeOffset), 0, N'230612223657_course_2.mp4', 1, CAST(N'2023-06-12T15:36:57.0965040+00:00' AS DateTimeOffset), N'http://localhost:8080/video/stream/mp4/230612223657_course_2')
-INSERT [dbo].[video] ([lesson_id], [caption_urls], [created_at], [duration], [name], [status], [updated_at], [url]) VALUES (3, N'http://localhost:8080/video/caption/sample.en.vtt,http://localhost:8080/video/caption/sample.vi.vtt,http://localhost:8080/video/caption/sample.jp.vtt', CAST(N'2023-06-12T15:37:08.8835050+00:00' AS DateTimeOffset), 0, N'230612223723_course_3.mp4', 1, CAST(N'2023-06-12T15:37:23.6215040+00:00' AS DateTimeOffset), N'http://localhost:8080/video/stream/mp4/230612223723_course_3')
-INSERT [dbo].[video] ([lesson_id], [caption_urls], [created_at], [duration], [name], [status], [updated_at], [url]) VALUES (4, N'http://localhost:8080/video/caption/sample.en.vtt,http://localhost:8080/video/caption/sample.vi.vtt,http://localhost:8080/video/caption/sample.jp.vtt', CAST(N'2023-06-12T15:37:16.0865020+00:00' AS DateTimeOffset), 0, N'230612223716_course_4.mp4', 1, CAST(N'2023-06-12T15:37:16.0865020+00:00' AS DateTimeOffset), N'http://localhost:8080/video/stream/mp4/230612223716_course_4')
-INSERT [dbo].[video] ([lesson_id], [caption_urls], [created_at], [duration], [name], [status], [updated_at], [url]) VALUES (5, N'http://localhost:8080/video/caption/sample.en.vtt,http://localhost:8080/video/caption/sample.vi.vtt,http://localhost:8080/video/caption/sample.jp.vtt', CAST(N'2023-06-12T15:37:16.0865020+00:00' AS DateTimeOffset), 0, N'230619053720_StarSecurity video.mp4', 1, CAST(N'2023-06-12T15:37:16.0865020+00:00' AS DateTimeOffset), N'http://localhost:8080/video/stream/mp4/230619053720_StarSecurity video')
-GO
-SET ANSI_PADDING ON
-GO
-/****** Object:  Index [IDX_Author_Name]    Script Date: 6/29/2023 7:16:25 AM ******/
-IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[author]') AND name = N'IDX_Author_Name')
-CREATE NONCLUSTERED INDEX [IDX_Author_Name] ON [dbo].[author]
-(
-	[name] ASC
-)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, SORT_IN_TEMPDB = OFF, DROP_EXISTING = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
-GO
-SET ANSI_PADDING ON
-GO
-/****** Object:  Index [UK_rse7kjvydwev63jjbsm0dw4ey]    Script Date: 6/29/2023 7:16:25 AM ******/
-IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[blog]') AND name = N'UK_rse7kjvydwev63jjbsm0dw4ey')
-ALTER TABLE [dbo].[blog] ADD  CONSTRAINT [UK_rse7kjvydwev63jjbsm0dw4ey] UNIQUE NONCLUSTERED 
-(
-	[slug] ASC
-)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, SORT_IN_TEMPDB = OFF, IGNORE_DUP_KEY = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
-GO
-/****** Object:  Index [IDX_Course_CreatedAt]    Script Date: 6/29/2023 7:16:25 AM ******/
-IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[course]') AND name = N'IDX_Course_CreatedAt')
-CREATE NONCLUSTERED INDEX [IDX_Course_CreatedAt] ON [dbo].[course]
-(
-	[created_at] DESC
-)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, SORT_IN_TEMPDB = OFF, DROP_EXISTING = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
-GO
-SET ANSI_PADDING ON
-GO
-/****** Object:  Index [IDX_Course_Name]    Script Date: 6/29/2023 7:16:25 AM ******/
-IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[course]') AND name = N'IDX_Course_Name')
-CREATE NONCLUSTERED INDEX [IDX_Course_Name] ON [dbo].[course]
-(
-	[name] DESC
-)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, SORT_IN_TEMPDB = OFF, DROP_EXISTING = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
-GO
-/****** Object:  Index [IDX_Course_Price]    Script Date: 6/29/2023 7:16:25 AM ******/
-IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[course]') AND name = N'IDX_Course_Price')
-CREATE NONCLUSTERED INDEX [IDX_Course_Price] ON [dbo].[course]
-(
-	[price] ASC
-)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, SORT_IN_TEMPDB = OFF, DROP_EXISTING = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
-GO
-/****** Object:  Index [IDX_Enrollment_CourseId_UserId]    Script Date: 6/29/2023 7:16:25 AM ******/
-IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[enrollment]') AND name = N'IDX_Enrollment_CourseId_UserId')
-ALTER TABLE [dbo].[enrollment] ADD  CONSTRAINT [IDX_Enrollment_CourseId_UserId] UNIQUE NONCLUSTERED 
-(
-	[course_id] ASC,
-	[user_id] ASC
-)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, SORT_IN_TEMPDB = OFF, IGNORE_DUP_KEY = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
-GO
-/****** Object:  Index [UKot7ve3il1sqa4ihb29civxiep]    Script Date: 6/29/2023 7:16:25 AM ******/
-IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[lesson_tracking]') AND name = N'UKot7ve3il1sqa4ihb29civxiep')
-ALTER TABLE [dbo].[lesson_tracking] ADD  CONSTRAINT [UKot7ve3il1sqa4ihb29civxiep] UNIQUE NONCLUSTERED 
-(
-	[enrollment_id] ASC,
-	[course_id] ASC,
-	[section_id] ASC,
-	[lesson_id] ASC,
-	[video_id] ASC
-)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, SORT_IN_TEMPDB = OFF, IGNORE_DUP_KEY = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
-GO
-/****** Object:  Index [IDX_Enrollment_AuthorId_UserId]    Script Date: 6/29/2023 7:16:25 AM ******/
-IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[subcribes]') AND name = N'IDX_Enrollment_AuthorId_UserId')
-ALTER TABLE [dbo].[subcribes] ADD  CONSTRAINT [IDX_Enrollment_AuthorId_UserId] UNIQUE NONCLUSTERED 
-(
-	[author_id] ASC,
-	[user_id] ASC
-)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, SORT_IN_TEMPDB = OFF, IGNORE_DUP_KEY = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
-GO
-SET ANSI_PADDING ON
-GO
-/****** Object:  Index [UK_1un6sdkbtaspkwmsiferm1dhm]    Script Date: 6/29/2023 7:16:25 AM ******/
-IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[user_profile]') AND name = N'UK_1un6sdkbtaspkwmsiferm1dhm')
-ALTER TABLE [dbo].[user_profile] ADD  CONSTRAINT [UK_1un6sdkbtaspkwmsiferm1dhm] UNIQUE NONCLUSTERED 
-(
-	[phone] ASC
-)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, SORT_IN_TEMPDB = OFF, IGNORE_DUP_KEY = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
-GO
-SET ANSI_PADDING ON
-GO
-/****** Object:  Index [UK_6dotkott2kjsp8vw4d0m25fb7]    Script Date: 6/29/2023 7:16:25 AM ******/
-IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[users]') AND name = N'UK_6dotkott2kjsp8vw4d0m25fb7')
-ALTER TABLE [dbo].[users] ADD  CONSTRAINT [UK_6dotkott2kjsp8vw4d0m25fb7] UNIQUE NONCLUSTERED 
-(
-	[email] ASC
-)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, SORT_IN_TEMPDB = OFF, IGNORE_DUP_KEY = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
-GO
-IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[DF__blog__status__74119843]') AND type = 'D')
-BEGIN
-ALTER TABLE [dbo].[blog] ADD  DEFAULT ((2)) FOR [status]
-END
-GO
-IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[DF__enrollmen__is_pu__025FB79A]') AND type = 'D')
-BEGIN
-ALTER TABLE [dbo].[enrollment] ADD  DEFAULT ((0)) FOR [is_published]
-END
-GO
-IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[DF__exam_resu__is_co__053C2445]') AND type = 'D')
-BEGIN
-ALTER TABLE [dbo].[exam_result] ADD  DEFAULT ((0)) FOR [is_correct]
-END
-GO
-IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[DF__exam_resu__quest__0630487E]') AND type = 'D')
-BEGIN
-ALTER TABLE [dbo].[exam_result] ADD  DEFAULT ((0)) FOR [question_point]
-END
-GO
-IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[DF__exam_resu__total__07246CB7]') AND type = 'D')
-BEGIN
-ALTER TABLE [dbo].[exam_result] ADD  DEFAULT ((0)) FOR [total_exam_time]
-END
-GO
-IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[DF__exam_resu__total__081890F0]') AND type = 'D')
-BEGIN
-ALTER TABLE [dbo].[exam_result] ADD  DEFAULT ((0)) FOR [total_point]
-END
-GO
-IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[DF__exam_resu__user___090CB529]') AND type = 'D')
-BEGIN
-ALTER TABLE [dbo].[exam_result] ADD  DEFAULT ((0)) FOR [user_answer_id]
-END
-GO
-IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[DF__question__point__1A37412B]') AND type = 'D')
-BEGIN
-ALTER TABLE [dbo].[question] ADD  DEFAULT ((0)) FOR [point]
-END
-GO
-IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[DF_Test_part_id]') AND type = 'D')
-BEGIN
-ALTER TABLE [dbo].[Test] ADD  CONSTRAINT [DF_Test_part_id]  DEFAULT ((0)) FOR [part_id]
-END
-GO
-IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[DF_Test_question_id]') AND type = 'D')
-BEGIN
-ALTER TABLE [dbo].[Test] ADD  CONSTRAINT [DF_Test_question_id]  DEFAULT ((0)) FOR [question_id]
-END
-GO
-IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[DF_Test_answer_id]') AND type = 'D')
-BEGIN
-ALTER TABLE [dbo].[Test] ADD  CONSTRAINT [DF_Test_answer_id]  DEFAULT ((0)) FOR [answer_id]
-END
-GO
-IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[DF_Table_1_user_answer]') AND type = 'D')
-BEGIN
-ALTER TABLE [dbo].[Test] ADD  CONSTRAINT [DF_Table_1_user_answer]  DEFAULT ((0)) FOR [user_answer_id]
-END
-GO
-IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[DF_Test_TotalExamTime]') AND type = 'D')
-BEGIN
-ALTER TABLE [dbo].[Test] ADD  CONSTRAINT [DF_Test_TotalExamTime]  DEFAULT ((0)) FOR [TotalExamTime]
-END
-GO
-IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[DF_Test_Question_Point]') AND type = 'D')
-BEGIN
-ALTER TABLE [dbo].[Test] ADD  CONSTRAINT [DF_Test_Question_Point]  DEFAULT ((0)) FOR [Question_Point]
-END
-GO
-IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[DF__users__is_notify__24B4CF9E]') AND type = 'D')
-BEGIN
-ALTER TABLE [dbo].[users] ADD  DEFAULT ((0)) FOR [is_notify]
-END
-GO
-IF NOT EXISTS (SELECT * FROM sys.foreign_keys WHERE object_id = OBJECT_ID(N'[dbo].[FK_Answer_Question]') AND parent_object_id = OBJECT_ID(N'[dbo].[answer]'))
-ALTER TABLE [dbo].[answer]  WITH CHECK ADD  CONSTRAINT [FK_Answer_Question] FOREIGN KEY([question_id])
-REFERENCES [dbo].[question] ([id])
-GO
-IF  EXISTS (SELECT * FROM sys.foreign_keys WHERE object_id = OBJECT_ID(N'[dbo].[FK_Answer_Question]') AND parent_object_id = OBJECT_ID(N'[dbo].[answer]'))
-ALTER TABLE [dbo].[answer] CHECK CONSTRAINT [FK_Answer_Question]
-GO
-IF NOT EXISTS (SELECT * FROM sys.foreign_keys WHERE object_id = OBJECT_ID(N'[dbo].[FK_Blog_Category]') AND parent_object_id = OBJECT_ID(N'[dbo].[blog]'))
-ALTER TABLE [dbo].[blog]  WITH CHECK ADD  CONSTRAINT [FK_Blog_Category] FOREIGN KEY([category_id])
-REFERENCES [dbo].[category] ([id])
-GO
-IF  EXISTS (SELECT * FROM sys.foreign_keys WHERE object_id = OBJECT_ID(N'[dbo].[FK_Blog_Category]') AND parent_object_id = OBJECT_ID(N'[dbo].[blog]'))
-ALTER TABLE [dbo].[blog] CHECK CONSTRAINT [FK_Blog_Category]
-GO
-IF NOT EXISTS (SELECT * FROM sys.foreign_keys WHERE object_id = OBJECT_ID(N'[dbo].[FK_Blog_User]') AND parent_object_id = OBJECT_ID(N'[dbo].[blog]'))
-ALTER TABLE [dbo].[blog]  WITH CHECK ADD  CONSTRAINT [FK_Blog_User] FOREIGN KEY([user_id])
-REFERENCES [dbo].[users] ([id])
-GO
-IF  EXISTS (SELECT * FROM sys.foreign_keys WHERE object_id = OBJECT_ID(N'[dbo].[FK_Blog_User]') AND parent_object_id = OBJECT_ID(N'[dbo].[blog]'))
-ALTER TABLE [dbo].[blog] CHECK CONSTRAINT [FK_Blog_User]
-GO
-IF NOT EXISTS (SELECT * FROM sys.foreign_keys WHERE object_id = OBJECT_ID(N'[dbo].[FK_Comment_Post]') AND parent_object_id = OBJECT_ID(N'[dbo].[comment]'))
-ALTER TABLE [dbo].[comment]  WITH CHECK ADD  CONSTRAINT [FK_Comment_Post] FOREIGN KEY([post_id])
-REFERENCES [dbo].[post] ([id])
-GO
-IF  EXISTS (SELECT * FROM sys.foreign_keys WHERE object_id = OBJECT_ID(N'[dbo].[FK_Comment_Post]') AND parent_object_id = OBJECT_ID(N'[dbo].[comment]'))
-ALTER TABLE [dbo].[comment] CHECK CONSTRAINT [FK_Comment_Post]
-GO
-IF NOT EXISTS (SELECT * FROM sys.foreign_keys WHERE object_id = OBJECT_ID(N'[dbo].[FK_Comment_User]') AND parent_object_id = OBJECT_ID(N'[dbo].[comment]'))
-ALTER TABLE [dbo].[comment]  WITH CHECK ADD  CONSTRAINT [FK_Comment_User] FOREIGN KEY([user_id])
-REFERENCES [dbo].[users] ([id])
-GO
-IF  EXISTS (SELECT * FROM sys.foreign_keys WHERE object_id = OBJECT_ID(N'[dbo].[FK_Comment_User]') AND parent_object_id = OBJECT_ID(N'[dbo].[comment]'))
-ALTER TABLE [dbo].[comment] CHECK CONSTRAINT [FK_Comment_User]
-GO
-IF NOT EXISTS (SELECT * FROM sys.foreign_keys WHERE object_id = OBJECT_ID(N'[dbo].[FK_Course_Author]') AND parent_object_id = OBJECT_ID(N'[dbo].[course]'))
-ALTER TABLE [dbo].[course]  WITH CHECK ADD  CONSTRAINT [FK_Course_Author] FOREIGN KEY([author_id])
-REFERENCES [dbo].[author] ([id])
-GO
-IF  EXISTS (SELECT * FROM sys.foreign_keys WHERE object_id = OBJECT_ID(N'[dbo].[FK_Course_Author]') AND parent_object_id = OBJECT_ID(N'[dbo].[course]'))
-ALTER TABLE [dbo].[course] CHECK CONSTRAINT [FK_Course_Author]
-GO
-IF NOT EXISTS (SELECT * FROM sys.foreign_keys WHERE object_id = OBJECT_ID(N'[dbo].[FK_Course_Category]') AND parent_object_id = OBJECT_ID(N'[dbo].[course]'))
-ALTER TABLE [dbo].[course]  WITH CHECK ADD  CONSTRAINT [FK_Course_Category] FOREIGN KEY([category_id])
-REFERENCES [dbo].[category] ([id])
-GO
-IF  EXISTS (SELECT * FROM sys.foreign_keys WHERE object_id = OBJECT_ID(N'[dbo].[FK_Course_Category]') AND parent_object_id = OBJECT_ID(N'[dbo].[course]'))
-ALTER TABLE [dbo].[course] CHECK CONSTRAINT [FK_Course_Category]
-GO
-IF NOT EXISTS (SELECT * FROM sys.foreign_keys WHERE object_id = OBJECT_ID(N'[dbo].[FK66fjjqlaf90a259wu8juadmlg]') AND parent_object_id = OBJECT_ID(N'[dbo].[course_achievement]'))
-ALTER TABLE [dbo].[course_achievement]  WITH CHECK ADD  CONSTRAINT [FK66fjjqlaf90a259wu8juadmlg] FOREIGN KEY([achievement_id])
-REFERENCES [dbo].[achievement] ([id])
-GO
-IF  EXISTS (SELECT * FROM sys.foreign_keys WHERE object_id = OBJECT_ID(N'[dbo].[FK66fjjqlaf90a259wu8juadmlg]') AND parent_object_id = OBJECT_ID(N'[dbo].[course_achievement]'))
-ALTER TABLE [dbo].[course_achievement] CHECK CONSTRAINT [FK66fjjqlaf90a259wu8juadmlg]
-GO
-IF NOT EXISTS (SELECT * FROM sys.foreign_keys WHERE object_id = OBJECT_ID(N'[dbo].[FKprwjjvxfjl5k4ywq6a2oqt6l0]') AND parent_object_id = OBJECT_ID(N'[dbo].[course_achievement]'))
-ALTER TABLE [dbo].[course_achievement]  WITH CHECK ADD  CONSTRAINT [FKprwjjvxfjl5k4ywq6a2oqt6l0] FOREIGN KEY([course_id])
-REFERENCES [dbo].[course] ([id])
-GO
-IF  EXISTS (SELECT * FROM sys.foreign_keys WHERE object_id = OBJECT_ID(N'[dbo].[FKprwjjvxfjl5k4ywq6a2oqt6l0]') AND parent_object_id = OBJECT_ID(N'[dbo].[course_achievement]'))
-ALTER TABLE [dbo].[course_achievement] CHECK CONSTRAINT [FKprwjjvxfjl5k4ywq6a2oqt6l0]
-GO
-IF NOT EXISTS (SELECT * FROM sys.foreign_keys WHERE object_id = OBJECT_ID(N'[dbo].[FK3tta6lkm8fr0rgfyr4y3xrr3u]') AND parent_object_id = OBJECT_ID(N'[dbo].[course_tag]'))
-ALTER TABLE [dbo].[course_tag]  WITH CHECK ADD  CONSTRAINT [FK3tta6lkm8fr0rgfyr4y3xrr3u] FOREIGN KEY([course_id])
-REFERENCES [dbo].[course] ([id])
-GO
-IF  EXISTS (SELECT * FROM sys.foreign_keys WHERE object_id = OBJECT_ID(N'[dbo].[FK3tta6lkm8fr0rgfyr4y3xrr3u]') AND parent_object_id = OBJECT_ID(N'[dbo].[course_tag]'))
-ALTER TABLE [dbo].[course_tag] CHECK CONSTRAINT [FK3tta6lkm8fr0rgfyr4y3xrr3u]
-GO
-IF NOT EXISTS (SELECT * FROM sys.foreign_keys WHERE object_id = OBJECT_ID(N'[dbo].[FKj7piuv0dh0v01l3aolwwd1jwh]') AND parent_object_id = OBJECT_ID(N'[dbo].[course_tag]'))
-ALTER TABLE [dbo].[course_tag]  WITH CHECK ADD  CONSTRAINT [FKj7piuv0dh0v01l3aolwwd1jwh] FOREIGN KEY([tag_id])
-REFERENCES [dbo].[tag] ([id])
-GO
-IF  EXISTS (SELECT * FROM sys.foreign_keys WHERE object_id = OBJECT_ID(N'[dbo].[FKj7piuv0dh0v01l3aolwwd1jwh]') AND parent_object_id = OBJECT_ID(N'[dbo].[course_tag]'))
-ALTER TABLE [dbo].[course_tag] CHECK CONSTRAINT [FKj7piuv0dh0v01l3aolwwd1jwh]
-GO
-IF NOT EXISTS (SELECT * FROM sys.foreign_keys WHERE object_id = OBJECT_ID(N'[dbo].[FK_Enrollment_Course]') AND parent_object_id = OBJECT_ID(N'[dbo].[enrollment]'))
-ALTER TABLE [dbo].[enrollment]  WITH CHECK ADD  CONSTRAINT [FK_Enrollment_Course] FOREIGN KEY([course_id])
-REFERENCES [dbo].[course] ([id])
-GO
-IF  EXISTS (SELECT * FROM sys.foreign_keys WHERE object_id = OBJECT_ID(N'[dbo].[FK_Enrollment_Course]') AND parent_object_id = OBJECT_ID(N'[dbo].[enrollment]'))
-ALTER TABLE [dbo].[enrollment] CHECK CONSTRAINT [FK_Enrollment_Course]
-GO
-IF NOT EXISTS (SELECT * FROM sys.foreign_keys WHERE object_id = OBJECT_ID(N'[dbo].[FK_Enrollment_User]') AND parent_object_id = OBJECT_ID(N'[dbo].[enrollment]'))
-ALTER TABLE [dbo].[enrollment]  WITH CHECK ADD  CONSTRAINT [FK_Enrollment_User] FOREIGN KEY([user_id])
-REFERENCES [dbo].[users] ([id])
-GO
-IF  EXISTS (SELECT * FROM sys.foreign_keys WHERE object_id = OBJECT_ID(N'[dbo].[FK_Enrollment_User]') AND parent_object_id = OBJECT_ID(N'[dbo].[enrollment]'))
-ALTER TABLE [dbo].[enrollment] CHECK CONSTRAINT [FK_Enrollment_User]
-GO
-IF NOT EXISTS (SELECT * FROM sys.foreign_keys WHERE object_id = OBJECT_ID(N'[dbo].[FK_ExamResult_Answer]') AND parent_object_id = OBJECT_ID(N'[dbo].[exam_result]'))
-ALTER TABLE [dbo].[exam_result]  WITH CHECK ADD  CONSTRAINT [FK_ExamResult_Answer] FOREIGN KEY([answer_id])
-REFERENCES [dbo].[answer] ([id])
-GO
-IF  EXISTS (SELECT * FROM sys.foreign_keys WHERE object_id = OBJECT_ID(N'[dbo].[FK_ExamResult_Answer]') AND parent_object_id = OBJECT_ID(N'[dbo].[exam_result]'))
-ALTER TABLE [dbo].[exam_result] CHECK CONSTRAINT [FK_ExamResult_Answer]
-GO
-IF NOT EXISTS (SELECT * FROM sys.foreign_keys WHERE object_id = OBJECT_ID(N'[dbo].[FK_ExamResult_Course]') AND parent_object_id = OBJECT_ID(N'[dbo].[exam_result]'))
-ALTER TABLE [dbo].[exam_result]  WITH CHECK ADD  CONSTRAINT [FK_ExamResult_Course] FOREIGN KEY([course_id])
-REFERENCES [dbo].[course] ([id])
-GO
-IF  EXISTS (SELECT * FROM sys.foreign_keys WHERE object_id = OBJECT_ID(N'[dbo].[FK_ExamResult_Course]') AND parent_object_id = OBJECT_ID(N'[dbo].[exam_result]'))
-ALTER TABLE [dbo].[exam_result] CHECK CONSTRAINT [FK_ExamResult_Course]
-GO
-IF NOT EXISTS (SELECT * FROM sys.foreign_keys WHERE object_id = OBJECT_ID(N'[dbo].[FK_ExamResult_Part]') AND parent_object_id = OBJECT_ID(N'[dbo].[exam_result]'))
-ALTER TABLE [dbo].[exam_result]  WITH CHECK ADD  CONSTRAINT [FK_ExamResult_Part] FOREIGN KEY([part_id])
-REFERENCES [dbo].[part] ([id])
-GO
-IF  EXISTS (SELECT * FROM sys.foreign_keys WHERE object_id = OBJECT_ID(N'[dbo].[FK_ExamResult_Part]') AND parent_object_id = OBJECT_ID(N'[dbo].[exam_result]'))
-ALTER TABLE [dbo].[exam_result] CHECK CONSTRAINT [FK_ExamResult_Part]
-GO
-IF NOT EXISTS (SELECT * FROM sys.foreign_keys WHERE object_id = OBJECT_ID(N'[dbo].[FK_ExamResult_Question]') AND parent_object_id = OBJECT_ID(N'[dbo].[exam_result]'))
-ALTER TABLE [dbo].[exam_result]  WITH CHECK ADD  CONSTRAINT [FK_ExamResult_Question] FOREIGN KEY([question_id])
-REFERENCES [dbo].[question] ([id])
-GO
-IF  EXISTS (SELECT * FROM sys.foreign_keys WHERE object_id = OBJECT_ID(N'[dbo].[FK_ExamResult_Question]') AND parent_object_id = OBJECT_ID(N'[dbo].[exam_result]'))
-ALTER TABLE [dbo].[exam_result] CHECK CONSTRAINT [FK_ExamResult_Question]
-GO
-IF NOT EXISTS (SELECT * FROM sys.foreign_keys WHERE object_id = OBJECT_ID(N'[dbo].[FK_ExamResult_User]') AND parent_object_id = OBJECT_ID(N'[dbo].[exam_result]'))
-ALTER TABLE [dbo].[exam_result]  WITH CHECK ADD  CONSTRAINT [FK_ExamResult_User] FOREIGN KEY([user_id])
-REFERENCES [dbo].[users] ([id])
-GO
-IF  EXISTS (SELECT * FROM sys.foreign_keys WHERE object_id = OBJECT_ID(N'[dbo].[FK_ExamResult_User]') AND parent_object_id = OBJECT_ID(N'[dbo].[exam_result]'))
-ALTER TABLE [dbo].[exam_result] CHECK CONSTRAINT [FK_ExamResult_User]
-GO
-IF NOT EXISTS (SELECT * FROM sys.foreign_keys WHERE object_id = OBJECT_ID(N'[dbo].[FK_Lesson_Section]') AND parent_object_id = OBJECT_ID(N'[dbo].[lesson]'))
-ALTER TABLE [dbo].[lesson]  WITH CHECK ADD  CONSTRAINT [FK_Lesson_Section] FOREIGN KEY([section_id])
-REFERENCES [dbo].[section] ([id])
-GO
-IF  EXISTS (SELECT * FROM sys.foreign_keys WHERE object_id = OBJECT_ID(N'[dbo].[FK_Lesson_Section]') AND parent_object_id = OBJECT_ID(N'[dbo].[lesson]'))
-ALTER TABLE [dbo].[lesson] CHECK CONSTRAINT [FK_Lesson_Section]
-GO
-IF NOT EXISTS (SELECT * FROM sys.foreign_keys WHERE object_id = OBJECT_ID(N'[dbo].[FK_Notifications_UserFrom]') AND parent_object_id = OBJECT_ID(N'[dbo].[notifications]'))
-ALTER TABLE [dbo].[notifications]  WITH CHECK ADD  CONSTRAINT [FK_Notifications_UserFrom] FOREIGN KEY([user_from_id])
-REFERENCES [dbo].[users] ([id])
-GO
-IF  EXISTS (SELECT * FROM sys.foreign_keys WHERE object_id = OBJECT_ID(N'[dbo].[FK_Notifications_UserFrom]') AND parent_object_id = OBJECT_ID(N'[dbo].[notifications]'))
-ALTER TABLE [dbo].[notifications] CHECK CONSTRAINT [FK_Notifications_UserFrom]
-GO
-IF NOT EXISTS (SELECT * FROM sys.foreign_keys WHERE object_id = OBJECT_ID(N'[dbo].[FK_Notifications_UserTo]') AND parent_object_id = OBJECT_ID(N'[dbo].[notifications]'))
-ALTER TABLE [dbo].[notifications]  WITH CHECK ADD  CONSTRAINT [FK_Notifications_UserTo] FOREIGN KEY([user_to_id])
-REFERENCES [dbo].[users] ([id])
-GO
-IF  EXISTS (SELECT * FROM sys.foreign_keys WHERE object_id = OBJECT_ID(N'[dbo].[FK_Notifications_UserTo]') AND parent_object_id = OBJECT_ID(N'[dbo].[notifications]'))
-ALTER TABLE [dbo].[notifications] CHECK CONSTRAINT [FK_Notifications_UserTo]
-GO
-IF NOT EXISTS (SELECT * FROM sys.foreign_keys WHERE object_id = OBJECT_ID(N'[dbo].[FK_Order_Course]') AND parent_object_id = OBJECT_ID(N'[dbo].[orders]'))
-ALTER TABLE [dbo].[orders]  WITH CHECK ADD  CONSTRAINT [FK_Order_Course] FOREIGN KEY([course_id])
-REFERENCES [dbo].[course] ([id])
-GO
-IF  EXISTS (SELECT * FROM sys.foreign_keys WHERE object_id = OBJECT_ID(N'[dbo].[FK_Order_Course]') AND parent_object_id = OBJECT_ID(N'[dbo].[orders]'))
-ALTER TABLE [dbo].[orders] CHECK CONSTRAINT [FK_Order_Course]
-GO
-IF NOT EXISTS (SELECT * FROM sys.foreign_keys WHERE object_id = OBJECT_ID(N'[dbo].[FK_Order_User]') AND parent_object_id = OBJECT_ID(N'[dbo].[orders]'))
-ALTER TABLE [dbo].[orders]  WITH CHECK ADD  CONSTRAINT [FK_Order_User] FOREIGN KEY([user_id])
-REFERENCES [dbo].[users] ([id])
-GO
-IF  EXISTS (SELECT * FROM sys.foreign_keys WHERE object_id = OBJECT_ID(N'[dbo].[FK_Order_User]') AND parent_object_id = OBJECT_ID(N'[dbo].[orders]'))
-ALTER TABLE [dbo].[orders] CHECK CONSTRAINT [FK_Order_User]
-GO
-IF NOT EXISTS (SELECT * FROM sys.foreign_keys WHERE object_id = OBJECT_ID(N'[dbo].[FK_Part_Course]') AND parent_object_id = OBJECT_ID(N'[dbo].[part]'))
-ALTER TABLE [dbo].[part]  WITH CHECK ADD  CONSTRAINT [FK_Part_Course] FOREIGN KEY([course_id])
-REFERENCES [dbo].[course] ([id])
-GO
-IF  EXISTS (SELECT * FROM sys.foreign_keys WHERE object_id = OBJECT_ID(N'[dbo].[FK_Part_Course]') AND parent_object_id = OBJECT_ID(N'[dbo].[part]'))
-ALTER TABLE [dbo].[part] CHECK CONSTRAINT [FK_Part_Course]
-GO
-IF NOT EXISTS (SELECT * FROM sys.foreign_keys WHERE object_id = OBJECT_ID(N'[dbo].[FK_Post_UserPost]') AND parent_object_id = OBJECT_ID(N'[dbo].[post]'))
-ALTER TABLE [dbo].[post]  WITH CHECK ADD  CONSTRAINT [FK_Post_UserPost] FOREIGN KEY([user_post_id])
-REFERENCES [dbo].[users] ([id])
-GO
-IF  EXISTS (SELECT * FROM sys.foreign_keys WHERE object_id = OBJECT_ID(N'[dbo].[FK_Post_UserPost]') AND parent_object_id = OBJECT_ID(N'[dbo].[post]'))
-ALTER TABLE [dbo].[post] CHECK CONSTRAINT [FK_Post_UserPost]
-GO
-IF NOT EXISTS (SELECT * FROM sys.foreign_keys WHERE object_id = OBJECT_ID(N'[dbo].[FK1eiaqoq8dyr0ujm3ba7qdk7gp]') AND parent_object_id = OBJECT_ID(N'[dbo].[post_users]'))
-ALTER TABLE [dbo].[post_users]  WITH CHECK ADD  CONSTRAINT [FK1eiaqoq8dyr0ujm3ba7qdk7gp] FOREIGN KEY([post_id])
-REFERENCES [dbo].[post] ([id])
-GO
-IF  EXISTS (SELECT * FROM sys.foreign_keys WHERE object_id = OBJECT_ID(N'[dbo].[FK1eiaqoq8dyr0ujm3ba7qdk7gp]') AND parent_object_id = OBJECT_ID(N'[dbo].[post_users]'))
-ALTER TABLE [dbo].[post_users] CHECK CONSTRAINT [FK1eiaqoq8dyr0ujm3ba7qdk7gp]
-GO
-IF NOT EXISTS (SELECT * FROM sys.foreign_keys WHERE object_id = OBJECT_ID(N'[dbo].[FKpu0bfvwu4b5u6dhirreyuejxu]') AND parent_object_id = OBJECT_ID(N'[dbo].[post_users]'))
-ALTER TABLE [dbo].[post_users]  WITH CHECK ADD  CONSTRAINT [FKpu0bfvwu4b5u6dhirreyuejxu] FOREIGN KEY([user_id])
-REFERENCES [dbo].[users] ([id])
-GO
-IF  EXISTS (SELECT * FROM sys.foreign_keys WHERE object_id = OBJECT_ID(N'[dbo].[FKpu0bfvwu4b5u6dhirreyuejxu]') AND parent_object_id = OBJECT_ID(N'[dbo].[post_users]'))
-ALTER TABLE [dbo].[post_users] CHECK CONSTRAINT [FKpu0bfvwu4b5u6dhirreyuejxu]
-GO
-IF NOT EXISTS (SELECT * FROM sys.foreign_keys WHERE object_id = OBJECT_ID(N'[dbo].[FK_Question_Part]') AND parent_object_id = OBJECT_ID(N'[dbo].[question]'))
-ALTER TABLE [dbo].[question]  WITH CHECK ADD  CONSTRAINT [FK_Question_Part] FOREIGN KEY([part_id])
-REFERENCES [dbo].[part] ([id])
-GO
-IF  EXISTS (SELECT * FROM sys.foreign_keys WHERE object_id = OBJECT_ID(N'[dbo].[FK_Question_Part]') AND parent_object_id = OBJECT_ID(N'[dbo].[question]'))
-ALTER TABLE [dbo].[question] CHECK CONSTRAINT [FK_Question_Part]
-GO
-IF NOT EXISTS (SELECT * FROM sys.foreign_keys WHERE object_id = OBJECT_ID(N'[dbo].[FK_Section_Course]') AND parent_object_id = OBJECT_ID(N'[dbo].[section]'))
-ALTER TABLE [dbo].[section]  WITH CHECK ADD  CONSTRAINT [FK_Section_Course] FOREIGN KEY([course_id])
-REFERENCES [dbo].[course] ([id])
-GO
-IF  EXISTS (SELECT * FROM sys.foreign_keys WHERE object_id = OBJECT_ID(N'[dbo].[FK_Section_Course]') AND parent_object_id = OBJECT_ID(N'[dbo].[section]'))
-ALTER TABLE [dbo].[section] CHECK CONSTRAINT [FK_Section_Course]
-GO
-IF NOT EXISTS (SELECT * FROM sys.foreign_keys WHERE object_id = OBJECT_ID(N'[dbo].[FK_Subcribes_author]') AND parent_object_id = OBJECT_ID(N'[dbo].[subcribes]'))
-ALTER TABLE [dbo].[subcribes]  WITH CHECK ADD  CONSTRAINT [FK_Subcribes_author] FOREIGN KEY([author_id])
-REFERENCES [dbo].[author] ([id])
-GO
-IF  EXISTS (SELECT * FROM sys.foreign_keys WHERE object_id = OBJECT_ID(N'[dbo].[FK_Subcribes_author]') AND parent_object_id = OBJECT_ID(N'[dbo].[subcribes]'))
-ALTER TABLE [dbo].[subcribes] CHECK CONSTRAINT [FK_Subcribes_author]
-GO
-IF NOT EXISTS (SELECT * FROM sys.foreign_keys WHERE object_id = OBJECT_ID(N'[dbo].[FK_Subcribes_User]') AND parent_object_id = OBJECT_ID(N'[dbo].[subcribes]'))
-ALTER TABLE [dbo].[subcribes]  WITH CHECK ADD  CONSTRAINT [FK_Subcribes_User] FOREIGN KEY([user_id])
-REFERENCES [dbo].[users] ([id])
-GO
-IF  EXISTS (SELECT * FROM sys.foreign_keys WHERE object_id = OBJECT_ID(N'[dbo].[FK_Subcribes_User]') AND parent_object_id = OBJECT_ID(N'[dbo].[subcribes]'))
-ALTER TABLE [dbo].[subcribes] CHECK CONSTRAINT [FK_Subcribes_User]
-GO
-IF NOT EXISTS (SELECT * FROM sys.foreign_keys WHERE object_id = OBJECT_ID(N'[dbo].[FK_Token_User]') AND parent_object_id = OBJECT_ID(N'[dbo].[token]'))
-ALTER TABLE [dbo].[token]  WITH CHECK ADD  CONSTRAINT [FK_Token_User] FOREIGN KEY([user_id])
-REFERENCES [dbo].[users] ([id])
-GO
-IF  EXISTS (SELECT * FROM sys.foreign_keys WHERE object_id = OBJECT_ID(N'[dbo].[FK_Token_User]') AND parent_object_id = OBJECT_ID(N'[dbo].[token]'))
-ALTER TABLE [dbo].[token] CHECK CONSTRAINT [FK_Token_User]
-GO
-IF NOT EXISTS (SELECT * FROM sys.foreign_keys WHERE object_id = OBJECT_ID(N'[dbo].[FK_Video_Lesson]') AND parent_object_id = OBJECT_ID(N'[dbo].[video]'))
-ALTER TABLE [dbo].[video]  WITH CHECK ADD  CONSTRAINT [FK_Video_Lesson] FOREIGN KEY([lesson_id])
-REFERENCES [dbo].[lesson] ([id])
-GO
-IF  EXISTS (SELECT * FROM sys.foreign_keys WHERE object_id = OBJECT_ID(N'[dbo].[FK_Video_Lesson]') AND parent_object_id = OBJECT_ID(N'[dbo].[video]'))
-ALTER TABLE [dbo].[video] CHECK CONSTRAINT [FK_Video_Lesson]
-GO
-/****** Object:  StoredProcedure [dbo].[sp_insert_exam]    Script Date: 6/29/2023 7:16:25 AM ******/
+INSERT [dbo].[lesson_tracking] ([id], [created_at], [is_completed], [is_tracked], [resume_point], [course_id], [enrollment_id], [lesson_id], [section_id], [video_id], [updated_at]) VALUES (1, CAST(N'2023-06-13T11:09:08.4429980+00:00' AS DateTimeOffset), 1, 0, 13, 1, 8, 1, 1, 1, CAST(N'2023-06-29T03:46:06.8590540+00:00' AS DateTimeOffset))
+INSERT [dbo].[lesson_tracking] ([id], [created_at], [is_completed], [is_tracked], [resume_point], [course_id], [enrollment_id], [lesson_id], [section_id], [video_id], [updated_at]) VALUES (2, CAST(N'2023-06-13T11:09:29.3221590+00:00' AS DateTimeOffset), 1, 1, 4, 1, 8, 3, 2, 3, CAST(N'2023-06-29T03:50:25.6516570+00:00' AS DateTimeOffset))
+INSERT [dbo].[lesson_tracking] ([id], [created_at], [is_completed], [is_tracked], [resume_point], [course_id], [enrollment_id], [lesson_id], [section_id], [video_id], [updated_at]) VALUES (3, CAST(N'2023-06-13T11:51:40.3339100+00:00' AS DateTimeOffset), 1, 0, 13, 1, 8, 4, 2, 4, CAST(N'2023-06-23T15:30:18.3059530+00:00' AS DateTimeOffset))
+INSERT [dbo].[lesson_tracking] ([id], [created_at], [is_completed], [is_tracked], [resume_point], [course_id], [enrollment_id], [lesson_id], [section_id], [video_id], [updated_at]) VALUES (4, CAST(N'2023-06-13T12:47:44.8686410+00:00' AS DateTimeOffset), 1, 0, 1582, 1, 8, 5, 2, 5, CAST(N'2023-06-29T03:39:48.8762180+00:00' AS DateTimeOffset))
+INSERT [dbo].[lesson_tracking] ([id], [created_at], [is_completed], [is_tracked], [resume_point], [course_id], [enrollment_id], [lesson_id], [section_id], [video_id], [updated_at]) VALUES (5, CAST(N'2023-06-13T13:01:02.3536900+00:00' AS DateTimeOffset), 1, 0, 13, 1, 8, 2, 1, 2, CAST(N'2023-06-29T03:46:14.6699330+00:00' AS DateTimeOffset))
+SET IDENTITY_INSERT [dbo].[lesson_tracking] OFF
+GO
+SET IDENTITY_INSERT [dbo].[note] ON 
+
+INSERT [dbo].[note] ([id], [created_at], [description], [resume_point], [course_id], [enrollment_id], [lesson_id], [section_id], [video_id]) VALUES (1, CAST(N'2023-06-17T16:50:48.1600000+00:00' AS DateTimeOffset), N'<p>update lesson 1 at 4 sec</p>', 4, 1, 8, 1, 1, 1)
+INSERT [dbo].[note] ([id], [created_at], [description], [resume_point], [course_id], [enrollment_id], [lesson_id], [section_id], [video_id]) VALUES (2, CAST(N'2023-06-17T16:51:48.1600000+00:00' AS DateTimeOffset), N'<p>update lesson 1 at 6 sec</p>', 6, 1, 8, 1, 1, 1)
+INSERT [dbo].[note] ([id], [created_at], [description], [resume_point], [course_id], [enrollment_id], [lesson_id], [section_id], [video_id]) VALUES (3, CAST(N'2023-06-17T16:52:48.1600000+00:00' AS DateTimeOffset), N'<p><span style="color: rgb(200, 0, 0);">update note lesson 1 at 10s</span></p>', 10, 1, 8, 1, 1, 1)
+INSERT [dbo].[note] ([id], [created_at], [description], [resume_point], [course_id], [enrollment_id], [lesson_id], [section_id], [video_id]) VALUES (4, CAST(N'2023-06-17T16:53:48.1600000+00:00' AS DateTimeOffset), N'<p>note lesson 1 at 11s</p>', 11, 1, 8, 1, 1, 1)
+INSERT [dbo].[note] ([id], [created_at], [description], [resume_point], [course_id], [enrollment_id], [lesson_id], [section_id], [video_id]) VALUES (5, CAST(N'2023-06-17T16:54:48.1600000+00:00' AS DateTimeOffset), N'<p>note lesson 1 at 13s</p>', 13, 1, 8, 1, 1, 1)
+INSERT [dbo].[note] ([id], [created_at], [description], [resume_point], [course_id], [enrollment_id], [lesson_id], [section_id], [video_id]) VALUES (6, CAST(N'2023-06-23T14:51:25.3440180+00:00' AS DateTimeOffset), N'<p><strong>Note lesson 4 at 8 seconds. This note is vert important!</strong></p>', 8, 1, 8, 4, 2, 4)
+INSERT [dbo].[note] ([id], [created_at], [description], [resume_point], [course_id], [enrollment_id], [lesson_id], [section_id], [video_id]) VALUES (7, CAST(N'2023-06-29T03:46:28.0204400+00:00' AS DateTimeOffset), N'<p>Section 2 lesson 3 at 4 seconds hehe</p>', 4, 1, 8, 3, 2, 3)
+SET IDENTITY_INSERT [dbo].[note] OFF
+GO
+SET IDENTITY_INSERT [dbo].[Test] ON 
+
+INSERT [dbo].[Test] ([id], [part_id], [question_id], [answer_id], [user_answer_id], [Question_Description], [Answer_Description], [TotalExamTime], [Question_Point], [Iscorrect], [user_id]) VALUES (8, 2, 2, 1, 4, N'Which of the following is related to Spring Framework?', N'A. Container', 0, 2.5, 0, 4)
+INSERT [dbo].[Test] ([id], [part_id], [question_id], [answer_id], [user_answer_id], [Question_Description], [Answer_Description], [TotalExamTime], [Question_Point], [Iscorrect], [user_id]) VALUES (9, 2, 2, 2, 4, N'Which of the following is related to Spring Framework?', N'B. Beans', 0, 2.5, 0, 4)
+INSERT [dbo].[Test] ([id], [part_id], [question_id], [answer_id], [user_answer_id], [Question_Description], [Answer_Description], [TotalExamTime], [Question_Point], [Iscorrect], [user_id]) VALUES (10, 2, 2, 3, 4, N'Which of the following is related to Spring Framework?', N'C. IoC', 0, 2.5, 0, 4)
+INSERT [dbo].[Test] ([id], [part_id], [question_id], [answer_id], [user_answer_id], [Question_Description], [Answer_Description], [TotalExamTime], [Question_Point], [Iscorrect], [user_id]) VALUES (11, 2, 2, 4, 4, N'Which of the following is related to Spring Framework?', N'D. All of these', 0, 2.5, 1, 4)
+INSERT [dbo].[Test] ([id], [part_id], [question_id], [answer_id], [user_answer_id], [Question_Description], [Answer_Description], [TotalExamTime], [Question_Point], [Iscorrect], [user_id]) VALUES (12, 2, 3, 5, 6, N'Which of the following is not the Spring supported DI?', N'A. Constructor-based', 0, 1, 0, 4)
+INSERT [dbo].[Test] ([id], [part_id], [question_id], [answer_id], [user_answer_id], [Question_Description], [Answer_Description], [TotalExamTime], [Question_Point], [Iscorrect], [user_id]) VALUES (13, 2, 3, 6, 6, N'Which of the following is not the Spring supported DI?', N'B. Setter-based', 0, 1, 0, 4)
+INSERT [dbo].[Test] ([id], [part_id], [question_id], [answer_id], [user_answer_id], [Question_Description], [Answer_Description], [TotalExamTime], [Question_Point], [Iscorrect], [user_id]) VALUES (14, 2, 3, 7, 6, N'Which of the following is not the Spring supported DI?', N'C. Destructor-based', 0, 1, 1, 4)
+INSERT [dbo].[Test] ([id], [part_id], [question_id], [answer_id], [user_answer_id], [Question_Description], [Answer_Description], [TotalExamTime], [Question_Point], [Iscorrect], [user_id]) VALUES (15, 2, 3, 8, 6, N'Which of the following is not the Spring supported DI?', N'D. All of these', 0, 1, 0, 4)
+GO
+INSERT [dbo].[Test] ([id], [part_id], [question_id], [answer_id], [user_answer_id], [Question_Description], [Answer_Description], [TotalExamTime], [Question_Point], [Iscorrect], [user_id]) VALUES (8, 2, 2, 1, 4, N'Which of the following is related to Spring Framework?', N'A. Container', 0, 2.5, 0, 4)
+INSERT [dbo].[Test] ([id], [part_id], [question_id], [answer_id], [user_answer_id], [Question_Description], [Answer_Description], [TotalExamTime], [Question_Point], [Iscorrect], [user_id]) VALUES (9, 2, 2, 2, 4, N'Which of the following is related to Spring Framework?', N'B. Beans', 0, 2.5, 0, 4)
+INSERT [dbo].[Test] ([id], [part_id], [question_id], [answer_id], [user_answer_id], [Question_Description], [Answer_Description], [TotalExamTime], [Question_Point], [Iscorrect], [user_id]) VALUES (10, 2, 2, 3, 4, N'Which of the following is related to Spring Framework?', N'C. IoC', 0, 2.5, 0, 4)
+INSERT [dbo].[Test] ([id], [part_id], [question_id], [answer_id], [user_answer_id], [Question_Description], [Answer_Description], [TotalExamTime], [Question_Point], [Iscorrect], [user_id]) VALUES (11, 2, 2, 4, 4, N'Which of the following is related to Spring Framework?', N'D. All of these', 0, 2.5, 1, 4)
+INSERT [dbo].[Test] ([id], [part_id], [question_id], [answer_id], [user_answer_id], [Question_Description], [Answer_Description], [TotalExamTime], [Question_Point], [Iscorrect], [user_id]) VALUES (12, 2, 3, 5, 6, N'Which of the following is not the Spring supported DI?', N'A. Constructor-based', 0, 1, 0, 4)
+INSERT [dbo].[Test] ([id], [part_id], [question_id], [answer_id], [user_answer_id], [Question_Description], [Answer_Description], [TotalExamTime], [Question_Point], [Iscorrect], [user_id]) VALUES (13, 2, 3, 6, 6, N'Which of the following is not the Spring supported DI?', N'B. Setter-based', 0, 1, 0, 4)
+INSERT [dbo].[Test] ([id], [part_id], [question_id], [answer_id], [user_answer_id], [Question_Description], [Answer_Description], [TotalExamTime], [Question_Point], [Iscorrect], [user_id]) VALUES (14, 2, 3, 7, 6, N'Which of the following is not the Spring supported DI?', N'C. Destructor-based', 0, 1, 1, 4)
+INSERT [dbo].[Test] ([id], [part_id], [question_id], [answer_id], [user_answer_id], [Question_Description], [Answer_Description], [TotalExamTime], [Question_Point], [Iscorrect], [user_id]) VALUES (15, 2, 3, 8, 6, N'Which of the following is not the Spring supported DI?', N'D. All of these', 0, 1, 0, 4)
+GO
+INSERT [dbo].[Test] ([id], [part_id], [question_id], [answer_id], [user_answer_id], [Question_Description], [Answer_Description], [TotalExamTime], [Question_Point], [Iscorrect], [user_id]) VALUES (10, 2, 2, 3, 4, N'Which of the following is related to Spring Framework?', N'C. IoC', 0, 2.5, 0, 4)
+INSERT [dbo].[Test] ([id], [part_id], [question_id], [answer_id], [user_answer_id], [Question_Description], [Answer_Description], [TotalExamTime], [Question_Point], [Iscorrect], [user_id]) VALUES (15, 2, 3, 8, 6, N'Which of the following is not the Spring supported DI?', N'D. All of these', 0, 1, 0, 4)
+INSERT [dbo].[Test] ([id], [part_id], [question_id], [answer_id], [user_answer_id], [Question_Description], [Answer_Description], [TotalExamTime], [Question_Point], [Iscorrect], [user_id]) VALUES (11, 2, 2, 4, 4, N'Which of the following is related to Spring Framework?', N'D. All of these', 0, 2.5, 1, 4)
+INSERT [dbo].[Test] ([id], [part_id], [question_id], [answer_id], [user_answer_id], [Question_Description], [Answer_Description], [TotalExamTime], [Question_Point], [Iscorrect], [user_id]) VALUES (12, 2, 3, 5, 6, N'Which of the following is not the Spring supported DI?', N'A. Constructor-based', 0, 1, 0, 4)
+INSERT [dbo].[Test] ([id], [part_id], [question_id], [answer_id], [user_answer_id], [Question_Description], [Answer_Description], [TotalExamTime], [Question_Point], [Iscorrect], [user_id]) VALUES (13, 2, 3, 6, 6, N'Which of the following is not the Spring supported DI?', N'B. Setter-based', 0, 1, 0, 4)
+INSERT [dbo].[Test] ([id], [part_id], [question_id], [answer_id], [user_answer_id], [Question_Description], [Answer_Description], [TotalExamTime], [Question_Point], [Iscorrect], [user_id]) VALUES (14, 2, 3, 7, 6, N'Which of the following is not the Spring supported DI?', N'C. Destructor-based', 0, 1, 1, 4)
+INSERT [dbo].[Test] ([id], [part_id], [question_id], [answer_id], [user_answer_id], [Question_Description], [Answer_Description], [TotalExamTime], [Question_Point], [Iscorrect], [user_id]) VALUES (8, 2, 2, 1, 4, N'Which of the following is related to Spring Framework?', N'A. Container', 0, 2.5, 0, 4)
+INSERT [dbo].[Test] ([id], [part_id], [question_id], [answer_id], [user_answer_id], [Question_Description], [Answer_Description], [TotalExamTime], [Question_Point], [Iscorrect], [user_id]) VALUES (9, 2, 2, 2, 4, N'Which of the following is related to Spring Framework?', N'B. Beans', 0, 2.5, 0, 4)
+GO
+INSERT [dbo].[Test] ([id], [part_id], [question_id], [answer_id], [user_answer_id], [Question_Description], [Answer_Description], [TotalExamTime], [Question_Point], [Iscorrect], [user_id]) VALUES (9, 2, 2, 2, 4, N'Which of the following is related to Spring Framework?', N'B. Beans', 0, 2.5, 0, 4)
+INSERT [dbo].[Test] ([id], [part_id], [question_id], [answer_id], [user_answer_id], [Question_Description], [Answer_Description], [TotalExamTime], [Question_Point], [Iscorrect], [user_id]) VALUES (10, 2, 2, 3, 4, N'Which of the following is related to Spring Framework?', N'C. IoC', 0, 2.5, 0, 4)
+INSERT [dbo].[Test] ([id], [part_id], [question_id], [answer_id], [user_answer_id], [Question_Description], [Answer_Description], [TotalExamTime], [Question_Point], [Iscorrect], [user_id]) VALUES (11, 2, 2, 4, 4, N'Which of the following is related to Spring Framework?', N'D. All of these', 0, 2.5, 1, 4)
+INSERT [dbo].[Test] ([id], [part_id], [question_id], [answer_id], [user_answer_id], [Question_Description], [Answer_Description], [TotalExamTime], [Question_Point], [Iscorrect], [user_id]) VALUES (12, 2, 3, 5, 6, N'Which of the following is not the Spring supported DI?', N'A. Constructor-based', 0, 1, 0, 4)
+INSERT [dbo].[Test] ([id], [part_id], [question_id], [answer_id], [user_answer_id], [Question_Description], [Answer_Description], [TotalExamTime], [Question_Point], [Iscorrect], [user_id]) VALUES (13, 2, 3, 6, 6, N'Which of the following is not the Spring supported DI?', N'B. Setter-based', 0, 1, 0, 4)
+INSERT [dbo].[Test] ([id], [part_id], [question_id], [answer_id], [user_answer_id], [Question_Description], [Answer_Description], [TotalExamTime], [Question_Point], [Iscorrect], [user_id]) VALUES (14, 2, 3, 7, 6, N'Which of the following is not the Spring supported DI?', N'C. Destructor-based', 0, 1, 1, 4)
+INSERT [dbo].[Test] ([id], [part_id], [question_id], [answer_id], [user_answer_id], [Question_Description], [Answer_Description], [TotalExamTime], [Question_Point], [Iscorrect], [user_id]) VALUES (15, 2, 3, 8, 6, N'Which of the following is not the Spring supported DI?', N'D. All of these', 0, 1, 0, 4)
+INSERT [dbo].[Test] ([id], [part_id], [question_id], [answer_id], [user_answer_id], [Question_Description], [Answer_Description], [TotalExamTime], [Question_Point], [Iscorrect], [user_id]) VALUES (8, 2, 2, 1, 4, N'Which of the following is related to Spring Framework?', N'A. Container', 0, 2.5, 0, 4)
+GO
+INSERT [dbo].[Test] ([id], [part_id], [question_id], [answer_id], [user_answer_id], [Question_Description], [Answer_Description], [TotalExamTime], [Question_Point], [Iscorrect], [user_id]) VALUES (11, 2, 2, 4, 4, N'Which of the following is related to Spring Framework?', N'D. All of these', 0, 2.5, 1, 4)
+INSERT [dbo].[Test] ([id], [part_id], [question_id], [answer_id], [user_answer_id], [Question_Description], [Answer_Description], [TotalExamTime], [Question_Point], [Iscorrect], [user_id]) VALUES (8, 2, 2, 1, 4, N'Which of the following is related to Spring Framework?', N'A. Container', 0, 2.5, 0, 4)
+INSERT [dbo].[Test] ([id], [part_id], [question_id], [answer_id], [user_answer_id], [Question_Description], [Answer_Description], [TotalExamTime], [Question_Point], [Iscorrect], [user_id]) VALUES (9, 2, 2, 2, 4, N'Which of the following is related to Spring Framework?', N'B. Beans', 0, 2.5, 0, 4)
+INSERT [dbo].[Test] ([id], [part_id], [question_id], [answer_id], [user_answer_id], [Question_Description], [Answer_Description], [TotalExamTime], [Question_Point], [Iscorrect], [user_id]) VALUES (10, 2, 2, 3, 4, N'Which of the following is related to Spring Framework?', N'C. IoC', 0, 2.5, 0, 4)
+INSERT [dbo].[Test] ([id], [part_id], [question_id], [answer_id], [user_answer_id], [Question_Description], [Answer_Description], [TotalExamTime], [Question_Point], [Iscorrect], [user_id]) VALUES (12, 2, 3, 5, 6, N'Which of the following is not the Spring supported DI?', N'A. Constructor-based', 0, 1, 0, 4)
+INSERT [dbo].[Test] ([id], [part_id], [question_id], [answer_id], [user_answer_id], [Question_Description], [Answer_Description], [TotalExamTime], [Question_Point], [Iscorrect], [user_id]) VALUES (13, 2, 3, 6, 6, N'Which of the following is not the Spring supported DI?', N'B. Setter-based', 0, 1, 0, 4)
+INSERT [dbo].[Test] ([id], [part_id], [question_id], [answer_id], [user_answer_id], [Question_Description], [Answer_Description], [TotalExamTime], [Question_Point], [Iscorrect], [user_id]) VALUES (14, 2, 3, 7, 6, N'Which of the following is not the Spring supported DI?', N'C. Destructor-based', 0, 1, 1, 4)
+INSERT [dbo].[Test] ([id], [part_id], [question_id], [answer_id], [user_answer_id], [Question_Description], [Answer_Description], [TotalExamTime], [Question_Point], [Iscorrect], [user_id]) VALUES (15, 2, 3, 8, 6, N'Which of the following is not the Spring supported DI?', N'D. All of these', 0, 1, 0, 4)
+SET IDENTITY_INSERT [dbo].[Test] OFF
+GO
+/****** Object:  StoredProcedure [dbo].[sp_insert_exam]    Script Date: 6/29/2023 1:13:20 PM ******/
 SET ANSI_NULLS ON
 GO
+
 SET QUOTED_IDENTIFIER ON
 GO
-IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[sp_insert_exam]') AND type in (N'P', N'PC'))
-BEGIN
-EXEC dbo.sp_executesql @statement = N'CREATE PROCEDURE [dbo].[sp_insert_exam] AS' 
-END
-GO
 
-ALTER   PROCEDURE [dbo].[sp_insert_exam] @part_id BIGINT = 0, @user_id BIGINT = 0, @course_id BIGINT = 0, @session INT OUTPUT
+
+CREATE OR ALTER   PROCEDURE [dbo].[sp_insert_exam] @part_id BIGINT = 0, @user_id BIGINT = 0, @course_id BIGINT = 0, @session INT OUTPUT
 AS 
 SET NOCOUNT ON;
 SET @session = isnull(
@@ -1553,3 +420,32 @@ ON q.id = a.question_id
 WHERE part_id = 1 ;
 set @session = (CASE  WHEN @session = 0 THEN 1 ELSE @session end);
 GO
+
+
+
+
+/****** Object:  StoredProcedure [dbo].[sp_insert_exam]    Script Date: 6/29/2023 1:13:20 PM ******/
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+
+CREATE OR ALTER   PROCEDURE [dbo].[sp_insert_exam] @part_id BIGINT = 0, @user_id BIGINT = 0, @course_id BIGINT = 0, @session INT OUTPUT
+AS 
+SET NOCOUNT ON;
+SET @session = isnull(
+    (SELECT max(exam_session) + 1 FROM exam_result WHERE user_id = @user_id AND course_id = @course_id)
+    ,0)
+INSERT exam_result( [course_id], [anwser_description], [is_correct], [question_description],
+[question_point], [answer_id], [part_id], [question_id], [user_id], exam_session)
+SELECT 1, a.description, a.is_correct, q.description, q.point, a.id, q.part_id, q.id, 4,
+CASE  WHEN @session = 0 THEN 1 ELSE @session END
+FROM question q INNER JOIN answer a
+ON q.id = a.question_id
+WHERE part_id = 1 ;
+set @session = (CASE  WHEN @session = 0 THEN 1 ELSE @session end);
+GO
+
+
