@@ -5,9 +5,14 @@ import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.stream.Stream;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import com.aptech.coursemanagementserver.dtos.AuthorDto;
+import com.aptech.coursemanagementserver.dtos.AuthorInterface;
 import com.aptech.coursemanagementserver.enums.Role;
 import com.aptech.coursemanagementserver.exceptions.BadRequestException;
 import com.aptech.coursemanagementserver.exceptions.IsExistedException;
@@ -47,6 +52,25 @@ public class AuthorServiceImpl implements AuthorService {
     }
 
     @Override
+    public List<AuthorInterface> findTop3() {
+
+        return authorRepository.findTop3();
+    }
+
+    @Override
+    public List<AuthorDto> findAllPagination(int pageNo, int pageSize) {
+        Pageable pageable = PageRequest.of(pageNo, pageSize, Sort.by("createdAt").descending());
+        Page<Author> authors = authorRepository.findAll(pageable);
+
+        List<AuthorDto> authorDtos = new ArrayList<>();
+        for (Author author : authors) {
+            AuthorDto authorDto = toDto(author);
+            authorDtos.add(authorDto);
+        }
+        return authorDtos;
+    }
+
+    @Override
     public void save(AuthorDto authorDto) {
         Author author = new Author();
         if (authorDto.getId() > 0) {
@@ -60,6 +84,8 @@ public class AuthorServiceImpl implements AuthorService {
         }
         author.setName(authorDto.getName());
         author.setImage(authorDto.getImage());
+        author.setTitle(authorDto.getTitle());
+        author.setInformation(authorDto.getInformation());
         authorRepository.save(author);
     }
 
@@ -71,6 +97,8 @@ public class AuthorServiceImpl implements AuthorService {
             Author author = new Author();
             author.setName(authorDto.getName());
             author.setImage(authorDto.getImage());
+            author.setInformation(authorDto.getInformation());
+            author.setTitle(authorDto.getTitle());
             authors.add(author);
         }
         authorRepository.saveAll(authors);
@@ -95,7 +123,9 @@ public class AuthorServiceImpl implements AuthorService {
                 .id(author.getId())
                 .name(author.getName())
                 .image(author.getImage())
-                .created_at(author.getCreated_at())
+                .title(author.getTitle())
+                .information(author.getInformation())
+                .created_at(author.getCreatedAt())
                 .build();
         return authorDto;
     }

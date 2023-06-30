@@ -19,6 +19,8 @@ public class AuthorDto {
     private long id;
     private String name;
     private String image;
+    private String title;
+    private String information;
 
     @CreationTimestamp
     @Builder.Default
