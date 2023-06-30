@@ -38,12 +38,16 @@ public class Author {
     @Column(columnDefinition = "nvarchar(100)")
     private String name;
 
+    private String title;
+
+    private String information;
+
     private String image;
 
     @CreationTimestamp
-    private Instant created_at = Instant.now();
+    private Instant createdAt = Instant.now();
     @UpdateTimestamp
-    private Instant updated_at;
+    private Instant updatedAt;
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "author")
     private Set<Course> courses = new HashSet<>();// Set doesn't take duplicate value -> high performance

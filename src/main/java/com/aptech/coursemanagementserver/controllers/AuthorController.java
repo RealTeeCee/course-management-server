@@ -14,9 +14,11 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.aptech.coursemanagementserver.dtos.AuthorDto;
+import com.aptech.coursemanagementserver.dtos.AuthorInterface;
 import com.aptech.coursemanagementserver.dtos.baseDto.BaseDto;
 import com.aptech.coursemanagementserver.enums.AntType;
 import com.aptech.coursemanagementserver.exceptions.BadRequestException;
@@ -43,6 +45,30 @@ public class AuthorController {
     public ResponseEntity<List<AuthorDto>> getAuthors() {
         try {
             List<AuthorDto> authorDtos = authorService.findAll();
+            return ResponseEntity.ok(authorDtos);
+        } catch (Exception e) {
+            throw new BadRequestException(FETCHING_FAILED);
+        }
+    }
+
+    @GetMapping("/top3")
+    @Operation(summary = "[ANORNYMOUS] - GET Top 3 Authors That have most Enrollment")
+    @PreAuthorize("permitAll()")
+    public ResponseEntity<List<AuthorInterface>> getTop3Authors() {
+        try {
+            List<AuthorInterface> authorDtos = authorService.findTop3();
+            return ResponseEntity.ok(authorDtos);
+        } catch (Exception e) {
+            throw new BadRequestException(FETCHING_FAILED);
+        }
+    }
+
+    @GetMapping("/authors-pagination")
+    @Operation(summary = "[ANORNYMOUS] - GET Top 3 Authors That have most Enrollment")
+    public ResponseEntity<List<AuthorDto>> getAuthorsPagination(@RequestParam(defaultValue = "0") int pageNo,
+            @RequestParam(defaultValue = "4") int pageSize) {
+        try {
+            List<AuthorDto> authorDtos = authorService.findAllPagination(pageNo, pageSize);
             return ResponseEntity.ok(authorDtos);
         } catch (Exception e) {
             throw new BadRequestException(FETCHING_FAILED);

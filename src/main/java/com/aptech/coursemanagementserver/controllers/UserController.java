@@ -141,7 +141,8 @@ public class UserController {
             user.setFirst_name(dto.getFirst_name())
                     .setLast_name(dto.getLast_name())
                     .setName(dto.getName())
-                    .setImageUrl(dto.getImageUrl());
+                    .setImageUrl(dto.getImageUrl())
+                    .setUserStatus(dto.getStatus());
 
             userService.save(user);
 
