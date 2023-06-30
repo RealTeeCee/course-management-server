@@ -33,8 +33,8 @@ public class QuestionServiceImpl implements QuestionService {
     }
 
     @Override
-    public List<QuestionDto> findAll() {
-        List<Question> questions = questionRepository.findAll();
+    public List<QuestionDto> findAllByPartId(long partId) {
+        List<Question> questions = questionRepository.findByPartId(partId);
         List<QuestionDto> questionDtos = new ArrayList<>();
 
         for (Question question : questions) {

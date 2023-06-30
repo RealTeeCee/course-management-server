@@ -32,17 +32,17 @@ import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/question")
+@RequestMapping("/part/{partId}/question")
 @Tag(name = "Question Endpoints")
 public class QuestionController {
     private final QuestionService questionService;
 
     @GetMapping
-    @Operation(summary = "[ANORNYMOUS] - GET All Questions")
-    @PreAuthorize("permitAll()")
-    public ResponseEntity<List<QuestionDto>> getQuestions() {
+    @Operation(summary = "[ANY ROLE] - GET All Questions By PartId")
+    @PreAuthorize("hasAnyRole('USER', 'ADMIN', 'MANAGER', 'EMPLOYEE')")
+    public ResponseEntity<List<QuestionDto>> getQuestionsByPartId(@PathVariable("partId") long partId) {
         try {
-            List<QuestionDto> questionDtos = questionService.findAll();
+            List<QuestionDto> questionDtos = questionService.findAllByPartId(partId);
             return ResponseEntity.ok(questionDtos);
         } catch (Exception e) {
             throw new BadRequestException(FETCHING_FAILED);
