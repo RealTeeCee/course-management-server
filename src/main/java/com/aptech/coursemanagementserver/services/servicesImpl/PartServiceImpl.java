@@ -35,8 +35,8 @@ public class PartServiceImpl implements PartService {
     }
 
     @Override
-    public List<PartDto> findAll() {
-        List<Part> parts = partRepository.findAll();
+    public List<PartDto> findAllByCourseId(long courseId) {
+        List<Part> parts = partRepository.findByCourseId(courseId);
         List<PartDto> partDtos = new ArrayList<>();
 
         for (Part part : parts) {

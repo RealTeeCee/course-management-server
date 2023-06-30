@@ -9,7 +9,7 @@ import com.aptech.coursemanagementserver.models.Answer;
 public interface AnswerService {
     public AnswerDto findById(long id);
 
-    public List<AnswerDto> findAll();
+    public List<AnswerDto> findAllByQuestionId(long questionId);
 
     public void save(AnswerDto answerDto);
 

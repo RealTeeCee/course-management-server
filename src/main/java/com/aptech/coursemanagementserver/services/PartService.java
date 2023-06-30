@@ -7,7 +7,7 @@ import com.aptech.coursemanagementserver.dtos.PartDto;
 public interface PartService {
     public PartDto findById(long id);
 
-    public List<PartDto> findAll();
+    public List<PartDto> findAllByCourseId(long courseId);
 
     public void save(PartDto authorDto);
 

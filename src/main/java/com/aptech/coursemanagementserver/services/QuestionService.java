@@ -8,7 +8,7 @@ import com.aptech.coursemanagementserver.models.Question;
 public interface QuestionService {
     public QuestionDto findById(long id);
 
-    public List<QuestionDto> findAll();
+    public List<QuestionDto> findAllByPartId(long partId);
 
     public void save(QuestionDto questionDto);
 

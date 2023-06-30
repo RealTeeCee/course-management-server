@@ -33,8 +33,8 @@ public class AnswerServiceImpl implements AnswerService {
     }
 
     @Override
-    public List<AnswerDto> findAll() {
-        List<Answer> answers = answerRepository.findAll();
+    public List<AnswerDto> findAllByQuestionId(long questionId) {
+        List<Answer> answers = answerRepository.findByQuestionId(questionId);
         List<AnswerDto> answerDtos = new ArrayList<>();
 
         for (Answer answer : answers) {

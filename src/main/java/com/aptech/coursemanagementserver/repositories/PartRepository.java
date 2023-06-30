@@ -8,6 +8,8 @@ import org.springframework.data.jpa.repository.Query;
 import com.aptech.coursemanagementserver.models.Part;
 
 public interface PartRepository extends JpaRepository<Part, Long> {
+    List<Part> findByCourseId(long courseId);
+
     @Query(value = """
             SELECT p.* FROM part p WHERE p.course_id = :courseId AND p.status = 1
             """, nativeQuery = true)
