@@ -44,4 +44,6 @@ public interface CourseInterface {
     public double getPrice();
 
     public double getNet_price();
+
+    public String getRequirement();
 }
