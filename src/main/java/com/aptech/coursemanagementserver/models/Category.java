@@ -36,9 +36,13 @@ public class Category {
     @EqualsAndHashCode.Include
     @Column(columnDefinition = "nvarchar(100)")
     private String name;
+    @Column(columnDefinition = "nvarchar(MAX)")
+    private String description;
+    private String slug;
+    private String image;
 
     @CreationTimestamp
-    private Instant created_at = Instant.now();
+    private Instant createdAt = Instant.now();
     @UpdateTimestamp
     private Instant updated_at;
 

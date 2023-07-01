@@ -39,7 +39,7 @@ import lombok.RequiredArgsConstructor;
 @RestController
 @RequestMapping("/auth")
 @RequiredArgsConstructor
-@Tag(name = "Current User Endpoints")
+@Tag(name = "User Endpoints")
 public class UserController {
     private final CourseRepository courseRepository;
     private final TokenRepository tokenRepository;
@@ -129,6 +129,27 @@ public class UserController {
             throw new BadRequestException(GLOBAL_EXCEPTION);
         }
     }
+
+    // @PutMapping("/user/organize")
+    // @PreAuthorize("hasRole('ADMIN')")
+    // public ResponseEntity<BaseDto> updateOrganizationUser(@RequestBody
+    // RegisterRequestDto dto) {
+
+    // try {
+    // if (dto.getRole() == Role.ADMIN) {
+    // throw new BadRequestException("Admin is unique from our organize.");
+    // }
+    // authenticationService.generateTokenWithoutVerify(authenticationService.register(dto));
+    // return ResponseEntity.ok(BaseDto.builder().message("Register
+    // successfully.").type(AntType.success).build());
+    // } catch (BadRequestException e) {
+    // throw new BadRequestException(e.getMessage());
+    // } catch (IsExistedException e) {
+    // throw new BadRequestException(e.getMessage());
+    // } catch (Exception e) {
+    // throw new BadRequestException(GLOBAL_EXCEPTION);
+    // }
+    // }
 
     @PutMapping("/user")
     @PreAuthorize("hasAnyRole('USER', 'ADMIN', 'MANAGER', 'EMPLOYEE')")

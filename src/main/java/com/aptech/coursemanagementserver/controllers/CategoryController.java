@@ -16,13 +16,13 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.aptech.coursemanagementserver.dtos.SubcribesDto;
+import com.aptech.coursemanagementserver.dtos.CategoryDto;
 import com.aptech.coursemanagementserver.dtos.baseDto.BaseDto;
 import com.aptech.coursemanagementserver.enums.AntType;
 import com.aptech.coursemanagementserver.exceptions.BadRequestException;
 import com.aptech.coursemanagementserver.exceptions.IsExistedException;
 import com.aptech.coursemanagementserver.exceptions.ResourceNotFoundException;
-import com.aptech.coursemanagementserver.services.SubcribesService;
+import com.aptech.coursemanagementserver.services.CategoryService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 
@@ -32,49 +32,45 @@ import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequiredArgsConstructor
-@PreAuthorize("hasAnyRole('USER','ADMIN', 'MANAGER', 'EMPLOYEE')")
-@Tag(name = "Subcribes Endpoints")
-@RequestMapping("/subcribes")
-public class SubcribesController {
-    private final SubcribesService subcribesService;
+@Tag(name = "Category Endpoints")
+@RequestMapping("/category")
+public class CategoryController {
+    private final CategoryService categoryService;
 
-    @GetMapping(path = "/{userId}")
-    @Operation(summary = "[ANY ROLE] - GET All Subcribes By UserId")
-    @PreAuthorize("hasAnyRole('USER', 'ADMIN', 'MANAGER', 'EMPLOYEE')")
-    public ResponseEntity<List<SubcribesDto>> getSubcribesByUserId(@PathVariable("userId") long userId) {
+    @GetMapping
+    @Operation(summary = "[ANORNYMOUS] - GET All Categorys")
+    public ResponseEntity<List<CategoryDto>> getCategorys() {
         try {
-            List<SubcribesDto> subcribesDtos = subcribesService.findByUserId(userId);
-            return ResponseEntity.ok(subcribesDtos);
+            List<CategoryDto> categoryDtos = categoryService.findAll();
+            return ResponseEntity.ok(categoryDtos);
         } catch (Exception e) {
             throw new BadRequestException(FETCHING_FAILED);
         }
     }
 
-    // @GetMapping(path = "/{id}")
-    // @Operation(summary = "[ANY ROLE] - GET Subcribes By Id")
-    // @PreAuthorize("hasAnyRole('USER', 'ADMIN', 'MANAGER', 'EMPLOYEE')")
-    // public ResponseEntity<SubcribesDto> getSubcribesById(@PathVariable("id") long
-    // id) {
-    // try {
-    // SubcribesDto subcribesDto = subcribesService.findById(id);
-    // return ResponseEntity.ok(subcribesDto);
-    // } catch (NoSuchElementException e) {
-    // throw new ResourceNotFoundException(e.getMessage());
-    // } catch (Exception e) {
-    // throw new BadRequestException(FETCHING_FAILED);
-    // }
-    // }
+    @GetMapping(path = "/{id}")
+    @Operation(summary = "[ANORNYMOUS] - GET Category By Id")
+    public ResponseEntity<CategoryDto> getCategoryById(@PathVariable("id") long id) {
+        try {
+            CategoryDto categoryDto = categoryService.findById(id);
+            return ResponseEntity.ok(categoryDto);
+        } catch (NoSuchElementException e) {
+            throw new ResourceNotFoundException(e.getMessage());
+        } catch (Exception e) {
+            throw new BadRequestException(FETCHING_FAILED);
+        }
+    }
 
     @PostMapping
-    @Operation(summary = "[ANY ROLE] - Subcribes to Author")
-    @PreAuthorize("hasAnyRole('USER','ADMIN', 'MANAGER', 'EMPLOYEE')")
-    public ResponseEntity<BaseDto> subcribe(@RequestBody SubcribesDto subcribesDto)
+    @Operation(summary = "[ADMIN, MANAGER, EMPLOYEE] - Create / Update Category")
+    @PreAuthorize("hasAnyRole('ADMIN', 'MANAGER', 'EMPLOYEE')")
+    public ResponseEntity<BaseDto> save(@RequestBody CategoryDto categoryDto)
             throws JsonMappingException, JsonProcessingException {
         try {
-            subcribesService.subcribe(subcribesDto);
+            categoryService.save(categoryDto);
             return new ResponseEntity<BaseDto>(
                     BaseDto.builder().type(AntType.success).message(
-                            "You have subscribed to this author.").build(),
+                            (categoryDto.getId() == 0 ? "Create new" : "Update") + " category successfully.").build(),
                     HttpStatus.OK);
         } catch (NoSuchElementException e) {
             throw new ResourceNotFoundException(e.getMessage());
@@ -86,14 +82,13 @@ public class SubcribesController {
     }
 
     @DeleteMapping
-    @Operation(summary = "[ANY ROLE] - Unubcribes to Author")
-    @PreAuthorize("hasAnyRole('USER','ADMIN', 'MANAGER', 'EMPLOYEE')")
-    public ResponseEntity<BaseDto> unSubcribes(long subcribesId) {
+    @Operation(summary = "[ADMIN, MANAGER, EMPLOYEE] - Delete Category")
+    @PreAuthorize("hasAnyRole('ADMIN', 'MANAGER', 'EMPLOYEE')")
+    public ResponseEntity<BaseDto> delete(long categoryId) {
         try {
-            subcribesService.unSubcribes(subcribesId);
+            categoryService.deleteCategory(categoryId);
             return new ResponseEntity<BaseDto>(
-                    BaseDto.builder().type(AntType.success).message(
-                            "You have unsubscribed to this author.").build(),
+                    BaseDto.builder().type(AntType.success).message("Delete category successfully.").build(),
                     HttpStatus.OK);
         } catch (NoSuchElementException e) {
             throw new ResourceNotFoundException(e.getMessage());

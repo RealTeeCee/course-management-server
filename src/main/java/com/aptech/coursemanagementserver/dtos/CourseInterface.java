@@ -21,6 +21,12 @@ public interface CourseInterface {
 
     public String getCategory_name();
 
+    public String getCategory_slug();
+
+    public String getCategory_image();
+
+    public String getCategory_description();
+
     public long getAuthor_id();
 
     public String getAuthor_name();
