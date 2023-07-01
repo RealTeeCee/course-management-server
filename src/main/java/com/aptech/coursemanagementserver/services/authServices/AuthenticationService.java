@@ -127,6 +127,21 @@ public class AuthenticationService {
         return savedUser;
     }
 
+    // public User updateOrganizeUser(RegisterRequestDto request) {
+    // User u = userService.findById(request.getId()).get();
+    // Optional<User> user = userService.findByEmail(request.getEmail());
+
+    // if (user.isPresent() && user.get().getEmail() != u.getEmail()) {
+    // throw new IsExistedException(request.getEmail());
+    // }
+    // u.setFirst_name(request.getFirst_name())
+    // .setLast_name(request.getLast_name())
+    // .setName(request.ge)
+    // userService.save(savedUser);
+
+    // return savedUser;
+    // }
+
     // Use JWTService to call generateToken() based on user above
     public AuthenticationResponseDto generateTokenWithoutVerify(User user) {
         var jwtToken = jwtService.generateToken(user);

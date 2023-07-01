@@ -5,6 +5,7 @@ import static com.aptech.coursemanagementserver.constants.GlobalStorage.FETCHING
 import java.util.List;
 import java.util.NoSuchElementException;
 
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -19,6 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.aptech.coursemanagementserver.dtos.AuthorDto;
 import com.aptech.coursemanagementserver.dtos.AuthorInterface;
+import com.aptech.coursemanagementserver.dtos.AuthorRequestDto;
 import com.aptech.coursemanagementserver.dtos.baseDto.BaseDto;
 import com.aptech.coursemanagementserver.enums.AntType;
 import com.aptech.coursemanagementserver.exceptions.BadRequestException;
@@ -41,7 +43,6 @@ public class AuthorController {
 
     @GetMapping
     @Operation(summary = "[ANORNYMOUS] - GET All Authors")
-    @PreAuthorize("permitAll()")
     public ResponseEntity<List<AuthorDto>> getAuthors() {
         try {
             List<AuthorDto> authorDtos = authorService.findAll();
@@ -63,21 +64,33 @@ public class AuthorController {
         }
     }
 
-    @GetMapping("/authors-pagination")
-    @Operation(summary = "[ANORNYMOUS] - GET Top 3 Authors That have most Enrollment")
-    public ResponseEntity<List<AuthorDto>> getAuthorsPagination(@RequestParam(defaultValue = "0") int pageNo,
-            @RequestParam(defaultValue = "4") int pageSize) {
+    @PostMapping("/authors-pagination")
+    @Operation(summary = "[ANORNYMOUS] - GET All Authors With Pagination")
+    public ResponseEntity<Page<AuthorDto>> getAuthorsPagination(@RequestBody AuthorRequestDto dto) {
         try {
-            List<AuthorDto> authorDtos = authorService.findAllPagination(pageNo, pageSize);
-            return ResponseEntity.ok(authorDtos);
+            return ResponseEntity.ok(authorService.findAllPagination(dto));
         } catch (Exception e) {
             throw new BadRequestException(FETCHING_FAILED);
         }
     }
 
+    // @GetMapping("/authors-pagination/{categoryId}")
+    // @Operation(summary = "[ANORNYMOUS] - GET All Authors With Pagination Filter
+    // by CategoryId")
+    // public ResponseEntity<Page<AuthorDto>>
+    // getAuthorsPaginationFilter(@RequestParam(defaultValue = "0") int pageNo,
+    // @RequestParam(defaultValue = "4") int pageSize, @PathVariable long
+    // categoryId) {
+    // try {
+    // return ResponseEntity.ok(authorService.findAllPaginationFilter(pageNo,
+    // pageSize, categoryId));
+    // } catch (Exception e) {
+    // throw new BadRequestException(FETCHING_FAILED);
+    // }
+    // }
+
     @GetMapping(path = "/{id}")
-    @Operation(summary = "[ANY ROLE] - GET Author By Id")
-    @PreAuthorize("permitAll()")
+    @Operation(summary = "[ANORNYMOUS - GET Author By Id")
     public ResponseEntity<AuthorDto> getAuthorById(@PathVariable("id") long id) {
         try {
             AuthorDto authorDto = authorService.findById(id);

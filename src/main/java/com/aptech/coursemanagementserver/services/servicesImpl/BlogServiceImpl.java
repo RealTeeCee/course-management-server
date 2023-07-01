@@ -19,8 +19,8 @@ import com.aptech.coursemanagementserver.models.Blog;
 import com.aptech.coursemanagementserver.models.Category;
 import com.aptech.coursemanagementserver.models.User;
 import com.aptech.coursemanagementserver.repositories.BlogRepository;
+import com.aptech.coursemanagementserver.repositories.CategoryRepository;
 import com.aptech.coursemanagementserver.services.BlogService;
-import com.aptech.coursemanagementserver.services.CategoryService;
 import com.aptech.coursemanagementserver.services.authServices.UserService;
 import com.github.slugify.Slugify;
 
@@ -32,7 +32,7 @@ public class BlogServiceImpl implements BlogService {
 
     private final BlogRepository blogRepository;
     private final UserService userService;
-    private final CategoryService categoryService;
+    private final CategoryRepository categoryRepository;
 
     @Override
     public Blog findBlogByName(String name) {
@@ -58,7 +58,7 @@ public class BlogServiceImpl implements BlogService {
                     "The user with userId: [" + blogDto.getUser_id() + "] is not exist."));
             Category category = null;
             if (blogDto.getCategory() > 0) {
-                category = categoryService.findById(blogDto.getCategory());
+                category = categoryRepository.findById(blogDto.getCategory()).get();
             }
             blog.setId(blogDto.getId())
                     .setName(blogDto.getName())
@@ -92,7 +92,7 @@ public class BlogServiceImpl implements BlogService {
                     "The user with userId: [" + blogDto.getUser_id() + "] is not exist."));
             Category category = null;
             if (blogDto.getCategory() > 0) {
-                category = categoryService.findById(blogDto.getCategory());
+                category = categoryRepository.findById(blogDto.getCategory()).get();
             }
             blog.setName(blogDto.getName())
                     .setSlug(Slugify.builder().build().slugify(blogDto.getName()))

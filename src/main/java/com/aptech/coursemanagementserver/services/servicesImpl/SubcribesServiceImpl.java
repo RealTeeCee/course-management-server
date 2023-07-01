@@ -36,8 +36,8 @@ public class SubcribesServiceImpl implements SubcribesService {
     }
 
     @Override
-    public List<SubcribesDto> findAll() {
-        List<Subcribes> subcribess = subcribesRepository.findAll();
+    public List<SubcribesDto> findByUserId(long userId) {
+        List<Subcribes> subcribess = subcribesRepository.findByUserId(userId);
 
         subcribess.stream()
                 // Sort by Ordered then Created_at

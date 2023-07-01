@@ -24,11 +24,9 @@ import com.aptech.coursemanagementserver.services.ExamResultService;
 import com.aptech.coursemanagementserver.services.QuestionService;
 
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 
 @Service
 @RequiredArgsConstructor
-@Slf4j
 public class ExamResultServiceImpl implements ExamResultService {
     private final ExamResultRepository examResultRepository;
     private final PartRepository partRepository;

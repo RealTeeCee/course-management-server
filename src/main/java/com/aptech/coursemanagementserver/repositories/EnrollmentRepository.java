@@ -9,7 +9,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.aptech.coursemanagementserver.dtos.RatingStarsInterface;
 import com.aptech.coursemanagementserver.models.Enrollment;
-import com.aptech.coursemanagementserver.models.User;
 
 public interface EnrollmentRepository extends JpaRepository<Enrollment, Long> {
 

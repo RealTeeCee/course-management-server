@@ -40,6 +40,7 @@ public class Author {
 
     private String title;
 
+    @Column(columnDefinition = "nvarchar(MAX)")
     private String information;
 
     private String image;

@@ -86,7 +86,9 @@ public interface CourseRepository extends JpaRepository<Course, Long> {
         @Query(value = """
                         SELECT
                         COUNT(CASE WHEN(u.role = 'USER') THEN u.role END) [enrollmentCount],
-                        c.* , cat.name [category_name],
+                        c.* ,
+                        cat.name [category_name], cat.description [category_description],
+                        cat.image [category_image], cat.slug [category_slug],
                         au.name [author_name], au.image [author_image],
 
                         STUFF((SELECT DISTINCT ', ' + a.name
@@ -117,12 +119,12 @@ public interface CourseRepository extends JpaRepository<Course, Long> {
                         LEFT JOIN users u ON e.user_id = u.id AND u.role = 'USER'
 
                         GROUP BY
-                        cat.name,
+                        cat.name, cat.description, cat.image, cat.slug,
                         au.name, au.image,
-                        c.[id], c.[created_at], [description], c.requirement,
+                        c.[id], c.[created_at], c.[description], c.requirement,
                         [duration], c.rating , c.published_at, c.author_id,
                         c.image, [level], c.[name], [net_price], [price],
-                        [slug], [status], c.[updated_at], [category_id]
+                        c.[slug], [status], c.[updated_at], [category_id]
                         ORDER BY c.created_at DESC
                                                                             """, nativeQuery = true)
         List<CourseInterface> findAllCourses();

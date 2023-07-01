@@ -1,7 +1,5 @@
 package com.aptech.coursemanagementserver.dtos;
 
-import java.time.Instant;
-
 public interface AuthorInterface {
     public long getId();
 
@@ -14,6 +12,4 @@ public interface AuthorInterface {
     public int getEnrollmentCount();
 
     public String getImage();
-
-    public Instant getCreated_at();
 }

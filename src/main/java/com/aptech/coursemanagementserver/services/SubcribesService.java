@@ -7,7 +7,7 @@ import com.aptech.coursemanagementserver.dtos.SubcribesDto;
 public interface SubcribesService {
     public SubcribesDto findById(long id);
 
-    public List<SubcribesDto> findAll();
+    public List<SubcribesDto> findByUserId(long userId);
 
     public void subcribe(SubcribesDto subcribesDto);
 

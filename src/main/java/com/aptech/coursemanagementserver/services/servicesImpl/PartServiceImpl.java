@@ -107,6 +107,7 @@ public class PartServiceImpl implements PartService {
                 .maxPoint(part.getMaxPoint())
                 .limitTime(part.getLimitTime())
                 .courseId(part.getCourse().getId())
+                .status(part.getStatus())
                 .build();
         return partDto;
     }

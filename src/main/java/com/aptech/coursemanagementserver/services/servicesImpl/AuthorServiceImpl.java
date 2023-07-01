@@ -6,6 +6,7 @@ import java.util.NoSuchElementException;
 import java.util.stream.Stream;
 
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -13,6 +14,7 @@ import org.springframework.stereotype.Service;
 
 import com.aptech.coursemanagementserver.dtos.AuthorDto;
 import com.aptech.coursemanagementserver.dtos.AuthorInterface;
+import com.aptech.coursemanagementserver.dtos.AuthorRequestDto;
 import com.aptech.coursemanagementserver.enums.Role;
 import com.aptech.coursemanagementserver.exceptions.BadRequestException;
 import com.aptech.coursemanagementserver.exceptions.IsExistedException;
@@ -20,6 +22,7 @@ import com.aptech.coursemanagementserver.models.Author;
 import com.aptech.coursemanagementserver.models.Enrollment;
 import com.aptech.coursemanagementserver.repositories.AuthorRepository;
 import com.aptech.coursemanagementserver.services.AuthorService;
+import com.aptech.coursemanagementserver.specification.AuthorSpecification;
 
 import lombok.RequiredArgsConstructor;
 
@@ -53,22 +56,48 @@ public class AuthorServiceImpl implements AuthorService {
 
     @Override
     public List<AuthorInterface> findTop3() {
-
-        return authorRepository.findTop3();
+        List<AuthorInterface> findTop3 = authorRepository.findTop3();
+        return findTop3;
     }
 
     @Override
-    public List<AuthorDto> findAllPagination(int pageNo, int pageSize) {
-        Pageable pageable = PageRequest.of(pageNo, pageSize, Sort.by("createdAt").descending());
-        Page<Author> authors = authorRepository.findAll(pageable);
+    public Page<AuthorDto> findAllPagination(AuthorRequestDto requestDto) {
 
+        Pageable pageable = PageRequest.of(requestDto.getPageNo(), requestDto.getPageSize(),
+                Sort.by("createdAt"));
+
+        if (requestDto.getSortKey().equalsIgnoreCase("DESC")) {
+            pageable = PageRequest.of(requestDto.getPageNo(), requestDto.getPageSize(),
+                    Sort.by("createdAt").descending());
+        }
+
+        Page<Author> authors = authorRepository.findAll(AuthorSpecification.hasCategoryAndName(requestDto), pageable);
         List<AuthorDto> authorDtos = new ArrayList<>();
-        for (Author author : authors) {
+        for (Author author : authors.getContent()) {
             AuthorDto authorDto = toDto(author);
             authorDtos.add(authorDto);
         }
-        return authorDtos;
+        Page<AuthorDto> pageAuthorDtos = new PageImpl<>(authorDtos, authors.getPageable(), authors.getTotalElements());
+        return pageAuthorDtos;
     }
+
+    // @Override
+    // public Page<AuthorDto> findAllPaginationFilter(int pageNo, int pageSize, long
+    // categoryId) {
+    // Pageable pageable = PageRequest.of(pageNo, pageSize,
+    // Sort.by("created_at").descending());
+    // Page<Author> authors = authorRepository.findAllPaginationFilter(categoryId,
+    // pageable);
+
+    // List<AuthorDto> authorDtos = new ArrayList<>();
+    // for (Author author : authors.getContent()) {
+    // AuthorDto authorDto = toDto(author);
+    // authorDtos.add(authorDto);
+    // }
+    // Page<AuthorDto> pageAuthorDtos = new PageImpl<>(authorDtos,
+    // authors.getPageable(), authors.getTotalElements());
+    // return pageAuthorDtos;
+    // }
 
     @Override
     public void save(AuthorDto authorDto) {

@@ -176,10 +176,30 @@ public class CourseManagementServerApplication {
 						.userId(userTest3.getId()).courseId(1).build());
 
 				List<CategoryDto> categoryDtos = new ArrayList<>();
-				CategoryDto category1 = CategoryDto.builder().name("Programming").build();
-				CategoryDto category2 = CategoryDto.builder().name("Graphic Design").build();
-				CategoryDto category3 = CategoryDto.builder().name("Artificial Intelligence").build();
-				CategoryDto category4 = CategoryDto.builder().name("Data Science").build();
+				CategoryDto category1 = CategoryDto.builder()
+						.name("Programming")
+						.image("https://www.theschoolrun.com/sites/theschoolrun.com/files/article_images/what_is_a_programming_language.jpg")
+						.description(
+								"Explore the world of programming and learn how to create software, websites, and applications. Gain hands-on experience with popular programming languages and tools, and build a foundation for a successful career in technology.")
+						.build();
+				CategoryDto category2 = CategoryDto.builder()
+						.name("Graphic Design")
+						.image("https://images.unsplash.com/photo-1626785774573-4b799315345d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NXx8R3JhcGhpYyUyMERlc2lnbnxlbnwwfHwwfHx8MA%3D%3D&auto=format&fit=crop&w=500&q=60")
+						.description(
+								"Unleash your creativity with graphic design. Learn how to create visually appealing designs, manipulate images, and develop skills using popular design software. Discover the art of communication through visual elements.")
+						.build();
+				CategoryDto category3 = CategoryDto.builder()
+						.name("Artificial Intelligence")
+						.image("https://media.istockphoto.com/id/1440356809/photo/artificial-intelligence-technology-robot-futuristic-data-science-data-analytics-quantum.webp?b=1&s=170667a&w=0&k=20&c=wXYn8o0Y5OYTZbRFTeXvyQ2V4dt8HMHPLgFSJxjqWcg=")
+						.description(
+								"Dive into the fascinating field of Artificial Intelligence (AI). Learn about machine learning, neural networks, and data analysis algorithms. Explore how AI is transforming various industries and gain insights into the future of intelligent systems.")
+						.build();
+				CategoryDto category4 = CategoryDto.builder()
+						.name("Data Science")
+						.image("https://media.istockphoto.com/id/1405263192/vi/anh/kh%C3%A1i-ni%E1%BB%87m-khoa-h%E1%BB%8Dc-d%E1%BB%AF-li%E1%BB%87u.jpg?s=2048x2048&w=is&k=20&c=U5JcK90r1rbbLMuQm9G8e3BvFerS4fSLbS4BRyQYZd4=")
+						.description(
+								"Unlock the power of data through data science. Discover techniques for analyzing and interpreting data, and gain insights to drive informed decision-making. Learn how to extract meaningful information from complex datasets and solve real-world problems.")
+						.build();
 
 				categoryDtos.add(category1);
 				categoryDtos.add(category2);
@@ -189,14 +209,34 @@ public class CourseManagementServerApplication {
 				categoryService.saveAll(categoryDtos);
 
 				List<AuthorDto> authorDtos = new ArrayList<>();
-				AuthorDto author1 = AuthorDto.builder().name("Author 1")
-						.image("https://i.ibb.co/PZ1mLcR/1ccad4bd825948071148.jpg").build();
-				AuthorDto author2 = AuthorDto.builder().name("Author 2")
-						.image("https://i.ibb.co/ZKk06Ds/member-lucia.jpg").build();
-				AuthorDto author3 = AuthorDto.builder().name("Author 3")
-						.image("https://i.ibb.co/3THGf9j/member-braum.jpg").build();
-				AuthorDto author4 = AuthorDto.builder().name("Author 4")
-						.image("https://i.ibb.co/GTGRmZp/member-nana.jpg").build();
+				AuthorDto author1 = AuthorDto.builder()
+						.name("Stacia M. V.")
+						.image("https://i.ibb.co/PZ1mLcR/1ccad4bd825948071148.jpg")
+						.title("Microsoft Data Platform MVP and ClicknLearn Author")
+						.information(
+								"Stacia M. V. is an instructor, author, and principal consultant of Data Inspirations. Her career spans more than 30 years, with a focus on improving business practices through technology. Since 2000, she has provided consulting and education services for Microsoft\u2019s data platform and authored or co-authored many books covering this topic. In addition, Stacia has been a frequent speaker over the years at technology conferences worldwide.")
+						.build();
+				AuthorDto author2 = AuthorDto.builder()
+						.name("Marques W.")
+						.image("https://i.ibb.co/ZKk06Ds/member-lucia.jpg")
+						.title("Founder of Chicago Software Geeks and ClicknLearn Author")
+						.information(
+								"Marques W. has been involved with software development for years, specializing in Javascript application architecture, hybrid mobile application development, and Node.js applications. As a family man living in Chicago, he's had the chance to work with large enterprises doing legacy code optimization and refactoring, and startups building from the ground up. I'm passionate about experimenting with Javascript frameworks and libraries and figuring out what would work best for my current team/project. He also really enjoys teaching and mentoring new developers.")
+						.build();
+				AuthorDto author3 = AuthorDto.builder()
+						.name("David L.")
+						.image("https://i.ibb.co/3THGf9j/member-braum.jpg")
+						.title("Creator of SFDC99.com, Salesforce MVP and ClicknLearn Author")
+						.information(
+								"David L. is a self-taught programmer whose dreams came true when he became a Salesforce Technical Architect at Google. Now, David dreams of inspiring the next generation of Salesforce developers. He's a four-time Salesforce MVP winner and runs SFDC99.com, the world's most popular Salesforce blog. David has been a close partner with Salesforce throughout his career, often speaking and developing content for Dreamforce, Trailhead, webinars, user groups, and the official Salesforce developer website.")
+						.build();
+				AuthorDto author4 = AuthorDto.builder()
+						.name("Matias C.")
+						.image("https://i.ibb.co/GTGRmZp/member-nana.jpg")
+						.title("Co-founder and chief of design at Behance and ClicknLearn Author")
+						.information(
+								"Matias C. - There\u2019s a lot to do online if you are trying to get into the dating scene. Take your pick\u2009\u2014\u2009there\u2019s so many different niche\u2019s of people you can find online. But what about the folks who aren\u2019t looking for their significant other, but want to keep the one they have happy? There\u2019s not a ton of that out there, but Christina Brodbeck (former UI designer at YouTube) decided she wanted to change this. TheIceBreak is an app (and soon a website) that creates a space for couples to interact with each other. They can answer questions, send pictures and even suggest things to do with each other. It\u2019s a fresh, new approach to keeping connected and communicating with your honey.")
+						.build();
 
 				authorDtos.add(author1);
 				authorDtos.add(author2);
