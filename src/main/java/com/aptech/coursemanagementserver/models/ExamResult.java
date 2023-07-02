@@ -1,5 +1,10 @@
 package com.aptech.coursemanagementserver.models;
 
+import java.time.Instant;
+import java.util.UUID;
+
+import org.hibernate.annotations.CreationTimestamp;
+
 import com.aptech.coursemanagementserver.enums.GradeType;
 
 import jakarta.persistence.Column;
@@ -50,6 +55,17 @@ public class ExamResult {
     private boolean isCorrect;
 
     private int examSession;
+
+    private String certificateUID;
+
+    public String generateGuiName() {
+        UUID uuid = UUID.randomUUID();
+        return uuid.toString().replaceAll("-", "").substring(0, 12).toUpperCase();
+    }
+
+    @CreationTimestamp
+    @Builder.Default
+    private Instant created_at = Instant.now();
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "course_id", nullable = false, foreignKey = @ForeignKey(name = "FK_ExamResult_Course"))
