@@ -11,5 +11,5 @@ public interface SubcribesService {
 
     public void subcribe(SubcribesDto subcribesDto);
 
-    public void unSubcribes(long subcribesId);
+    public void unSubcribes(long authorId, long userId);
 }

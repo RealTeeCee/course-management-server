@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
@@ -65,18 +66,23 @@ public class SubcribesServiceImpl implements SubcribesService {
                 () -> new NoSuchElementException(
                         "This user with userId: [" + subcribesDto.getUserId() + "] is not exist."));
 
+        Optional<Subcribes> checkSubs = subcribesRepository.findByAuthorIdAndUserId(author.getId(), user.getId());
+
+        if (checkSubs.isPresent()) {
+            return;
+        }
+
         subcribes.setAuthor(author);
         subcribes.setUser(user);
         subcribesRepository.save(subcribes);
     }
 
     @Override
-    public void unSubcribes(long subcribesId) {
-        Subcribes subcribes = subcribesRepository.findById(subcribesId).orElseThrow(
-                () -> new NoSuchElementException(
-                        "This subcribes with subcribesId: [" + subcribesId + "] is not exist."));
-
-        subcribesRepository.delete(subcribes);
+    public void unSubcribes(long authorId, long userId) {
+        Optional<Subcribes> subcribes = subcribesRepository.findByAuthorIdAndUserId(authorId, userId);
+        if (subcribes.isPresent()) {
+            subcribesRepository.delete(subcribes.get());
+        }
     }
 
     private SubcribesDto toDto(Subcribes subcribes) {
