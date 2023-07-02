@@ -37,6 +37,7 @@ public class PartServiceImpl implements PartService {
     @Override
     public List<PartDto> findAllByCourseId(long courseId) {
         List<Part> parts = partRepository.findByCourseId(courseId);
+
         List<PartDto> partDtos = new ArrayList<>();
 
         for (Part part : parts) {
@@ -59,8 +60,10 @@ public class PartServiceImpl implements PartService {
         if (partDto.getStatus() == 1) {
             Optional<Double> questionsPoint = part.getQuestions().stream().map(q -> q.getPoint())
                     .reduce((a, b) -> a + b);
-            if (questionsPoint.isPresent() && questionsPoint.get() != partDto.getMaxPoint()) {
+            if (questionsPoint.isPresent() && questionsPoint.get() < partDto.getMaxPoint()) {
                 throw new BadRequestException("Total point of questions must be equal part's max point.");
+            } else if (questionsPoint.isPresent() && questionsPoint.get() > partDto.getMaxPoint()) {
+                partDto.setStatus(0);
             }
 
             StringBuilder invalidQuestions = new StringBuilder();

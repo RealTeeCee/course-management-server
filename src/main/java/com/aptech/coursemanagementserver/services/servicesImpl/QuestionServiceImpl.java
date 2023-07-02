@@ -65,7 +65,7 @@ public class QuestionServiceImpl implements QuestionService {
         }
         question.setDescription(questionDto.getDescription());
         question.setPart(part);
-        question.setPoint(question.getPoint());
+        question.setPoint(questionDto.getPoint());
 
         questionRepository.save(question);
     }

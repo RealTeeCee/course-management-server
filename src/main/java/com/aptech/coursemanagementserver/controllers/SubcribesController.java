@@ -88,9 +88,9 @@ public class SubcribesController {
     @DeleteMapping
     @Operation(summary = "[ANY ROLE] - Unubcribes to Author")
     @PreAuthorize("hasAnyRole('USER','ADMIN', 'MANAGER', 'EMPLOYEE')")
-    public ResponseEntity<BaseDto> unSubcribes(long subcribesId) {
+    public ResponseEntity<BaseDto> unSubcribes(@RequestBody SubcribesDto subcribesDto) {
         try {
-            subcribesService.unSubcribes(subcribesId);
+            subcribesService.unSubcribes(subcribesDto.getAuthorId(), subcribesDto.getUserId());
             return new ResponseEntity<BaseDto>(
                     BaseDto.builder().type(AntType.success).message(
                             "You have unsubscribed to this author.").build(),
