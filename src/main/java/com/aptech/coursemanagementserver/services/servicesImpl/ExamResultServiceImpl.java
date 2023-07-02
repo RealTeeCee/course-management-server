@@ -1,6 +1,8 @@
 package com.aptech.coursemanagementserver.services.servicesImpl;
 
+import java.time.Instant;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -53,8 +55,10 @@ public class ExamResultServiceImpl implements ExamResultService {
 
         List<ExamResultResponseDto> examResultDtos = new ArrayList<>();
         Set<Question> questions = examResults.stream().map(e -> e.getQuestion()).collect(Collectors.toSet());
+        List<Question> questionsList = new ArrayList<>(questions);
+        Collections.shuffle(questionsList);
 
-        for (Question question : questions) {
+        for (Question question : questionsList) {
 
             QuestionDto questionDto = questionService.toDto(question);
             ExamResultResponseDto dto = ExamResultResponseDto.builder()
@@ -83,12 +87,13 @@ public class ExamResultServiceImpl implements ExamResultService {
                 dto.getExamSession());
 
         // Tính tổng point answer correct
-        var trueAnwserPoint = dto.getAnswers().stream()
-                .filter(a -> a.getUserAnswerId() == a.getAnswerId() && a.isCorrect() == true)
-                .map(a -> a.getPoint()).toList();
+        var trueAnwser = dto.getAnswers().stream()
+                .filter(a -> a.getUserAnswerId() == a.getAnswerId() && a.isCorrect() == true).toList();
 
+        List<Double> trueAnwserPoint = trueAnwser.stream().map(a -> a.getPoint()).toList();
         double totalPoint = trueAnwserPoint.size() == 0 ? 0 : trueAnwserPoint.stream().reduce((a, b) -> a + b).get();
 
+        long totalQuestion = examResults.stream().map(e -> e.getQuestion().getId()).distinct().count();
         // double totalPoint = 97.5;
         double maxPoint = examResults.get(0).getPart().getMaxPoint();
         double percentPoint = totalPoint * 100 / maxPoint;
@@ -104,15 +109,23 @@ public class ExamResultServiceImpl implements ExamResultService {
             grade = GradeType.EXCELLENT;
         }
 
+        final String uid = examResults.get(0).generateGuiName();
+        final Instant finishTime = Instant.now();
+
         for (AnswerDetailDto answer : dto.getAnswers()) {
             final GradeType gradeType = grade;
             examResults.forEach(e -> {
                 if (e.getQuestion().getId() == answer.getId()) {
                     e.setUserAnswerId(answer.getUserAnswerId());
                 }
+
                 e.setTotalExamTime(dto.getTotalExamTime())
                         .setTotalPoint(totalPoint)
                         .setGrade(gradeType);
+                if (gradeType != GradeType.FAIL) {
+                    e.setCertificateUID(uid);
+                    e.setCreated_at(finishTime);
+                }
             });
         }
         // for (ExamResult examResult : examResults) {
@@ -127,11 +140,14 @@ public class ExamResultServiceImpl implements ExamResultService {
         // }
         examResultRepository.saveAll(examResults);
 
-        FinishExamResponseDto finishDto = FinishExamResponseDto.builder()
-                .totalExamTime(dto.getTotalExamTime())
-                .totalPoint(totalPoint)
-                .grade(grade)
-                .build();
+        FinishExamResponseDto finishDto = new FinishExamResponseDto();
+
+        finishDto.setCreated_at(finishTime);
+        finishDto.setCorrectAnswer(trueAnwser.size() + "/" + totalQuestion);
+
+        finishDto.setTotalExamTime(dto.getTotalExamTime())
+                .setTotalPoint(totalPoint)
+                .setGrade(grade);
         return finishDto;
     }
 }

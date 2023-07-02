@@ -3,6 +3,7 @@ package com.aptech.coursemanagementserver.services.servicesImpl;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.stream.Stream;
 
 import org.springframework.stereotype.Service;
 
@@ -54,15 +55,30 @@ public class QuestionServiceImpl implements QuestionService {
                             "This question with questionId: [" + questionDto.getId() + "] is not exist."));
         }
 
+        if (questionDto.getPoint() == 0) {
+            throw new BadRequestException(
+                    "The question point must greater than 0.");
+        }
+
         Part part = partRepository.findById(questionDto.getPartId()).orElseThrow(
                 () -> new NoSuchElementException(
                         "This part with partId: [" + questionDto.getPartId() + "] is not exist."));
 
-        if (part.getQuestions().stream().mapToDouble(q -> q.getPoint()).sum() + questionDto.getPoint() > part
-                .getMaxPoint()) {
+        if (questionDto.getId() == 0
+                && part.getQuestions().stream().mapToDouble(q -> q.getPoint()).sum() + questionDto.getPoint() > part
+                        .getMaxPoint()) {
             throw new BadRequestException(
                     "The total points for this part's questions exceeds the maximum allowed points.");
+        } else {
+            var filterPoint = part.getQuestions().stream().filter(q -> q.getId() != questionDto.getId())
+                    .mapToDouble(q -> q.getPoint()).sum() + questionDto.getPoint() > part
+                            .getMaxPoint();
+            if (filterPoint) {
+                throw new BadRequestException(
+                        "The total points for this part's questions exceeds the maximum allowed points.");
+            }
         }
+
         question.setDescription(questionDto.getDescription());
         question.setPart(part);
         question.setPoint(questionDto.getPoint());
