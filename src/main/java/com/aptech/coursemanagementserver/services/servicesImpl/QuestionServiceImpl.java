@@ -106,6 +106,7 @@ public class QuestionServiceImpl implements QuestionService {
                 .description(question.getDescription())
                 .point(question.getPoint())
                 .partId(question.getPart().getId())
+                .isFullAnswer(question.isFullAnswer())
                 .build();
         return questionDto;
     }

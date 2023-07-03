@@ -51,29 +51,44 @@ public class AnswerServiceImpl implements AnswerService {
                 () -> new NoSuchElementException(
                         "This question with questionId: [" + answerDto.getQuestionId() + "] is not exist."));
 
-        boolean isExistedCorrectAnswer = question.getAnswers().stream().anyMatch(a -> a.isCorrect() == true);
-        if (isExistedCorrectAnswer && answerDto.isCorrect() == true) {
-            throw new BadRequestException("There's only one correct answer in one question.");
-        }
-
         Answer answer = new Answer();
+        var correctAnswer = question.getAnswers().stream().filter(a -> a.isCorrect() == true).findFirst();
+
         if (answerDto.getId() > 0) {
+            // Update
             answer = answerRepository.findById(answerDto.getId()).orElseThrow(
                     () -> new NoSuchElementException(
                             "This answer with answerId: [" + answerDto.getId() + "] is not exist."));
 
-        }
+            if (answerDto.isCorrect() == true) {
+                question.getAnswers().forEach(a -> a.setCorrect(false));
+                questionRepository.save(question);
+            } else if (answerDto.isCorrect() == false && answer.isCorrect() == true) {
+                throw new BadRequestException("There's must be one correct answer in one question.");
+            }
 
-        int answerCount = question.getAnswers().size() + 1;
-        if (answerCount > 4) {
-            throw new BadRequestException("There's only 4 options in one question");
+        } else {
+            // Add new
+            int answerCount = question.getAnswers().size() + 1;
+            // Số câu tl > 4
+            if (answerCount > 4) {
+                throw new BadRequestException("There's only 4 options in one question");
+            }
+            // So cau tra loi dung > 1
+            if (correctAnswer.isPresent() && answerDto.isCorrect() == true) {
+                throw new BadRequestException("There's only one correct answer in one question.");
+            }
+            if (answerCount == 4) {
+                question.setFullAnswer(true);
+                questionRepository.save(question);
+            }
         }
 
         answer.setDescription(answerDto.getDescription());
         answer.setCorrect(answerDto.isCorrect());
         answer.setQuestion(question);
-
         answerRepository.save(answer);
+
     }
 
     @Override
@@ -87,6 +102,11 @@ public class AnswerServiceImpl implements AnswerService {
         }
 
         answerRepository.delete(answer);
+        Question question = questionRepository.findById(answer.getQuestion().getId()).orElseThrow(
+                () -> new NoSuchElementException(
+                        "This question with questionId: [" + answer.getQuestion().getId() + "] is not exist."));
+        question.setFullAnswer(false);
+        questionRepository.save(question);
     }
 
     @Override

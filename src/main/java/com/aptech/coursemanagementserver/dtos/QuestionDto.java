@@ -19,4 +19,6 @@ public class QuestionDto {
     private double point;
 
     private long partId;
+
+    private boolean isFullAnswer;
 }

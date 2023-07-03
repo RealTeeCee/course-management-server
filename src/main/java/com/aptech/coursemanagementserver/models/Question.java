@@ -45,6 +45,9 @@ public class Question {
     @Column(columnDefinition = "FLOAT DEFAULT(0)")
     private double point;
 
+    @Column(columnDefinition = "bit DEFAULT(0)")
+    private boolean isFullAnswer;
+
     @CreationTimestamp
     @Builder.Default
     private Instant created_at = Instant.now();
