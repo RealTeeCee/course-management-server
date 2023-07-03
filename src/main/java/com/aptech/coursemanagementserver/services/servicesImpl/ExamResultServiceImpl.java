@@ -9,13 +9,16 @@ import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 
+import com.aptech.coursemanagementserver.dtos.AccomplishmentsDto;
 import com.aptech.coursemanagementserver.dtos.AnswerDetailDto;
 import com.aptech.coursemanagementserver.dtos.ExamResultResponseDto;
 import com.aptech.coursemanagementserver.dtos.FinishExamRequestDto;
 import com.aptech.coursemanagementserver.dtos.FinishExamResponseDto;
 import com.aptech.coursemanagementserver.dtos.QuestionDto;
+import com.aptech.coursemanagementserver.dtos.RetakeExamDto;
 import com.aptech.coursemanagementserver.enums.GradeType;
 import com.aptech.coursemanagementserver.models.Answer;
+import com.aptech.coursemanagementserver.models.Course;
 import com.aptech.coursemanagementserver.models.ExamResult;
 import com.aptech.coursemanagementserver.models.Part;
 import com.aptech.coursemanagementserver.models.Question;
@@ -121,10 +124,11 @@ public class ExamResultServiceImpl implements ExamResultService {
 
                 e.setTotalExamTime(dto.getTotalExamTime())
                         .setTotalPoint(totalPoint)
-                        .setGrade(gradeType);
+                        .setGrade(gradeType)
+                        .setCreated_at(finishTime);
                 if (gradeType != GradeType.FAIL) {
+
                     e.setCertificateUID(uid);
-                    e.setCreated_at(finishTime);
                 }
             });
         }
@@ -149,5 +153,54 @@ public class ExamResultServiceImpl implements ExamResultService {
                 .setTotalPoint(totalPoint)
                 .setGrade(grade);
         return finishDto;
+    }
+
+    @Override
+    public RetakeExamDto retakeExam(long userId, long courseId) {
+        List<ExamResult> examResults = examResultRepository.findExamResultByCourseIdAndUserId(courseId, userId);
+        RetakeExamDto retakeExamDto = new RetakeExamDto();
+
+        var trueAnwser = examResults.stream()
+                .filter(e -> e.getAnswer().getId() == e.getUserAnswerId()).toList();
+        long totalQuestion = examResults.stream().map(e -> e.getQuestion().getId()).distinct().count();
+
+        if (examResults.size() > 0) {
+            boolean isPassed = examResults.stream().anyMatch(e -> e.getCertificateUID() != null);
+            retakeExamDto.setPassed(isPassed);
+            retakeExamDto.setCreated_at(examResults.get(0).getCreated_at());
+            retakeExamDto.setExamSession(examResults.get(0).getExamSession());
+            retakeExamDto.setCorrectAnswer(trueAnwser.size() + "/" + totalQuestion);
+            retakeExamDto.setTotalExamTime(examResults.get(0).getTotalExamTime());
+            retakeExamDto.setTotalPoint(examResults.get(0).getTotalPoint());
+            retakeExamDto.setGrade(examResults.get(0).getGrade());
+            return retakeExamDto;
+        }
+
+        return retakeExamDto;
+    }
+
+    @Override
+    public List<AccomplishmentsDto> findPassedExamResultByUserId(long userId) {
+        List<ExamResult> examResults = examResultRepository.findPassedExamResultByUserId(userId);
+        List<AccomplishmentsDto> accomplishmentsDtos = new ArrayList<>();
+
+        List<Course> courses = examResults.stream().map(e -> e.getCourse()).distinct().toList();
+
+        for (Course course : courses) {
+            if (examResults.size() > 0) {
+                List<ExamResult> filterExamResults = examResults.stream().filter(e -> e.getCourse() == course).toList();
+                if (filterExamResults.size() > 0) {
+                    AccomplishmentsDto accomplishmentsDto = new AccomplishmentsDto();
+                    accomplishmentsDto.setCourseId(course.getId())
+                            .setCourseImage(course.getImage())
+                            .setCourseName(course.getName())
+                            .setGrade(filterExamResults.get(0).getGrade())
+                            .setCreated_at(filterExamResults.get(0).getCreated_at());
+                    accomplishmentsDtos.add(accomplishmentsDto);
+                }
+            }
+        }
+
+        return accomplishmentsDtos;
     }
 }

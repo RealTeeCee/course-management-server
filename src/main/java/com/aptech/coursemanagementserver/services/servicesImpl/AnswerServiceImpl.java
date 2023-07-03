@@ -47,16 +47,22 @@ public class AnswerServiceImpl implements AnswerService {
 
     @Override
     public void save(AnswerDto answerDto) {
+        Question question = questionRepository.findById(answerDto.getQuestionId()).orElseThrow(
+                () -> new NoSuchElementException(
+                        "This question with questionId: [" + answerDto.getQuestionId() + "] is not exist."));
+
+        boolean isExistedCorrectAnswer = question.getAnswers().stream().anyMatch(a -> a.isCorrect() == true);
+        if (isExistedCorrectAnswer && answerDto.isCorrect() == true) {
+            throw new BadRequestException("There's only one correct answer in one question.");
+        }
+
         Answer answer = new Answer();
         if (answerDto.getId() > 0) {
             answer = answerRepository.findById(answerDto.getId()).orElseThrow(
                     () -> new NoSuchElementException(
                             "This answer with answerId: [" + answerDto.getId() + "] is not exist."));
-        }
 
-        Question question = questionRepository.findById(answerDto.getQuestionId()).orElseThrow(
-                () -> new NoSuchElementException(
-                        "This question with questionId: [" + answerDto.getQuestionId() + "] is not exist."));
+        }
 
         int answerCount = question.getAnswers().size() + 1;
         if (answerCount > 4) {

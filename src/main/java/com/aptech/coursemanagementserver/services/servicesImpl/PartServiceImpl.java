@@ -55,9 +55,18 @@ public class PartServiceImpl implements PartService {
             part = partRepository.findById(partDto.getId()).orElseThrow(
                     () -> new NoSuchElementException(
                             "This part with partId: [" + partDto.getId() + "] is not exist."));
+
+            if (examResultRepository.findByPartId(part.getId()).size() > 0) {
+                throw new BadRequestException("The Part 've already registered in examination.");
+            }
+
         }
 
         if (partDto.getStatus() == 1) {
+            if (part.getQuestions().size() == 0) {
+                throw new BadRequestException("Cannot activate part that doesn't contain any question.");
+            }
+
             Optional<Double> questionsPoint = part.getQuestions().stream().map(q -> q.getPoint())
                     .reduce((a, b) -> a + b);
             if (questionsPoint.isPresent() && questionsPoint.get() < partDto.getMaxPoint()) {
@@ -78,6 +87,7 @@ public class PartServiceImpl implements PartService {
                         "Question: \n" + invalidQuestions.toString() + "don't have enough answers.");
             }
         }
+
         Course course = courseRepository.findById(partDto.getCourseId()).orElseThrow(
                 () -> new NoSuchElementException(
                         "This course with courseId: [" + partDto.getCourseId() + "] is not exist."));
