@@ -79,6 +79,10 @@ public class AnswerServiceImpl implements AnswerService {
                 throw new BadRequestException("There's only one correct answer in one question.");
             }
             if (answerCount == 4) {
+                if (question.getAnswers().stream().anyMatch(a -> a.isCorrect() == true) == false
+                        && answerDto.isCorrect() == false) {
+                    throw new BadRequestException("There's must be one correct answer in one question.");
+                }
                 question.setFullAnswer(true);
                 questionRepository.save(question);
             }
