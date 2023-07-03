@@ -14,6 +14,7 @@ import com.aptech.coursemanagementserver.models.Part;
 import com.aptech.coursemanagementserver.repositories.CourseRepository;
 import com.aptech.coursemanagementserver.repositories.ExamResultRepository;
 import com.aptech.coursemanagementserver.repositories.PartRepository;
+import com.aptech.coursemanagementserver.repositories.QuestionRepository;
 import com.aptech.coursemanagementserver.services.PartService;
 
 import lombok.RequiredArgsConstructor;
@@ -23,6 +24,7 @@ import lombok.RequiredArgsConstructor;
 
 public class PartServiceImpl implements PartService {
     private final PartRepository partRepository;
+    private final QuestionRepository questionRepository;
     private final CourseRepository courseRepository;
     private final ExamResultRepository examResultRepository;
 
@@ -51,15 +53,17 @@ public class PartServiceImpl implements PartService {
     @Override
     public void save(PartDto partDto) {
         Part part = new Part();
+
         if (partDto.getId() > 0) {
             part = partRepository.findById(partDto.getId()).orElseThrow(
                     () -> new NoSuchElementException(
                             "This part with partId: [" + partDto.getId() + "] is not exist."));
-
+            if (partDto.getMaxPoint() != part.getMaxPoint()) {
+                questionRepository.updatePointWhenMaxPointReduce(part.getId());
+            }
             if (examResultRepository.findByPartId(part.getId()).size() > 0) {
                 throw new BadRequestException("The Part 've already registered in examination.");
             }
-
         }
 
         if (partDto.getStatus() == 1) {
