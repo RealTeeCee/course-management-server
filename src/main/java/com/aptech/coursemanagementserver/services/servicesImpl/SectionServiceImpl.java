@@ -204,7 +204,8 @@ public class SectionServiceImpl implements SectionService {
             return BaseDto.builder().type(AntType.success).message("Update section successfully.").build();
         } catch (NoSuchElementException e) {
             throw new NoSuchElementException(e.getMessage());
-
+        } catch (BadRequestException e) {
+            throw new BadRequestException(e.getMessage());
         } catch (Exception e) {
             throw new BadRequestException(BAD_REQUEST_EXCEPTION);
         }
