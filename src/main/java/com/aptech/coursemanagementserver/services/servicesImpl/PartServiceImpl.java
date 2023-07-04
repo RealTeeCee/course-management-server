@@ -54,42 +54,47 @@ public class PartServiceImpl implements PartService {
     public void save(PartDto partDto) {
         Part part = new Part();
 
+        // Update part
         if (partDto.getId() > 0) {
             part = partRepository.findById(partDto.getId()).orElseThrow(
                     () -> new NoSuchElementException(
                             "This part with partId: [" + partDto.getId() + "] is not exist."));
-            if (partDto.getMaxPoint() != part.getMaxPoint()) {
-                questionRepository.updatePointWhenMaxPointReduce(part.getId());
-            }
+
+            /// bool checkIsUpdatedMaxPoint = false
+
             if (examResultRepository.findByPartId(part.getId()).size() > 0) {
                 throw new BadRequestException("The Part 've already registered in examination.");
             }
-        }
-
-        if (partDto.getStatus() == 1) {
-            if (part.getQuestions().size() == 0) {
-                throw new BadRequestException("Cannot activate part that doesn't contain any question.");
+            if (partDto.getMaxPoint() != part.getMaxPoint()) {
+                questionRepository.updatePointWhenMaxPointReduce(part.getId());
             }
+            if (partDto.getStatus() == 1) {
 
-            Optional<Double> questionsPoint = part.getQuestions().stream().map(q -> q.getPoint())
-                    .reduce((a, b) -> a + b);
-            if (questionsPoint.isPresent() && questionsPoint.get() < partDto.getMaxPoint()) {
-                throw new BadRequestException("Total point of questions must be equal part's max point.");
-            } else if (questionsPoint.isPresent() && questionsPoint.get() > partDto.getMaxPoint()) {
-                partDto.setStatus(0);
-            }
+                if (part.getQuestions().size() == 0) {
+                    throw new BadRequestException("Cannot activate part that doesn't contain any question.");
+                } else {
+                    Optional<Double> questionsPoint = part.getQuestions().stream().map(q -> q.getPoint())
+                            .reduce((a, b) -> a + b);
+                    if (questionsPoint.isPresent() && questionsPoint.get() < partDto.getMaxPoint()) {
+                        throw new BadRequestException("Total point of questions must be equal part's max point.");
+                    } else if (questionsPoint.isPresent() && questionsPoint.get() > partDto.getMaxPoint()) {
+                        partDto.setStatus(0);
+                    }
 
-            StringBuilder invalidQuestions = new StringBuilder();
-            part.getQuestions().forEach(q -> {
-                if (q.getAnswers().size() < 4) {
-                    invalidQuestions.append(" + " + q.getDescription() + "\n");
+                    StringBuilder invalidQuestions = new StringBuilder();
+                    part.getQuestions().forEach(q -> {
+                        if (q.getAnswers().size() < 4) {
+                            invalidQuestions.append(" + " + q.getDescription() + "\n");
+                        }
+                    });
+                    if (invalidQuestions.length() > 0) {
+                        throw new BadRequestException(
+                                "Question of part don't have enough answers.");
+                    }
                 }
-            });
 
-            if (invalidQuestions.length() > 0) {
-                throw new BadRequestException(
-                        "Question: \n" + invalidQuestions.toString() + "don't have enough answers.");
             }
+
         }
 
         Course course = courseRepository.findById(partDto.getCourseId()).orElseThrow(
