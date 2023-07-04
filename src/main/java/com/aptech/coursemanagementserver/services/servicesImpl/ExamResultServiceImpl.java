@@ -161,7 +161,9 @@ public class ExamResultServiceImpl implements ExamResultService {
         RetakeExamDto retakeExamDto = new RetakeExamDto();
 
         var trueAnwser = examResults.stream()
-                .filter(e -> e.getAnswer().getId() == e.getUserAnswerId()).toList();
+                .filter(e -> e.getAnswer().getId() == e.getUserAnswerId() && e.isCorrect()
+                        && e.getExamSession() == examResults.get(0).getExamSession())
+                .toList();
         long totalQuestion = examResults.stream().map(e -> e.getQuestion().getId()).distinct().count();
 
         if (examResults.size() > 0) {

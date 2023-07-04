@@ -18,5 +18,9 @@ public interface NotificationService {
 
     public List<NotificationDto> updateAllStatusToRead(long id);
 
+    public void deleteByNotifId(long notifId);
+
+    public void deleteAllByUserId(long userId);
+
     public void clear();
 }
