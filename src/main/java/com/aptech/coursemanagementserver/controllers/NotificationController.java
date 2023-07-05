@@ -5,6 +5,7 @@ import java.util.NoSuchElementException;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -60,6 +61,34 @@ public class NotificationController {
     public ResponseEntity<List<NotificationDto>> changeAllNotifStatusToRead(@PathVariable long userToId) {
         try {
             return ResponseEntity.ok(notifService.updateAllStatusToRead(userToId));
+        } catch (NoSuchElementException e) {
+            throw new ResourceNotFoundException(e.getMessage());
+        } catch (Exception e) {
+            throw new BadRequestException(GLOBAL_EXCEPTION);
+        }
+    }
+
+    @DeleteMapping("/{notifId}")
+    @Operation(summary = "[ANY ROLE] - Delete Notification By NotifId")
+    @PreAuthorize("hasAnyRole('USER', 'ADMIN', 'MANAGER', 'EMPLOYEE')")
+    public ResponseEntity<NotificationDto> deleteNotification(@PathVariable long notifId) {
+        try {
+            notifService.deleteByNotifId(notifId);
+            return ResponseEntity.ok().build();
+        } catch (NoSuchElementException e) {
+            throw new ResourceNotFoundException(e.getMessage());
+        } catch (Exception e) {
+            throw new BadRequestException(GLOBAL_EXCEPTION);
+        }
+    }
+
+    @DeleteMapping("/delete-all/{userToId}")
+    @Operation(summary = "[ANY ROLE] - Delete All Notifications By userId")
+    @PreAuthorize("hasAnyRole('USER', 'ADMIN', 'MANAGER', 'EMPLOYEE')")
+    public ResponseEntity<NotificationDto> deleteAllNotification(@PathVariable long userToId) {
+        try {
+            notifService.deleteAllByUserId(userToId);
+            return ResponseEntity.ok().build();
         } catch (NoSuchElementException e) {
             throw new ResourceNotFoundException(e.getMessage());
         } catch (Exception e) {

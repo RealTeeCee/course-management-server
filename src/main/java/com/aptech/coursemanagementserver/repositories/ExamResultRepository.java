@@ -1,7 +1,6 @@
 package com.aptech.coursemanagementserver.repositories;
 
 import java.util.List;
-import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
@@ -52,11 +51,15 @@ public interface ExamResultRepository extends JpaRepository<ExamResult, Long> {
         List<ExamResult> findExamResultByCourseIdAndUserIdAndExamSession(long courseId, long userId, int examSession);
 
         @Query(value = """
-                        SELECT  e.* from exam_result e
-                        WHERE e.user_id = 4
-                        AND e.course_id = 1
+                        SELECT e.* FROM exam_result e
+                        WHERE exam_session
+                        = ( SELECT MAX(exam_session)
+                        FROM exam_result
+                        WHERE course_id = :courseId
+                        AND user_id = :userId )
+                        AND course_id = :courseId AND user_id = :userId
                         ORDER BY created_at DESC
-                                    """, nativeQuery = true)
+                                        """, nativeQuery = true)
         List<ExamResult> findExamResultByCourseIdAndUserId(long courseId, long userId);
 
         @Query(value = """
@@ -64,7 +67,7 @@ public interface ExamResultRepository extends JpaRepository<ExamResult, Long> {
                         WHERE e.user_id = 4
                         AND e.certificateuid IS NOT NULL
                         ORDER BY created_at DESC
-                                    """, nativeQuery = true)
+                                        """, nativeQuery = true)
         List<ExamResult> findPassedExamResultByUserId(long userId);
 
         @Transactional
@@ -78,6 +81,6 @@ public interface ExamResultRepository extends JpaRepository<ExamResult, Long> {
                         AND user_answer_id = answer_id
                         AND is_correct = 1)
                         AND exam_session = :examSession
-                                                """, nativeQuery = true)
+                                        """, nativeQuery = true)
         void updateExamResultByCourseIdAndUserIdAndExamSession(long courseId, long userId, int examSession);
 }

@@ -23,10 +23,12 @@ import com.paypal.base.rest.OAuthTokenCredential;
 import com.paypal.base.rest.PayPalRESTException;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @Configuration
 @EnableScheduling
 @RequiredArgsConstructor
+@Slf4j
 public class ApplicationConfiguration {
     private final UserRepository userRepository;
     @Value("${paypal.client.id}")
@@ -100,7 +102,13 @@ public class ApplicationConfiguration {
 
     @Bean
     public APIContext apiContext() throws PayPalRESTException {
-        String accessToken = oAuthTokenCredential().getAccessToken();
+        String accessToken = "FJLKDSJFLDSKJFLDS";
+        try {
+            accessToken = oAuthTokenCredential().getAccessToken();
+        } catch (Exception e) {
+            log.error("Get paypal accesstoken error:", e);
+        }
+
         APIContext context = new APIContext(accessToken);
         context.setConfigurationMap(PAYPAL_SANDBOX_MODE);
         return context;

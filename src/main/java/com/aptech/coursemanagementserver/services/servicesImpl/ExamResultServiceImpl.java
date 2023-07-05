@@ -22,6 +22,7 @@ import com.aptech.coursemanagementserver.models.Course;
 import com.aptech.coursemanagementserver.models.ExamResult;
 import com.aptech.coursemanagementserver.models.Part;
 import com.aptech.coursemanagementserver.models.Question;
+import com.aptech.coursemanagementserver.repositories.CourseRepository;
 import com.aptech.coursemanagementserver.repositories.ExamResultRepository;
 import com.aptech.coursemanagementserver.repositories.PartRepository;
 import com.aptech.coursemanagementserver.services.AnswerService;
@@ -35,6 +36,7 @@ import lombok.RequiredArgsConstructor;
 public class ExamResultServiceImpl implements ExamResultService {
     private final ExamResultRepository examResultRepository;
     private final PartRepository partRepository;
+    private final CourseRepository courseRepository;
     private final QuestionService questionService;
     private final AnswerService answerService;
 
@@ -161,7 +163,9 @@ public class ExamResultServiceImpl implements ExamResultService {
         RetakeExamDto retakeExamDto = new RetakeExamDto();
 
         var trueAnwser = examResults.stream()
-                .filter(e -> e.getAnswer().getId() == e.getUserAnswerId()).toList();
+                .filter(e -> e.getAnswer().getId() == e.getUserAnswerId() && e.isCorrect()
+                        && e.getExamSession() == examResults.get(0).getExamSession())
+                .toList();
         long totalQuestion = examResults.stream().map(e -> e.getQuestion().getId()).distinct().count();
 
         if (examResults.size() > 0) {
@@ -188,14 +192,23 @@ public class ExamResultServiceImpl implements ExamResultService {
 
         for (Course course : courses) {
             if (examResults.size() > 0) {
+                int courseTotalEnroll = courseRepository.findCourseTotalEnrolls(course.getId());
                 List<ExamResult> filterExamResults = examResults.stream().filter(e -> e.getCourse() == course).toList();
                 if (filterExamResults.size() > 0) {
                     AccomplishmentsDto accomplishmentsDto = new AccomplishmentsDto();
                     accomplishmentsDto.setCourseId(course.getId())
                             .setCourseImage(course.getImage())
                             .setCourseName(course.getName())
+                            .setCourseSlug(course.getSlug())
+                            .setCourseDuration(course.getDuration())
+                            .setCourseTotalEnroll(courseTotalEnroll)
+                            .setCourseRating(course.getRating())
+                            .setCategoryName(course.getCategory().getName())
+                            .setCategorySlug(course.getCategory().getSlug())
                             .setGrade(filterExamResults.get(0).getGrade())
-                            .setCreated_at(filterExamResults.get(0).getCreated_at());
+                            .setCreated_at(filterExamResults.get(0).getCreated_at())
+                            .setExamSession(filterExamResults.get(0).getExamSession())
+                            .setCertificateUID(filterExamResults.get(0).getCertificateUID());
                     accomplishmentsDtos.add(accomplishmentsDto);
                 }
             }

@@ -77,6 +77,19 @@ public class NotificationServiceImpl implements NotificationService {
         return notificationDto;
     }
 
+    public void deleteByNotifId(long id) {
+        var notif = notifRepository.findById(id)
+                .orElseThrow(() -> new NoSuchElementException(
+                        "The notification with notificationId: [" + id + "] is not exist."));
+
+        notifRepository.delete(notif);
+    }
+
+    public void deleteAllByUserId(long userId) {
+        List<Notification> notifs = notifRepository.findByUserToId(userId);
+        notifRepository.deleteAll(notifs);
+    }
+
     public List<NotificationDto> updateAllStatusToRead(long userToId) {
         List<Notification> notifications = notifRepository.findByUserToId(userToId);
 
