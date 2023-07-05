@@ -29,10 +29,17 @@ public interface CourseRepository extends JpaRepository<Course, Long> {
         List<Long> findBestSellerCourseIds();
 
         @Query(value = """
+                        SELECT COUNT(*) FROM ENROLLMENT e
+                        INNER JOIN users u on e.user_id = u.id AND u.role ='USER'
+                        WHERE course_id = :courseId
+                                """, nativeQuery = true)
+        int findCourseTotalEnrolls(long courseId);
+
+        @Query(value = """
                         SELECT (
-                                select count(*) from enrollment  e1
-                                inner join users u1 on e1.user_id = u1.id and u1.role ='USER'
-                                where course_id = c.id
+                                SELECT COUNT(*) FROM ENROLLMENT e
+                                INNER JOIN users u on e.user_id = u.id AND u.role ='USER'
+                                WHERE course_id = c.id
                         ) AS enrollmentCount,
                         --OVER(PARTITION BY e.user_id) AS enrollmentCount,
                         c.*, cat.name AS [category_name] ,

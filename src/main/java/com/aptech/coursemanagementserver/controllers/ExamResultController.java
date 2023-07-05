@@ -48,7 +48,7 @@ public class ExamResultController {
     @PostMapping("/retake-exam")
     @PreAuthorize("hasAnyRole('USER', 'ADMIN', 'MANAGER', 'EMPLOYEE')")
     public ResponseEntity<RetakeExamDto> retakeExam(@RequestBody ExamResultDto dto) {
-        RetakeExamDto retakeDto = examResultService.retakeExam(dto.getCourseId(), dto.getUserId());
+        RetakeExamDto retakeDto = examResultService.retakeExam(dto.getUserId(), dto.getCourseId());
         return ResponseEntity
                 .ok(retakeDto);
     }
