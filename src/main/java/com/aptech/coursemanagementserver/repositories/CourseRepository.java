@@ -12,6 +12,12 @@ import com.aptech.coursemanagementserver.dtos.CourseInterface;
 import com.aptech.coursemanagementserver.models.Course;
 
 public interface CourseRepository extends JpaRepository<Course, Long> {
+        @Query(value = """
+                        SELECT TOP 3 c.* FROM course c WHERE name like %?1%
+                        ORDER BY name DESC
+                                                          """, nativeQuery = true)
+        List<Course> findByNameLikeOrderByName(String name);
+
         @Query("""
                             SELECT c FROM Course c
                             JOIN c.tags t

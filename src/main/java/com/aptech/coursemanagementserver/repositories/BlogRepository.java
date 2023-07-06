@@ -13,6 +13,12 @@ public interface BlogRepository extends JpaRepository<Blog, Long> {
     Blog findBlogByName(String name);
 
     @Query(value = """
+            SELECT TOP 3 b.* FROM blog b WHERE name like %?1%
+            ORDER BY name DESC
+                                              """, nativeQuery = true)
+    List<Blog> findByNameLikeOrderByName(String name);
+
+    @Query(value = """
             SELECT
                 b.*, cat.name [category_name]
             FROM blog b
