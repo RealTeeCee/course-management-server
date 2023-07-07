@@ -159,4 +159,19 @@ public class TrackingController {
         }
     }
 
+    @GetMapping(path = "/learning/{courseId}/{enrollId}")
+    // @PreAuthorize("hasAnyRole('USER', 'ADMIN', 'MANAGER', 'EMPLOYEE')")
+    @PreAuthorize("permitAll()")
+    public ResponseEntity<LearningDto> getMyLearnDetail(@PathVariable("courseId") long courseId,
+            @PathVariable("enrollId") long enrollId)
+            throws JsonMappingException, JsonProcessingException {
+        try {
+            return ResponseEntity.ok(lessonTrackingService.getLearnDetails(courseId, enrollId));
+        } catch (NoSuchElementException e) {
+            throw new ResourceNotFoundException(e.getMessage());
+        } catch (Exception e) {
+            throw new BadRequestException(e.getMessage());
+        }
+    }
+
 }

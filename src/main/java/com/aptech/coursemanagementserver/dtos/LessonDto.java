@@ -21,4 +21,5 @@ public class LessonDto {
     private int status = 0;
     @Builder.Default
     private int ordered = 0;
+    private boolean isCompleted;
 }

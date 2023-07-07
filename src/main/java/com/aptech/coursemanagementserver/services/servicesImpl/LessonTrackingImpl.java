@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import com.aptech.coursemanagementserver.dtos.LearningDto;
 import com.aptech.coursemanagementserver.dtos.LessonDto;
 import com.aptech.coursemanagementserver.dtos.LessonTrackingDto;
+import com.aptech.coursemanagementserver.dtos.LessonTrackingInterface;
 import com.aptech.coursemanagementserver.dtos.SectionDto;
 import com.aptech.coursemanagementserver.dtos.VideoDto;
 import com.aptech.coursemanagementserver.exceptions.BadRequestException;
@@ -194,6 +195,55 @@ public class LessonTrackingImpl implements LessonTrackingService {
                         .duration(lesson.getDuration())
                         .sectionId(lesson.getSection().getId())
                         .status(lesson.getStatus())
+                        .ordered(lesson.getOrdered()).build();
+                learningDto.getLessonDto().add(lessonDto);
+            }
+
+            List<Video> videos = videoRepository.findAllByCourseId(courseId);
+            for (Video video : videos) {
+                String[] parts = video.getCaptionUrls().split(",");
+                Map<String, String> map = new HashMap<>();
+                for (String part : parts) {
+                    int lastDotIndex = part.lastIndexOf(".");
+                    if (lastDotIndex > 0) {
+                        String langCode = part.substring(lastDotIndex - 2, lastDotIndex);
+                        map.put(langCode, part);
+                    }
+                }
+                // ObjectMapper objectMapper = new ObjectMapper();
+                // String captionData = objectMapper.writeValueAsString(map);
+
+                VideoDto videoDto = VideoDto.builder().id(video.getId()).name(video.getName()).url(video.getUrl())
+                        .captionData(map).lessonId(video.getLesson().getId()).build();
+
+                learningDto.getVideoDto().add(videoDto);
+            }
+
+            // "Cannot invoke "String.split(String)" because the return value of
+            // "com.aptech.coursemanagementserver.models.Video.getCaptionUrls()" is null"
+            return learningDto;
+        } catch (NoSuchElementException e) {
+            throw new NoSuchElementException(e.getMessage());
+        } catch (Exception e) {
+            throw new BadRequestException(BAD_REQUEST_EXCEPTION);
+        }
+    }
+
+    @Override
+    public LearningDto getLearnDetails(long courseId, long enrollId) {
+        try {
+            LearningDto learningDto = new LearningDto();
+            List<SectionDto> sectionDtos = sectionService.findAllByCourseId(courseId);
+            learningDto.setSectionDto(sectionDtos);
+
+            List<LessonTrackingInterface> lessons = lessonRepository.findAllByCourseIdAndEnrollId(courseId, enrollId);
+            for (LessonTrackingInterface lesson : lessons) {
+                LessonDto lessonDto = LessonDto.builder()
+                        .id(lesson.getId()).name(lesson.getName())
+                        .description(lesson.getDescription())
+                        .duration(lesson.getDuration())
+                        .sectionId(lesson.getSection_id())
+                        .isCompleted(lesson.getIs_completed())
                         .ordered(lesson.getOrdered()).build();
                 learningDto.getLessonDto().add(lessonDto);
             }

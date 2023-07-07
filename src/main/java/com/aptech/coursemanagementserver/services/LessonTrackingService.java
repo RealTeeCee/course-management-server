@@ -14,5 +14,7 @@ public interface LessonTrackingService {
 
     double loadProgress(long enrollmentId, long courseId);
 
+    LearningDto getLearnDetails(long courseId, long enrollId);
+
     LearningDto getLearnDetails(long courseId);
 }

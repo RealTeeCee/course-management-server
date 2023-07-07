@@ -1,5 +1,6 @@
 package com.aptech.coursemanagementserver.services.servicesImpl;
 
+import java.io.IOException;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -7,10 +8,12 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Service;
 
 import com.aptech.coursemanagementserver.dtos.AccomplishmentsDto;
 import com.aptech.coursemanagementserver.dtos.AnswerDetailDto;
+import com.aptech.coursemanagementserver.dtos.CertificateDto;
 import com.aptech.coursemanagementserver.dtos.ExamResultResponseDto;
 import com.aptech.coursemanagementserver.dtos.FinishExamRequestDto;
 import com.aptech.coursemanagementserver.dtos.FinishExamResponseDto;
@@ -30,6 +33,13 @@ import com.aptech.coursemanagementserver.services.ExamResultService;
 import com.aptech.coursemanagementserver.services.QuestionService;
 
 import lombok.RequiredArgsConstructor;
+import net.sf.jasperreports.engine.JRException;
+import net.sf.jasperreports.engine.JasperCompileManager;
+import net.sf.jasperreports.engine.JasperExportManager;
+import net.sf.jasperreports.engine.JasperFillManager;
+import net.sf.jasperreports.engine.JasperPrint;
+import net.sf.jasperreports.engine.JasperReport;
+import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 
 @Service
 @RequiredArgsConstructor
@@ -215,5 +225,17 @@ public class ExamResultServiceImpl implements ExamResultService {
         }
 
         return accomplishmentsDtos;
+    }
+
+    public byte[] getCertificate(CertificateDto certificateDto) throws JRException, IOException {
+
+        JasperReport jasperReport = JasperCompileManager
+                .compileReport(new ClassPathResource("reports/Certificate_Landscape.jrxml").getInputStream());
+
+        List<CertificateDto> certificateDtos = new ArrayList<>();
+        certificateDtos.add(certificateDto);
+        JRBeanCollectionDataSource dataSource = new JRBeanCollectionDataSource(certificateDtos);
+        JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, null, dataSource);
+        return JasperExportManager.exportReportToPdf(jasperPrint);
     }
 }

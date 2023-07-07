@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<fontFamilies>
+    <fontFamily name="NewFontFamily">
+        <normal><![CDATA[fonts/NewFontFamily/VNI-Script-Italic.TTF]]></normal>
+        <pdfEncoding><![CDATA[Identity-H]]></pdfEncoding>
+        <pdfEmbedded><![CDATA[true]]></pdfEmbedded>
+        <exportFonts />
+    </fontFamily>
+    <fontFamily name="TimesNewRomanFontFamily">
+        <normal><![CDATA[fonts/TimesNewRomanFontFamily/times.ttf]]></normal>
+        <bold><![CDATA[fonts/TimesNewRomanFontFamily/timesbd.ttf]]></bold>
+        <italic><![CDATA[fonts/TimesNewRomanFontFamily/timesi.ttf]]></italic>
+        <boldItalic><![CDATA[fonts/TimesNewRomanFontFamily/timesbi.ttf]]></boldItalic>
+        <exportFonts />
+    </fontFamily>
+</fontFamilies>
+	
