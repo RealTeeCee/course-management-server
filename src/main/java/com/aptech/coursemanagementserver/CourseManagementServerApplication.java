@@ -3,6 +3,7 @@ package com.aptech.coursemanagementserver;
 import static com.aptech.coursemanagementserver.enums.Role.ADMIN;
 import static com.aptech.coursemanagementserver.enums.Role.EMPLOYEE;
 import static com.aptech.coursemanagementserver.enums.Role.MANAGER;
+import static com.aptech.coursemanagementserver.enums.Role.USER;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,12 +21,15 @@ import com.aptech.coursemanagementserver.dtos.AuthorDto;
 import com.aptech.coursemanagementserver.dtos.CategoryDto;
 import com.aptech.coursemanagementserver.dtos.PostDto;
 import com.aptech.coursemanagementserver.dtos.RegisterRequestDto;
+import com.aptech.coursemanagementserver.models.Permissions;
+import com.aptech.coursemanagementserver.models.Roles;
 import com.aptech.coursemanagementserver.models.User;
 import com.aptech.coursemanagementserver.services.AuthorService;
 import com.aptech.coursemanagementserver.services.CategoryService;
 import com.aptech.coursemanagementserver.services.CourseService;
 import com.aptech.coursemanagementserver.services.PostService;
 import com.aptech.coursemanagementserver.services.authServices.AuthenticationService;
+import com.aptech.coursemanagementserver.services.authServices.UserPermissionService;
 
 @SpringBootApplication
 @EnableWebSecurity
@@ -49,11 +53,45 @@ public class CourseManagementServerApplication {
 			CategoryService categoryService,
 			AuthorService authorService,
 			CourseService courseService,
-			PostService postService) {
+			PostService postService,
+			UserPermissionService userPermissionService) {
 		return args -> {
 
 			if (seedData.equalsIgnoreCase("create")) {
+				// =============== ROLE & PERMISSION ===============
+				var roleAdmin = Roles.builder().name(ADMIN).build();
+				var roleManager = Roles.builder().name(MANAGER).build();
+				var roleEmployee = Roles.builder().name(EMPLOYEE).build();
+				var roleUser = Roles.builder().name(USER).build();
 
+				userPermissionService.saveRole(roleAdmin);
+				userPermissionService.saveRole(roleManager);
+				userPermissionService.saveRole(roleEmployee);
+				userPermissionService.saveRole(roleUser);
+
+				var permissionAdmin = Permissions.builder()
+						.permission("ADMIN").role(roleAdmin).build();
+				var permissionManager = Permissions.builder()
+						.permission("MANAGER").role(roleManager).build();
+				var permissionEmployee = Permissions.builder()
+						.permission("EMPLOYEE").role(roleEmployee).build();
+				var permissionCourse = Permissions.builder()
+						.permission("EMP_COURSE").role(roleEmployee).build();
+				var permissionBlog = Permissions.builder()
+						.permission("EMP_BLOG").role(roleEmployee).build();
+				var permissionExam = Permissions.builder()
+						.permission("EMP_EXAM").role(roleEmployee).build();
+				var permissionUser = Permissions.builder()
+						.permission("USER").role(roleUser).build();
+
+				userPermissionService.savePermission(permissionAdmin);
+				userPermissionService.savePermission(permissionManager);
+				userPermissionService.savePermission(permissionEmployee);
+				userPermissionService.savePermission(permissionCourse);
+				userPermissionService.savePermission(permissionBlog);
+				userPermissionService.savePermission(permissionExam);
+				userPermissionService.savePermission(permissionUser);
+				// =============== ADMIN ===============
 				var admin = RegisterRequestDto.builder()
 						.first_name("ClicknLearn")
 						.last_name("")
@@ -64,38 +102,53 @@ public class CourseManagementServerApplication {
 						.isVerified(true)
 						.build();
 
+				User adminAcc = service.register(admin);
+				userPermissionService.saveUserPermission(permissionAdmin, adminAcc);
+
 				System.out.println(
 						"Admin token: " +
-								service.generateTokenWithoutVerify(service.register(admin)).getAccessToken());
+								service.generateTokenWithoutVerify(adminAcc).getAccessToken());
 
-				var manager = RegisterRequestDto.builder()
-						.first_name("Manager")
+				// =============== MANAGER ===============
+				var manager1 = RegisterRequestDto.builder()
+						.first_name("Manager1")
 						.last_name("")
-						.email("manager@mail.com")
+						.email("manager1@mail.com")
 						.password("password")
 						.imageUrl("https://i.ibb.co/2KnQrF0/logo-click-thumb-light.png")
 						.role(MANAGER)
 						.isVerified(true)
 
 						.build();
-				System.out.println(
-						"Manager token: " +
-								service.generateTokenWithoutVerify(service.register(manager)).getAccessToken());
 
-				var employee = RegisterRequestDto.builder()
-						.first_name("Employee")
+				User managerAcc1 = service.register(manager1);
+				userPermissionService.saveUserPermission(permissionManager, managerAcc1);
+
+				System.out.println(
+						"Manager1  token: " +
+								service.generateTokenWithoutVerify(managerAcc1).getAccessToken());
+
+				// =============== EMPLOYEE ===============
+				var employee1 = RegisterRequestDto.builder()
+						.first_name("Employee1")
 						.last_name("")
-						.email("employee@mail.com")
+						.email("employee1@mail.com")
 						.password("password")
 						.imageUrl("https://i.ibb.co/2KnQrF0/logo-click-thumb-light.png")
 						.role(EMPLOYEE)
 						.isVerified(true)
 
 						.build();
-				System.out.println("Employee token: "
-						+
-						service.generateTokenWithoutVerify(service.register(employee)).getAccessToken());
 
+				User employeeAcc1 = service.register(employee1);
+				userPermissionService.saveUserPermission(permissionEmployee, employeeAcc1);
+				userPermissionService.saveUserPermission(permissionCourse, employeeAcc1);
+
+				System.out.println("Employee1 token: "
+						+
+						service.generateTokenWithoutVerify(employeeAcc1).getAccessToken());
+
+				// =============== USER ===============
 				var userTestDto = RegisterRequestDto.builder()
 						.first_name("TeeCee")
 						.last_name("")
@@ -107,6 +160,7 @@ public class CourseManagementServerApplication {
 
 						.build();
 				User userTest = service.register(userTestDto);
+				userPermissionService.saveUserPermission(permissionUser, userTest);
 				System.out.println(
 						"User1 token: " +
 								service.generateTokenWithoutVerify(userTest).getAccessToken());
@@ -121,6 +175,7 @@ public class CourseManagementServerApplication {
 
 						.build();
 				User userTest2 = service.register(userTest2Dto);
+				userPermissionService.saveUserPermission(permissionUser, userTest2);
 				System.out.println(
 						"User2 token: " +
 								service.generateTokenWithoutVerify(userTest2).getAccessToken());
@@ -135,6 +190,7 @@ public class CourseManagementServerApplication {
 
 						.build();
 				User userTest3 = service.register(userTest3Dto);
+				userPermissionService.saveUserPermission(permissionUser, userTest3);
 				System.out.println(
 						"User3 token: " +
 								service.generateTokenWithoutVerify(userTest3).getAccessToken());
@@ -149,6 +205,7 @@ public class CourseManagementServerApplication {
 
 						.build();
 				User userTest4 = service.register(userTest4Dto);
+				userPermissionService.saveUserPermission(permissionUser, userTest4);
 				System.out.println(
 						"User4 token: " +
 								service.generateTokenWithoutVerify(userTest4).getAccessToken());
@@ -162,6 +219,7 @@ public class CourseManagementServerApplication {
 						.isVerified(true)
 						.build();
 				User userTest5 = service.register(userTest5Dto);
+				userPermissionService.saveUserPermission(permissionUser, userTest5);
 				System.out.println(
 						"User5 token: " +
 								service.generateTokenWithoutVerify(userTest5).getAccessToken());
@@ -175,6 +233,64 @@ public class CourseManagementServerApplication {
 						.content("Post3 Lorem ipsum dolor sit amet, consectetur adipiscing elit.")
 						.userId(userTest3.getId()).courseId(1).build());
 
+				var employee2 = RegisterRequestDto.builder()
+						.first_name("Employee2")
+						.last_name("")
+						.email("employee2@mail.com")
+						.password("password")
+						.imageUrl("https://i.ibb.co/2KnQrF0/logo-click-thumb-light.png")
+						.role(EMPLOYEE)
+						.isVerified(true)
+
+						.build();
+
+				User employeeAcc2 = service.register(employee2);
+				userPermissionService.saveUserPermission(permissionEmployee, employeeAcc2);
+				userPermissionService.saveUserPermission(permissionExam, employeeAcc2);
+
+				System.out.println("Employee2 token: "
+						+
+						service.generateTokenWithoutVerify(employeeAcc2).getAccessToken());
+
+				var employee3 = RegisterRequestDto.builder()
+						.first_name("Employee3")
+						.last_name("")
+						.email("employee3@mail.com")
+						.password("password")
+						.imageUrl("https://i.ibb.co/2KnQrF0/logo-click-thumb-light.png")
+						.role(EMPLOYEE)
+						.isVerified(true)
+
+						.build();
+
+				User employeeAcc3 = service.register(employee3);
+				userPermissionService.saveUserPermission(permissionEmployee, employeeAcc3);
+				userPermissionService.saveUserPermission(permissionBlog, employeeAcc3);
+
+				System.out.println("Employee3 token: "
+						+
+						service.generateTokenWithoutVerify(employeeAcc3).getAccessToken());
+
+				// =============== ANOTHER MANAGER ===============
+				var manager2 = RegisterRequestDto.builder()
+						.first_name("Manager2")
+						.last_name("")
+						.email("manager2@mail.com")
+						.password("password")
+						.imageUrl("https://i.ibb.co/2KnQrF0/logo-click-thumb-light.png")
+						.role(MANAGER)
+						.isVerified(true)
+
+						.build();
+
+				User managerAcc2 = service.register(manager2);
+				userPermissionService.saveUserPermission(permissionManager, managerAcc2);
+
+				System.out.println(
+						"Manager2  token: " +
+								service.generateTokenWithoutVerify(managerAcc2).getAccessToken());
+
+				// =============== CATEGORY ===============
 				List<CategoryDto> categoryDtos = new ArrayList<>();
 				CategoryDto category1 = CategoryDto.builder()
 						.name("Programming")

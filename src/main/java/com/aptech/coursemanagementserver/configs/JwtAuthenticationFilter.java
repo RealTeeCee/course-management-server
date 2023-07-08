@@ -94,8 +94,10 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter { // OncePerRe
     } catch (Exception e) {
       log.error("Request from {} with error {}", request.getRequestURL(), e.getMessage());
 
-    }
-
+    } // "org.hibernate.LazyInitializationException: failed to lazily initialize a
+      // collection of role:
+      // com.aptech.coursemanagementserver.models.User.userPermissions: could not
+      // initialize proxy - no Session"
     filterChain.doFilter(request, response);
 
   }

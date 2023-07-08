@@ -63,8 +63,8 @@ public class AnswerController {
     }
 
     @PostMapping
-    @Operation(summary = "[ADMIN, MANAGER, EMPLOYEE] - Create / Update Answer")
-    @PreAuthorize("hasAnyRole('ADMIN', 'MANAGER', 'EMPLOYEE')")
+    @Operation(summary = "[ADMIN, MANAGER, EMP_EXAM] - Create / Update Answer")
+    @PreAuthorize("hasAnyRole('ADMIN', 'MANAGER', 'EMP_EXAM')")
     public ResponseEntity<BaseDto> create(@RequestBody AnswerDto answerDto)
             throws JsonMappingException, JsonProcessingException {
         try {
@@ -83,8 +83,8 @@ public class AnswerController {
     }
 
     @DeleteMapping
-    @Operation(summary = "[ADMIN, MANAGER, EMPLOYEE] - Delete Answer")
-    @PreAuthorize("hasAnyRole('ADMIN', 'MANAGER', 'EMPLOYEE')")
+    @Operation(summary = "[ADMIN, MANAGER, EMP_EXAM] - Delete Answer")
+    @PreAuthorize("hasAnyRole('ADMIN', 'MANAGER', 'EMP_EXAM')")
     public ResponseEntity<BaseDto> delete(long answerId) {
         try {
             answerService.deleteAnswer(answerId);

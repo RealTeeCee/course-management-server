@@ -17,7 +17,7 @@ public interface UserService {
 
     public List<UserDto> findAllHasRoleUSER();
 
-    public List<UserDto> findAllExceptRoleUSERAndRoleADMIN();
+    public List<User> findAllExceptRoleUSER();
 
     public void deleteById(long userId);
 
@@ -26,4 +26,5 @@ public interface UserService {
     public void save(User user);
 
     public boolean isContains(final List<User> list, final String email);
+
 }

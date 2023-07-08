@@ -66,8 +66,8 @@ public class AchievementController {
     }
 
     @PostMapping
-    @Operation(summary = "[ADMIN, MANAGER, EMPLOYEE] - Create Achievement")
-    @PreAuthorize("hasAnyRole('USER', 'ADMIN', 'MANAGER', 'EMPLOYEE')")
+    @Operation(summary = "[ADMIN, MANAGER, EMP_COURSE] - Create Achievement")
+    @PreAuthorize("hasAnyRole('ADMIN', 'MANAGER', 'EMP_COURSE')")
     public ResponseEntity<BaseDto> create(@RequestBody AchievementDto achievementDto)
             throws JsonMappingException, JsonProcessingException {
         try {
@@ -81,8 +81,8 @@ public class AchievementController {
     }
 
     @PutMapping
-    @Operation(summary = "[ADMIN, MANAGER, EMPLOYEE] - Update Achievement")
-    @PreAuthorize("hasAnyRole('USER', 'ADMIN', 'MANAGER', 'EMPLOYEE')")
+    @Operation(summary = "[ADMIN, MANAGER, EMP_COURSE] - Update Achievement")
+    @PreAuthorize("hasAnyRole('ADMIN', 'MANAGER', 'EMP_COURSE')")
     public ResponseEntity<BaseDto> update(
             @RequestBody AchievementDto achievementDto) throws JsonMappingException, JsonProcessingException {
         try {
@@ -96,8 +96,8 @@ public class AchievementController {
     }
 
     @DeleteMapping
-    @Operation(summary = "[ADMIN, MANAGER, EMPLOYEE] - Delete Achievement")
-    @PreAuthorize("hasAnyRole('USER', 'ADMIN', 'MANAGER', 'EMPLOYEE')")
+    @Operation(summary = "[ADMIN, MANAGER, EMP_COURSE] - Delete Achievement")
+    @PreAuthorize("hasAnyRole('ADMIN', 'MANAGER', 'EMP_COURSE')")
     public ResponseEntity<BaseDto> delete(long achievementId) {
         try {
             return new ResponseEntity<BaseDto>(achievementService.delete(achievementId), HttpStatus.OK);
