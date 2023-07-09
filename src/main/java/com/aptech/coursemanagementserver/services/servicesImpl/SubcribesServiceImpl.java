@@ -56,6 +56,14 @@ public class SubcribesServiceImpl implements SubcribesService {
     }
 
     @Override
+    public List<SubcribesDto> findByAuthorId(long authorId) {
+        List<Subcribes> subcribesList = subcribesRepository.findByAuthorId(authorId);
+        return subcribesList.stream()
+                .map(this::toDto)
+                .collect(Collectors.toList());
+    }
+
+    @Override
     public void subcribe(SubcribesDto subcribesDto) {
         Subcribes subcribes = new Subcribes();
         Author author = authorRepository.findById(subcribesDto.getAuthorId()).orElseThrow(

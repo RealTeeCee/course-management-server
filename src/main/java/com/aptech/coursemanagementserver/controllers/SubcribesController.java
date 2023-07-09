@@ -50,6 +50,18 @@ public class SubcribesController {
         }
     }
 
+    @GetMapping("/author/{authorId}")
+    @Operation(summary = "[ANY ROLE] - GET All Subcribes By AuthorId")
+    @PreAuthorize("permitAll()")
+    public ResponseEntity<List<SubcribesDto>> getSubcribesByAuthorId(@PathVariable("authorId") long authorId) {
+        try {
+            List<SubcribesDto> subcribesDtos = subcribesService.findByAuthorId(authorId);
+            return ResponseEntity.ok(subcribesDtos);
+        } catch (Exception e) {
+            throw new BadRequestException(FETCHING_FAILED);
+        }
+    }
+
     // @GetMapping(path = "/{id}")
     // @Operation(summary = "[ANY ROLE] - GET Subcribes By Id")
     // @PreAuthorize("hasAnyRole('USER', 'ADMIN', 'MANAGER', 'EMPLOYEE')")

@@ -114,6 +114,7 @@ public class SecurityConfiguration {
                                 .disable()
 
                                 .authorizeHttpRequests()
+                                .requestMatchers("/subcribes/author/{authorId}").permitAll()
                                 .requestMatchers(ENDPOINTS_WHITELIST)// requestMatchers(...String) If the
                                                                      // HandlerMappingIntrospector is
                                                                      // available
