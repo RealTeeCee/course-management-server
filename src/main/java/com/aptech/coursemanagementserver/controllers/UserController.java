@@ -2,6 +2,7 @@ package com.aptech.coursemanagementserver.controllers;
 
 import static com.aptech.coursemanagementserver.constants.GlobalStorage.GLOBAL_EXCEPTION;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
 
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.aptech.coursemanagementserver.dtos.CourseInterface;
+import com.aptech.coursemanagementserver.dtos.PermissionDto;
 import com.aptech.coursemanagementserver.dtos.RegisterRequestDto;
 import com.aptech.coursemanagementserver.dtos.UserDto;
 import com.aptech.coursemanagementserver.dtos.UserProfileDto;
@@ -25,10 +27,14 @@ import com.aptech.coursemanagementserver.enums.Role;
 import com.aptech.coursemanagementserver.exceptions.BadRequestException;
 import com.aptech.coursemanagementserver.exceptions.IsExistedException;
 import com.aptech.coursemanagementserver.exceptions.ResourceNotFoundException;
+import com.aptech.coursemanagementserver.models.Permissions;
+import com.aptech.coursemanagementserver.models.Roles;
 import com.aptech.coursemanagementserver.models.Token;
 import com.aptech.coursemanagementserver.models.User;
+import com.aptech.coursemanagementserver.models.UserPermission;
 import com.aptech.coursemanagementserver.repositories.CourseRepository;
 import com.aptech.coursemanagementserver.repositories.TokenRepository;
+import com.aptech.coursemanagementserver.repositories.UserPermissionRepository;
 import com.aptech.coursemanagementserver.services.authServices.AuthenticationService;
 import com.aptech.coursemanagementserver.services.authServices.CurrentUser;
 import com.aptech.coursemanagementserver.services.authServices.UserService;
@@ -45,10 +51,14 @@ public class UserController {
     private final TokenRepository tokenRepository;
     private final AuthenticationService authenticationService;
     private final UserService userService;
+    private final UserPermissionRepository userPermissionRepository;
 
     @GetMapping("/user/me")
     @PreAuthorize("hasAnyRole('USER', 'ADMIN', 'MANAGER', 'EMPLOYEE')")
     public ResponseEntity<UserProfileDto> getCurrentUser(@CurrentUser User user) {
+        var myPermission = user.getUserPermissions().stream()
+                .filter(up -> up.getUser().getId() == user.getId()).map(p -> p.getPermissionName()).toList();
+
         var userProfileDto = UserProfileDto.builder()
                 .id(user.getId())
                 .email(user.getEmail())
@@ -58,6 +68,7 @@ public class UserController {
                 .last_name(user.getLast_name())
                 .type(AntType.success)
                 .role(user.getRole())
+                .permissions(myPermission)
                 .isNotify(user.isNotify())
                 .status(user.getUserStatus())
                 .created_at(user.getCreated_at())
@@ -96,11 +107,27 @@ public class UserController {
         }
     }
 
-    @GetMapping("/user/organize")
+    @GetMapping("/role")
     @PreAuthorize("hasAnyRole('ADMIN', 'MANAGER', 'EMPLOYEE')")
-    public ResponseEntity<List<UserDto>> findAllExceptRoleUSERAndRoleADMIN() {
+    public ResponseEntity<List<Roles>> findAllRoleExceptRoleADMIN() {
         try {
-            return ResponseEntity.ok(userService.findAllExceptRoleUSERAndRoleADMIN());
+            List<Roles> roles = userService.findAllRoleExceptRoleADMIN();
+            return ResponseEntity.ok(roles);
+
+        } catch (BadRequestException e) {
+            throw new BadRequestException(e.getMessage());
+        } catch (IsExistedException e) {
+            throw new BadRequestException(e.getMessage());
+        } catch (Exception e) {
+            throw new BadRequestException(GLOBAL_EXCEPTION);
+        }
+    }
+
+    @GetMapping("/permission")
+    @PreAuthorize("hasAnyRole('ADMIN', 'MANAGER', 'EMPLOYEE')")
+    public ResponseEntity<List<Permissions>> findAllPermissionExceptPermissionADMIN() {
+        try {
+            return ResponseEntity.ok(userService.findAllPermissionExceptPermissionADMIN());
 
         } catch (BadRequestException e) {
             throw new BadRequestException(e.getMessage());
@@ -112,7 +139,7 @@ public class UserController {
     }
 
     @PostMapping("/user/organize")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAnyRole('ADMIN','MANAGER')")
     public ResponseEntity<BaseDto> createOrganizationUser(@RequestBody RegisterRequestDto dto) {
 
         try {
@@ -152,7 +179,7 @@ public class UserController {
     // }
 
     @PutMapping("/user")
-    @PreAuthorize("hasAnyRole('USER', 'ADMIN', 'MANAGER', 'EMPLOYEE')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'MANAGER')")
     public ResponseEntity<BaseDto> updateUser(@RequestBody UserDto dto) {
 
         try {
@@ -166,6 +193,44 @@ public class UserController {
                     .setUserStatus(dto.getStatus());
 
             userService.save(user);
+
+            return ResponseEntity
+                    .ok(BaseDto.builder().message("Update user successfully.").type(AntType.success).build());
+        } catch (BadRequestException e) {
+            throw new BadRequestException(e.getMessage());
+        } catch (NoSuchElementException e) {
+            throw new ResourceNotFoundException(e.getMessage());
+        } catch (Exception e) {
+            throw new BadRequestException(GLOBAL_EXCEPTION);
+        }
+    }
+
+    @PutMapping("/user/update-permission")
+    @PreAuthorize("hasAnyRole('ADMIN', 'MANAGER')")
+    public ResponseEntity<BaseDto> updateUserPermission(@RequestBody PermissionDto dto) {
+
+        try {
+            // 1. update role (table user) of Employee from to manager
+            // 2. Delete permission (table user_permission) of user with role Employee
+            // 3. Insert permission of role manager for user into table user_permission
+            User user = userService.findById(dto.getUserId()).orElseThrow(() -> new NoSuchElementException(
+                    "The user with userId: [" + dto.getUserId() + "] is not exist."));
+            user.setRole(dto.getRole().getName());
+            userService.save(user);
+
+            userPermissionRepository.deleteUserPermission(user.getId());
+
+            List<UserPermission> userPermissions = new ArrayList<>();
+            for (Permissions permission : dto.getPermissions()) {
+                UserPermission userPermission = new UserPermission();
+                userPermission.setPermission(permission);
+                userPermission.setPermissionName(permission.getPermission());
+                userPermission.setUser(user);
+                userPermission.setUsername(user.getUsername());
+                userPermissions.add(userPermission);
+            }
+
+            userPermissionRepository.saveAll(userPermissions);
 
             return ResponseEntity
                     .ok(BaseDto.builder().message("Update user successfully.").type(AntType.success).build());
@@ -201,7 +266,7 @@ public class UserController {
     }
 
     @DeleteMapping("/user")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAnyRole('ADMIN','MANAGER')")
     public ResponseEntity<BaseDto> deleteUser(long userId) {
 
         try {

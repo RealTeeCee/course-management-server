@@ -63,8 +63,8 @@ public class PartController {
     }
 
     @PostMapping
-    @Operation(summary = "[ADMIN, MANAGER, EMPLOYEE] - Create / Update Part")
-    @PreAuthorize("hasAnyRole('ADMIN', 'MANAGER', 'EMPLOYEE')")
+    @Operation(summary = "[ADMIN, MANAGER, EMP_EXAM] - Create / Update Part")
+    @PreAuthorize("hasAnyRole('ADMIN', 'MANAGER', 'EMP_EXAM')")
     public ResponseEntity<BaseDto> create(@RequestBody PartDto partDto)
             throws JsonMappingException, JsonProcessingException {
         try {
@@ -83,8 +83,8 @@ public class PartController {
     }
 
     @DeleteMapping
-    @Operation(summary = "[ADMIN, MANAGER, EMPLOYEE] - Delete Part")
-    @PreAuthorize("hasAnyRole('ADMIN', 'MANAGER', 'EMPLOYEE')")
+    @Operation(summary = "[ADMIN, MANAGER, EMP_EXAM] - Delete Part")
+    @PreAuthorize("hasAnyRole('ADMIN', 'MANAGER', 'EMP_EXAM')")
     public ResponseEntity<BaseDto> delete(long partId) {
         try {
             partService.deletePart(partId);

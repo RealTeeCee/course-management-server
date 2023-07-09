@@ -25,6 +25,7 @@ import com.aptech.coursemanagementserver.models.Course;
 import com.aptech.coursemanagementserver.models.Enrollment;
 import com.aptech.coursemanagementserver.models.Section;
 import com.aptech.coursemanagementserver.models.Tag;
+import com.aptech.coursemanagementserver.models.User;
 import com.aptech.coursemanagementserver.repositories.AchievementRepository;
 import com.aptech.coursemanagementserver.repositories.AuthorRepository;
 import com.aptech.coursemanagementserver.repositories.CategoryRepository;
@@ -209,12 +210,16 @@ public class CourseServiceImpl implements CourseService {
         Course course = new Course();
 
         setProperties(courseDto, course);
+        List<User> organizeUsers = userService.findAllExceptRoleUSER();
+        if (organizeUsers != null) {
 
-        if (userService.findCurrentUser() != null) {
-            Enrollment enrollment = new Enrollment();
-            enrollment.setCourse(course);
-            enrollment.setUser(userService.findCurrentUser());
-            enrollmentRepository.save(enrollment);
+            organizeUsers.forEach(user -> {
+                Enrollment enrollment = new Enrollment();
+                enrollment.setCourse(course);
+                enrollment.setUser(user);
+                enrollmentRepository.save(enrollment);
+            });
+
         }
 
         return course;

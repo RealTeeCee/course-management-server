@@ -54,7 +54,6 @@ public class AuthorController {
 
     @GetMapping("/top3")
     @Operation(summary = "[ANORNYMOUS] - GET Top 3 Authors That have most Enrollment")
-    @PreAuthorize("permitAll()")
     public ResponseEntity<List<AuthorInterface>> getTop3Authors() {
         try {
             List<AuthorInterface> authorDtos = authorService.findTop3();
@@ -103,8 +102,8 @@ public class AuthorController {
     }
 
     @PostMapping
-    @Operation(summary = "[ADMIN, MANAGER, EMPLOYEE] - Create / Update Author")
-    @PreAuthorize("hasAnyRole('ADMIN', 'MANAGER', 'EMPLOYEE')")
+    @Operation(summary = "[ADMIN, MANAGER, EMP_COURSE] - Create / Update Author")
+    @PreAuthorize("hasAnyRole('ADMIN', 'MANAGER', 'EMP_COURSE')")
     public ResponseEntity<BaseDto> save(@RequestBody AuthorDto authorDto)
             throws JsonMappingException, JsonProcessingException {
         try {
@@ -123,8 +122,8 @@ public class AuthorController {
     }
 
     @DeleteMapping
-    @Operation(summary = "[ADMIN, MANAGER, EMPLOYEE] - Delete Author")
-    @PreAuthorize("hasAnyRole('ADMIN', 'MANAGER', 'EMPLOYEE')")
+    @Operation(summary = "[ADMIN, MANAGER, EMP_COURSE] - Delete Author")
+    @PreAuthorize("hasAnyRole('ADMIN', 'MANAGER', 'EMP_COURSE')")
     public ResponseEntity<BaseDto> delete(long authorId) {
         try {
             authorService.deleteAuthor(authorId);

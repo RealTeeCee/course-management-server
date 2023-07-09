@@ -4,6 +4,8 @@ import java.util.List;
 import java.util.Optional;
 
 import com.aptech.coursemanagementserver.dtos.UserDto;
+import com.aptech.coursemanagementserver.models.Permissions;
+import com.aptech.coursemanagementserver.models.Roles;
 import com.aptech.coursemanagementserver.models.User;
 
 public interface UserService {
@@ -13,11 +15,15 @@ public interface UserService {
 
     public User findCurrentUser();
 
+    public List<Roles> findAllRoleExceptRoleADMIN();
+
+    public List<Permissions> findAllPermissionExceptPermissionADMIN();
+
     public List<UserDto> findAllExceptRoleADMIN();
 
     public List<UserDto> findAllHasRoleUSER();
 
-    public List<UserDto> findAllExceptRoleUSERAndRoleADMIN();
+    public List<User> findAllExceptRoleUSER();
 
     public void deleteById(long userId);
 
@@ -26,4 +32,5 @@ public interface UserService {
     public void save(User user);
 
     public boolean isContains(final List<User> list, final String email);
+
 }

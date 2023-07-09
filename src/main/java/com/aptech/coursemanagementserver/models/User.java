@@ -6,10 +6,12 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 
@@ -85,6 +87,11 @@ public class User implements UserDetails, OAuth2User {
     @Enumerated(EnumType.STRING)
     private Role role = Role.USER;
 
+    // @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy =
+    // "user")
+    // @Builder.Default
+    // private Set<Roles> roles = new HashSet<>();
+
     @Builder.Default
     @Enumerated(EnumType.STRING)
     private AuthProvider provider = AuthProvider.local;
@@ -93,6 +100,10 @@ public class User implements UserDetails, OAuth2User {
 
     @Transient
     private Map<String, Object> attributes;
+
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER, mappedBy = "user")
+    @Builder.Default
+    Set<UserPermission> userPermissions = new HashSet<>();
 
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY, mappedBy = "user")
     @Builder.Default
@@ -131,7 +142,10 @@ public class User implements UserDetails, OAuth2User {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return role.getAuthorities(); // Spring will use the list of authorities of each user
+        return userPermissions.stream()
+                .map(permission -> new SimpleGrantedAuthority("ROLE_" + permission.getPermission().getPermission()))
+                .collect(Collectors.toList());
+        // Spring will use the list of authorities of each user
     }
 
     @Override

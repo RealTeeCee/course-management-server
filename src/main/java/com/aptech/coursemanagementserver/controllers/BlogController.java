@@ -61,7 +61,7 @@ public class BlogController {
 
     @PutMapping(path = "view-count/{id}")
     @Operation(summary = "[ANORNYMOUS] - Update view count Blog")
-    public ResponseEntity<BaseDto> updateViewCount(@PathVariable("id")long id) {
+    public ResponseEntity<BaseDto> updateViewCount(@PathVariable("id") long id) {
         try {
             return ResponseEntity.ok(blogService.updateViewCount(id));
         } catch (Exception e) {
@@ -70,7 +70,7 @@ public class BlogController {
     }
 
     @GetMapping(path = "blogs-admin")
-    @Operation(summary = "[ANORNYMOUS] - GET All Blogs Not Token")
+    @Operation(summary = "[ANYROLE] - GET All Blogs Not Token")
     @PreAuthorize("hasAnyRole('USER', 'ADMIN', 'MANAGER', 'EMPLOYEE')")
     public ResponseEntity<List<BlogsInterface>> getAllBlogsAdmin() {
         try {
@@ -94,7 +94,7 @@ public class BlogController {
     }
 
     @PostMapping
-    @Operation(summary = "[ADMIN, MANAGER, EMPLOYEE] - Create Blog")
+    @Operation(summary = "[ANYROLE] - Create Blog")
     @PreAuthorize("hasAnyRole('USER', 'ADMIN', 'MANAGER', 'EMPLOYEE')")
     public ResponseEntity<BaseDto> create(@RequestBody BlogDto blogDto)
             throws JsonMappingException, JsonProcessingException {
@@ -109,8 +109,8 @@ public class BlogController {
     }
 
     @PutMapping
-    @Operation(summary = "[ADMIN, MANAGER, EMPLOYEE] - Update Blog")
-    @PreAuthorize("hasAnyRole('USER', 'ADMIN', 'MANAGER', 'EMPLOYEE')")
+    @Operation(summary = "[ANYROLE] - Update Blog")
+    @PreAuthorize("hasAnyRole('USER', 'ADMIN', 'MANAGER', 'EMP_BLOG')")
     public ResponseEntity<BaseDto> update(
             @RequestBody BlogDto blogDto) throws JsonMappingException, JsonProcessingException {
         try {
@@ -124,8 +124,8 @@ public class BlogController {
     }
 
     @DeleteMapping(path = "/{id}")
-    @Operation(summary = "[ADMIN, MANAGER, EMPLOYEE] - Delete Blog")
-    @PreAuthorize("hasAnyRole('USER', 'ADMIN', 'MANAGER', 'EMPLOYEE')")
+    @Operation(summary = "[ANY ROLE] - Delete Blog")
+    @PreAuthorize("hasAnyRole('USER', 'ADMIN', 'MANAGER', 'EMP_BLOG')")
     public ResponseEntity<BaseDto> delete(@PathVariable("id") long blogId) {
         try {
             return new ResponseEntity<BaseDto>(blogService.delete(blogId), HttpStatus.OK);
@@ -139,7 +139,7 @@ public class BlogController {
     @GetMapping(path = "my-blog/{userId}")
     @Operation(summary = "[ANY ROLE] - GET All Blogs By UserId")
     @PreAuthorize("hasAnyRole('USER', 'ADMIN', 'MANAGER', 'EMPLOYEE')")
-    public ResponseEntity<List<BlogDto>> getAllUserCourses(@PathVariable("userId") long userId) {
+    public ResponseEntity<List<BlogDto>> getAllUserBlogs(@PathVariable("userId") long userId) {
         try {
             return ResponseEntity.ok(blogService.findAllBlogsByUserId(userId));
         } catch (NoSuchElementException e) {

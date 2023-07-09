@@ -66,8 +66,8 @@ public class TagController {
     }
 
     @PostMapping
-    @Operation(summary = "[ADMIN, MANAGER, EMPLOYEE] - Create Tag")
-    @PreAuthorize("hasAnyRole('USER', 'ADMIN', 'MANAGER', 'EMPLOYEE')")
+    @Operation(summary = "[ADMIN, MANAGER, EMP_COURSE] - Create Tag")
+    @PreAuthorize("hasAnyRole('USER', 'ADMIN', 'MANAGER', 'EMP_COURSE')")
     public ResponseEntity<BaseDto> create(@RequestBody TagDto tagDto)
             throws JsonMappingException, JsonProcessingException {
         try {
@@ -81,8 +81,8 @@ public class TagController {
     }
 
     @PutMapping
-    @Operation(summary = "[ADMIN, MANAGER, EMPLOYEE] - Update Tag")
-    @PreAuthorize("hasAnyRole('USER', 'ADMIN', 'MANAGER', 'EMPLOYEE')")
+    @Operation(summary = "[ADMIN, MANAGER, EMP_COURSE] - Update Tag")
+    @PreAuthorize("hasAnyRole('USER', 'ADMIN', 'MANAGER', 'EMP_COURSE')")
     public ResponseEntity<BaseDto> update(
             @RequestBody TagDto tagDto) throws JsonMappingException, JsonProcessingException {
         try {
@@ -96,8 +96,8 @@ public class TagController {
     }
 
     @DeleteMapping
-    @Operation(summary = "[ADMIN, MANAGER, EMPLOYEE] - Delete Tag")
-    @PreAuthorize("hasAnyRole('USER', 'ADMIN', 'MANAGER', 'EMPLOYEE')")
+    @Operation(summary = "[ADMIN, MANAGER, EMP_COURSE] - Delete Tag")
+    @PreAuthorize("hasAnyRole('USER', 'ADMIN', 'MANAGER', 'EMP_COURSE')")
     public ResponseEntity<BaseDto> delete(long tagId) {
         try {
             return new ResponseEntity<BaseDto>(tagService.delete(tagId), HttpStatus.OK);

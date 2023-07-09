@@ -64,8 +64,8 @@ public class QuestionController {
     }
 
     @PostMapping
-    @Operation(summary = "[ADMIN, MANAGER, EMPLOYEE] - Create / Update Question")
-    @PreAuthorize("hasAnyRole('ADMIN', 'MANAGER', 'EMPLOYEE')")
+    @Operation(summary = "[ADMIN, MANAGER, EMP_EXAM] - Create / Update Question")
+    @PreAuthorize("hasAnyRole('ADMIN', 'MANAGER', 'EMP_EXAM')")
     public ResponseEntity<BaseDto> create(@RequestBody QuestionDto questionDto)
             throws JsonMappingException, JsonProcessingException {
         try {
@@ -84,8 +84,8 @@ public class QuestionController {
     }
 
     @DeleteMapping
-    @Operation(summary = "[ADMIN, MANAGER, EMPLOYEE] - Delete Question")
-    @PreAuthorize("hasAnyRole('ADMIN', 'MANAGER', 'EMPLOYEE')")
+    @Operation(summary = "[ADMIN, MANAGER, EMP_EXAM] - Delete Question")
+    @PreAuthorize("hasAnyRole('ADMIN', 'MANAGER', 'EMP_EXAM')")
     public ResponseEntity<BaseDto> delete(long questionId) {
         try {
             questionService.deleteQuestion(questionId);

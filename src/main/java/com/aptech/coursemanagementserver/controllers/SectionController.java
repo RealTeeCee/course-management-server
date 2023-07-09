@@ -79,7 +79,8 @@ public class SectionController {
     }
 
     @PostMapping
-    @Operation(summary = "[ADMIN, MANAGER, EMPLOYEE] - Create Section")
+    @Operation(summary = "[ADMIN, MANAGER, EMP_COURSE] - Create Section")
+    @PreAuthorize("hasAnyRole('ADMIN', 'MANAGER', 'EMP_COURSE')")
     public ResponseEntity<BaseDto> create(
             @RequestBody SectionDto sectionDto) throws JsonMappingException, JsonProcessingException {
         try {
@@ -93,7 +94,8 @@ public class SectionController {
     }
 
     @PostMapping(path = "/createByCourseId")
-    @Operation(summary = "[ADMIN, MANAGER, EMPLOYEE] - Create Multiple Sections By Course Id")
+    @Operation(summary = "[ADMIN, MANAGER, EMP_COURSE] - Create Multiple Sections By Course Id")
+    @PreAuthorize("hasAnyRole('ADMIN', 'MANAGER', 'EMP_COURSE')")
     public ResponseEntity<BaseDto> createSectionsByCourseId(@PathVariable("id") long courseId,
             @RequestBody SectionDto sectionDto) throws JsonMappingException, JsonProcessingException {
         try {
@@ -107,7 +109,8 @@ public class SectionController {
     }
 
     @PutMapping
-    @Operation(summary = "[ADMIN, MANAGER, EMPLOYEE] - Update Section")
+    @Operation(summary = "[ADMIN, MANAGER, EMP_COURSE] - Update Section")
+    @PreAuthorize("hasAnyRole('ADMIN', 'MANAGER', 'EMP_COURSE')")
     public ResponseEntity<BaseDto> update(@RequestBody SectionDto sectionDto)
             throws JsonMappingException, JsonProcessingException {
         try {
@@ -121,7 +124,8 @@ public class SectionController {
     }
 
     @DeleteMapping
-    @Operation(summary = "[ADMIN, MANAGER, EMPLOYEE] - Delete Section")
+    @Operation(summary = "[ADMIN, MANAGER, EMP_COURSE] - Delete Section")
+    @PreAuthorize("hasAnyRole('ADMIN', 'MANAGER', 'EMP_COURSE')")
     public ResponseEntity<BaseDto> delete(long sectionId) {
         try {
             return new ResponseEntity<BaseDto>(sectionService.delete(sectionId), HttpStatus.OK);

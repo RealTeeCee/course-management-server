@@ -166,8 +166,8 @@ public class CourseController {
         }
 
         @PostMapping(consumes = { MediaType.MULTIPART_FORM_DATA_VALUE })
-        @Operation(summary = "[ADMIN, MANAGER, EMPLOYEE] - Create Course")
-        @PreAuthorize("hasAnyRole('ADMIN', 'MANAGER', 'EMPLOYEE')")
+        @Operation(summary = "[ADMIN, MANAGER, EMP_COURSE] - Create Course")
+        @PreAuthorize("hasAnyRole('ADMIN', 'MANAGER', 'EMP_COURSE')")
         public ResponseEntity<BaseDto> create(@RequestPart("courseJson") String courseJson)
                         throws JsonMappingException, JsonProcessingException {
                 ObjectMapper objectMapper = new ObjectMapper();
@@ -223,8 +223,8 @@ public class CourseController {
         }
 
         @PutMapping(consumes = { MediaType.MULTIPART_FORM_DATA_VALUE })
-        @Operation(summary = "[ADMIN, MANAGER, EMPLOYEE] - Update Course")
-        @PreAuthorize("hasAnyRole('ADMIN', 'MANAGER', 'EMPLOYEE')")
+        @Operation(summary = "[ADMIN, MANAGER, EMP_COURSE] - Update Course")
+        @PreAuthorize("hasAnyRole('ADMIN', 'MANAGER', 'EMP_COURSE')")
         public ResponseEntity<BaseDto> updateCourse(@RequestPart("courseJson") String courseJson) {
                 ObjectMapper objectMapper = new ObjectMapper();
 
@@ -250,8 +250,8 @@ public class CourseController {
         }
 
         @DeleteMapping
-        @Operation(summary = "[ADMIN, MANAGER, EMPLOYEE] - Delete Course")
-        @PreAuthorize("hasAnyRole('ADMIN', 'MANAGER', 'EMPLOYEE')")
+        @Operation(summary = "[ADMIN, MANAGER, EMP_COURSE] - Delete Course")
+        @PreAuthorize("hasAnyRole('ADMIN', 'MANAGER', 'EMP_COURSE')")
         public ResponseEntity<BaseDto> deleteCourse(long courseId) {
                 try {
                         return new ResponseEntity<BaseDto>(courseService.delete(courseId), HttpStatus.OK);
@@ -278,7 +278,7 @@ public class CourseController {
 
         // @PutMapping(consumes = { MediaType.MULTIPART_FORM_DATA_VALUE })
         // @Operation(summary = "[ADMIN, MANAGER, EMPLOYEE] - Update Course")
-        // @PreAuthorize("hasAnyRole('ADMIN', 'MANAGER', 'EMPLOYEE')")
+        // @PreAuthorize("hasAnyRole('ADMIN', 'MANAGER', 'EMP_COURSE')")
         // public ResponseEntity<BaseDto> publishCourse(@RequestPart("courseJson")
         // String courseJson) {
         // ObjectMapper objectMapper = new ObjectMapper();
