@@ -9,6 +9,8 @@ public interface SubcribesService {
 
     public List<SubcribesDto> findByUserId(long userId);
 
+    public List<SubcribesDto> findByAuthorId(long authorId);
+
     public void subcribe(SubcribesDto subcribesDto);
 
     public void unSubcribes(long authorId, long userId);
