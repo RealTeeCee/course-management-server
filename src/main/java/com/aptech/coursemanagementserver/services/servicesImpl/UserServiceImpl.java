@@ -3,21 +3,29 @@ package com.aptech.coursemanagementserver.services.servicesImpl;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import com.aptech.coursemanagementserver.dtos.UserDto;
+import com.aptech.coursemanagementserver.models.Permissions;
+import com.aptech.coursemanagementserver.models.Roles;
 import com.aptech.coursemanagementserver.models.User;
+import com.aptech.coursemanagementserver.repositories.PermissionsRepository;
+import com.aptech.coursemanagementserver.repositories.RolesRepository;
 import com.aptech.coursemanagementserver.repositories.UserRepository;
 import com.aptech.coursemanagementserver.services.authServices.UserService;
 
+import lombok.RequiredArgsConstructor;
+
 @Service
+@RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
-    @Autowired
-    private UserRepository userRepository;
+    private final UserRepository userRepository;
+    private final RolesRepository rolesRepository;
+    private final PermissionsRepository permissionsRepository;
 
     @Override
     public Optional<User> findByEmail(String email) {
@@ -52,20 +60,29 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<UserDto> findAllExceptRoleADMIN() {
-        List<User> users = userRepository.findAllExceptRoleADMIN();
+    public List<User> findAllExceptRoleUSER() {
+        List<User> users = userRepository.findAllExceptRoleUSER();
 
-        List<UserDto> userDtos = new ArrayList<>();
-        for (User user : users) {
-            UserDto userDto = toDto(user);
-            userDtos.add(userDto);
-        }
-        return userDtos;
+        // List<UserDto> userDtos = new ArrayList<>();
+        // for (User user : users) {
+        // UserDto userDto = toDto(user);
+        // userDtos.add(userDto);
+        // }
+        return users;
+    }
+
+    public List<Roles> findAllRoleExceptRoleADMIN() {
+        return rolesRepository.findAllRoleExceptRoleADMIN();
+    }
+
+    public List<Permissions> findAllPermissionExceptPermissionADMIN() {
+        return permissionsRepository.findAllPermissionExceptPermissionADMIN();
     }
 
     @Override
-    public List<UserDto> findAllExceptRoleUSERAndRoleADMIN() {
-        List<User> users = userRepository.findAllExceptRoleUSERAndRoleADMIN();
+    public List<UserDto> findAllExceptRoleADMIN() {
+
+        List<User> users = userRepository.findAllExceptRoleADMIN(findCurrentUser().getId());
 
         List<UserDto> userDtos = new ArrayList<>();
         for (User user : users) {
@@ -100,12 +117,17 @@ public class UserServiceImpl implements UserService {
     }
 
     private UserDto toDto(User user) {
+        var permission = user.getUserPermissions().stream()
+                .filter(up -> up.getUser().getId() == user.getId()).map(p -> p.getPermissionName())
+                .collect(Collectors.toSet());
+
         UserDto userDto = UserDto.builder()
                 .id(user.getId())
                 .first_name(user.getFirst_name())
                 .last_name(user.getLast_name())
                 .name(user.getName())
                 .role(user.getRole())
+                .permissions(permission)
                 .provider(user.getProvider())
                 .providerId(user.getProviderId())
                 .email(user.getEmail())

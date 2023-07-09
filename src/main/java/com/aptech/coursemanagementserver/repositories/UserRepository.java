@@ -20,14 +20,15 @@ public interface UserRepository extends JpaRepository<User, Long> {
     List<User> findAllHasRoleUSER();
 
     @Query(value = """
-                  SELECT u.* FROM users u
-            WHERE u.role <> 'ADMIN'
-                      """, nativeQuery = true)
-    List<User> findAllExceptRoleADMIN();
+            SELECT u.* FROM users u
+            WHERE u.role <> 'USER'
+                """, nativeQuery = true)
+    List<User> findAllExceptRoleUSER();
 
     @Query(value = """
-                  SELECT u.* FROM users u
-            WHERE u.role <> 'USER' AND u.role <> 'ADMIN'
+            SELECT u.* FROM users u
+            WHERE u.role <> 'ADMIN' AND u.id <> :userId
                       """, nativeQuery = true)
-    List<User> findAllExceptRoleUSERAndRoleADMIN();
+    List<User> findAllExceptRoleADMIN(long userId);
+
 }

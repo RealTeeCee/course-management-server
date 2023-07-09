@@ -18,6 +18,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.client.RestTemplate;
 
 import com.aptech.coursemanagementserver.repositories.UserRepository;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 import com.paypal.base.rest.APIContext;
 import com.paypal.base.rest.OAuthTokenCredential;
 import com.paypal.base.rest.PayPalRESTException;
@@ -49,6 +51,13 @@ public class ApplicationConfiguration {
         // // https://docstore.mik.ua/orelly/java-ent/jnut/ch06_02.htm
         return modelMapper;
     }
+
+    // @Bean
+    // public ObjectMapper objectMapper() {
+    // ObjectMapper objectMapper = new ObjectMapper();
+    // objectMapper.configure(SerializationFeature.FAIL_ON_EMPTY_BEANS, false);
+    // return objectMapper;
+    // }
 
     @Bean
     public RestTemplate restTemplate() {

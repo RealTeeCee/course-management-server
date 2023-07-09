@@ -82,7 +82,8 @@ public class LessonController {
     }
 
     @PostMapping
-    @Operation(summary = "[ADMIN, MANAGER, EMPLOYEE] - Create Lesson")
+    @Operation(summary = "[ADMIN, MANAGER, EMP_COURSE] - Create Lesson")
+    @PreAuthorize("hasAnyRole('USER', 'ADMIN', 'MANAGER', 'EMP_COURSE')")
     public ResponseEntity<BaseDto> create(@RequestBody LessonDto lessonDto)
             throws JsonMappingException, JsonProcessingException {
         try {
@@ -96,7 +97,8 @@ public class LessonController {
     }
 
     @PutMapping
-    @Operation(summary = "[ADMIN, MANAGER, EMPLOYEE] - Update Lesson")
+    @Operation(summary = "[ADMIN, MANAGER, EMP_COURSE] - Update Lesson")
+    @PreAuthorize("hasAnyRole('USER', 'ADMIN', 'MANAGER', 'EMP_COURSE')")
     public ResponseEntity<BaseDto> update(
             @RequestBody LessonDto lessonDto) throws JsonMappingException, JsonProcessingException {
         try {
@@ -110,7 +112,8 @@ public class LessonController {
     }
 
     @DeleteMapping
-    @Operation(summary = "[ADMIN, MANAGER, EMPLOYEE] - Delete Lesson")
+    @Operation(summary = "[ADMIN, MANAGER, EMP_COURSE] - Delete Lesson")
+    @PreAuthorize("hasAnyRole('USER', 'ADMIN', 'MANAGER', 'EMP_COURSE')")
     public ResponseEntity<BaseDto> delete(long lessonId) {
         try {
             return new ResponseEntity<BaseDto>(lessonService.delete(lessonId), HttpStatus.OK);

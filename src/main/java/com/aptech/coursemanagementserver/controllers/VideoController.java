@@ -55,6 +55,7 @@ public class VideoController {
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     @Operation(summary = "[ADMIN, MANAGER , EMPLOYEE] - Get Video By Lesson Id")
+    @PreAuthorize("hasAnyRole('USER', 'ADMIN', 'MANAGER', 'EMPLOYEE')")
     public ResponseEntity<VideoDto> getVideoByLessonId(
             @PathVariable("lessonId") long lessonId) {
         try {
@@ -67,7 +68,8 @@ public class VideoController {
     }
 
     @PostMapping(consumes = { MediaType.MULTIPART_FORM_DATA_VALUE })
-    @Operation(summary = "[ADMIN, MANAGER, EMPLOYEE] - Create Video By Lesson Id")
+    @Operation(summary = "[ADMIN, MANAGER, EMP_COURSE] - Create Video By Lesson Id")
+    @PreAuthorize("hasAnyRole('ADMIN', 'MANAGER', 'EMP_COURSE')")
     public ResponseEntity<BaseDto> createVideoByLessonId(@PathVariable("lessonId") long lessonId,
             @RequestPart("videoFile") MultipartFile videoFile,
             @RequestPart("captionFiles") MultipartFile[] captionFiles)
@@ -120,7 +122,8 @@ public class VideoController {
     }
 
     @DeleteMapping
-    @Operation(summary = "[ADMIN, MANAGER, EMPLOYEE] - Delete Video")
+    @Operation(summary = "[ADMIN, MANAGER, EMP_COURSE] - Delete Video")
+    @PreAuthorize("hasAnyRole('ADMIN', 'MANAGER', 'EMP_COURSE')")
     public ResponseEntity<BaseDto> deleteVideo(long videoId) {
         try {
             return new ResponseEntity<BaseDto>(videoService.delete(videoId), HttpStatus.OK);

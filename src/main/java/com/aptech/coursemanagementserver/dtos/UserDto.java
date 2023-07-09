@@ -1,6 +1,7 @@
 package com.aptech.coursemanagementserver.dtos;
 
 import java.time.Instant;
+import java.util.Set;
 
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
@@ -33,6 +34,8 @@ public class UserDto {
     private String password;
 
     private String imageUrl;
+
+    private Set<String> permissions;
 
     @Builder.Default
     @Enumerated(EnumType.STRING)

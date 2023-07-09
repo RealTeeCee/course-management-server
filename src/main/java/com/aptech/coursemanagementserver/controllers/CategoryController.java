@@ -62,8 +62,8 @@ public class CategoryController {
     }
 
     @PostMapping
-    @Operation(summary = "[ADMIN, MANAGER, EMPLOYEE] - Create / Update Category")
-    @PreAuthorize("hasAnyRole('ADMIN', 'MANAGER', 'EMPLOYEE')")
+    @Operation(summary = "[ADMIN, MANAGER] - Create / Update Category")
+    @PreAuthorize("hasAnyRole('ADMIN', 'MANAGER')")
     public ResponseEntity<BaseDto> save(@RequestBody CategoryDto categoryDto)
             throws JsonMappingException, JsonProcessingException {
         try {
@@ -82,8 +82,8 @@ public class CategoryController {
     }
 
     @DeleteMapping
-    @Operation(summary = "[ADMIN, MANAGER, EMPLOYEE] - Delete Category")
-    @PreAuthorize("hasAnyRole('ADMIN', 'MANAGER', 'EMPLOYEE')")
+    @Operation(summary = "[ADMIN, MANAGER] - Delete Category")
+    @PreAuthorize("hasAnyRole('ADMIN', 'MANAGER')")
     public ResponseEntity<BaseDto> delete(long categoryId) {
         try {
             categoryService.deleteCategory(categoryId);
