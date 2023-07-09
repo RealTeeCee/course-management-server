@@ -6,6 +6,7 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 
 import com.aptech.coursemanagementserver.dtos.SearchDto;
+import com.aptech.coursemanagementserver.dtos.SummaryDashboardDto;
 import com.aptech.coursemanagementserver.enums.SearchType;
 import com.aptech.coursemanagementserver.models.Author;
 import com.aptech.coursemanagementserver.models.Blog;
@@ -13,6 +14,7 @@ import com.aptech.coursemanagementserver.models.Course;
 import com.aptech.coursemanagementserver.repositories.AuthorRepository;
 import com.aptech.coursemanagementserver.repositories.BlogRepository;
 import com.aptech.coursemanagementserver.repositories.CourseRepository;
+import com.aptech.coursemanagementserver.repositories.DashBoardRepository;
 import com.aptech.coursemanagementserver.services.HomeService;
 
 import lombok.RequiredArgsConstructor;
@@ -23,6 +25,7 @@ public class HomeServiceImpl implements HomeService {
     private final AuthorRepository authorRepository;
     private final BlogRepository blogRepository;
     private final CourseRepository courseRepository;
+    private final DashBoardRepository dashBoardRepository;
 
     @Override
     public List<SearchDto> searchAll(String name) {
@@ -65,4 +68,7 @@ public class HomeServiceImpl implements HomeService {
         return searchDtos;
     }
 
+    public SummaryDashboardDto getSummaryDashboard() {
+        return dashBoardRepository.getSummaryDashboard();
+    }
 }
