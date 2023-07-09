@@ -42,4 +42,10 @@ public class UserPermissionServiceImpl implements UserPermissionService {
         userPermissionRepository.save(userPermission);
     }
 
+    @Override
+    public Permissions findByPermission(String permission) {
+        // TODO Auto-generated method stub
+        return permissionsRepository.findByPermission(permission);
+    }
+
 }

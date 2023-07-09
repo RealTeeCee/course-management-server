@@ -1,9 +1,11 @@
 package com.aptech.coursemanagementserver.models;
 
+import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
 
 import com.aptech.coursemanagementserver.enums.Role;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -27,7 +29,8 @@ import lombok.experimental.Accessors;
 @Accessors(chain = true)
 @Builder
 @Entity
-public class Roles {
+@JsonIgnoreProperties(ignoreUnknown = true, value = { "permissions" })
+public class Roles implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(columnDefinition = "bigint")

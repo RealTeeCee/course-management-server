@@ -1,5 +1,9 @@
 package com.aptech.coursemanagementserver.models;
 
+import java.io.Serializable;
+
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -21,7 +25,7 @@ import lombok.experimental.Accessors;
 @Accessors(chain = true)
 @Builder
 @Entity
-public class Permissions {
+public class Permissions implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(columnDefinition = "bigint")
@@ -29,6 +33,7 @@ public class Permissions {
 
     private String permission;
 
+    @JsonIgnoreProperties({ "hibernateLazyInitializer", "handler" })
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "role_id", nullable = false, foreignKey = @ForeignKey(name = "FK_Permission_Role"))
     private Roles role;

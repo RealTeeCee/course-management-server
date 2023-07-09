@@ -4,6 +4,8 @@ import java.util.List;
 import java.util.Optional;
 
 import com.aptech.coursemanagementserver.dtos.UserDto;
+import com.aptech.coursemanagementserver.models.Permissions;
+import com.aptech.coursemanagementserver.models.Roles;
 import com.aptech.coursemanagementserver.models.User;
 
 public interface UserService {
@@ -12,6 +14,10 @@ public interface UserService {
     Optional<User> findByEmail(String email);
 
     public User findCurrentUser();
+
+    public List<Roles> findAllRoleExceptRoleADMIN();
+
+    public List<Permissions> findAllPermissionExceptPermissionADMIN();
 
     public List<UserDto> findAllExceptRoleADMIN();
 

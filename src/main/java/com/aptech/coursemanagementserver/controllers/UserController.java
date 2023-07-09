@@ -28,6 +28,7 @@ import com.aptech.coursemanagementserver.exceptions.BadRequestException;
 import com.aptech.coursemanagementserver.exceptions.IsExistedException;
 import com.aptech.coursemanagementserver.exceptions.ResourceNotFoundException;
 import com.aptech.coursemanagementserver.models.Permissions;
+import com.aptech.coursemanagementserver.models.Roles;
 import com.aptech.coursemanagementserver.models.Token;
 import com.aptech.coursemanagementserver.models.User;
 import com.aptech.coursemanagementserver.models.UserPermission;
@@ -106,8 +107,39 @@ public class UserController {
         }
     }
 
+    @GetMapping("/role")
+    @PreAuthorize("hasAnyRole('ADMIN', 'MANAGER', 'EMPLOYEE')")
+    public ResponseEntity<List<Roles>> findAllRoleExceptRoleADMIN() {
+        try {
+            List<Roles> roles = userService.findAllRoleExceptRoleADMIN();
+            return ResponseEntity.ok(roles);
+
+        } catch (BadRequestException e) {
+            throw new BadRequestException(e.getMessage());
+        } catch (IsExistedException e) {
+            throw new BadRequestException(e.getMessage());
+        } catch (Exception e) {
+            throw new BadRequestException(GLOBAL_EXCEPTION);
+        }
+    }
+
+    @GetMapping("/permission")
+    @PreAuthorize("hasAnyRole('ADMIN', 'MANAGER', 'EMPLOYEE')")
+    public ResponseEntity<List<Permissions>> findAllPermissionExceptPermissionADMIN() {
+        try {
+            return ResponseEntity.ok(userService.findAllPermissionExceptPermissionADMIN());
+
+        } catch (BadRequestException e) {
+            throw new BadRequestException(e.getMessage());
+        } catch (IsExistedException e) {
+            throw new BadRequestException(e.getMessage());
+        } catch (Exception e) {
+            throw new BadRequestException(GLOBAL_EXCEPTION);
+        }
+    }
+
     @PostMapping("/user/organize")
-    @PreAuthorize("hasRole('ADMIN','MANAGER')")
+    @PreAuthorize("hasAnyRole('ADMIN','MANAGER')")
     public ResponseEntity<BaseDto> createOrganizationUser(@RequestBody RegisterRequestDto dto) {
 
         try {
@@ -234,7 +266,7 @@ public class UserController {
     }
 
     @DeleteMapping("/user")
-    @PreAuthorize("hasRole('ADMIN','MANAGER')")
+    @PreAuthorize("hasAnyRole('ADMIN','MANAGER')")
     public ResponseEntity<BaseDto> deleteUser(long userId) {
 
         try {

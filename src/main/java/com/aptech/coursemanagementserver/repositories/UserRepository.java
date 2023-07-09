@@ -30,4 +30,5 @@ public interface UserRepository extends JpaRepository<User, Long> {
             WHERE u.role <> 'ADMIN' AND u.id <> :userId
                       """, nativeQuery = true)
     List<User> findAllExceptRoleADMIN(long userId);
+
 }

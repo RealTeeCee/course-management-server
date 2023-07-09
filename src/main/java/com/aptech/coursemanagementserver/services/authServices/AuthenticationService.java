@@ -25,6 +25,7 @@ import com.aptech.coursemanagementserver.enums.AntType;
 import com.aptech.coursemanagementserver.exceptions.BadRequestException;
 import com.aptech.coursemanagementserver.exceptions.InvalidTokenException;
 import com.aptech.coursemanagementserver.exceptions.IsExistedException;
+import com.aptech.coursemanagementserver.models.Permissions;
 import com.aptech.coursemanagementserver.models.Token;
 import com.aptech.coursemanagementserver.models.User;
 import com.aptech.coursemanagementserver.repositories.TokenRepository;
@@ -41,6 +42,7 @@ import lombok.RequiredArgsConstructor;
 public class AuthenticationService {
     private final ModelMapper modelMapper;
     private final UserService userService;
+    private final UserPermissionService userPermissionService;
     private final TokenRepository tokenRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
@@ -108,6 +110,10 @@ public class AuthenticationService {
         request.setPassword(passwordEncoder.encode(request.getPassword()));
         var savedUser = modelMapper.map(request, User.class);
         userService.save(savedUser);
+
+        Permissions permissionUser = userPermissionService.findByPermission(request.getRole().name());
+
+        userPermissionService.saveUserPermission(permissionUser, savedUser);
 
         // 1. Send Email
         // 2. Customer click on Email. Link URL verify. Ex:

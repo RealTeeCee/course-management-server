@@ -9,5 +9,7 @@ public interface UserPermissionService {
 
     public void savePermission(Permissions permission);
 
+    public Permissions findByPermission(String permission);
+
     public void saveUserPermission(Permissions permission, User user);
 }

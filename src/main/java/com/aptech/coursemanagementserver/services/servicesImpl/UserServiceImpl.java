@@ -5,20 +5,27 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import com.aptech.coursemanagementserver.dtos.UserDto;
+import com.aptech.coursemanagementserver.models.Permissions;
+import com.aptech.coursemanagementserver.models.Roles;
 import com.aptech.coursemanagementserver.models.User;
+import com.aptech.coursemanagementserver.repositories.PermissionsRepository;
+import com.aptech.coursemanagementserver.repositories.RolesRepository;
 import com.aptech.coursemanagementserver.repositories.UserRepository;
 import com.aptech.coursemanagementserver.services.authServices.UserService;
 
+import lombok.RequiredArgsConstructor;
+
 @Service
+@RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
-    @Autowired
-    private UserRepository userRepository;
+    private final UserRepository userRepository;
+    private final RolesRepository rolesRepository;
+    private final PermissionsRepository permissionsRepository;
 
     @Override
     public Optional<User> findByEmail(String email) {
@@ -62,6 +69,14 @@ public class UserServiceImpl implements UserService {
         // userDtos.add(userDto);
         // }
         return users;
+    }
+
+    public List<Roles> findAllRoleExceptRoleADMIN() {
+        return rolesRepository.findAllRoleExceptRoleADMIN();
+    }
+
+    public List<Permissions> findAllPermissionExceptPermissionADMIN() {
+        return permissionsRepository.findAllPermissionExceptPermissionADMIN();
     }
 
     @Override
