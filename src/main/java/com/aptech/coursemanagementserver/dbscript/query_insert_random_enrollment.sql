@@ -17,7 +17,7 @@ DECLARE @EndDate AS date;
 DECLARE @DaysBetween AS int;
 DECLARE @Time time = '00:00:00.0000000';
 SELECT @StartDate   = '01/01/2022',
-       @EndDate     = '12/31/2023',
+       @EndDate     = '06/30/2023',
        @DaysBetween = (1+DATEDIFF(DAY, @StartDate, @EndDate));
 
 
@@ -27,3 +27,4 @@ SELECT CONVERT(datetimeoffset, CONVERT(varchar(10),DATEADD(DAY, RAND(CHECKSUM(NE
 CAST(RAND(CHECKSUM(NEWID())) * 5 AS INT) + 1 ,
 GETUTCDATE(),  c.id, u.id  
 FROM course c CROSS JOIN users u
+

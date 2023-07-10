@@ -1,6 +1,7 @@
 package com.aptech.coursemanagementserver.repositories;
 
 import java.sql.Types;
+import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,7 +11,9 @@ import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcCall;
 import org.springframework.stereotype.Component;
 
+import com.aptech.coursemanagementserver.dtos.CategoryEnrollmentDto;
 import com.aptech.coursemanagementserver.dtos.SummaryDashboardDto;
+import com.aptech.coursemanagementserver.mappers.CategoryEnrollmentMapper;
 
 @Component
 public class DashBoardRepository {
@@ -39,6 +42,18 @@ public class DashBoardRepository {
         dashboardDto.setYearRevenue((double) result.get("year_revenue"));
         dashboardDto.setMonthRevenue((double) result.get("month_revenue"));
         return dashboardDto;
+    }
+
+    public List<CategoryEnrollmentDto> getCategoryEnrollment() {
+        simpleJdbcCall.withProcedureName("sp_get_category_enrollment").returningResultSet("rsGetCategoryEnroll",
+                new CategoryEnrollmentMapper());
+
+        Map<String, Object> result = simpleJdbcCall.execute();
+
+        @SuppressWarnings("unchecked")
+        List<CategoryEnrollmentDto> dtos = (List<CategoryEnrollmentDto>) result.get("rsGetCategoryEnroll");
+
+        return dtos;
     }
 
 }

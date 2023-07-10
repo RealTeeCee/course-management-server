@@ -1,7 +1,5 @@
 package com.aptech.coursemanagementserver.controllers;
 
-import static com.aptech.coursemanagementserver.constants.GlobalStorage.DEV_DOMAIN_CLIENT;
-
 import java.util.List;
 import java.util.NoSuchElementException;
 
@@ -18,11 +16,8 @@ import org.springframework.web.bind.annotation.RestController;
 import com.aptech.coursemanagementserver.dtos.EnrollmentDto;
 import com.aptech.coursemanagementserver.dtos.RatingStarsInterface;
 import com.aptech.coursemanagementserver.dtos.baseDto.BaseDto;
-import com.aptech.coursemanagementserver.enums.AntType;
 import com.aptech.coursemanagementserver.exceptions.BadRequestException;
 import com.aptech.coursemanagementserver.exceptions.ResourceNotFoundException;
-import com.aptech.coursemanagementserver.models.Course;
-import com.aptech.coursemanagementserver.repositories.CourseRepository;
 import com.aptech.coursemanagementserver.services.EnrollmentService;
 
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -34,25 +29,13 @@ import lombok.RequiredArgsConstructor;
 @Tag(name = "Enrollment Endpoints")
 public class EnrollmentController {
     private final EnrollmentService enrollmentService;
-    private final CourseRepository courseRepository;
 
     @PostMapping
     @PreAuthorize("hasAnyRole('USER', 'ADMIN', 'MANAGER', 'EMPLOYEE')")
     public ResponseEntity<BaseDto> enroll(@RequestBody EnrollmentDto enrollmentDto) {
         try {
-            BaseDto baseDto = enrollmentService.enroll(enrollmentDto);
-            Course course = courseRepository.findById(enrollmentDto.getCourse_id()).orElseThrow(
-                    () -> new NoSuchElementException(
-                            "The course with courseId: [" + enrollmentDto.getCourse_id() + "] is not exist."));
-            if (baseDto.getType() == AntType.success) {
-                return ResponseEntity.status(HttpStatus.FOUND)
-                        .header("Location", DEV_DOMAIN_CLIENT + "/learn/" + course.getSlug())
-                        .build();
-            } else {
-                return ResponseEntity.status(HttpStatus.FOUND)
-                        .header("Location", DEV_DOMAIN_CLIENT + "/checkout/" + course.getSlug())
-                        .build();
-            }
+            return new ResponseEntity<BaseDto>(enrollmentService.enroll(enrollmentDto), HttpStatus.OK);
+
         } catch (NoSuchElementException e) {
             throw new ResourceNotFoundException(e.getMessage());
         } catch (Exception e) {

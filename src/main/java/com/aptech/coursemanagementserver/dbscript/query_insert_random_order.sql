@@ -16,7 +16,7 @@ DECLARE @EndDate AS date;
 DECLARE @DaysBetween AS int;
 DECLARE @Time time = '00:00:00.0000000';
 SELECT @StartDate   = '01/01/2022',
-       @EndDate     = '12/31/2023',
+       @EndDate     = '06/30/2023',
        @DaysBetween = (1+DATEDIFF(DAY, @StartDate, @EndDate));
 INSERT orders ([created_at], [description], [duration], [image], [name], [net_price], [payment], [price], [status], 
 [transaction_id], [updated_at], [user_description], [course_id], [user_id])
@@ -25,3 +25,5 @@ SELECT CONVERT(datetimeoffset, CONVERT(varchar(10),DATEADD(DAY, RAND(CHECKSUM(NE
 , 'PAYPAL', c.price, 'COMPLETED', null, GETUTCDATE(), null, c.id, u.id  
 FROM course c CROSS JOIN users u
 WHERE u.role ='USER'
+
+UPDATE orders set created_at= DATEADD(HOUR,CAST(RAND(CHECKSUM(NEWID())) * 24 AS INT) + 1,created_at)

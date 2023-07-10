@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
+import com.aptech.coursemanagementserver.dtos.CategoryEnrollmentDto;
 import com.aptech.coursemanagementserver.dtos.SearchDto;
 import com.aptech.coursemanagementserver.dtos.SummaryDashboardDto;
 import com.aptech.coursemanagementserver.enums.SearchType;
@@ -70,5 +71,9 @@ public class HomeServiceImpl implements HomeService {
 
     public SummaryDashboardDto getSummaryDashboard() {
         return dashBoardRepository.getSummaryDashboard();
+    }
+
+    public List<CategoryEnrollmentDto> getCategoryEnrollmentChart() {
+        return dashBoardRepository.getCategoryEnrollment();
     }
 }

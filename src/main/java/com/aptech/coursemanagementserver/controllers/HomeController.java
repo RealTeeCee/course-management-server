@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.aptech.coursemanagementserver.dtos.CategoryEnrollmentDto;
 import com.aptech.coursemanagementserver.dtos.SearchDto;
 import com.aptech.coursemanagementserver.dtos.SummaryDashboardDto;
 import com.aptech.coursemanagementserver.exceptions.BadRequestException;
@@ -43,6 +44,17 @@ public class HomeController {
     public ResponseEntity<SummaryDashboardDto> getSummaryDashboard() {
         try {
             return ResponseEntity.ok(homeService.getSummaryDashboard());
+        } catch (Exception e) {
+            throw new BadRequestException(FETCHING_FAILED);
+        }
+    }
+
+    @GetMapping(path = "/admin/category-chart")
+    @Operation(summary = "[ADMIN, MANAGER, EMPLOYEE] - GET Dashboard")
+    @PreAuthorize("hasAnyRole('ADMIN', 'MANAGER', 'EMPLOYEE')")
+    public ResponseEntity<List<CategoryEnrollmentDto>> getCategoryEnrollmentChart() {
+        try {
+            return ResponseEntity.ok(homeService.getCategoryEnrollmentChart());
         } catch (Exception e) {
             throw new BadRequestException(FETCHING_FAILED);
         }
