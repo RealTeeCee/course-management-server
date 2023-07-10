@@ -5,11 +5,14 @@ import static com.aptech.coursemanagementserver.constants.GlobalStorage.FETCHING
 import java.util.List;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.aptech.coursemanagementserver.dtos.SearchDto;
+import com.aptech.coursemanagementserver.dtos.SummaryDashboardDto;
 import com.aptech.coursemanagementserver.exceptions.BadRequestException;
 import com.aptech.coursemanagementserver.services.HomeService;
 
@@ -33,4 +36,16 @@ public class HomeController {
             throw new BadRequestException(FETCHING_FAILED);
         }
     }
+
+    @GetMapping(path = "/admin/dashboard")
+    @Operation(summary = "[ADMIN, MANAGER, EMPLOYEE] - GET Dashboard")
+    @PreAuthorize("hasAnyRole('ADMIN', 'MANAGER', 'EMPLOYEE')")
+    public ResponseEntity<SummaryDashboardDto> getSummaryDashboard() {
+        try {
+            return ResponseEntity.ok(homeService.getSummaryDashboard());
+        } catch (Exception e) {
+            throw new BadRequestException(FETCHING_FAILED);
+        }
+    }
+
 }

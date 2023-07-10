@@ -179,7 +179,7 @@ public class UserController {
     // }
 
     @PutMapping("/user")
-    @PreAuthorize("hasAnyRole('ADMIN', 'MANAGER')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'MANAGER', 'EMPLOYEE', 'USER')")
     public ResponseEntity<BaseDto> updateUser(@RequestBody UserDto dto) {
 
         try {
