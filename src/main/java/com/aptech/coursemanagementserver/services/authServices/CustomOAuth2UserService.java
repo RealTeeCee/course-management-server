@@ -15,6 +15,7 @@ import com.aptech.coursemanagementserver.dtos.oauth.OAuth2UserInfo;
 import com.aptech.coursemanagementserver.dtos.oauth.OAuth2UserInfoFactory;
 import com.aptech.coursemanagementserver.enums.AuthProvider;
 import com.aptech.coursemanagementserver.exceptions.OAuth2AuthenticationProcessingException;
+import com.aptech.coursemanagementserver.models.Permissions;
 import com.aptech.coursemanagementserver.models.User;
 import com.aptech.coursemanagementserver.repositories.UserRepository;
 
@@ -23,6 +24,8 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
 
     @Autowired
     private UserRepository userRepository;
+    @Autowired
+    private UserPermissionService userPermissionService;
 
     @Override
     public OAuth2User loadUser(OAuth2UserRequest oAuth2UserRequest) throws OAuth2AuthenticationException {
@@ -74,7 +77,13 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
         user.setFirst_name(oAuth2UserInfo.getName());
         user.setEmail(oAuth2UserInfo.getEmail());
         user.setImageUrl(oAuth2UserInfo.getImageUrl());
-        return userRepository.save(user);
+
+        User savedUser = userRepository.save(user);
+
+        Permissions permissionUser = userPermissionService.findByPermission("USER");
+        userPermissionService.saveUserPermission(permissionUser, savedUser);
+
+        return savedUser;
     }
 
     private User updateExistingUser(User existingUser, OAuth2UserInfo oAuth2UserInfo) {
