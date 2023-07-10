@@ -32,6 +32,7 @@ public class AuthorSpecification {
     public static Specification<Author> hasCategoryAndName(AuthorRequestDto criteria) {
         return (root, query, builder) -> {
             try {
+                query.distinct(true);
                 if (criteria.getCategoryId() != 0 && !criteria.getSearchKey().isBlank()
                         && !criteria.getSearchValue().isBlank()) {
                     Join<Author, Course> authorJoin = root.join("courses", JoinType.INNER);
@@ -51,6 +52,7 @@ public class AuthorSpecification {
 
                     return builder.equal(authorJoin.get("category"), criteria.getCategoryId());
                 }
+
                 return null;
             } catch (Exception e) {
                 throw new BadRequestException(e.getMessage());
