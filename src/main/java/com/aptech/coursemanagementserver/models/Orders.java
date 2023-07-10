@@ -11,6 +11,8 @@ import com.aptech.coursemanagementserver.enums.payment.PaymentType;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.ForeignKey;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -48,7 +50,9 @@ public class Orders {
     private double price;
     @Column(columnDefinition = "decimal(10,2)")
     private double net_price;
+    @Enumerated(EnumType.STRING)
     private PaymentType payment = PaymentType.PAYPAL;
+    @Enumerated(EnumType.STRING)
     private OrderStatus status = OrderStatus.PENDING;
     private int duration;
     private String transactionId;

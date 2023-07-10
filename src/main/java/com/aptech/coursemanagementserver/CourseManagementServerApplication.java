@@ -30,6 +30,7 @@ import com.aptech.coursemanagementserver.services.CourseService;
 import com.aptech.coursemanagementserver.services.PostService;
 import com.aptech.coursemanagementserver.services.authServices.AuthenticationService;
 import com.aptech.coursemanagementserver.services.authServices.UserPermissionService;
+import com.aptech.coursemanagementserver.utils.CommonUtils;
 
 @SpringBootApplication
 @EnableWebSecurity
@@ -223,6 +224,8 @@ public class CourseManagementServerApplication {
 				System.out.println(
 						"User5 token: " +
 								service.generateTokenWithoutVerify(userTest5).getAccessToken());
+
+				// =============== POST ===============
 				postService.create(
 						PostDto.builder().content("First post, Haha!").userId(userTest.getId()).courseId(1)
 								.build());
@@ -233,6 +236,25 @@ public class CourseManagementServerApplication {
 						.content("Post3 Lorem ipsum dolor sit amet, consectetur adipiscing elit.")
 						.userId(userTest3.getId()).courseId(1).build());
 
+				// =============== MORE USER ===============
+				for (int index = 6; index < 88; index++) {
+					var userTestsDto = RegisterRequestDto.builder()
+							.first_name(CommonUtils.randomFirstName())
+							.last_name(CommonUtils.randomLastName())
+							.email("user-test" + index + "@mail.com")
+							.password("password")
+							.imageUrl("https://i.ibb.co/7GDTVRf/aptech.png")
+							// .role(USER)
+							.isVerified(true)
+							.build();
+					User userTests = service.register(userTestsDto);
+					userPermissionService.saveUserPermission(permissionUser, userTests);
+					System.out.println(
+							"User" + index + "token: " +
+									service.generateTokenWithoutVerify(userTests).getAccessToken());
+				}
+
+				// =============== MORE EMPLOYEE ===============
 				var employee2 = RegisterRequestDto.builder()
 						.first_name("Employee2")
 						.last_name("")
@@ -271,7 +293,7 @@ public class CourseManagementServerApplication {
 						+
 						service.generateTokenWithoutVerify(employeeAcc3).getAccessToken());
 
-				// =============== ANOTHER MANAGER ===============
+				// =============== MORE MANAGER ===============
 				var manager2 = RegisterRequestDto.builder()
 						.first_name("Manager2")
 						.last_name("")
