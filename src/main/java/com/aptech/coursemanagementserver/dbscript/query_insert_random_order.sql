@@ -16,7 +16,7 @@ DECLARE @EndDate AS date;
 DECLARE @DaysBetween AS int;
 DECLARE @Time time = '00:00:00.0000000';
 SELECT @StartDate   = '01/01/2022',
-       @EndDate     = '06/30/2023',
+       @EndDate     = GETUTCDATE(),
        @DaysBetween = (1+DATEDIFF(DAY, @StartDate, @EndDate));
 INSERT orders ([created_at], [description], [duration], [image], [name], [net_price], [payment], [price], [status], 
 [transaction_id], [updated_at], [user_description], [course_id], [user_id])
