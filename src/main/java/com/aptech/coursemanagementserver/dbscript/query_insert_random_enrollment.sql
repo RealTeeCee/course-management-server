@@ -17,7 +17,7 @@ DECLARE @EndDate AS date;
 DECLARE @DaysBetween AS int;
 DECLARE @Time time = '00:00:00.0000000';
 SELECT @StartDate   = '01/01/2022',
-       @EndDate     = '06/30/2023',
+       @EndDate     = GETUTCDATE(),
        @DaysBetween = (1+DATEDIFF(DAY, @StartDate, @EndDate));
 
 
