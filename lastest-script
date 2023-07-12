@@ -5,7 +5,7 @@ SET IDENTITY_INSERT [dbo].[Roles_bk] ON
 INSERT [dbo].[Roles_bk] ([id], [Role]) VALUES (1, N'ADMIN')
 INSERT [dbo].[Roles_bk] ([id], [Role]) VALUES (2, N'MANAGER')
 INSERT [dbo].[Roles_bk] ([id], [Role]) VALUES (3, N'EMPLOYEE')
-INSERT [dbo].[Roles_bk] ([id], [Role]) VALUES (4, N'USER')
+INSERT [dbo].[Roles_bk] ([id], [Role]) VALUES (4, N.'USER')
 SET IDENTITY_INSERT [dbo].[Roles_bk] OFF
 GO
 SET IDENTITY_INSERT [dbo].[permission_bk] ON 
@@ -5150,6 +5150,8 @@ DECLARE @total_enroll FLOAT
 SELECT @total_enroll = COUNT(*) FROM enrollment e1 
 INNER JOIN users u ON e1.user_id = u.id
 AND u.role = 'USER'
+IF(@total_enroll IS NULL OR @total_enroll =0) 
+SET @total_enroll = 1;
 
 SELECT ROUND(COUNT(e.course_id) * 100/ @total_enroll, 2) [percent], cat.name 
 FROM category cat 
@@ -5161,6 +5163,7 @@ INNER JOIN users u ON e.user_id = u.id AND u.role = 'USER') ON cat.id = c.catego
 GROUP BY cat.name
 END
 
+-- Insert ExamResult
 CREATE OR ALTER PROCEDURE [dbo].[sp_insert_exam] @part_id BIGINT = 0, @user_id BIGINT = 0, @course_id BIGINT = 0, @session INT OUTPUT
 AS 
 SET NOCOUNT ON;
@@ -5169,13 +5172,14 @@ SET @session = isnull(
     ,0)
 INSERT exam_result( [course_id], [anwser_description], [is_correct], [question_description],
 [question_point], [answer_id], [part_id], [question_id], [user_id], exam_session)
-SELECT 1, a.description, a.is_correct, q.description, q.point, a.id, q.part_id, q.id, 4,
+SELECT @course_id, a.description, a.is_correct, q.description, q.point, a.id, q.part_id, q.id, @user_id,
 CASE  WHEN @session = 0 THEN 1 ELSE @session END
 FROM question q INNER JOIN answer a
 ON q.id = a.question_id
 WHERE part_id = @part_id;
 set @session = (CASE  WHEN @session = 0 THEN 1 ELSE @session end);
 
+-- Thống kê Dashboard
 CREATE OR ALTER PROC [dbo].[sp_summary_dashboard] 
 @total_user INTEGER OUTPUT, @today_register INTEGER OUTPUT,
 @year_revenue FLOAT OUTPUT, @month_revenue FLOAT OUTPUT
@@ -5199,4 +5203,19 @@ FROM orders o
 INNER JOIN users u ON o.user_id = u.id
 WHERE MONTH(CONVERT(date, DATEADD(hour, 7, o.created_at))) = MONTH(CONVERT(date, GETDATE()))
 AND o.status = 'COMPLETED' AND u.role = 'USER'
+END
+
+-- Thống kê biểu đồ doanh thu theo năm
+CREATE OR ALTER PROC [dbo].[sp_get_revenue_by_date] @year INT = 0
+AS
+BEGIN
+
+SELECT  MONTH(CONVERT(date, DATEADD(hour, 7, o.created_at))) month,
+YEAR(CONVERT(date, DATEADD(hour, 7, o.created_at))) year, SUM(o.net_price) revenue FROM orders o 
+INNER JOIN users u ON user_id = u.id
+WHERE o.status = 'COMPLETED' AND u.role = 'USER'
+AND YEAR(CONVERT(date, DATEADD(hour, 7, o.created_at))) = 
+case when @year = 0 then YEAR(CONVERT(date, DATEADD(hour, 7, o.created_at))) else @year end
+GROUP BY MONTH(CONVERT(date, DATEADD(hour, 7, o.created_at))),YEAR(CONVERT(date, DATEADD(hour, 7, o.created_at)))
+ORDER BY YEAR, MONTH
 END
