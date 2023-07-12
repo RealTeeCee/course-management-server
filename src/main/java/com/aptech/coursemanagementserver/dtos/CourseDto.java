@@ -39,6 +39,7 @@ public class CourseDto {
     private String image;
     private long progress;
     private String requirement;
+    private String updatedBy;
 
     @Builder.Default
     private double rating = 0;

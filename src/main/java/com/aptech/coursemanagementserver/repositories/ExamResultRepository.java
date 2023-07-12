@@ -64,7 +64,7 @@ public interface ExamResultRepository extends JpaRepository<ExamResult, Long> {
 
         @Query(value = """
                         SELECT  e.* from exam_result e
-                        WHERE e.user_id = 4
+                        WHERE e.user_id = :userId
                         AND e.certificateuid IS NOT NULL
                         ORDER BY created_at DESC
                                         """, nativeQuery = true)

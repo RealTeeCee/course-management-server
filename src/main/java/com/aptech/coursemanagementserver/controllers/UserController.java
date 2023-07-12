@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -33,6 +34,7 @@ import com.aptech.coursemanagementserver.models.Token;
 import com.aptech.coursemanagementserver.models.User;
 import com.aptech.coursemanagementserver.models.UserPermission;
 import com.aptech.coursemanagementserver.repositories.CourseRepository;
+import com.aptech.coursemanagementserver.repositories.PermissionsRepository;
 import com.aptech.coursemanagementserver.repositories.TokenRepository;
 import com.aptech.coursemanagementserver.repositories.UserPermissionRepository;
 import com.aptech.coursemanagementserver.services.authServices.AuthenticationService;
@@ -52,6 +54,7 @@ public class UserController {
     private final AuthenticationService authenticationService;
     private final UserService userService;
     private final UserPermissionRepository userPermissionRepository;
+    private final PermissionsRepository permissionsRepository;
 
     @GetMapping("/user/me")
     @PreAuthorize("hasAnyRole('USER', 'ADMIN', 'MANAGER', 'EMPLOYEE')")
@@ -192,6 +195,10 @@ public class UserController {
                     .setImageUrl(dto.getImageUrl())
                     .setUserStatus(dto.getStatus());
 
+            if (dto.getStatus() == 0) {
+                tokenRepository.deleteAll(tokenRepository.findAllValidTokenByUser(user.getId()));
+            }
+
             userService.save(user);
 
             return ResponseEntity
@@ -213,8 +220,26 @@ public class UserController {
             // 1. update role (table user) of Employee from to manager
             // 2. Delete permission (table user_permission) of user with role Employee
             // 3. Insert permission of role manager for user into table user_permission
+            User currentUser = userService.findCurrentUser();
             User user = userService.findById(dto.getUserId()).orElseThrow(() -> new NoSuchElementException(
                     "The user with userId: [" + dto.getUserId() + "] is not exist."));
+
+            if (user.getRole().equals(Role.MANAGER) && currentUser.getRole().equals(Role.MANAGER)) {
+                throw new BadRequestException(
+                        "It looks like you do not have sufficient authorities to change this user's permission");
+            }
+            // permissionsRepository.findByPermission(user);
+
+            List<Permissions> permissions = new ArrayList<Permissions>(
+                    (CollectionUtils.disjunction(dto.getPermissions().stream().distinct().toList(),
+                            user.getUserPermissions().stream().map(up -> up.getPermission()).distinct().toList())));
+            // user.getUserPermissions().stream().map(up -> up.getPermission())
+            // .filter(p -> !dto.getPermissions().contains(p)).toList();
+
+            if (permissions.size() > 0) {
+                tokenRepository.deleteAll(tokenRepository.findAllValidTokenByUser(user.getId()));
+            }
+
             user.setRole(dto.getRole().getName());
             userService.save(user);
 

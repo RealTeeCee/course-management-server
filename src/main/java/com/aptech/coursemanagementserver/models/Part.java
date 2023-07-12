@@ -38,6 +38,9 @@ public class Part {
 
     private int limitTime;
 
+    @Column(columnDefinition = "nvarchar(100)")
+    private String updatedBy;
+
     @Builder.Default
     @Column(columnDefinition = "tinyint")
     private int status = 0;

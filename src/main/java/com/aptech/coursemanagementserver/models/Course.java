@@ -71,6 +71,9 @@ public class Course {
         @Column(columnDefinition = "nvarchar(100)")
         private String requirement;
 
+        @Column(columnDefinition = "nvarchar(100)")
+        private String updatedBy;
+
         @CreationTimestamp
         private Instant created_at = Instant.now();
         @UpdateTimestamp

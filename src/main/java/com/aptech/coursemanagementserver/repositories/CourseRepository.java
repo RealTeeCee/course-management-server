@@ -138,7 +138,7 @@ public interface CourseRepository extends JpaRepository<Course, Long> {
                         c.[id], c.[created_at], c.[description], c.requirement,
                         [duration], c.rating , c.published_at, c.author_id,
                         c.image, [level], c.[name], [net_price], [price],
-                        c.[slug], [status], c.[updated_at], [category_id]
+                        c.[slug], [status], c.[updated_at], c.[updated_by], [category_id]
                         ORDER BY c.created_at DESC
                                                                             """, nativeQuery = true)
         List<CourseInterface> findAllCourses();

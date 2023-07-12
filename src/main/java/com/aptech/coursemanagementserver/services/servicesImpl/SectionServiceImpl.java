@@ -19,6 +19,7 @@ import com.aptech.coursemanagementserver.exceptions.BadRequestException;
 import com.aptech.coursemanagementserver.exceptions.IsExistedException;
 import com.aptech.coursemanagementserver.models.Course;
 import com.aptech.coursemanagementserver.models.Section;
+import com.aptech.coursemanagementserver.models.User;
 import com.aptech.coursemanagementserver.repositories.CourseRepository;
 import com.aptech.coursemanagementserver.repositories.SectionRepository;
 import com.aptech.coursemanagementserver.services.SectionService;
@@ -43,6 +44,7 @@ public class SectionServiceImpl implements SectionService {
             sectionDto.setCourseId(section.getCourse().getId());
             sectionDto.setStatus(section.getStatus());
             sectionDto.setOrdered(section.getOrdered());
+            sectionDto.setUpdatedBy(section.getUpdatedBy());
             return sectionDto;
         } catch (NoSuchElementException e) {
             throw new NoSuchElementException("The section with sectionId: [" + sectionId + "] is not exist.");
@@ -95,6 +97,7 @@ public class SectionServiceImpl implements SectionService {
             sectionDto.setId(section.getId());
             sectionDto.setStatus(section.getStatus());
             sectionDto.setOrdered(section.getOrdered());
+            sectionDto.setUpdatedBy(section.getUpdatedBy());
             sectionsDto.add(sectionDto);
 
         }
@@ -157,11 +160,12 @@ public class SectionServiceImpl implements SectionService {
                             "The course with courseId: [" + sectionDto.getCourseId() + "] is not exist."));
 
             Set<Section> sections = course.getSections();
-
+            User user = userService.findCurrentUser();
             Section section = new Section();
             section.setName(sectionDto.getName())
                     .setCourse(course)
                     .setStatus(0)
+                    .setUpdatedBy(user.getEmail().split("@")[0])
                     .setOrdered(sectionDto.getOrdered());
 
             if (sections.contains(section))
@@ -194,10 +198,11 @@ public class SectionServiceImpl implements SectionService {
             if (section.getStatus() == 0 && sectionDto.getStatus() == 1 && section.getLessons().size() == 0) {
                 throw new BadRequestException("Cannot active section that not contains any lesson.");
             }
-
+            User user = userService.findCurrentUser();
             section.setName(sectionDto.getName())
                     .setCourse(course)
                     .setStatus(sectionDto.getStatus())
+                    .setUpdatedBy(user.getEmail().split("@")[0])
                     .setOrdered(sectionDto.getOrdered());
             sectionRepository.save(section);
 

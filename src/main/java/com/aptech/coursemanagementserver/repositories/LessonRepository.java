@@ -26,7 +26,7 @@ public interface LessonRepository extends JpaRepository<Lesson, Long> {
 
         @Query(value = """
                         SELECT l.id, l.created_at, l.description, l.duration, l.name, l.ordered,
-                        l.status, l.updated_at, l.section_id
+                        l.status, l.updated_at, l.section_id, l.updated_by
                         FROM lesson l
                         JOIN section s
                         ON l.section_id = s.id
@@ -39,7 +39,7 @@ public interface LessonRepository extends JpaRepository<Lesson, Long> {
 
         @Query(value = """
                         SELECT l.id, l.created_at, l.description, l.duration, l.name, l.ordered,
-                        l.status, l.updated_at, l.section_id, isnull(t.is_completed,0) is_completed
+                        l.status, l.updated_at,l.section_id, isnull(t.is_completed,0) is_completed
                         FROM lesson l
                         JOIN section s
                         ON l.section_id = s.id

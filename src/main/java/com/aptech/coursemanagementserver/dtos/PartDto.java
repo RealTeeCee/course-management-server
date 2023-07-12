@@ -19,6 +19,7 @@ public class PartDto {
     private double maxPoint;
 
     private int limitTime;
+    private String updatedBy;
 
     @Builder.Default
     private int status = 0;

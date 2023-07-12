@@ -104,7 +104,6 @@ public class CourseManagementServerApplication {
 						.build();
 
 				User adminAcc = service.register(admin);
-				userPermissionService.saveUserPermission(permissionAdmin, adminAcc);
 
 				System.out.println(
 						"Admin token: " +
@@ -123,7 +122,6 @@ public class CourseManagementServerApplication {
 						.build();
 
 				User managerAcc1 = service.register(manager1);
-				userPermissionService.saveUserPermission(permissionManager, managerAcc1);
 
 				System.out.println(
 						"Manager1  token: " +
@@ -142,7 +140,6 @@ public class CourseManagementServerApplication {
 						.build();
 
 				User employeeAcc1 = service.register(employee1);
-				userPermissionService.saveUserPermission(permissionEmployee, employeeAcc1);
 				userPermissionService.saveUserPermission(permissionCourse, employeeAcc1);
 
 				System.out.println("Employee1 token: "
@@ -161,7 +158,6 @@ public class CourseManagementServerApplication {
 
 						.build();
 				User userTest = service.register(userTestDto);
-				userPermissionService.saveUserPermission(permissionUser, userTest);
 				System.out.println(
 						"User1 token: " +
 								service.generateTokenWithoutVerify(userTest).getAccessToken());
@@ -176,7 +172,6 @@ public class CourseManagementServerApplication {
 
 						.build();
 				User userTest2 = service.register(userTest2Dto);
-				userPermissionService.saveUserPermission(permissionUser, userTest2);
 				System.out.println(
 						"User2 token: " +
 								service.generateTokenWithoutVerify(userTest2).getAccessToken());
@@ -191,7 +186,6 @@ public class CourseManagementServerApplication {
 
 						.build();
 				User userTest3 = service.register(userTest3Dto);
-				userPermissionService.saveUserPermission(permissionUser, userTest3);
 				System.out.println(
 						"User3 token: " +
 								service.generateTokenWithoutVerify(userTest3).getAccessToken());
@@ -206,7 +200,6 @@ public class CourseManagementServerApplication {
 
 						.build();
 				User userTest4 = service.register(userTest4Dto);
-				userPermissionService.saveUserPermission(permissionUser, userTest4);
 				System.out.println(
 						"User4 token: " +
 								service.generateTokenWithoutVerify(userTest4).getAccessToken());
@@ -220,7 +213,6 @@ public class CourseManagementServerApplication {
 						.isVerified(true)
 						.build();
 				User userTest5 = service.register(userTest5Dto);
-				userPermissionService.saveUserPermission(permissionUser, userTest5);
 				System.out.println(
 						"User5 token: " +
 								service.generateTokenWithoutVerify(userTest5).getAccessToken());
@@ -248,7 +240,6 @@ public class CourseManagementServerApplication {
 							.isVerified(true)
 							.build();
 					User userTests = service.register(userTestsDto);
-					userPermissionService.saveUserPermission(permissionUser, userTests);
 					System.out.println(
 							"User" + index + "token: " +
 									service.generateTokenWithoutVerify(userTests).getAccessToken());
@@ -267,7 +258,7 @@ public class CourseManagementServerApplication {
 						.build();
 
 				User employeeAcc2 = service.register(employee2);
-				userPermissionService.saveUserPermission(permissionEmployee, employeeAcc2);
+
 				userPermissionService.saveUserPermission(permissionExam, employeeAcc2);
 
 				System.out.println("Employee2 token: "
@@ -286,7 +277,7 @@ public class CourseManagementServerApplication {
 						.build();
 
 				User employeeAcc3 = service.register(employee3);
-				userPermissionService.saveUserPermission(permissionEmployee, employeeAcc3);
+
 				userPermissionService.saveUserPermission(permissionBlog, employeeAcc3);
 
 				System.out.println("Employee3 token: "
@@ -306,7 +297,6 @@ public class CourseManagementServerApplication {
 						.build();
 
 				User managerAcc2 = service.register(manager2);
-				userPermissionService.saveUserPermission(permissionManager, managerAcc2);
 
 				System.out.println(
 						"Manager2  token: " +

@@ -10,10 +10,12 @@ import com.aptech.coursemanagementserver.dtos.AnswerDto;
 import com.aptech.coursemanagementserver.exceptions.BadRequestException;
 import com.aptech.coursemanagementserver.models.Answer;
 import com.aptech.coursemanagementserver.models.Question;
+import com.aptech.coursemanagementserver.models.User;
 import com.aptech.coursemanagementserver.repositories.AnswerRepository;
 import com.aptech.coursemanagementserver.repositories.ExamResultRepository;
 import com.aptech.coursemanagementserver.repositories.QuestionRepository;
 import com.aptech.coursemanagementserver.services.AnswerService;
+import com.aptech.coursemanagementserver.services.authServices.UserService;
 
 import lombok.RequiredArgsConstructor;
 
@@ -23,6 +25,7 @@ public class AnswerServiceImpl implements AnswerService {
     private final AnswerRepository answerRepository;
     private final QuestionRepository questionRepository;
     private final ExamResultRepository examResultRepository;
+    private final UserService userService;
 
     @Override
     public AnswerDto findById(long id) {
@@ -47,6 +50,7 @@ public class AnswerServiceImpl implements AnswerService {
 
     @Override
     public void save(AnswerDto answerDto) {
+        User user = userService.findCurrentUser();
         Question question = questionRepository.findById(answerDto.getQuestionId()).orElseThrow(
                 () -> new NoSuchElementException(
                         "This question with questionId: [" + answerDto.getQuestionId() + "] is not exist."));
@@ -91,6 +95,7 @@ public class AnswerServiceImpl implements AnswerService {
         answer.setDescription(answerDto.getDescription());
         answer.setCorrect(answerDto.isCorrect());
         answer.setQuestion(question);
+        answer.setUpdatedBy(user.getEmail().split("@")[0]);
         answerRepository.save(answer);
 
     }
@@ -120,6 +125,7 @@ public class AnswerServiceImpl implements AnswerService {
                 .description(answer.getDescription())
                 .isCorrect(answer.isCorrect())
                 .questionId(answer.getQuestion().getId())
+                .updatedBy(answer.getUpdatedBy())
                 .build();
         return answerDto;
     }
