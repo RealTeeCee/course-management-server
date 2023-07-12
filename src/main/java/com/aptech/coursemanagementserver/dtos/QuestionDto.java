@@ -15,6 +15,7 @@ public class QuestionDto {
     private long id;
 
     private String description;
+    private String updatedBy;
 
     private double point;
 

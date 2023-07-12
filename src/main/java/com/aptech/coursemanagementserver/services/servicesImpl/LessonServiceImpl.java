@@ -18,6 +18,7 @@ import com.aptech.coursemanagementserver.enums.AntType;
 import com.aptech.coursemanagementserver.exceptions.BadRequestException;
 import com.aptech.coursemanagementserver.models.Lesson;
 import com.aptech.coursemanagementserver.models.Section;
+import com.aptech.coursemanagementserver.models.User;
 import com.aptech.coursemanagementserver.repositories.CourseRepository;
 import com.aptech.coursemanagementserver.repositories.LessonRepository;
 import com.aptech.coursemanagementserver.repositories.SectionRepository;
@@ -47,6 +48,7 @@ public class LessonServiceImpl implements LessonService {
             lessonDto.setDuration(lesson.getDuration());
             lessonDto.setStatus(lesson.getStatus());
             lessonDto.setOrdered(lesson.getOrdered());
+            lessonDto.setUpdatedBy(lesson.getUpdatedBy());
             lessonDto.setSectionId(lesson.getSection().getId());
 
             return lessonDto;
@@ -105,6 +107,7 @@ public class LessonServiceImpl implements LessonService {
                         .duration(lesson.getDuration())
                         .status(lesson.getStatus())
                         .ordered(lesson.getOrdered())
+                        .updatedBy(lesson.getUpdatedBy())
                         .sectionId(sectionId).build();
 
                 lessonDtos.add(lessonDto);
@@ -123,6 +126,7 @@ public class LessonServiceImpl implements LessonService {
     @Override
     public BaseDto save(LessonDto lessonDto) {
         try {
+            User user = userService.findCurrentUser();
             Lesson lesson = new Lesson();
             // Video video = new Video();
             lesson.setDescription(lessonDto.getDescription())
@@ -131,6 +135,7 @@ public class LessonServiceImpl implements LessonService {
                     .setName(lessonDto.getName())
                     .setSection(sectionRepository.findById(lessonDto.getSectionId()).get())
                     // .setVideo(video)
+                    .setUpdatedBy(user.getEmail().split("@")[0])
                     .setOrdered(lessonDto.getOrdered());
             // video.setLesson(lesson);
             lessonRepository.save(lesson);
@@ -151,6 +156,7 @@ public class LessonServiceImpl implements LessonService {
     @Override
     public BaseDto updateLesson(LessonDto lessonDto) {
         try {
+            User user = userService.findCurrentUser();
             Section section = sectionRepository.findById(lessonDto.getSectionId())
                     .orElseThrow(() -> new NoSuchElementException(
                             "The section with sectionId: [" + lessonDto.getSectionId() + "] is not exist."));
@@ -162,6 +168,7 @@ public class LessonServiceImpl implements LessonService {
                     .setDuration(lessonDto.getDuration())
                     .setStatus(lessonDto.getStatus())
                     .setOrdered(lessonDto.getOrdered())
+                    .setUpdatedBy(user.getEmail().split("@")[0])
                     .setSection(section);
 
             lessonRepository.save(lesson);

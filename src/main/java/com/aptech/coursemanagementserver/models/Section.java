@@ -45,6 +45,10 @@ public class Section {
     // @Column(columnDefinition = "bigint")
     // private long course_id;
     private int ordered = 0;
+
+    @Column(columnDefinition = "nvarchar(100)")
+    private String updatedBy;
+
     @CreationTimestamp
     private Instant created_at = Instant.now();
     @UpdateTimestamp

@@ -41,6 +41,9 @@ public class Category {
     private String slug;
     private String image;
 
+    @Column(columnDefinition = "nvarchar(100)")
+    private String updatedBy;
+
     @CreationTimestamp
     private Instant createdAt = Instant.now();
     @UpdateTimestamp

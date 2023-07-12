@@ -11,11 +11,13 @@ import com.aptech.coursemanagementserver.dtos.PartDto;
 import com.aptech.coursemanagementserver.exceptions.BadRequestException;
 import com.aptech.coursemanagementserver.models.Course;
 import com.aptech.coursemanagementserver.models.Part;
+import com.aptech.coursemanagementserver.models.User;
 import com.aptech.coursemanagementserver.repositories.CourseRepository;
 import com.aptech.coursemanagementserver.repositories.ExamResultRepository;
 import com.aptech.coursemanagementserver.repositories.PartRepository;
 import com.aptech.coursemanagementserver.repositories.QuestionRepository;
 import com.aptech.coursemanagementserver.services.PartService;
+import com.aptech.coursemanagementserver.services.authServices.UserService;
 
 import lombok.RequiredArgsConstructor;
 
@@ -27,6 +29,7 @@ public class PartServiceImpl implements PartService {
     private final QuestionRepository questionRepository;
     private final CourseRepository courseRepository;
     private final ExamResultRepository examResultRepository;
+    private final UserService userService;
 
     @Override
     public PartDto findById(long id) {
@@ -100,11 +103,12 @@ public class PartServiceImpl implements PartService {
         Course course = courseRepository.findById(partDto.getCourseId()).orElseThrow(
                 () -> new NoSuchElementException(
                         "This course with courseId: [" + partDto.getCourseId() + "] is not exist."));
-
+        User user = userService.findCurrentUser();
         part.setCourse(course);
         part.setLimitTime(partDto.getLimitTime());
         part.setMaxPoint(partDto.getMaxPoint());
         part.setStatus(partDto.getStatus());
+        part.setUpdatedBy(user.getEmail().split("@")[0]);
         partRepository.save(part);
     }
 
@@ -130,6 +134,7 @@ public class PartServiceImpl implements PartService {
                 .limitTime(part.getLimitTime())
                 .courseId(part.getCourse().getId())
                 .status(part.getStatus())
+                .updatedBy(part.getUpdatedBy())
                 .build();
         return partDto;
     }

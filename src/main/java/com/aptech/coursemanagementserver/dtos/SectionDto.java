@@ -14,6 +14,7 @@ import lombok.NoArgsConstructor;
 public class SectionDto {
     private long id;
     private String name;
+    private String updatedBy;
     private long courseId;
     @Builder.Default
     private int status = 0;

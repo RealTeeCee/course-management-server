@@ -21,6 +21,7 @@ public class BlogDto {
     private String slug;
     private int status;
     private String description;
+    private String updatedBy;
     private int view_count;
     private long user_id;
     private LocalDateTime created_at;

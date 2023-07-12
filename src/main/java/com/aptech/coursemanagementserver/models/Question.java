@@ -48,6 +48,9 @@ public class Question {
     @Column(columnDefinition = "bit DEFAULT(0)")
     private boolean isFullAnswer;
 
+    @Column(columnDefinition = "nvarchar(100)")
+    private String updatedBy;
+
     @CreationTimestamp
     @Builder.Default
     private Instant created_at = Instant.now();

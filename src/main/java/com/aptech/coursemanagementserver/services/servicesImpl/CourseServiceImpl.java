@@ -226,6 +226,7 @@ public class CourseServiceImpl implements CourseService {
     }
 
     public Course setProperties(CourseDto courseDto, Course course) {
+        User user = userService.findCurrentUser();
 
         if (courseDto.getStatus() == 0 && courseDto.getEnrollmentCount() > 0) {
             throw new BadRequestException("Cannot deactivate course that 've already had user's enrollment");
@@ -250,7 +251,9 @@ public class CourseServiceImpl implements CourseService {
                 // .setDuration(courseDto.getDuration())
                 .setDescription(courseDto.getDescription())
                 .setPrice(courseDto.getPrice())
-                .setNet_price(courseDto.getNet_price());
+                .setNet_price(courseDto.getNet_price())
+                .setRequirement(courseDto.getRequirement())
+                .setUpdatedBy(user.getEmail().split("@")[0]);
 
         if (course.getStatus() == 0 && courseDto.getStatus() == 1) {
             course.setPublished_at(new Date());
@@ -481,6 +484,7 @@ public class CourseServiceImpl implements CourseService {
                 .tagName(String.join(",", tagsList))
                 .duration(course.getDuration())
                 .requirement(course.getRequirement())
+                .updatedBy(course.getUpdatedBy())
                 .build();
 
         return courseDto;

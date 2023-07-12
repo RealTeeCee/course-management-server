@@ -17,6 +17,7 @@ public class LessonDto {
     private String description;
     private int duration;
     private long sectionId;
+    private String updatedBy;
     @Builder.Default
     private int status = 0;
     @Builder.Default

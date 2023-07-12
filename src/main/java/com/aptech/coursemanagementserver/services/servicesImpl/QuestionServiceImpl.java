@@ -3,7 +3,6 @@ package com.aptech.coursemanagementserver.services.servicesImpl;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
-import java.util.stream.Stream;
 
 import org.springframework.stereotype.Service;
 
@@ -11,10 +10,12 @@ import com.aptech.coursemanagementserver.dtos.QuestionDto;
 import com.aptech.coursemanagementserver.exceptions.BadRequestException;
 import com.aptech.coursemanagementserver.models.Part;
 import com.aptech.coursemanagementserver.models.Question;
+import com.aptech.coursemanagementserver.models.User;
 import com.aptech.coursemanagementserver.repositories.ExamResultRepository;
 import com.aptech.coursemanagementserver.repositories.PartRepository;
 import com.aptech.coursemanagementserver.repositories.QuestionRepository;
 import com.aptech.coursemanagementserver.services.QuestionService;
+import com.aptech.coursemanagementserver.services.authServices.UserService;
 
 import lombok.RequiredArgsConstructor;
 
@@ -24,6 +25,7 @@ public class QuestionServiceImpl implements QuestionService {
     private final QuestionRepository questionRepository;
     private final PartRepository partRepository;
     private final ExamResultRepository examResultRepository;
+    private final UserService userService;
 
     @Override
     public QuestionDto findById(long id) {
@@ -79,9 +81,11 @@ public class QuestionServiceImpl implements QuestionService {
             }
         }
 
+        User user = userService.findCurrentUser();
         question.setDescription(questionDto.getDescription());
         question.setPart(part);
         question.setPoint(questionDto.getPoint());
+        question.setUpdatedBy(user.getEmail().split("@")[0]);
 
         questionRepository.save(question);
     }
@@ -107,6 +111,7 @@ public class QuestionServiceImpl implements QuestionService {
                 .point(question.getPoint())
                 .partId(question.getPart().getId())
                 .isFullAnswer(question.isFullAnswer())
+                .updatedBy(question.getUpdatedBy())
                 .build();
         return questionDto;
     }

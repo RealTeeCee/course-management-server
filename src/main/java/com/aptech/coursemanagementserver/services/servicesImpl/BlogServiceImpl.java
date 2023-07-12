@@ -53,6 +53,7 @@ public class BlogServiceImpl implements BlogService {
     @Override
     public BaseDto create(BlogDto blogDto) {
         try {
+            User updatedUser = userService.findCurrentUser();
             Blog blog = new Blog();
             User user = userService.findById(blogDto.getUser_id()).orElseThrow(() -> new NoSuchElementException(
                     "The user with userId: [" + blogDto.getUser_id() + "] is not exist."));
@@ -70,6 +71,7 @@ public class BlogServiceImpl implements BlogService {
                     .setDescription(blogDto.getDescription())
                     .setCreated_at(LocalDateTime.now())
                     .setUpdated_at(LocalDateTime.now())
+                    .setUpdatedBy(updatedUser.getEmail().split("@")[0])
                     .setImage(blogDto.getImage());
             blogRepository.save(blog);
             return BaseDto.builder().type(AntType.success)
@@ -151,6 +153,7 @@ public class BlogServiceImpl implements BlogService {
                 .image(blog.getImage())
                 .created_at(blog.getCreated_at())
                 .updated_at(blog.getUpdated_at())
+                .updatedBy(blog.getUpdatedBy())
                 .build();
         return blogDto;
     }

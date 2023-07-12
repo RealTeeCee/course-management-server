@@ -20,8 +20,10 @@ import com.aptech.coursemanagementserver.exceptions.BadRequestException;
 import com.aptech.coursemanagementserver.exceptions.IsExistedException;
 import com.aptech.coursemanagementserver.models.Author;
 import com.aptech.coursemanagementserver.models.Enrollment;
+import com.aptech.coursemanagementserver.models.User;
 import com.aptech.coursemanagementserver.repositories.AuthorRepository;
 import com.aptech.coursemanagementserver.services.AuthorService;
+import com.aptech.coursemanagementserver.services.authServices.UserService;
 import com.aptech.coursemanagementserver.specification.AuthorSpecification;
 
 import lombok.RequiredArgsConstructor;
@@ -30,6 +32,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class AuthorServiceImpl implements AuthorService {
     private final AuthorRepository authorRepository;
+    private final UserService userService;
 
     @Override
     public AuthorDto findById(long id) {
@@ -101,6 +104,7 @@ public class AuthorServiceImpl implements AuthorService {
 
     @Override
     public void save(AuthorDto authorDto) {
+        User user = userService.findCurrentUser();
         Author author = new Author();
         if (authorDto.getId() > 0) {
             author = authorRepository.findById(authorDto.getId()).orElseThrow(
@@ -115,6 +119,7 @@ public class AuthorServiceImpl implements AuthorService {
         author.setImage(authorDto.getImage());
         author.setTitle(authorDto.getTitle());
         author.setInformation(authorDto.getInformation());
+        author.setUpdatedBy(user.getEmail().split("@")[0]);
         authorRepository.save(author);
     }
 
@@ -155,6 +160,7 @@ public class AuthorServiceImpl implements AuthorService {
                 .title(author.getTitle())
                 .information(author.getInformation())
                 .created_at(author.getCreatedAt())
+                .updatedBy(author.getUpdatedBy())
                 .build();
         return authorDto;
     }

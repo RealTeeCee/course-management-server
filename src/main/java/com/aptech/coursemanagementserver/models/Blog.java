@@ -43,6 +43,9 @@ public class Blog {
     @Column(columnDefinition = "datetime")
     private LocalDateTime updated_at;
 
+    @Column(columnDefinition = "nvarchar(100)")
+    private String updatedBy;
+
     // Modified - START
     private String image;
 

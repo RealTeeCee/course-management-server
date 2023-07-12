@@ -21,6 +21,7 @@ public class AuthorDto {
     private String image;
     private String title;
     private String information;
+    private String updatedBy;
 
     @CreationTimestamp
     @Builder.Default

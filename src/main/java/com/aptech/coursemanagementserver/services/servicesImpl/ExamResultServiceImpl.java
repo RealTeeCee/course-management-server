@@ -53,12 +53,10 @@ public class ExamResultServiceImpl implements ExamResultService {
     @Override
     public int createExamResult(long userId, long courseId) {
         List<Part> parts = partRepository.findActivePartByCourseId(courseId);
-        int partId = 0;
-        if (parts.size() > 0) {
-            partId = (int) (Math.random() * parts.size()) + 1;
-        }
+        Collections.shuffle(parts);
 
-        return examResultRepository.createExamResultByPartIdAndUserIdAndCourseId(partId, userId, courseId);
+        return examResultRepository.createExamResultByPartIdAndUserIdAndCourseId(
+                parts.size() > 0 ? parts.get(0).getId() : 0, userId, courseId);
     }
 
     @Override

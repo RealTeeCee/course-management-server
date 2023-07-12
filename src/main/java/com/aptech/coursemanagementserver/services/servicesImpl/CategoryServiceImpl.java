@@ -13,8 +13,10 @@ import com.aptech.coursemanagementserver.exceptions.BadRequestException;
 import com.aptech.coursemanagementserver.exceptions.IsExistedException;
 import com.aptech.coursemanagementserver.models.Category;
 import com.aptech.coursemanagementserver.models.Enrollment;
+import com.aptech.coursemanagementserver.models.User;
 import com.aptech.coursemanagementserver.repositories.CategoryRepository;
 import com.aptech.coursemanagementserver.services.CategoryService;
+import com.aptech.coursemanagementserver.services.authServices.UserService;
 import com.github.slugify.Slugify;
 
 import lombok.RequiredArgsConstructor;
@@ -23,6 +25,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class CategoryServiceImpl implements CategoryService {
     private final CategoryRepository categoryRepository;
+    private final UserService userService;
 
     @Override
     public CategoryDto findById(long id) {
@@ -49,6 +52,8 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     public void save(CategoryDto categoryDto) {
+        User user = userService.findCurrentUser();
+
         Category category = new Category();
         if (categoryDto.getId() > 0) {
             category = categoryRepository.findById(categoryDto.getId()).orElseThrow(
@@ -59,10 +64,12 @@ public class CategoryServiceImpl implements CategoryService {
                 && findAll().stream().map(categoryr -> categoryr.getName()).toList().contains(categoryDto.getName())) {
             throw new IsExistedException(categoryDto.getName());
         }
+
         category.setName(categoryDto.getName());
         category.setImage(categoryDto.getImage());
         category.setSlug(Slugify.builder().build().slugify(categoryDto.getName()));
         category.setDescription(categoryDto.getDescription());
+        category.setUpdatedBy(user.getEmail().split("@")[0]);
         categoryRepository.save(category);
     }
 
@@ -103,6 +110,7 @@ public class CategoryServiceImpl implements CategoryService {
                 .slug(category.getSlug())
                 .description(category.getDescription())
                 .created_at(category.getCreatedAt())
+                .updatedBy(category.getUpdatedBy())
                 .build();
         return categoryDto;
     }

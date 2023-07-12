@@ -21,6 +21,7 @@ public class CategoryDto {
     private String slug;
     private String description;
     private String image;
+    private String updatedBy;
     @CreationTimestamp
     @Builder.Default
     private Instant created_at = Instant.now();

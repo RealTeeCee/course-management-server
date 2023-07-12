@@ -15,6 +15,7 @@ public class AnswerDto {
     private long id;
 
     private String description;
+    private String updatedBy;
 
     private boolean isCorrect;
 

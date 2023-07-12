@@ -46,6 +46,9 @@ public class Lesson {
     private int duration;
     private int ordered = 0;
 
+    @Column(columnDefinition = "nvarchar(100)")
+    private String updatedBy;
+
     @CreationTimestamp
     private Instant created_at = Instant.now();
     @UpdateTimestamp

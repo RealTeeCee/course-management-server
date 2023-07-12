@@ -42,6 +42,9 @@ public class Answer {
     @Column(columnDefinition = "bit")
     private boolean isCorrect;
 
+    @Column(columnDefinition = "nvarchar(100)")
+    private String updatedBy;
+
     @CreationTimestamp
     @Builder.Default
     private Instant created_at = Instant.now();
