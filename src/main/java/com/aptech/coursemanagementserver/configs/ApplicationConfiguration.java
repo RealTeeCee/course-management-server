@@ -3,9 +3,13 @@ package com.aptech.coursemanagementserver.configs;
 import static com.aptech.coursemanagementserver.constants.GlobalStorage.PAYPAL_SANDBOX_MODE;
 
 import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Scope;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.simple.SimpleJdbcCall;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
@@ -122,4 +126,15 @@ public class ApplicationConfiguration {
         context.setConfigurationMap(PAYPAL_SANDBOX_MODE);
         return context;
     }
+
+    // @Autowired
+    // JdbcTemplate jdbcTemplate;
+
+    // @Bean
+    // @Scope("prototype")
+    // public SimpleJdbcCall getSimpleJdbcCall() {
+
+    // return new SimpleJdbcCall(jdbcTemplate);
+
+    // }
 }

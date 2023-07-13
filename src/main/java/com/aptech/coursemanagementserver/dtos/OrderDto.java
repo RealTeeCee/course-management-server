@@ -23,6 +23,7 @@ public class OrderDto {
     private String userName;
     private String courseName;
     private String description;
+    private String transactionId;
     private String userDescription;
     private String slug;
     private int duration;

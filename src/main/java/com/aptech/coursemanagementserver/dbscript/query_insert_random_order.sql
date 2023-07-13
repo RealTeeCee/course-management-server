@@ -22,7 +22,7 @@ INSERT orders ([created_at], [description], [duration], [image], [name], [net_pr
 [transaction_id], [updated_at], [user_description], [course_id], [user_id])
 SELECT CONVERT(datetimeoffset, CONVERT(varchar(10),DATEADD(DAY, RAND(CHECKSUM(NEWID()))
 *@DaysBetween,@StartDate) , 120) + ' ' + CONVERT(varchar(12), @Time, 114)) , c.description, c.duration, c.image, c.name, c.net_price
-, 'PAYPAL', c.price, 'COMPLETED', null, GETUTCDATE(), null, c.id, u.id  
+, 'PAYPAL', c.price, 'COMPLETED', NEWID(), GETUTCDATE(), null, c.id, u.id  
 FROM course c CROSS JOIN users u
 WHERE u.role ='USER'
 
