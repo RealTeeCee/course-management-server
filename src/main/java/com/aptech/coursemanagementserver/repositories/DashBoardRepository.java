@@ -20,10 +20,12 @@ import com.aptech.coursemanagementserver.mappers.RevenueYearMapper;
 
 @Component
 public class DashBoardRepository {
-    private final SimpleJdbcCall simpleJdbcCall;
+    private SimpleJdbcCall simpleJdbcCall;
     // private final JdbcTemplate jdbcTemplate;
 
     @Autowired
+    JdbcTemplate jdbcTemplate;
+
     public DashBoardRepository(JdbcTemplate jdbcTemplate) {
 
         // this.jdbcTemplate = jdbcTemplate;
@@ -48,6 +50,7 @@ public class DashBoardRepository {
     }
 
     public List<CategoryEnrollmentDto> getCategoryEnrollment() {
+        simpleJdbcCall = new SimpleJdbcCall(jdbcTemplate);
         simpleJdbcCall.withProcedureName("sp_get_category_enrollment").returningResultSet("rsGetCategoryEnroll",
                 new CategoryEnrollmentMapper());
 
@@ -60,6 +63,8 @@ public class DashBoardRepository {
     }
 
     public List<RevenueYearDto> getRevenueYear(int year) {
+
+        simpleJdbcCall = new SimpleJdbcCall(jdbcTemplate);
         simpleJdbcCall.withProcedureName("sp_get_revenue_by_date")
                 .declareParameters(new SqlParameter("year", Types.INTEGER))
                 .returningResultSet("rsGetRevenueYear",

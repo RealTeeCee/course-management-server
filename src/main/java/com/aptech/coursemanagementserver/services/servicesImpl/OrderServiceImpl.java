@@ -4,9 +4,15 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import com.aptech.coursemanagementserver.dtos.OrderDto;
+import com.aptech.coursemanagementserver.dtos.OrderHistoryRequestDto;
 import com.aptech.coursemanagementserver.models.Orders;
 import com.aptech.coursemanagementserver.repositories.OrdersRepository;
 import com.aptech.coursemanagementserver.services.OrderService;
@@ -28,16 +34,31 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public List<OrderDto> findByUserId(long userId) {
-        List<Orders> orders = orderRepository.findByUserId(userId);
+    public Page<OrderDto> findByUserId(OrderHistoryRequestDto dto) {
+        Pageable pageable = PageRequest.of(dto.getPageNo(), dto.getPageSize());
+        Page<Orders> orders = orderRepository.findByUserId(dto.getUserId(), pageable);
         List<OrderDto> orderDtos = new ArrayList<>();
 
-        for (Orders order : orders) {
+        for (Orders order : orders.getContent()) {
             OrderDto orderDto = toDto(order);
             orderDtos.add(orderDto);
         }
+        Page<OrderDto> pageOrderDtos = new PageImpl<>(orderDtos, orders.getPageable(), orders.getTotalElements());
+        return pageOrderDtos;
+    }
 
-        return orderDtos;
+    @Override
+    public Page<OrderDto> findInCompletedByUserId(OrderHistoryRequestDto dto) {
+        Pageable pageable = PageRequest.of(dto.getPageNo(), dto.getPageSize());
+        Page<Orders> orders = orderRepository.findInCompletedByUserId(dto.getUserId(), pageable);
+        List<OrderDto> orderDtos = new ArrayList<>();
+
+        for (Orders order : orders.getContent()) {
+            OrderDto orderDto = toDto(order);
+            orderDtos.add(orderDto);
+        }
+        Page<OrderDto> pageOrderDtos = new PageImpl<>(orderDtos, orders.getPageable(), orders.getTotalElements());
+        return pageOrderDtos;
     }
 
     @Override
@@ -69,6 +90,7 @@ public class OrderServiceImpl implements OrderService {
                 .courseName(order.getCourse().getName())
                 .image(order.getImage())
                 .slug(order.getCourse().getSlug())
+                .transactionId(order.getTransactionId())
                 .description(order.getDescription())
                 .userDescription(order.getUserDescription())
                 .duration(order.getDuration())
