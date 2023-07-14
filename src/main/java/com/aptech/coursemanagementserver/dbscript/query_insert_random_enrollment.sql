@@ -12,6 +12,7 @@
 -- GETUTCDATE(),  c.id, u.id  
 -- FROM course c CROSS JOIN users u
 
+-- Enroll tất cả user với 15 khóa học đầu
 DECLARE @StartDate AS date;
 DECLARE @EndDate AS date;
 DECLARE @DaysBetween AS int;
@@ -26,5 +27,7 @@ SELECT CONVERT(datetimeoffset, CONVERT(varchar(10),DATEADD(DAY, RAND(CHECKSUM(NE
 *@DaysBetween,@StartDate) , 120) + ' ' + CONVERT(varchar(12), @Time, 114)) , 1 , 0,
 CAST(RAND(CHECKSUM(NEWID())) * 5 AS INT) + 1 ,
 GETUTCDATE(),  c.id, u.id  
-FROM course c CROSS JOIN users u
+FROM 
+(select top 15 * from course c ) as c
+CROSS JOIN users u
 
