@@ -4,7 +4,7 @@
 	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="DataAdapter.jrdax"/>
 	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
 	<queryString>
-		<![CDATA[select top 1 'Nguyen Ngoc Nguyen' as fullName,
+		<![CDATA[select top 1 'Nguyễn Ngọc Nguyên' as fullName,
  'Spring Boot' as courseName, 
 'GOOD' grade, getdate() as completedDate]]>
 	</queryString>

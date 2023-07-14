@@ -1,16 +1,18 @@
 package com.aptech.coursemanagementserver.services.servicesImpl;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
 
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import com.aptech.coursemanagementserver.dtos.InvoiceDto;
 import com.aptech.coursemanagementserver.dtos.OrderDto;
 import com.aptech.coursemanagementserver.dtos.OrderHistoryRequestDto;
 import com.aptech.coursemanagementserver.models.Orders;
@@ -18,6 +20,13 @@ import com.aptech.coursemanagementserver.repositories.OrdersRepository;
 import com.aptech.coursemanagementserver.services.OrderService;
 
 import lombok.RequiredArgsConstructor;
+import net.sf.jasperreports.engine.JRException;
+import net.sf.jasperreports.engine.JasperCompileManager;
+import net.sf.jasperreports.engine.JasperExportManager;
+import net.sf.jasperreports.engine.JasperFillManager;
+import net.sf.jasperreports.engine.JasperPrint;
+import net.sf.jasperreports.engine.JasperReport;
+import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 
 @Service
 @RequiredArgsConstructor
@@ -101,5 +110,17 @@ public class OrderServiceImpl implements OrderService {
                 .created_at(order.getCreated_at())
                 .build();
         return orderDto;
+    }
+
+    @Override
+    public byte[] getInvoice(InvoiceDto invoiceDto) throws JRException, IOException {
+        JasperReport jasperReport = JasperCompileManager
+                .compileReport(new ClassPathResource("reports/Invoice_Landscape.jrxml").getInputStream());
+
+        List<InvoiceDto> invoiceDtos = new ArrayList<>();
+        invoiceDtos.add(invoiceDto);
+        JRBeanCollectionDataSource dataSource = new JRBeanCollectionDataSource(invoiceDtos);
+        JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, null, dataSource);
+        return JasperExportManager.exportReportToPdf(jasperPrint);
     }
 }

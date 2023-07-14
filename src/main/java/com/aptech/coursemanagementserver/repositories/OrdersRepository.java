@@ -29,7 +29,7 @@ public interface OrdersRepository extends JpaRepository<Orders, Long> {
             [payment], [price], [status], [transaction_id],
             [updated_at], [user_description], [course_id], [user_id]
             FROM orders
-            AND user_id = :userId
+            WHERE user_id = :userId
             ORDER BY created_at DESC
                         """, nativeQuery = true)
     Page<Orders> findInCompletedByUserId(long userId, Pageable pageable);
