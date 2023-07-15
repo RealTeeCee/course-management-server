@@ -89,6 +89,7 @@ public class PushNotificationServiceImpl implements PushNotificationService {
                 .last_name(user.getLast_name())
                 .imageUrl(user.getImageUrl())
                 .role(user.getRole())
+                .created_at(user.getCreated_at())
                 .build();
         return userDto;
     }

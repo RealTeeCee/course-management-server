@@ -1,10 +1,12 @@
 package com.aptech.coursemanagementserver.services.servicesImpl;
 
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import org.springframework.http.codec.ServerSentEvent;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -19,6 +21,8 @@ import com.aptech.coursemanagementserver.repositories.UserRepository;
 import com.aptech.coursemanagementserver.services.authServices.UserService;
 
 import lombok.RequiredArgsConstructor;
+import reactor.core.publisher.Flux;
+import reactor.core.scheduler.Schedulers;
 
 @Service
 @RequiredArgsConstructor
@@ -45,6 +49,13 @@ public class UserServiceImpl implements UserService {
     @Override
     public Optional<User> findById(long id) {
         return userRepository.findById(id);
+    }
+
+    @Override
+    public UserDto findByIdStream(long id) {
+        User user = findById(id).get();
+
+        return toDto(user);
     }
 
     @Override
@@ -116,28 +127,38 @@ public class UserServiceImpl implements UserService {
         userRepository.deleteById(userId);
     }
 
-    private UserDto toDto(User user) {
+    @Override
+    public UserDto toDto(User user) {
         var permission = user.getUserPermissions().stream()
                 .filter(up -> up.getUser().getId() == user.getId()).map(p -> p.getPermissionName())
                 .collect(Collectors.toSet());
 
         UserDto userDto = UserDto.builder()
                 .id(user.getId())
+                .email(user.getEmail())
                 .first_name(user.getFirst_name())
                 .last_name(user.getLast_name())
+                .password(user.getPassword())
+                .imageUrl(user.getImageUrl())
                 .name(user.getName())
                 .role(user.getRole())
                 .permissions(permission)
                 .provider(user.getProvider())
-                .providerId(user.getProviderId())
-                .email(user.getEmail())
-                .password(user.getPassword())
                 .isVerified(user.isVerified())
-                .imageUrl(user.getImageUrl())
+                .providerId(user.getProviderId())
                 .status(user.getUserStatus())
                 .created_at(user.getCreated_at())
                 .updated_at(user.getUpdated_at())
                 .build();
         return userDto;
+    }
+
+    @Override
+    public Flux<ServerSentEvent<UserDto>> streamCurrentUser(long userId) {
+        return Flux.interval(Duration.ofSeconds(1))
+                .publishOn(Schedulers.boundedElastic())
+                .map(sequence -> ServerSentEvent.<UserDto>builder().id(String.valueOf(sequence))
+                        .event("current-user-event").data(findByIdStream(userId))
+                        .build());
     }
 }

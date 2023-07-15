@@ -34,6 +34,7 @@ public class DashBoardRepository {
     }
 
     public SummaryDashboardDto getSummaryDashboard() {
+        simpleJdbcCall = new SimpleJdbcCall(jdbcTemplate);
         simpleJdbcCall.withProcedureName("sp_summary_dashboard").declareParameters(
                 new SqlInOutParameter("total_user", Types.INTEGER),
                 new SqlInOutParameter("today_register", Types.INTEGER),
