@@ -184,8 +184,7 @@ public class BlogServiceImpl implements BlogService {
     @Override
     public List<BlogsInterface> findAllBlogs() {
         List<BlogsInterface> blogDtos = blogRepository.findAllBlogs();
-        blogDtos = blogDtos.stream().filter(c -> c.getStatus() == 1).toList(); // load status = 1
-                                                                               // (ACTIVE)
+        blogDtos = blogDtos.stream().toList();
         return blogDtos;
     }
 
