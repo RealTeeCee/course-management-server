@@ -1,6 +1,7 @@
 package com.aptech.coursemanagementserver.repositories;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -34,8 +35,8 @@ public interface BlogRepository extends JpaRepository<Blog, Long> {
 
     @Query(value = """
             SELECT
-                b.*
-                , cat.name [category_name]
+                b.*,
+                cat.name [category_name]
             FROM blog b
                 INNER JOIN category cat ON b.category_id = cat.id
                 LEFT JOIN users u ON b.user_id = u.id AND u.role = 'USER'
@@ -43,4 +44,6 @@ public interface BlogRepository extends JpaRepository<Blog, Long> {
                 b.created_at DESC
                                               """, nativeQuery = true)
     List<BlogsInterface> findAllBlogs();
+
+    Optional<Blog> findBySlug(String slug);
 }
