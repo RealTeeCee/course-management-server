@@ -228,10 +228,10 @@ public class BlogServiceImpl implements BlogService {
     }
 
     @Override
-    public BaseDto updateViewCount(long blogId) {
+    public BaseDto updateViewCount(String slug) {
         try {
-            Blog blog = blogRepository.findById(blogId).orElseThrow(
-                    () -> new NoSuchElementException("The blog with blogId: [" + blogId + "] is not exist."));
+            Blog blog = blogRepository.findBySlug(slug).orElseThrow(
+                    () -> new NoSuchElementException("The blog with slug: [" + slug + "] is not exist."));
 
             blog.setView_count(blog.getView_count() + 1);
 

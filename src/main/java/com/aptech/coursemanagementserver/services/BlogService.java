@@ -28,5 +28,5 @@ public interface BlogService {
 
     public List<BlogsInterface> findAllBlogs();
 
-    public BaseDto updateViewCount(long blogId);
+    public BaseDto updateViewCount(String slug);
 }

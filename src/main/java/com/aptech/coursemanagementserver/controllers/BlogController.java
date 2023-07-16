@@ -59,11 +59,11 @@ public class BlogController {
         }
     }
 
-    @PutMapping(path = "view-count/{id}")
+    @PutMapping(path = "view-count/{slug}")
     @Operation(summary = "[ANORNYMOUS] - Update view count Blog")
-    public ResponseEntity<BaseDto> updateViewCount(@PathVariable("id") long id) {
+    public ResponseEntity<BaseDto> updateViewCount(@PathVariable("slug") String slug) {
         try {
-            return ResponseEntity.ok(blogService.updateViewCount(id));
+            return ResponseEntity.ok(blogService.updateViewCount(slug));
         } catch (Exception e) {
             throw new BadRequestException(FETCHING_FAILED);
         }
