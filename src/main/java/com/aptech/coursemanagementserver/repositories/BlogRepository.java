@@ -35,8 +35,8 @@ public interface BlogRepository extends JpaRepository<Blog, Long> {
 
     @Query(value = """
             SELECT
-                b.*
-                , cat.name [category_name]
+                b.*,
+                cat.name [category_name]
             FROM blog b
                 INNER JOIN category cat ON b.category_id = cat.id
                 LEFT JOIN users u ON b.user_id = u.id AND u.role = 'USER'

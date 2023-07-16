@@ -18,4 +18,6 @@ public interface BlogsInterface {
     public long getCategory_id();
 
     public String getCategory_name();
+
+    Long getUser_id();
 }
