@@ -78,6 +78,19 @@ public class SectionController {
         }
     }
 
+    @PreAuthorize("hasAnyRole('USER', 'ADMIN', 'MANAGER', 'EMPLOYEE')")
+    @Operation(summary = "[ANY ROLE] - Get Max Ordered Section By CourseId")
+    @GetMapping(path = "/max-ordered", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Integer> getMaxOrderedSectionByCourseId(@PathVariable("id") long courseId) {
+        try {
+            return new ResponseEntity<Integer>(sectionService.findMaxSectionOrderedByCourseId(courseId), HttpStatus.OK);
+        } catch (NoSuchElementException e) {
+            throw new ResourceNotFoundException(e.getMessage());
+        } catch (Exception e) {
+            throw new BadRequestException(FETCHING_FAILED);
+        }
+    }
+
     @PostMapping
     @Operation(summary = "[ADMIN, MANAGER, EMP_COURSE] - Create Section")
     @PreAuthorize("hasAnyRole('ADMIN', 'MANAGER', 'EMP_COURSE')")
