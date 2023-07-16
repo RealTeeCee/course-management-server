@@ -20,11 +20,13 @@ public interface BlogService {
 
     public BlogDto findById(long blogId);
 
+    public BlogDto findBySlug(String slug);
+
     public List<BlogDto> findAllBlogsByUserId(long userId);
 
     public List<BlogsInterface> findAllBlogsWithRole();
 
     public List<BlogsInterface> findAllBlogs();
 
-    public BaseDto updateViewCount(long blogId);
+    public BaseDto updateViewCount(String slug);
 }
