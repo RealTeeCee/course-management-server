@@ -95,6 +95,11 @@ public class QuestionServiceImpl implements QuestionService {
         Question question = questionRepository.findById(questionId).orElseThrow(
                 () -> new NoSuchElementException("This question with questionId: [" + questionId + "] is not exist."));
 
+        if (question.getPart().getStatus() == 1) {
+            throw new BadRequestException(
+                    "Cannot delete question within an activated part.");
+        }
+
         if (examResultRepository.findByQuestionId(questionId).size() > 0) {
             throw new BadRequestException(
                     "The question 've already registered in examination.");

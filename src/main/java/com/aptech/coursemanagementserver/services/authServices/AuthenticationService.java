@@ -70,7 +70,7 @@ public class AuthenticationService {
 
         if (user.getUserStatus() == 0) {
             throw new BadRequestException(
-                    "Your account has been blocked due to violate our privacy. Please be advised that you will no longer be able to access your account or use any of its features. Any information please contact ClicknLearn Admin.");
+                    "Your account has been blocked due to violate our privacy.");
         }
 
         var jwtToken = jwtService.generateToken(user);

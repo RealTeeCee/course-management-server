@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 import com.aptech.coursemanagementserver.dtos.oauth.OAuth2UserInfo;
 import com.aptech.coursemanagementserver.dtos.oauth.OAuth2UserInfoFactory;
 import com.aptech.coursemanagementserver.enums.AuthProvider;
+import com.aptech.coursemanagementserver.exceptions.BadRequestException;
 import com.aptech.coursemanagementserver.exceptions.OAuth2AuthenticationProcessingException;
 import com.aptech.coursemanagementserver.models.Permissions;
 import com.aptech.coursemanagementserver.models.User;
@@ -54,6 +55,12 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
         User user;
         if (userOptional.isPresent()) {
             user = userOptional.get();
+
+            if (user.getUserStatus() == 0) {
+                throw new BadRequestException(
+                        "Your account has been blocked due to violate our privacy.");
+            }
+
             if (!user.getProvider()
                     .equals(AuthProvider.valueOf(oAuth2UserRequest.getClientRegistration().getRegistrationId()))) {
                 throw new OAuth2AuthenticationProcessingException("Looks like you're signed up with " +

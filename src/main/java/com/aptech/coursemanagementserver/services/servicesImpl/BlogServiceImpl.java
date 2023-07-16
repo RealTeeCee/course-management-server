@@ -7,7 +7,6 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
-import java.util.Optional;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -114,6 +113,7 @@ public class BlogServiceImpl implements BlogService {
                 category = categoryRepository.findById(blogDto.getCategory()).get();
             }
 
+            User updatedUser = userService.findCurrentUser();
             // Check if the new slug already exists
             String newSlug = Slugify.builder().build().slugify(blogDto.getName());
             if (!newSlug.equals(blog.getSlug()) && blogRepository.findBySlug(newSlug).isPresent()) {
@@ -129,6 +129,7 @@ public class BlogServiceImpl implements BlogService {
                     .setStatus(blogDto.getStatus())
                     .setDescription(blogDto.getDescription())
                     .setUpdated_at(LocalDateTime.now())
+                    .setUpdatedBy(updatedUser.getEmail().split("@")[0])
                     .setImage(blogDto.getImage());
 
             blogRepository.save(blog);

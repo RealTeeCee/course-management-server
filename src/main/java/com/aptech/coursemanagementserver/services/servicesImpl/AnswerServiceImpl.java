@@ -105,6 +105,11 @@ public class AnswerServiceImpl implements AnswerService {
         Answer answer = answerRepository.findById(answerId).orElseThrow(
                 () -> new NoSuchElementException("This answer with answerId: [" + answerId + "] is not exist."));
 
+        if (answer.getQuestion().getPart().getStatus() == 1) {
+            throw new BadRequestException(
+                    "Cannot delete answer within an activated part");
+        }
+
         if (examResultRepository.findByAnswerId(answerId).size() > 0) {
             throw new BadRequestException(
                     "The answer 've already registered in examination.");

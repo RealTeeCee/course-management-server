@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 import com.aptech.coursemanagementserver.dtos.CourseDto;
 import com.aptech.coursemanagementserver.dtos.CourseInterface;
 import com.aptech.coursemanagementserver.dtos.CourseRelatedDto;
+import com.aptech.coursemanagementserver.dtos.CourseTreeInterface;
 import com.aptech.coursemanagementserver.dtos.baseDto.BaseDto;
 import com.aptech.coursemanagementserver.enums.AntType;
 import com.aptech.coursemanagementserver.exceptions.BadRequestException;
@@ -237,6 +238,22 @@ public class CourseServiceImpl implements CourseService {
                     (course.getId() > 0 ? "Cannot update" : "Cannot create") + " course without Author.");
         }
 
+        if (course.getStatus() == 0 && courseDto.getStatus() == 1) {
+            course.setPublished_at(new Date());
+            CourseTreeInterface courseTree = courseRepository.findCourseTreeByCourseId(courseDto.getId());
+
+            if (courseTree.getSectionId() == 0
+                    || (courseTree.getSectionId() != 0 && courseTree.getSectionStatus() == 0)) {
+                throw new BadRequestException("Cannot activate course that don't have enough section.");
+            }
+            if (courseTree.getLessonId() == 0 || (courseTree.getLessonId() != 0 && courseTree.getLessonStatus() == 0)) {
+                throw new BadRequestException("Cannot activate course that don't have enough lesson.");
+            }
+            if (courseTree.getVideoId() == 0) {
+                throw new BadRequestException("Cannot activate course that don't have enough video.");
+            }
+        }
+
         course.setName(courseDto.getName().replaceAll("\\s{2,}", " "))
                 .setCategory(categoryRepository.findById(courseDto.getCategory()).get())
                 .setAuthor(authorRepository.findById(courseDto.getAuthor()).get())
@@ -254,10 +271,6 @@ public class CourseServiceImpl implements CourseService {
                 .setNet_price(courseDto.getNet_price())
                 .setRequirement(courseDto.getRequirement())
                 .setUpdatedBy(user.getEmail().split("@")[0]);
-
-        if (course.getStatus() == 0 && courseDto.getStatus() == 1) {
-            course.setPublished_at(new Date());
-        }
 
         // courseRepository.save(course);
 
