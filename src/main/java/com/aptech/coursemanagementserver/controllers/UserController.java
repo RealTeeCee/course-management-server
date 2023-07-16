@@ -8,9 +8,11 @@ import java.util.NoSuchElementException;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.codec.ServerSentEvent;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -21,7 +23,6 @@ import com.aptech.coursemanagementserver.dtos.CourseInterface;
 import com.aptech.coursemanagementserver.dtos.PermissionDto;
 import com.aptech.coursemanagementserver.dtos.RegisterRequestDto;
 import com.aptech.coursemanagementserver.dtos.UserDto;
-import com.aptech.coursemanagementserver.dtos.UserProfileDto;
 import com.aptech.coursemanagementserver.dtos.baseDto.BaseDto;
 import com.aptech.coursemanagementserver.enums.AntType;
 import com.aptech.coursemanagementserver.enums.Role;
@@ -34,7 +35,6 @@ import com.aptech.coursemanagementserver.models.Token;
 import com.aptech.coursemanagementserver.models.User;
 import com.aptech.coursemanagementserver.models.UserPermission;
 import com.aptech.coursemanagementserver.repositories.CourseRepository;
-import com.aptech.coursemanagementserver.repositories.PermissionsRepository;
 import com.aptech.coursemanagementserver.repositories.TokenRepository;
 import com.aptech.coursemanagementserver.repositories.UserPermissionRepository;
 import com.aptech.coursemanagementserver.services.authServices.AuthenticationService;
@@ -43,6 +43,7 @@ import com.aptech.coursemanagementserver.services.authServices.UserService;
 
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import reactor.core.publisher.Flux;
 
 @RestController
 @RequestMapping("/auth")
@@ -54,30 +55,25 @@ public class UserController {
     private final AuthenticationService authenticationService;
     private final UserService userService;
     private final UserPermissionRepository userPermissionRepository;
-    private final PermissionsRepository permissionsRepository;
 
     @GetMapping("/user/me")
-    @PreAuthorize("hasAnyRole('USER', 'ADMIN', 'MANAGER', 'EMPLOYEE')")
-    public ResponseEntity<UserProfileDto> getCurrentUser(@CurrentUser User user) {
-        var myPermission = user.getUserPermissions().stream()
-                .filter(up -> up.getUser().getId() == user.getId()).map(p -> p.getPermissionName()).toList();
+    // @PreAuthorize("hasAnyRole('USER', 'ADMIN', 'MANAGER', 'EMPLOYEE')")
+    public ResponseEntity<UserDto> getCurrentUser(@CurrentUser User user) {
+        try {
+            return ResponseEntity.ok(userService.toDto(user));
+        } catch (Exception e) {
+            throw new BadRequestException(e.getMessage());
+        }
+    }
 
-        var userProfileDto = UserProfileDto.builder()
-                .id(user.getId())
-                .email(user.getEmail())
-                .imageUrl(user.getImageUrl())
-                .name(user.getName())
-                .first_name(user.getFirst_name())
-                .last_name(user.getLast_name())
-                .type(AntType.success)
-                .role(user.getRole())
-                .permissions(myPermission)
-                .isNotify(user.isNotify())
-                .status(user.getUserStatus())
-                .created_at(user.getCreated_at())
-                .message("Get current logged in user success.")
-                .build();
-        return ResponseEntity.ok(userProfileDto);
+    @GetMapping("/user/me/stream/{userId}")
+    // @PreAuthorize("hasAnyRole('USER', 'ADMIN', 'MANAGER', 'EMPLOYEE')")
+    public Flux<ServerSentEvent<UserDto>> streamCurrentUser(@PathVariable long userId) {
+        try {
+            return userService.streamCurrentUser(userId);
+        } catch (Exception e) {
+            throw new BadRequestException(e.getMessage());
+        }
     }
 
     @GetMapping("/user")
