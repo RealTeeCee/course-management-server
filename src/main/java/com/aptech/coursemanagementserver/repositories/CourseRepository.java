@@ -9,6 +9,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.aptech.coursemanagementserver.dtos.CourseInterface;
+import com.aptech.coursemanagementserver.dtos.CourseTreeInterface;
 import com.aptech.coursemanagementserver.models.Course;
 
 public interface CourseRepository extends JpaRepository<Course, Long> {
@@ -142,6 +143,21 @@ public interface CourseRepository extends JpaRepository<Course, Long> {
                         ORDER BY c.created_at DESC
                                                                             """, nativeQuery = true)
         List<CourseInterface> findAllCourses();
+
+        @Query(value = """
+                        SELECT TOP 1 c.id as courseId,
+                        ISNULL(s.id,0) as sectionId,
+                        ISNULL(s.status,0) as sectionStatus,
+                        ISNULL(l.id,0) as lessonId,
+                        ISNULL(l.status,0) as lessonStatus,
+                        ISNULL(v.lesson_id,0) as videoId, c.status
+                        FROM course c LEFT JOIN section s on c.id = s.course_id
+                        LEFT JOIN lesson l on s.id = l.section_id
+                        LEFT JOIN video v on l.id = v.lesson_id
+                        WHERE c.id = :courseId AND (section_id is null or lesson_id is null or v.lesson_id is null)
+
+                                                        """, nativeQuery = true)
+        CourseTreeInterface findCourseTreeByCourseId(long courseId);
 
         @Query(value = """
                         SELECT TOP 1 COUNT(CASE WHEN(u.role = 'USER') THEN u.role END) [enrollmentCount], c.id

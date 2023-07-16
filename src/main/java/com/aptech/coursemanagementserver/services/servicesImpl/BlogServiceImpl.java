@@ -96,6 +96,8 @@ public class BlogServiceImpl implements BlogService {
             if (blogDto.getCategory() > 0) {
                 category = categoryRepository.findById(blogDto.getCategory()).get();
             }
+
+            User updatedUser = userService.findCurrentUser();
             blog.setName(blogDto.getName())
                     .setSlug(Slugify.builder().build().slugify(blogDto.getName()))
                     .setUser(user)
@@ -104,6 +106,7 @@ public class BlogServiceImpl implements BlogService {
                     .setStatus(blogDto.getStatus())
                     .setDescription(blogDto.getDescription())
                     .setUpdated_at(LocalDateTime.now())
+                    .setUpdatedBy(updatedUser.getEmail().split("@")[0])
                     .setImage(blogDto.getImage());
 
             blogRepository.save(blog);
