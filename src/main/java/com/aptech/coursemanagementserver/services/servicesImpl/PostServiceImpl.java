@@ -177,7 +177,7 @@ public class PostServiceImpl implements PostService {
         }
 
         private PostDto toPostDto(Post post) {
-                List<Comment> comments = post.getComments();
+                List<Comment> comments = post.getComments().stream().distinct().toList();
                 List<User> users = post.getLikedUsers();
                 List<CommentDto> commentDtos = new ArrayList<>();
                 List<UserDto> userDtos = new ArrayList<>();
