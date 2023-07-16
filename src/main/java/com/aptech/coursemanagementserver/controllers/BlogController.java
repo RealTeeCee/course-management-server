@@ -80,11 +80,24 @@ public class BlogController {
         }
     }
 
-    @GetMapping(path = "/{id}")
-    @Operation(summary = "[ANORNYMOUS] - GET Blog By Id")
-    public ResponseEntity<BlogDto> getBlogById(@PathVariable("id") long id) {
+    // @GetMapping(path = "/{id}")
+    // @Operation(summary = "[ANORNYMOUS] - GET Blog By Id")
+    // public ResponseEntity<BlogDto> getBlogById(@PathVariable("id") long id) {
+    // try {
+    // BlogDto blogDto = blogService.findById(id);
+    // return ResponseEntity.ok(blogDto);
+    // } catch (NoSuchElementException e) {
+    // throw new ResourceNotFoundException(e.getMessage());
+    // } catch (Exception e) {
+    // throw new BadRequestException(FETCHING_FAILED);
+    // }
+    // }
+
+    @GetMapping(path = "/{slug}")
+    @Operation(summary = "[ANORNYMOUS] - GET Blog By Slug")
+    public ResponseEntity<BlogDto> getBlogBySlug(@PathVariable("slug") String slug) {
         try {
-            BlogDto blogDto = blogService.findById(id);
+            BlogDto blogDto = blogService.findBySlug(slug);
             return ResponseEntity.ok(blogDto);
         } catch (NoSuchElementException e) {
             throw new ResourceNotFoundException(e.getMessage());

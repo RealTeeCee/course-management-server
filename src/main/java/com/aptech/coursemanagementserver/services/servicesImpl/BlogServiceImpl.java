@@ -1,13 +1,17 @@
 package com.aptech.coursemanagementserver.services.servicesImpl;
 
 import static com.aptech.coursemanagementserver.constants.GlobalStorage.BAD_REQUEST_EXCEPTION;
+import static com.aptech.coursemanagementserver.constants.GlobalStorage.BLOG_EXISTED_EXCEPTION;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.Optional;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import com.aptech.coursemanagementserver.dtos.BlogDto;
 import com.aptech.coursemanagementserver.dtos.BlogsInterface;
@@ -56,14 +60,21 @@ public class BlogServiceImpl implements BlogService {
             User updatedUser = userService.findCurrentUser();
             Blog blog = new Blog();
             User user = userService.findById(blogDto.getUser_id()).orElseThrow(() -> new NoSuchElementException(
-                    "The user with userId: [" + blogDto.getUser_id() + "] is not exist."));
+                    "The user with userId: [" + blogDto.getUser_id() + "] does not exist."));
             Category category = null;
             if (blogDto.getCategory() > 0) {
                 category = categoryRepository.findById(blogDto.getCategory()).get();
             }
+
+            String slug = Slugify.builder().build().slugify(blogDto.getName());
+            if (blogRepository.findBySlug(slug).isPresent()) {
+                throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY,
+                        BLOG_EXISTED_EXCEPTION);
+            }
+
             blog.setId(blogDto.getId())
                     .setName(blogDto.getName())
-                    .setSlug(Slugify.builder().build().slugify(blogDto.getName()))
+                    .setSlug(slug)
                     .setUser(user)
                     .setCategory(category)
                     .setView_count(blogDto.getView_count())
@@ -75,10 +86,16 @@ public class BlogServiceImpl implements BlogService {
                     .setImage(blogDto.getImage());
             blogRepository.save(blog);
             return BaseDto.builder().type(AntType.success)
-                    .message("Blog created successfully. Please wait for admin confirmation.").build();
+                    .message("Blog created successfully! Please wait for the administrator's approval.")
+                    .build();
         } catch (NoSuchElementException e) {
-            throw new NoSuchElementException(
-                    "The blog with blogId: [" + blogDto.getId() + "] is not exist.");
+            throw new NoSuchElementException("The blog with blogId: [" + blogDto.getId() + "] does not exist.");
+        } catch (ResponseStatusException e) {
+            if (e.getStatusCode() == HttpStatus.UNPROCESSABLE_ENTITY) {
+                throw new BadRequestException(BLOG_EXISTED_EXCEPTION);
+            } else {
+                throw new BadRequestException(BAD_REQUEST_EXCEPTION);
+            }
         } catch (Exception e) {
             throw new BadRequestException(BAD_REQUEST_EXCEPTION);
         }
@@ -88,16 +105,24 @@ public class BlogServiceImpl implements BlogService {
     public BaseDto update(BlogDto blogDto) {
         try {
             Blog blog = blogRepository.findById(blogDto.getId()).orElseThrow(() -> new NoSuchElementException(
-                    "The blog with blogId: [" + blogDto.getId() + "] is not exist."));
+                    "The blog with blogId: [" + blogDto.getId() + "] does not exist."));
 
             User user = userService.findById(blogDto.getUser_id()).orElseThrow(() -> new NoSuchElementException(
-                    "The user with userId: [" + blogDto.getUser_id() + "] is not exist."));
+                    "The user with userId: [" + blogDto.getUser_id() + "] does not exist."));
             Category category = null;
             if (blogDto.getCategory() > 0) {
                 category = categoryRepository.findById(blogDto.getCategory()).get();
             }
+
+            // Check if the new slug already exists
+            String newSlug = Slugify.builder().build().slugify(blogDto.getName());
+            if (!newSlug.equals(blog.getSlug()) && blogRepository.findBySlug(newSlug).isPresent()) {
+                throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY,
+                        BLOG_EXISTED_EXCEPTION);
+            }
+
             blog.setName(blogDto.getName())
-                    .setSlug(Slugify.builder().build().slugify(blogDto.getName()))
+                    .setSlug(newSlug)
                     .setUser(user)
                     .setCategory(category)
                     .setView_count(blogDto.getView_count())
@@ -111,6 +136,12 @@ public class BlogServiceImpl implements BlogService {
             return BaseDto.builder().type(AntType.success).message("Update blog successfully.").build();
         } catch (NoSuchElementException e) {
             throw new NoSuchElementException(e.getMessage());
+        } catch (ResponseStatusException e) {
+            if (e.getStatusCode() == HttpStatus.UNPROCESSABLE_ENTITY) {
+                throw new BadRequestException(BLOG_EXISTED_EXCEPTION);
+            } else {
+                throw new BadRequestException(BAD_REQUEST_EXCEPTION);
+            }
         } catch (Exception e) {
             throw new BadRequestException(BAD_REQUEST_EXCEPTION);
         }
@@ -135,6 +166,14 @@ public class BlogServiceImpl implements BlogService {
     public BlogDto findById(long blogId) {
         Blog blog = blogRepository.findById(blogId).orElseThrow(
                 () -> new NoSuchElementException("This blog with blogId: [" + blogId + "] is not exist."));
+        BlogDto blogDto = toBlogDto(blog);
+        return blogDto;
+    }
+
+    @Override
+    public BlogDto findBySlug(String slug) {
+        Blog blog = blogRepository.findBySlug(slug).orElseThrow(
+                () -> new NoSuchElementException("This blog with slug: [" + slug + "] is not exist."));
         BlogDto blogDto = toBlogDto(blog);
         return blogDto;
     }

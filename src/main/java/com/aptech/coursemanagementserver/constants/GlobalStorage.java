@@ -42,6 +42,9 @@ public interface GlobalStorage {
     String OAUTH2_AUTHORIZATION_REQUEST_COOKIE_NAME = "oauth2_auth_request";
     String REDIRECT_URI_PARAM_COOKIE_NAME = "redirect_uri";
 
+    // BLOG
+    String BLOG_EXISTED_EXCEPTION = "This title already exists, please change another !";
+
     // EXCEPTION
     String GLOBAL_EXCEPTION = "Something wrong. Please try again";
     String FETCHING_FAILED = "Fetch data failed!";

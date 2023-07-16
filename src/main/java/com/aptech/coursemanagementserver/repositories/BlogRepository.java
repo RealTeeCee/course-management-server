@@ -1,6 +1,7 @@
 package com.aptech.coursemanagementserver.repositories;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -43,4 +44,6 @@ public interface BlogRepository extends JpaRepository<Blog, Long> {
                 b.created_at DESC
                                               """, nativeQuery = true)
     List<BlogsInterface> findAllBlogs();
+
+    Optional<Blog> findBySlug(String slug);
 }
