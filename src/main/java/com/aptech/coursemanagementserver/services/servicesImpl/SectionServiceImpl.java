@@ -63,7 +63,17 @@ public class SectionServiceImpl implements SectionService {
         } catch (Exception e) {
             throw new BadRequestException(BAD_REQUEST_EXCEPTION);
         }
+    }
 
+    @Override
+    public int findMaxSectionOrderedByCourseId(long courseId) {
+        try {
+            return sectionRepository.findMaxSectionOrderedByCourseId(courseId);
+        } catch (NoSuchElementException e) {
+            throw new NoSuchElementException(e.getMessage());
+        } catch (Exception e) {
+            throw new BadRequestException(BAD_REQUEST_EXCEPTION);
+        }
     }
 
     @Override

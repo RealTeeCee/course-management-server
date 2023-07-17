@@ -11,6 +11,8 @@ public interface SectionService {
 
     public long findLastSectionId();
 
+    public int findMaxSectionOrderedByCourseId(long courseId);
+
     public Section findSectionByName(String sectionName);
 
     public List<SectionDto> findAllByCourseId(long courseId);

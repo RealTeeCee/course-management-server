@@ -71,7 +71,17 @@ public class LessonServiceImpl implements LessonService {
         } catch (Exception e) {
             throw new BadRequestException(BAD_REQUEST_EXCEPTION);
         }
+    }
 
+    @Override
+    public int findMaxLessonOrderedBySectionId(long sectionId) {
+        try {
+            return lessonRepository.findMaxLessonOrderedBySectionId(sectionId);
+        } catch (NoSuchElementException e) {
+            throw new NoSuchElementException(e.getMessage());
+        } catch (Exception e) {
+            throw new BadRequestException(BAD_REQUEST_EXCEPTION);
+        }
     }
 
     @Override

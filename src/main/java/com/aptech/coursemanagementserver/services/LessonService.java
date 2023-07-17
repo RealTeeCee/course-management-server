@@ -13,6 +13,8 @@ public interface LessonService {
 
     public long findLastLessonId();
 
+    public int findMaxLessonOrderedBySectionId(long sectionId);
+
     public List<Lesson> findAll();
 
     public List<LessonDto> findAllBySectionId(long sectionId);
