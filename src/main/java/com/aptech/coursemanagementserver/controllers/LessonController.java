@@ -81,6 +81,19 @@ public class LessonController {
         }
     }
 
+    @PreAuthorize("hasAnyRole('USER', 'ADMIN', 'MANAGER', 'EMPLOYEE')")
+    @Operation(summary = "[ANY ROLE] - Get Max Ordered Lesson By SectionId")
+    @GetMapping(path = "/max-ordered", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Integer> getMaxLessonOrderedBySectionId(@PathVariable("sectionId") long sectionId) {
+        try {
+            return new ResponseEntity<Integer>(lessonService.findMaxLessonOrderedBySectionId(sectionId), HttpStatus.OK);
+        } catch (NoSuchElementException e) {
+            throw new ResourceNotFoundException(e.getMessage());
+        } catch (Exception e) {
+            throw new BadRequestException(FETCHING_FAILED);
+        }
+    }
+
     @PostMapping
     @Operation(summary = "[ADMIN, MANAGER, EMP_COURSE] - Create Lesson")
     @PreAuthorize("hasAnyRole('USER', 'ADMIN', 'MANAGER', 'EMP_COURSE')")

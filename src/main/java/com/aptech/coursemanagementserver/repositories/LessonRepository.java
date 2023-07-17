@@ -18,6 +18,13 @@ public interface LessonRepository extends JpaRepository<Lesson, Long> {
         long findLastLessonId();
 
         @Query(value = """
+                        SELECT COALESCE(MAX(l.ordered), 0) FROM lesson l INNER JOIN section s
+                            ON l.section_id = s.id
+                            WHERE s.id = :sectionId
+                                """, nativeQuery = true)
+        int findMaxLessonOrderedBySectionId(long sectionId);
+
+        @Query(value = """
                         SELECT l FROM Lesson l INNER JOIN Section s\s
                         ON l.section.id = s.id\s
                         WHERE s.id = :sectionId
