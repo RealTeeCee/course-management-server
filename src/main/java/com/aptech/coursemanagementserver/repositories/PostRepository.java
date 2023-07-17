@@ -12,7 +12,7 @@ import com.aptech.coursemanagementserver.models.Post;
 
 @Repository
 public interface PostRepository extends JpaRepository<Post, Long> {
-    List<Post> findAllByCourseId(long courseId);
+    List<Post> findAllByTypeIdAndType(long typeId, String type);
 
     @Modifying
     @Transactional

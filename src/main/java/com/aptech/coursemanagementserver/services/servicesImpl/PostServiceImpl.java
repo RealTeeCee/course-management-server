@@ -45,7 +45,8 @@ public class PostServiceImpl implements PostService {
                                                 "The user with userId: [" + postDto.getUserId()
                                                                 + "] is not exist."));
                 Post post = new Post();
-                post.setCourseId(postDto.getCourseId());
+                post.setTypeId(postDto.getTypeId());
+                post.setType(postDto.getType());
                 post.setContent(postDto.getContent());
                 post.setUserPost(user);
                 post.setComments(new ArrayList<>());
@@ -54,8 +55,8 @@ public class PostServiceImpl implements PostService {
 
         }
 
-        public List<PostDto> findAllByCourseId(long courseId) {
-                List<Post> posts = postRepository.findAllByCourseId(courseId);
+        public List<PostDto> findAllByTypeIdAndType(long typeId, String type) {
+                List<Post> posts = postRepository.findAllByTypeIdAndType(typeId, type);
                 List<PostDto> postDtos = new ArrayList<>();
 
                 for (Post post : posts) {
@@ -168,11 +169,11 @@ public class PostServiceImpl implements PostService {
                 return commentDtos;
         }
 
-        public Flux<ServerSentEvent<List<PostDto>>> streamPosts(long courseId) {
+        public Flux<ServerSentEvent<List<PostDto>>> streamPosts(long typeId, String type) {
                 return Flux.interval(Duration.ofSeconds(2))
                                 .publishOn(Schedulers.boundedElastic())
                                 .map(sequence -> ServerSentEvent.<List<PostDto>>builder().id(String.valueOf(sequence))
-                                                .event("post-list-event").data(findAllByCourseId(courseId))
+                                                .event("post-list-event").data(findAllByTypeIdAndType(typeId, type))
                                                 .build());
         }
 
@@ -201,7 +202,8 @@ public class PostServiceImpl implements PostService {
                                 .likedUsers(userDtos)
                                 .content(post.getContent())
                                 .postImageUrl(post.getUserPost().getImageUrl())
-                                .courseId(post.getCourseId())
+                                .typeId(post.getTypeId())
+                                .type(post.getType())
                                 .role(post.getUserPost().getRole())
                                 .created_at(post.getCreated_at())
                                 .build();
