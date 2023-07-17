@@ -12,6 +12,7 @@ import com.aptech.coursemanagementserver.dtos.CommentDto;
 import com.aptech.coursemanagementserver.dtos.NotificationRequestDto;
 import com.aptech.coursemanagementserver.dtos.PostDto;
 import com.aptech.coursemanagementserver.dtos.UserDto;
+import com.aptech.coursemanagementserver.enums.CommentType;
 import com.aptech.coursemanagementserver.enums.NotificationType;
 import com.aptech.coursemanagementserver.models.Comment;
 import com.aptech.coursemanagementserver.models.Notification;
@@ -56,7 +57,7 @@ public class PostServiceImpl implements PostService {
         }
 
         public List<PostDto> findAllByTypeIdAndType(long typeId, String type) {
-                List<Post> posts = postRepository.findAllByTypeIdAndType(typeId, type);
+                List<Post> posts = postRepository.findAllByTypeIdAndType(typeId, CommentType.valueOf(type));
                 List<PostDto> postDtos = new ArrayList<>();
 
                 for (Post post : posts) {
