@@ -53,6 +53,7 @@
 			<artifactId>spring-security-oauth2-client</artifactId>
 		</dependency>
 
+
 		<dependency>
 			<groupId>com.microsoft.sqlserver</groupId>
 			<artifactId>mssql-jdbc</artifactId>
@@ -163,7 +164,10 @@
 			<version>6.20.5</version>
 		</dependency>
 
-
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-actuator</artifactId>
+		</dependency>
 	</dependencies>
 
 	<build>
@@ -172,6 +176,35 @@
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
 			</plugin>
+			<!-- <plugin>
+				<groupId>com.microsoft.azure</groupId>
+				<artifactId>azure-spring-apps-maven-plugin</artifactId>
+				<version>1.18.0</version>
+				<configuration>
+					<subscriptionId>39777442-858d-4a72-b99a-51f70253d691</subscriptionId>
+					<resourceGroup>ClicknLearn</resourceGroup>
+					<clusterName>clicknlearnapi</clusterName>
+					<appName>click-and-learn-server</appName>
+					<isPublic>true</isPublic>
+					<deployment>
+						<cpu>1</cpu>
+						<memoryInGB>2</memoryInGB>
+						<instanceCount>1</instanceCount>
+						<runtimeVersion>Java 17</runtimeVersion>
+						<resources>
+							<resource>
+								<filtering />
+								<mergeId />
+								<targetPath />
+								<directory>${project.basedir}/target</directory>
+								<includes>
+									<include>*.jar</include>
+								</includes>
+							</resource>
+						</resources>
+					</deployment>
+				</configuration>
+			</plugin> -->
 		</plugins>
 	</build>
 
