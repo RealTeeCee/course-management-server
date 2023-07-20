@@ -5,6 +5,8 @@ import static com.aptech.coursemanagementserver.constants.GlobalStorage.CAPTION_
 import static com.aptech.coursemanagementserver.constants.GlobalStorage.FETCHING_FAILED;
 import static com.aptech.coursemanagementserver.constants.GlobalStorage.STREAM_API;
 import static com.aptech.coursemanagementserver.constants.GlobalStorage.VIDEO_PATH;
+import static com.aptech.coursemanagementserver.constants.GlobalStorage.CAPTION_FOLDER;
+import static com.aptech.coursemanagementserver.constants.GlobalStorage.VIDEO_FOLDER;
 
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
@@ -36,6 +38,7 @@ import com.aptech.coursemanagementserver.exceptions.BadRequestException;
 import com.aptech.coursemanagementserver.exceptions.InvalidFileExtensionException;
 import com.aptech.coursemanagementserver.exceptions.ResourceNotFoundException;
 import com.aptech.coursemanagementserver.services.VideoService;
+import com.aptech.coursemanagementserver.services.azureServices.AzureService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 
@@ -52,6 +55,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class VideoController {
     private final VideoService videoService;
+    private final AzureService azureService;
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     @Operation(summary = "[ADMIN, MANAGER , EMPLOYEE] - Get Video By Lesson Id")
@@ -83,9 +87,10 @@ public class VideoController {
             List<String> captionUrls = new ArrayList<>();
 
             for (MultipartFile captionFile : captionFiles) {
-                Files.copy(captionFile.getInputStream(),
-                        CAPTION_PATH.resolve(captionFile.getOriginalFilename()),
-                        StandardCopyOption.REPLACE_EXISTING);
+                // Files.copy(captionFile.getInputStream(),
+                // CAPTION_PATH.resolve(captionFile.getOriginalFilename()),
+                // StandardCopyOption.REPLACE_EXISTING);
+                azureService.uploadFile(captionFile, CAPTION_FOLDER, "");
                 captionUrls.add(CAPTION_API + captionFile.getOriginalFilename());
             }
 
@@ -99,12 +104,13 @@ public class VideoController {
 
             videoService.save(videoDto, lessonId);
 
-            Files.createDirectories(VIDEO_PATH);
-            Files.createDirectories(CAPTION_PATH);
+            // Files.createDirectories(VIDEO_PATH);
+            // Files.createDirectories(CAPTION_PATH);
 
-            Files.copy(videoFile.getInputStream(),
-                    VIDEO_PATH.resolve(videoDto.getName()),
-                    StandardCopyOption.REPLACE_EXISTING);
+            // Files.copy(videoFile.getInputStream(),
+            // VIDEO_PATH.resolve(videoDto.getName()),
+            // StandardCopyOption.REPLACE_EXISTING);
+            azureService.uploadFile(videoFile, VIDEO_FOLDER, videoDto.getName());
 
             return new ResponseEntity<BaseDto>(
                     BaseDto.builder().type(AntType.success).message("Create video successfully")

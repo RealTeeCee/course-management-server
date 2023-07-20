@@ -18,6 +18,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.io.RandomAccessFile;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -46,6 +47,11 @@ import com.aptech.coursemanagementserver.models.Video;
 import com.aptech.coursemanagementserver.repositories.LessonRepository;
 import com.aptech.coursemanagementserver.repositories.VideoRepository;
 import com.aptech.coursemanagementserver.services.VideoService;
+import com.aptech.coursemanagementserver.services.azureServices.AzureService;
+import com.azure.core.util.Context;
+import com.azure.storage.blob.models.BlobProperties;
+import com.azure.storage.blob.models.BlobRange;
+import com.azure.storage.blob.models.DownloadRetryOptions;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -56,6 +62,7 @@ import lombok.extern.slf4j.Slf4j;
 public class VideoServiceImpl implements VideoService {
     private final VideoRepository videoRepository;
     private final LessonRepository lessonRepository;
+    private final AzureService azureService;
 
     @Override
     public Video findVideoByName(String videoName) {
@@ -311,17 +318,17 @@ public class VideoServiceImpl implements VideoService {
             long rangeStart = 0L;
             long rangeEnd = 0L;
 
-            if (!StringUtils.hasText(localMediaFilePath)) {
-                throw new IllegalArgumentException("The full path to the media file is NULL or empty.");
-            }
+            // if (!StringUtils.hasText(localMediaFilePath)) {
+            // throw new IllegalArgumentException("The full path to the media file is NULL
+            // or empty.");
+            // }
 
-            Path filePath = Paths.get(localMediaFilePath);
-            if (!filePath.toFile().exists()) {
-                throw new FileNotFoundException("The media file does not exist.");
-            }
+            // Path filePath = Paths.get(localMediaFilePath);
+            // if (!filePath.toFile().exists()) {
+            // throw new FileNotFoundException("The media file does not exist.");
+            // }
 
-            long fileSize = Files.size(filePath);
-
+            long fileSize = azureService.getBlob(localMediaFilePath).getProperties().getBlobSize();
             int dashPos = rangeValues.indexOf("-");
             if (dashPos > 0 && dashPos <= (rangeValues.length() - 1)) {
                 String[] rangesArr = rangeValues.split("-");
@@ -369,12 +376,12 @@ public class VideoServiceImpl implements VideoService {
     public ResponseEntity<StreamingResponseBody> loadPartialMediaFile(String localMediaFilePath, long fileStartPos,
             long fileEndPos) throws IOException {
         StreamingResponseBody responseStream;
-        Path filePath = Paths.get(localMediaFilePath);
-        if (!filePath.toFile().exists()) {
-            throw new FileNotFoundException("The media file does not exist.");
-        }
-
-        long fileSize = Files.size(filePath);
+        // Path filePath = Paths.get(localMediaFilePath);
+        // if (!filePath.toFile().exists()) {
+        // throw new FileNotFoundException("The media file does not exist.");
+        // }
+        BlobProperties properties = azureService.getBlob(localMediaFilePath).getProperties();
+        long fileSize = properties.getBlobSize();
         if (fileStartPos < 0L) {
             fileStartPos = 0L;
         }
@@ -392,8 +399,7 @@ public class VideoServiceImpl implements VideoService {
             fileEndPos = 0L;
         }
 
-        byte[] buffer = new byte[1024];
-        String mimeType = Files.probeContentType(filePath);
+        String mimeType = properties.getContentType();
 
         final HttpHeaders responseHeaders = new HttpHeaders();
         String contentLength = String.valueOf((fileEndPos - fileStartPos) + 1);
@@ -404,32 +410,43 @@ public class VideoServiceImpl implements VideoService {
 
         final long fileStartPos2 = fileStartPos;
         final long fileEndPos2 = fileEndPos;
+
         responseStream = os -> {
-            RandomAccessFile file = new RandomAccessFile(localMediaFilePath, "r");
-            try (file) {
-                long pos = fileStartPos2;
-                file.seek(pos);
-                while (pos < fileEndPos2) {
-                    file.read(buffer);
-                    os.write(buffer);
-                    pos += buffer.length;
-                }
-                os.flush();
-            } catch (Exception e) {
+            // RandomAccessFile file = new RandomAccessFile(localMediaFilePath, "r");
+            // try (file) {
+            // long pos = fileStartPos2;
+            // file.seek(pos);
+            // while (pos < fileEndPos2) {
+            // file.read(buffer);
+            // os.write(buffer);
+            // pos += buffer.length;
+            // }
+            try {
+
+                BlobRange blobRange = new BlobRange(fileStartPos2, fileEndPos2);
+                azureService.getBlob(localMediaFilePath).downloadStreamWithResponse(os, blobRange,
+                        new DownloadRetryOptions().setMaxRetryRequests(5),
+                        null, false, null, Context.NONE);
+                azureService.downloadBlobFromAzure(os, localMediaFilePath);
+                // os.flush();
+            }
+
+            catch (Exception e) {
             }
         };
 
         return new ResponseEntity<StreamingResponseBody>(responseStream, responseHeaders, HttpStatus.PARTIAL_CONTENT);
+
     }
 
     @Override
     public ResponseEntity<StreamingResponseBody> loadEntireMediaFile(String localMediaFilePath) throws IOException {
-        Path filePath = Paths.get(localMediaFilePath);
-        if (!filePath.toFile().exists()) {
-            throw new FileNotFoundException("The media file does not exist.");
-        }
+        // Path filePath = Paths.get(localMediaFilePath);
+        // if (!filePath.toFile().exists()) {
+        // throw new FileNotFoundException("The media file does not exist.");
+        // }
 
-        long fileSize = Files.size(filePath);
+        long fileSize = azureService.getBlob(localMediaFilePath).getProperties().getBlobSize();
         long endPos = fileSize;
         if (fileSize > 0L) {
             endPos = fileSize - 1;

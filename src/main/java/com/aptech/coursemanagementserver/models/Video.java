@@ -33,8 +33,11 @@ public class Video {
     private long id;
     @Column(columnDefinition = "nvarchar(100)")
     private String name;
+
+    @Column(columnDefinition = "varchar(MAX)")
     private String url;
 
+    @Column(columnDefinition = "varchar(MAX)")
     private String captionUrls;
 
     @Column(columnDefinition = "tinyint")

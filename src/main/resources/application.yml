@@ -8,7 +8,7 @@ application:
       refreshToken:
         expiration: 604800000 # 7 days
     cors:
-      allowedOrigins: http://localhost:3000,http://localhost:8080,https://test-payment.momo.vn
+      allowedOrigins: http://localhost:3000,http://localhost:8080,https://clicknlearnassets.blob.core.windows.net,https://test-payment.momo.vn,https://clicknlearnclient.azurewebsites.net
     oauth2:
       # After successfully authenticating with the OAuth2 Provider,
       # we'll be generating an auth token for the user and sending the token to the
@@ -71,3 +71,9 @@ paypal:
     personal:
       email: sb-c9mcj26117776@personal.example.com
       password: e@LbdH4n
+azure:
+  storage:
+    container:
+      name: clicknlearnassets
+    connection:
+      string: DefaultEndpointsProtocol=https;AccountName=clicknlearnassets;AccountKey=g0jMRDMZTkUbawJxAFBN6Xdh/PNqsrilbF95UoXfviEARLt/M5B6I57AGT6DYuJO7lhvqfJxvw7L+AStpHzmSQ==;EndpointSuffix=core.windows.net

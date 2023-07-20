@@ -13,6 +13,7 @@
 	<artifactId>course-management-server</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>course-management-server</name>
+	<packaging>jar</packaging>
 	<description>Demo project for Spring Boot</description>
 	<properties>
 		<java.version>17</java.version>
@@ -168,6 +169,13 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-actuator</artifactId>
 		</dependency>
+
+		<dependency>
+			<groupId>com.azure</groupId>
+			<artifactId>azure-storage-blob</artifactId>
+			<version>12.23.0</version>
+		</dependency>
+
 	</dependencies>
 
 	<build>
@@ -176,15 +184,15 @@
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
 			</plugin>
-			<!-- <plugin>
+			<plugin>
 				<groupId>com.microsoft.azure</groupId>
 				<artifactId>azure-spring-apps-maven-plugin</artifactId>
 				<version>1.18.0</version>
 				<configuration>
 					<subscriptionId>39777442-858d-4a72-b99a-51f70253d691</subscriptionId>
 					<resourceGroup>ClicknLearn</resourceGroup>
-					<clusterName>clicknlearnapi</clusterName>
-					<appName>click-and-learn-server</appName>
+					<clusterName>clicknlearn</clusterName>
+					<appName>clicknlearn-api</appName>
 					<isPublic>true</isPublic>
 					<deployment>
 						<cpu>1</cpu>
@@ -204,7 +212,7 @@
 						</resources>
 					</deployment>
 				</configuration>
-			</plugin> -->
+			</plugin>
 		</plugins>
 	</build>
 

@@ -3,6 +3,7 @@ package com.aptech.coursemanagementserver.controllers;
 import static com.aptech.coursemanagementserver.constants.GlobalStorage.VIDEO;
 
 import java.io.IOException;
+import java.io.OutputStream;
 import java.nio.file.Paths;
 
 import org.springframework.http.HttpStatus;
@@ -17,6 +18,7 @@ import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBo
 
 import com.aptech.coursemanagementserver.services.VideoService;
 import com.aptech.coursemanagementserver.services.authServices.JwtService;
+import com.aptech.coursemanagementserver.services.azureServices.AzureService;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -56,10 +58,12 @@ public class VideoStreamController {
         if (userName == null) {
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
         }
-        String range = httpRangeList == null ? "1048576-" : httpRangeList;
-        String filePathString = Paths.get(VIDEO, fileName + "." + fileType).toString();
-        return videoStreamService.loadPartialMediaFile(filePathString,
+        String range = httpRangeList == null ? "1073741824-" : httpRangeList;
+        // String filePathString = Paths.get(VIDEO, fileName + "." +
+        // fileType).toString();
+        return videoStreamService.loadPartialMediaFile(fileName + "." + fileType,
                 range);
+
     }
 
     @GetMapping("/caption/{fileName}")

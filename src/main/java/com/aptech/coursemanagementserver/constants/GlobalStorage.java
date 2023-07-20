@@ -17,22 +17,24 @@ public interface GlobalStorage {
     Path CAPTION_PATH = Paths.get("assets", "captions");
     String VIDEO = "assets/videos";
     String CAPTION = "assets/captions";
+    String VIDEO_FOLDER = "videos";
+    String CAPTION_FOLDER = "captions";
 
     // DOMAIN EMAIL
     String DOMAIN_EMAIL = "contact@cmproj.com";
 
     // DOMAIN API URL
     String DEV_DOMAIN_API = "http://localhost:8080";
-    String PROD_DOMAIN_API = "https://cmapi.com";
+    String PROD_DOMAIN_API = "https://clicknlearn-api.kindbeach-1b081cd2.eastasia.azurecontainerapps.io";
 
     // DOMAIN CLIENT URL
     String DEV_DOMAIN_CLIENT = "http://localhost:3000";
     String PROD_DOMAIN_CLIENT = "http://cmclient.com";
 
     // API
-    String COURSE_DOWNLOAD_API = "http://localhost:8080/course/download/";
-    String STREAM_API = "http://localhost:8080/video/stream/";
-    String CAPTION_API = "http://localhost:8080/video/caption/";
+    String COURSE_DOWNLOAD_API = PROD_DOMAIN_API + "/course/download/";
+    String STREAM_API = PROD_DOMAIN_API + "/video/stream/";
+    String CAPTION_API = PROD_DOMAIN_API + "/video/caption/";
 
     // CLIENT
     String PAYMENT_SUCCESS_CLIENT = DEV_DOMAIN_CLIENT + "/payment/success";
@@ -68,14 +70,14 @@ public interface GlobalStorage {
     // Map.entry("language","en_US"),
     // Map.entry("currency", "USD"),
     );
-    String PAYPAL_CHECKOUT_API = DEV_DOMAIN_API + "/checkout/paypal";
+    String PAYPAL_CHECKOUT_API = PROD_DOMAIN_API + "/checkout/paypal";
     String PAYPAL_SUCCESS_URL = "/paypal/success";
-    String PAYPAL_SUCCESS_API = DEV_DOMAIN_API + "/checkout/paypal/success";
+    String PAYPAL_SUCCESS_API = PROD_DOMAIN_API + "/checkout/paypal/success";
     String PAYPAL_CANCEL_URL = "/paypal/cancel";
-    String PAYPAL_CANCEL_API = DEV_DOMAIN_API + "/checkout/paypal/cancel";
+    String PAYPAL_CANCEL_API = PROD_DOMAIN_API + "/checkout/paypal/cancel";
 
     // MOMO
-    String MOMO_CHECKOUT_API = DEV_DOMAIN_API + "/checkout/momo";
+    String MOMO_CHECKOUT_API = PROD_DOMAIN_API + "/checkout/momo";
     String MOMO_REDIRECT_URL = "/momo/redirect";
-    String MOMO_REDIRECT_API = DEV_DOMAIN_API + "/checkout/momo/redirect";
+    String MOMO_REDIRECT_API = PROD_DOMAIN_API + "/checkout/momo/redirect";
 }
