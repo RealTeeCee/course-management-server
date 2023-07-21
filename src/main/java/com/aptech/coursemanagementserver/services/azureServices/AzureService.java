@@ -15,4 +15,6 @@ public interface AzureService {
 
     public BlobClient getBlob(String blobName);
 
+    public BlobClient getBlobCaptions(String blobName);
+
 }

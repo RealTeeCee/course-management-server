@@ -1,10 +1,6 @@
 package com.aptech.coursemanagementserver.controllers;
 
-import static com.aptech.coursemanagementserver.constants.GlobalStorage.VIDEO;
-
 import java.io.IOException;
-import java.io.OutputStream;
-import java.nio.file.Paths;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,7 +14,6 @@ import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBo
 
 import com.aptech.coursemanagementserver.services.VideoService;
 import com.aptech.coursemanagementserver.services.authServices.JwtService;
-import com.aptech.coursemanagementserver.services.azureServices.AzureService;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;

@@ -4,22 +4,18 @@ import static com.aptech.coursemanagementserver.constants.GlobalStorage.ACCEPT_R
 import static com.aptech.coursemanagementserver.constants.GlobalStorage.BAD_REQUEST_EXCEPTION;
 import static com.aptech.coursemanagementserver.constants.GlobalStorage.BYTES;
 import static com.aptech.coursemanagementserver.constants.GlobalStorage.BYTE_RANGE;
-import static com.aptech.coursemanagementserver.constants.GlobalStorage.CAPTION;
 import static com.aptech.coursemanagementserver.constants.GlobalStorage.CHUNK_SIZE;
 import static com.aptech.coursemanagementserver.constants.GlobalStorage.CONTENT_LENGTH;
 import static com.aptech.coursemanagementserver.constants.GlobalStorage.CONTENT_RANGE;
 import static com.aptech.coursemanagementserver.constants.GlobalStorage.CONTENT_TYPE;
 import static com.aptech.coursemanagementserver.constants.GlobalStorage.VIDEO;
-import static com.aptech.coursemanagementserver.constants.GlobalStorage.VIDEO_PATH;
 import static com.aptech.coursemanagementserver.constants.GlobalStorage.VIDEO_CONTENT;
+import static com.aptech.coursemanagementserver.constants.GlobalStorage.VIDEO_PATH;
 import static com.aptech.coursemanagementserver.constants.GlobalStorage.VTT_CONTENT;
 
 import java.io.ByteArrayOutputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
-import java.io.RandomAccessFile;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -241,13 +237,15 @@ public class VideoServiceImpl implements VideoService {
     @Override
     public ResponseEntity<byte[]> prepareCaptionContent(final String fileName) {
         try {
-            Path path = Paths.get(CAPTION, fileName);
-            byte[] data = Files.readAllBytes(path);
+            // Path path = Paths.get(CAPTION, fileName);
+            ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+
+            azureService.getBlobCaptions(fileName).downloadStream(bytes);
 
             return ResponseEntity.status(HttpStatus.OK)
                     .contentType(MediaType.parseMediaType(VTT_CONTENT))
-                    .body(data);
-        } catch (IOException e) {
+                    .body(bytes.toByteArray());
+        } catch (Exception e) {
             log.error("Exception while reading the file {}", e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
