@@ -32,10 +32,10 @@ mvn spring-boot:run
 # *** Other ***
 
 # USER and ROLE
-## Admin Role: admin@mail.com, password (username and password).
-## Manager Role: manager1@mail.com, password.
-## Employee Role: employee@mail.com, password.
-## User Role: user-test@mail.com, password.
+- Admin Role: admin@mail.com, password (username and password).
+- Manager Role: manager1@mail.com, password.
+- Employee Role: employee@mail.com, password.
+- User Role: user-test@mail.com, password.
 
 # MOMO
 - Mã thẻ: 9704 0000 0000 0018
