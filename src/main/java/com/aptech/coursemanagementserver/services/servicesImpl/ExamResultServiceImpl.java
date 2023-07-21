@@ -1,5 +1,6 @@
 package com.aptech.coursemanagementserver.services.servicesImpl;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.time.Instant;
 import java.util.ArrayList;
@@ -20,13 +21,16 @@ import com.aptech.coursemanagementserver.dtos.FinishExamResponseDto;
 import com.aptech.coursemanagementserver.dtos.QuestionDto;
 import com.aptech.coursemanagementserver.dtos.RetakeExamDto;
 import com.aptech.coursemanagementserver.enums.GradeType;
+import com.aptech.coursemanagementserver.exceptions.BadRequestException;
 import com.aptech.coursemanagementserver.models.Answer;
 import com.aptech.coursemanagementserver.models.Course;
 import com.aptech.coursemanagementserver.models.ExamResult;
+import com.aptech.coursemanagementserver.models.Logs;
 import com.aptech.coursemanagementserver.models.Part;
 import com.aptech.coursemanagementserver.models.Question;
 import com.aptech.coursemanagementserver.repositories.CourseRepository;
 import com.aptech.coursemanagementserver.repositories.ExamResultRepository;
+import com.aptech.coursemanagementserver.repositories.LogsRepository;
 import com.aptech.coursemanagementserver.repositories.PartRepository;
 import com.aptech.coursemanagementserver.services.AnswerService;
 import com.aptech.coursemanagementserver.services.ExamResultService;
@@ -49,6 +53,7 @@ public class ExamResultServiceImpl implements ExamResultService {
     private final CourseRepository courseRepository;
     private final QuestionService questionService;
     private final AnswerService answerService;
+    private final LogsRepository logsRepository;
 
     @Override
     public int createExamResult(long userId, long courseId) {
@@ -225,15 +230,52 @@ public class ExamResultServiceImpl implements ExamResultService {
         return accomplishmentsDtos;
     }
 
-    public byte[] getCertificate(CertificateDto certificateDto) throws JRException, IOException {
+    @Override
+    public byte[] getCertificate(CertificateDto certificateDto) {
+        try {
 
-        JasperReport jasperReport = JasperCompileManager
-                .compileReport(new ClassPathResource("reports/Certificate_Landscape.jrxml").getInputStream());
+            Logs log = new Logs();
+            log.setContents("Load reports/Certificate_Landscape.jrxml");
+            logsRepository.save(log);
+            JasperReport jasperReport = JasperCompileManager
+                    .compileReport(new ClassPathResource("reports/Certificate_Landscape.jrxml").getInputStream());
+            log = new Logs();
+            log.setContents("Create CertificateDto");
+            logsRepository.save(log);
+            List<CertificateDto> certificateDtos = new ArrayList<>();
+            certificateDtos.add(certificateDto);
+            log = new Logs();
+            log.setContents("Create dataSource");
+            logsRepository.save(log);
+            JRBeanCollectionDataSource dataSource = new JRBeanCollectionDataSource(certificateDtos);
+            log = new Logs();
+            log.setContents("fillReport");
+            logsRepository.save(log);
+            JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, null,
+                    dataSource);
+            log = new Logs();
+            log.setContents("exportReportToPdf");
+            logsRepository.save(log);
+            return JasperExportManager.exportReportToPdf(jasperPrint);
 
-        List<CertificateDto> certificateDtos = new ArrayList<>();
-        certificateDtos.add(certificateDto);
-        JRBeanCollectionDataSource dataSource = new JRBeanCollectionDataSource(certificateDtos);
-        JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, null, dataSource);
-        return JasperExportManager.exportReportToPdf(jasperPrint);
+        } catch (JRException | IOException e) {
+            Logs log = new Logs();
+            log.setContents(e.toString());
+            logsRepository.save(log);
+            log = new Logs();
+            log.setContents(e.getMessage());
+            logsRepository.save(log);
+            return new ByteArrayOutputStream().toByteArray();
+        } catch (Exception e) {
+            Logs log = new Logs();
+            log.setContents(e.toString());
+            logsRepository.save(log);
+            log = new Logs();
+            log.setContents(e.getMessage());
+            logsRepository.save(log);
+            return new ByteArrayOutputStream().toByteArray();
+        }
+
     }
+
 }

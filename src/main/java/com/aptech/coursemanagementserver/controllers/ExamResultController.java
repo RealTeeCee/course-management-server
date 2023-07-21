@@ -21,6 +21,8 @@ import com.aptech.coursemanagementserver.dtos.FinishExamRequestDto;
 import com.aptech.coursemanagementserver.dtos.FinishExamResponseDto;
 import com.aptech.coursemanagementserver.dtos.RetakeExamDto;
 import com.aptech.coursemanagementserver.exceptions.BadRequestException;
+import com.aptech.coursemanagementserver.models.Logs;
+import com.aptech.coursemanagementserver.repositories.LogsRepository;
 import com.aptech.coursemanagementserver.services.ExamResultService;
 
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -33,6 +35,7 @@ import net.sf.jasperreports.engine.JRException;
 @Tag(name = "ExamResult Endpoints")
 public class ExamResultController {
         private final ExamResultService examResultService;
+        private final LogsRepository logsRepository;
 
         @PostMapping
         @PreAuthorize("hasAnyRole('USER', 'ADMIN', 'MANAGER', 'EMPLOYEE')")
@@ -77,16 +80,33 @@ public class ExamResultController {
 
         @PostMapping(value = "/certificate")
         @PreAuthorize("hasAnyRole('USER', 'ADMIN', 'MANAGER', 'EMPLOYEE')")
-        public ResponseEntity<Resource> getCertificate(@RequestBody CertificateDto dto)
-                        throws JRException, IOException {
-
-                byte[] pdf = examResultService.getCertificate(dto);
-                ByteArrayResource resource = new ByteArrayResource(pdf);
-                return ResponseEntity.ok()
-                                .header(HttpHeaders.CONTENT_DISPOSITION,
-                                                "attachment; filename=\"certificate.pdf\"")
-                                .contentType(MediaType.APPLICATION_PDF)
-                                .body(resource);
+        public ResponseEntity<Resource> getCertificate(@RequestBody CertificateDto dto) {
+                try {
+                        Logs log = new Logs();
+                        log.setContents("Start certificate.....");
+                        logsRepository.save(log);
+                        byte[] pdf = examResultService.getCertificate(dto);
+                        log = new Logs();
+                        log.setContents("CALL  getCertificate.....");
+                        logsRepository.save(log);
+                        ByteArrayResource resource = new ByteArrayResource(pdf);
+                        log = new Logs();
+                        log.setContents("CONVERT  PDF TO ByteArrayResource DONE .....");
+                        logsRepository.save(log);
+                        return ResponseEntity.ok()
+                                        .header(HttpHeaders.CONTENT_DISPOSITION,
+                                                        "attachment; filename=\"certificate.pdf\"")
+                                        .contentType(MediaType.APPLICATION_PDF)
+                                        .body(resource);
+                } catch (Exception e) {
+                        Logs log = new Logs();
+                        log.setContents(e.toString());
+                        logsRepository.save(log);
+                        log = new Logs();
+                        log.setContents(e.getMessage());
+                        logsRepository.save(log);
+                        throw new BadRequestException(e.getMessage());
+                }
         }
 
 }
