@@ -238,7 +238,12 @@ public class ExamResultServiceImpl implements ExamResultService {
             log.setContents("Load reports/Certificate_Landscape.jrxml");
             logsRepository.save(log);
             JasperReport jasperReport = JasperCompileManager
-                    .compileReport(new ClassPathResource("reports/Certificate_Landscape.jrxml").getInputStream());
+                    .compileReport(new ClassPathResource("reports/Dummy_A4.jrxml").getInputStream());
+
+            var stream = new ClassPathResource("reports/Dummy_A4.jrxml").getInputStream();
+            log = new Logs();
+            log.setContents("stream: " + stream.available());
+            logsRepository.save(log);
             log = new Logs();
             log.setContents("Create CertificateDto");
             logsRepository.save(log);
@@ -251,12 +256,18 @@ public class ExamResultServiceImpl implements ExamResultService {
             log = new Logs();
             log.setContents("fillReport");
             logsRepository.save(log);
-            JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, null,
-                    dataSource);
-            log = new Logs();
-            log.setContents("exportReportToPdf");
-            logsRepository.save(log);
-            return JasperExportManager.exportReportToPdf(jasperPrint);
+            try {
+                JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, null);
+                return JasperExportManager.exportReportToPdf(jasperPrint);
+            } catch (Exception e) {
+                log = new Logs();
+                log.setContents("fillReport error: " + e.toString());
+                logsRepository.save(log);
+                log = new Logs();
+                log.setContents("fillReport error");
+                logsRepository.save(log);
+                return new ByteArrayOutputStream().toByteArray();
+            }
 
         } catch (JRException | IOException e) {
             Logs log = new Logs();
