@@ -27,7 +27,7 @@ import com.aptech.coursemanagementserver.models.Part;
 import com.aptech.coursemanagementserver.models.Question;
 import com.aptech.coursemanagementserver.repositories.CourseRepository;
 import com.aptech.coursemanagementserver.repositories.ExamResultRepository;
-import com.aptech.coursemanagementserver.repositories.LogsRepository;
+// import com.aptech.coursemanagementserver.repositories.LogsRepository;
 import com.aptech.coursemanagementserver.repositories.PartRepository;
 import com.aptech.coursemanagementserver.services.AnswerService;
 import com.aptech.coursemanagementserver.services.ExamResultService;
@@ -50,7 +50,7 @@ public class ExamResultServiceImpl implements ExamResultService {
     private final CourseRepository courseRepository;
     private final QuestionService questionService;
     private final AnswerService answerService;
-    private final LogsRepository logsRepository;
+    // private final LogsRepository logsRepository;
 
     @Override
     public int createExamResult(long userId, long courseId) {

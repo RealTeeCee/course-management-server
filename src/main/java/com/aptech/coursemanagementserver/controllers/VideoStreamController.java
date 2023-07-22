@@ -53,7 +53,7 @@ public class VideoStreamController {
         if (userName == null) {
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
         }
-        String range = httpRangeList == null ? "1073741824-" : httpRangeList;
+        String range = httpRangeList == null ? "1048576-" : httpRangeList;
         // String filePathString = Paths.get(VIDEO, fileName + "." +
         // fileType).toString();
         return videoStreamService.loadPartialMediaFile(fileName + "." + fileType,

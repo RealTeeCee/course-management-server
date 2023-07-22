@@ -20,7 +20,7 @@ import com.aptech.coursemanagementserver.dtos.FinishExamRequestDto;
 import com.aptech.coursemanagementserver.dtos.FinishExamResponseDto;
 import com.aptech.coursemanagementserver.dtos.RetakeExamDto;
 import com.aptech.coursemanagementserver.exceptions.BadRequestException;
-import com.aptech.coursemanagementserver.repositories.LogsRepository;
+
 import com.aptech.coursemanagementserver.services.ExamResultService;
 
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -32,7 +32,7 @@ import lombok.RequiredArgsConstructor;
 @Tag(name = "ExamResult Endpoints")
 public class ExamResultController {
         private final ExamResultService examResultService;
-        private final LogsRepository logsRepository;
+        // private final LogsRepository logsRepository;
 
         @PostMapping
         @PreAuthorize("hasAnyRole('USER', 'ADMIN', 'MANAGER', 'EMPLOYEE')")
