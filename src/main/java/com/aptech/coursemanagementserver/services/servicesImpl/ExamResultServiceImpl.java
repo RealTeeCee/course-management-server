@@ -231,61 +231,15 @@ public class ExamResultServiceImpl implements ExamResultService {
     }
 
     @Override
-    public byte[] getCertificate(CertificateDto certificateDto) {
-        try {
+    public byte[] getCertificate(CertificateDto certificateDto) throws JRException, IOException {
 
-            Logs log = new Logs();
-            log.setContents("Load reports/Certificate_Landscape.jrxml");
-            logsRepository.save(log);
-            JasperReport jasperReport = JasperCompileManager
-                    .compileReport(new ClassPathResource("reports/Dummy_A4.jrxml").getInputStream());
-
-            var stream = new ClassPathResource("reports/Dummy_A4.jrxml").getInputStream();
-            log = new Logs();
-            log.setContents("stream: " + stream.available());
-            logsRepository.save(log);
-            log = new Logs();
-            log.setContents("Create CertificateDto");
-            logsRepository.save(log);
-            List<CertificateDto> certificateDtos = new ArrayList<>();
-            certificateDtos.add(certificateDto);
-            log = new Logs();
-            log.setContents("Create dataSource");
-            logsRepository.save(log);
-            JRBeanCollectionDataSource dataSource = new JRBeanCollectionDataSource(certificateDtos);
-            log = new Logs();
-            log.setContents("fillReport");
-            logsRepository.save(log);
-            try {
-                JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, null);
-                return JasperExportManager.exportReportToPdf(jasperPrint);
-            } catch (Exception e) {
-                log = new Logs();
-                log.setContents("fillReport error: " + e.toString());
-                logsRepository.save(log);
-                log = new Logs();
-                log.setContents("fillReport error");
-                logsRepository.save(log);
-                return new ByteArrayOutputStream().toByteArray();
-            }
-
-        } catch (JRException | IOException e) {
-            Logs log = new Logs();
-            log.setContents(e.toString());
-            logsRepository.save(log);
-            log = new Logs();
-            log.setContents(e.getMessage());
-            logsRepository.save(log);
-            return new ByteArrayOutputStream().toByteArray();
-        } catch (Exception e) {
-            Logs log = new Logs();
-            log.setContents(e.toString());
-            logsRepository.save(log);
-            log = new Logs();
-            log.setContents(e.getMessage());
-            logsRepository.save(log);
-            return new ByteArrayOutputStream().toByteArray();
-        }
+        JasperReport jasperReport = JasperCompileManager
+                .compileReport(new ClassPathResource("reports/Certificate_Landscape.jrxml").getInputStream());
+        List<CertificateDto> certificateDtos = new ArrayList<>();
+        certificateDtos.add(certificateDto);
+        JRBeanCollectionDataSource dataSource = new JRBeanCollectionDataSource(certificateDtos);
+        JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, null, dataSource);
+        return JasperExportManager.exportReportToPdf(jasperPrint);
 
     }
 
