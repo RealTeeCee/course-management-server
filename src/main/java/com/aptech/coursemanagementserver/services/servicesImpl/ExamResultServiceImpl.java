@@ -1,6 +1,5 @@
 package com.aptech.coursemanagementserver.services.servicesImpl;
 
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.time.Instant;
 import java.util.ArrayList;
@@ -21,11 +20,9 @@ import com.aptech.coursemanagementserver.dtos.FinishExamResponseDto;
 import com.aptech.coursemanagementserver.dtos.QuestionDto;
 import com.aptech.coursemanagementserver.dtos.RetakeExamDto;
 import com.aptech.coursemanagementserver.enums.GradeType;
-import com.aptech.coursemanagementserver.exceptions.BadRequestException;
 import com.aptech.coursemanagementserver.models.Answer;
 import com.aptech.coursemanagementserver.models.Course;
 import com.aptech.coursemanagementserver.models.ExamResult;
-import com.aptech.coursemanagementserver.models.Logs;
 import com.aptech.coursemanagementserver.models.Part;
 import com.aptech.coursemanagementserver.models.Question;
 import com.aptech.coursemanagementserver.repositories.CourseRepository;
